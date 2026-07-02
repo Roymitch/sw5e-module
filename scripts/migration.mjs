@@ -1429,10 +1429,15 @@ function _getBlasterReloadMax(itemData) {
 
 function _migrateBlasterAmmoData(itemData, updateData) {
 	if ( itemData.type !== "weapon" ) return updateData;
-	if ( ![null, undefined, ""].includes(itemData?.system?.ammo?.value) ) return updateData;
 	if ( !_getBlasterAmmoTypes(itemData).some(type => BLASTER_AMMO_TYPES.has(type)) ) return updateData;
 
 	const reloadMax = _getBlasterReloadMax(itemData);
-	if ( reloadMax > 0 ) updateData["system.ammo.value"] = reloadMax;
+	if ( reloadMax <= 0 ) return updateData;
+
+	const usesMax = itemData?.system?.uses?.max;
+	if ( usesMax == null || usesMax === "" ) {
+		updateData["system.uses.max"] = String(reloadMax);
+	}
+
 	return updateData;
 }

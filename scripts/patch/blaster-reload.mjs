@@ -55,13 +55,25 @@ function warnLegacyBlasterData(item) {
 	if ( !item?.id || LEGACY_WARNED_ITEMS.has(item.id) ) return;
 
 	const legacyAmmoValue = item.system?.ammo?.value;
-	const legacyReloadFlag = item.flags?.sw5e?.reload;
-	if ( legacyAmmoValue == null && !legacyReloadFlag ) return;
+	const legacyReload = item.flags?.sw5e?.reload;
+	const hasModernUsesMax = `${item.system?.uses?.max ?? ""}`.trim() !== "";
+
+	// Compatibility metadata alone (e.g. flags.sw5e.reload.types) is expected on current items.
+	// Warn only when stale runtime state may still be driving reload behavior.
+	const hasStaleLegacyAmmoValue = legacyAmmoValue != null && !hasModernUsesMax;
+	const hasActiveLegacyReloadState = Boolean(
+		legacyReload?.value != null
+		|| legacyReload?.target
+		|| legacyReload?.use != null
+	);
+	if ( !hasStaleLegacyAmmoValue && !hasActiveLegacyReloadState ) return;
 
 	LEGACY_WARNED_ITEMS.add(item.id);
 	const details = [];
-	if ( legacyAmmoValue != null ) details.push("system.ammo.value");
-	if ( legacyReloadFlag ) details.push("flags.sw5e.reload");
+	if ( hasStaleLegacyAmmoValue ) details.push("system.ammo.value");
+	if ( legacyReload?.target ) details.push("flags.sw5e.reload.target");
+	if ( legacyReload?.value != null ) details.push("flags.sw5e.reload.value");
+	if ( legacyReload?.use != null ) details.push("flags.sw5e.reload.use");
 	console.warn(`SW5E MODULE | ${item.name} uses legacy blaster ammo data (${details.join(", ")}). Runtime reload uses system.uses only.`);
 }
 

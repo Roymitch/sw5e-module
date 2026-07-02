@@ -16,8 +16,11 @@ import {
 	resolveSchoolPowerDc
 } from "../powercasting-overrides.mjs";
 import { patchPowerBonuses } from "./power-bonuses.mjs";
+import { applySpecialTraitsTabLabel } from "./special-traits-sheet.mjs";
+import { applyStarshipTabsContext } from "./starship-sheet.mjs";
 
 const PRECALCULATED_SPELLCASTING_KEY = "sw5e-preCalculatedSpellcastingClasses";
+let baseActorTabsContextWrapped = false;
 
 function getHtmlRoot(html) {
 	return html instanceof HTMLElement ? html : html?.[0] ?? html;
@@ -26,8 +29,10 @@ function getHtmlRoot(html) {
 function registerWrapper(target, callback) {
 	try {
 		libWrapper.register(getModuleId(), target, callback, "WRAPPER");
+		return true;
 	} catch (err) {
 		console.warn(`SW5E | Failed to register powercasting wrapper for '${target}'.`, err);
+		return false;
 	}
 }
 
@@ -50,13 +55,21 @@ function formatSuperiorityPool(superiority) {
 	return `${current}/${max}d${die}`;
 }
 
-function patchPowersTabLabel() {
-	registerWrapper("dnd5e.applications.actor.BaseActorSheet.prototype._prepareTabsContext", async function (wrapped, context, options) {
-		context = await wrapped(context, options);
-		if ( Array.isArray(context?.tabs) ) {
-			const spellsTab = context.tabs.find(tab => tab?.tab === "spells");
-			if ( spellsTab ) spellsTab.label = localizeOrFallback("TYPES.Item.spellPl", "Powers");
-		}
+export function applyPowersTabLabel(context) {
+	if ( Array.isArray(context?.tabs) ) {
+		const spellsTab = context.tabs.find(tab => tab?.tab === "spells");
+		if ( spellsTab ) spellsTab.label = localizeOrFallback("TYPES.Item.spellPl", "Powers");
+	}
+	return context;
+}
+
+function patchBaseActorTabsContext() {
+	if ( baseActorTabsContextWrapped ) return;
+	baseActorTabsContextWrapped = registerWrapper("dnd5e.applications.actor.BaseActorSheet.prototype._prepareTabsContext", async function (wrapped, context, options) {
+		context = await wrapped.call(this, context, options);
+		context = applyPowersTabLabel(context);
+		context = applySpecialTraitsTabLabel(context);
+		context = applyStarshipTabsContext(context, this);
 		return context;
 	});
 }
@@ -1352,7 +1365,7 @@ function _toggleEditPoints(progressClass, event, edit) {
 export function patchPowercasting() {
 	adjustItemSpellcastingGetter();
 	normalizeDroppedPowerDefaults();
-	patchPowersTabLabel();
+	patchBaseActorTabsContext();
 	patchItemSheet();
 	patchPowerAbilityScore();
 	patchPowerbooks();

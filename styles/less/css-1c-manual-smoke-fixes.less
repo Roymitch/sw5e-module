@@ -501,12 +501,39 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.npc 
   z-index: 1;
 }
 
+@{ship-portrait-light}.sw5e-starship-portrait--mode-play :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge),
+@{ship-portrait-dark}.sw5e-starship-portrait--mode-play :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge),
+@{ship-portrait-underworld}.sw5e-starship-portrait--mode-play :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge) {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+@{ship-portrait-light}.sw5e-starship-portrait--mode-play :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge)::before {
+  background: rgba(18, 40, 54, 0.44);
+}
+
+@{ship-portrait-light}.sw5e-starship-portrait--mode-play :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge)::after {
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.78), 0 0 0 1px rgba(18, 40, 54, 0.18);
+}
+
+@{ship-portrait-dark}.sw5e-starship-portrait--mode-play :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge)::before,
+@{ship-portrait-underworld}.sw5e-starship-portrait--mode-play :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge)::before {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+@{ship-portrait-dark}.sw5e-starship-portrait--mode-play :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge)::after,
+@{ship-portrait-underworld}.sw5e-starship-portrait--mode-play :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge)::after {
+  background: rgba(12, 16, 20, 0.88);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.38);
+}
+
 @{ship-portrait-light} .sw5e-starship-tier-badge-input,
 @{ship-portrait-dark} .sw5e-starship-tier-badge-input,
 @{ship-portrait-underworld} .sw5e-starship-tier-badge-input {
   width: 100%;
   max-width: 2.4rem;
-  padding: 0;
+  padding: 0 0.15rem;
   margin: 0;
   background: transparent !important;
   border: 0 !important;
@@ -516,7 +543,11 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.npc 
   font-weight: 700;
   line-height: 1;
   text-align: center;
-  appearance: textfield;
+  text-align-last: center;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
 }
 
 @{ship-portrait-light} .sw5e-starship-tier-badge-input:focus-visible,

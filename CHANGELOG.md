@@ -7,10 +7,15 @@
 
 ### Changed
 - **Special Traits tab:** cleaned up SW5E-facing wording and localized the tab, section labels, and Original Class block without replacing the stock dnd5e sheet tab.
+- **Actor sheet tabs:** powercasting, starship, and Special Traits tab-label adjustments now share a single `_prepareTabsContext` wrapper instead of competing libWrapper registrations.
 
 ### Fixed
 - **Localization loading:** resolved SW5E locale namespace collisions that prevented module translation keys from loading in Foundry, restoring SW5E `Powers` / `Powerbook` wording and eliminating raw `SW5E.*` labels on actor sheets and related UI.
 - **Character sheet labels:** restored localized SW5E wording for Special Traits, custom skills (`Lore`, `Piloting`, `Technology`), and SW5E weapon proficiencies on actor sheets.
+- **Special Traits bonus labels:** added missing `SW5E.Bonus*` locale coverage for actor `system.bonuses` fields so the stock `Global Bonuses` section shows readable power bonus labels instead of raw keys like `SW5E.BonusAttack`.
+- **Startup / libWrapper:** consolidated duplicate `BaseActorSheet._prepareTabsContext` registrations from powercasting, starship, and Special Traits patches into one module-owned wrapper, removing init-time libWrapper duplicate-registration errors.
+- **Blaster reload warnings:** narrowed legacy blaster ammo warnings to stale runtime state only; modern blasters with `system.uses` no longer warn solely because compatibility metadata like `flags.sw5e.reload.types` is still present.
+- **Blaster migration:** world item migration now backfills `system.uses.max` for managed blasters instead of writing obsolete `system.ammo.value`.
 - **Theme regressions:** dark advancement dialogs are readable again, light-theme windows are less translucent, and advancement level lists have stronger contrast.
 - **Powers tab:** `powerCasting` items once again show the correct save DC in the roll column.
 - **Superiority data:** missing Fighter and Scholar superiority progression now backfills correctly, and the Scholar `Superiority Dice` feature again uses the scale-based die formula and resource path.

@@ -80,15 +80,12 @@ function registerWrapper(target, callback) {
 	}
 }
 
-function patchTabLabels() {
-	registerWrapper("dnd5e.applications.actor.BaseActorSheet.prototype._prepareTabsContext", async function (wrapped, context, options) {
-		context = await wrapped(context, options);
-		if ( Array.isArray(context?.tabs) ) {
-			const specialTraitsTab = context.tabs.find(tab => tab?.tab === "specialTraits");
-			if ( specialTraitsTab ) specialTraitsTab.label = localizeOrFallback("SW5E.SpecialTraits.Label", "Special Traits");
-		}
-		return context;
-	});
+export function applySpecialTraitsTabLabel(context) {
+	if ( Array.isArray(context?.tabs) ) {
+		const specialTraitsTab = context.tabs.find(tab => tab?.tab === "specialTraits");
+		if ( specialTraitsTab ) specialTraitsTab.label = localizeOrFallback("SW5E.SpecialTraits.Label", "Special Traits");
+	}
+	return context;
 }
 
 function patchContextPreparation() {
@@ -107,7 +104,6 @@ function patchRenderedDom() {
 }
 
 export function patchSpecialTraitsSheet() {
-	patchTabLabels();
 	patchContextPreparation();
 	patchRenderedDom();
 }

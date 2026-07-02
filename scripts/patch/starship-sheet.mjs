@@ -89,6 +89,7 @@ const SOTG_SUB_TAB_IDS = new Set(["overview"]);
 const SW5E_STARSHIP_SHEET_DIAG_ENABLED = false;
 const SW5E_STARSHIP_SHEET_DIAG_PREFIX = "SW5E MODULE | StarshipSheetDiag";
 const STARSHIP_ABILITY_KEYS = ["str", "dex", "con", "int", "wis", "cha"];
+const STARSHIP_TIER_OPTIONS = [0, 1, 2, 3, 4, 5];
 
 function getSotgSubTab(app) {
 	const v = app?._sw5eSotgSubTab;
@@ -708,6 +709,38 @@ function formatStarshipInitiativeTotal(actor) {
 	return total >= 0 ? `+${total}` : `${total}`;
 }
 
+function getStoredStarshipTier(actor) {
+	const legacySystem = getLegacyStarshipActorSystem(actor);
+	const raw = actor?.system?.details?.tier ?? legacySystem.details?.tier;
+	const n = Number(raw);
+	if ( !Number.isFinite(n) ) return 0;
+	return Math.max(0, Math.trunc(n));
+}
+
+function populateStarshipTierBadgeSelect(select, storedTier) {
+	if ( !(select instanceof HTMLSelectElement) ) return;
+	const current = Number.isFinite(Number(storedTier)) ? Math.max(0, Math.trunc(Number(storedTier))) : 0;
+	const currentValue = String(current);
+	const optionValues = new Set(STARSHIP_TIER_OPTIONS.map(String));
+	select.replaceChildren();
+	if ( !optionValues.has(currentValue) ) {
+		const currentOption = document.createElement("option");
+		currentOption.value = currentValue;
+		currentOption.textContent = currentValue;
+		currentOption.disabled = true;
+		currentOption.selected = true;
+		select.append(currentOption);
+	}
+	for ( const value of STARSHIP_TIER_OPTIONS ) {
+		const option = document.createElement("option");
+		option.value = String(value);
+		option.textContent = String(value);
+		if ( value === current ) option.selected = true;
+		select.append(option);
+	}
+	select.value = currentValue;
+}
+
 function starshipVitalMeterPct(current, max) {
 	const cap = Math.max(0, Number(max) || 0);
 	const value = Math.max(0, Number(current) || 0);
@@ -828,7 +861,10 @@ function customizeStarshipPortraitBadges(root, actor, app = null) {
 	const shell = getStarshipSidebarShell(root, app);
 	const portrait = shell?.querySelector(".portrait");
 	if ( !(portrait instanceof HTMLElement) ) return;
+	const playMode = !isStarshipSheetEditMode(app);
 	const tierEditable = app?.isEditable !== false && isStarshipSheetEditMode(app);
+	portrait.classList.toggle("sw5e-starship-portrait--mode-play", playMode);
+	portrait.classList.toggle("sw5e-starship-portrait--mode-edit", !playMode);
 
 	const initLabel = localizeOrFallback("DND5E.Initiative", "Initiative");
 	const initDisplay = formatStarshipInitiativeTotal(actor);
@@ -837,27 +873,34 @@ function customizeStarshipPortraitBadges(root, actor, app = null) {
 	if ( !(initWrapper instanceof HTMLElement) ) {
 		initWrapper = document.createElement("div");
 		initWrapper.className = "initiative-wrapper";
-		const initBlock = document.createElement("div");
-		initBlock.className = "initiative";
-		initBlock.setAttribute("aria-label", initLabel);
-		const span = document.createElement("span");
-		span.textContent = initDisplay;
-		initBlock.append(span);
-		initWrapper.append(initBlock);
 		portrait.prepend(initWrapper);
+	}
+	initWrapper.hidden = false;
+	initWrapper.removeAttribute("hidden");
+	initWrapper.style.removeProperty("display");
+	let initBlock = initWrapper.querySelector(".initiative");
+	if ( !(initBlock instanceof HTMLElement) ) {
+		initBlock = document.createElement("div");
+		initBlock.className = "initiative";
+		initWrapper.append(initBlock);
+	}
+	initBlock.hidden = false;
+	initBlock.removeAttribute("hidden");
+	initBlock.style.removeProperty("display");
+	initBlock.replaceChildren();
+	const initSpan = document.createElement("span");
+	initSpan.textContent = initDisplay;
+	initBlock.append(initSpan);
+	if ( playMode ) {
+		initBlock.classList.add("rollable");
+		initBlock.dataset.action = "roll";
+		initBlock.dataset.type = "initiative";
+		initBlock.setAttribute("aria-label", initLabel);
 	} else {
-		initWrapper.hidden = false;
-		initWrapper.removeAttribute("hidden");
-		initWrapper.style.removeProperty("display");
-		const initBlock = initWrapper.querySelector(".initiative");
-		if ( initBlock && !initBlock.querySelector("input") ) {
-			let span = initBlock.querySelector("span");
-			if ( !span ) {
-				span = document.createElement("span");
-				initBlock.append(span);
-			}
-			span.textContent = initDisplay;
-		}
+		initBlock.classList.remove("rollable");
+		initBlock.removeAttribute("data-action");
+		initBlock.removeAttribute("data-type");
+		initBlock.setAttribute("aria-label", initLabel);
 	}
 
 	for ( const badge of portrait.querySelectorAll(".loyalty-badge") ) {
@@ -869,6 +912,7 @@ function customizeStarshipPortraitBadges(root, actor, app = null) {
 
 	const tierLabel = localizeOrFallback("SW5E.StarshipTier", "Starship Tier");
 	const tierValue = buildSystemsCoreContext(actor).tierValue;
+	const storedTier = getStoredStarshipTier(actor);
 	let tierBadge = portrait.querySelector(".sw5e-starship-tier-badge");
 	if ( !(tierBadge instanceof HTMLElement) ) {
 		tierBadge = document.createElement("div");
@@ -880,25 +924,24 @@ function customizeStarshipPortraitBadges(root, actor, app = null) {
 	tierBadge.removeAttribute("aria-hidden");
 	tierBadge.dataset.tooltip = tierLabel;
 	tierBadge.classList.toggle("sw5e-starship-tier-badge--editable", tierEditable);
-	const tierDisplay = String(tierValue);
+	const tierDisplayNumber = Number(tierValue);
+	const tierDisplay = Number.isFinite(tierDisplayNumber)
+		? String(Math.max(0, Math.trunc(tierDisplayNumber)))
+		: String(storedTier);
 	if ( tierEditable ) {
-		let input = tierBadge.querySelector("input[name=\"system.details.tier\"]");
-		if ( !(input instanceof HTMLInputElement) ) {
+		let select = tierBadge.querySelector("select[name=\"system.details.tier\"]");
+		if ( !(select instanceof HTMLSelectElement) ) {
 			tierBadge.textContent = "";
-			input = document.createElement("input");
-			input.type = "number";
-			input.name = "system.details.tier";
-			input.className = "sw5e-starship-tier-badge-input";
-			input.min = "0";
-			input.step = "1";
-			input.inputMode = "numeric";
-			input.dataset.dtype = "Number";
-			input.setAttribute("aria-label", tierLabel);
-			input.title = tierLabel;
-			tierBadge.append(input);
+			select = document.createElement("select");
+			select.name = "system.details.tier";
+			select.className = "sw5e-starship-tier-badge-input sw5e-starship-tier-badge-select";
+			select.dataset.dtype = "Number";
+			select.setAttribute("aria-label", tierLabel);
+			select.title = tierLabel;
+			tierBadge.append(select);
 		}
-		input.value = tierDisplay;
-		input.disabled = false;
+		populateStarshipTierBadgeSelect(select, storedTier);
+		select.disabled = false;
 	} else {
 		let value = tierBadge.querySelector(".sw5e-starship-tier-badge-value");
 		if ( !(value instanceof HTMLElement) ) {
@@ -1465,14 +1508,13 @@ async function persistStarshipFuelPowerSystemPath(act, systemPath, value) {
 }
 
 function coerceStarshipTier(actor, raw) {
-	const legacySystem = getLegacyStarshipActorSystem(actor);
-	const prev = Number(actor?.system?.details?.tier ?? legacySystem.details?.tier);
-	const fallback = Number.isFinite(prev) ? Math.max(0, Math.trunc(prev)) : 0;
+	const fallback = getStoredStarshipTier(actor);
 	const trimmed = String(raw ?? "").trim();
 	if ( trimmed === "" ) return fallback;
 	const n = Number(trimmed);
 	if ( !Number.isFinite(n) ) return fallback;
-	return Math.max(0, Math.trunc(n));
+	const maxTier = STARSHIP_TIER_OPTIONS[STARSHIP_TIER_OPTIONS.length - 1] ?? 5;
+	return Math.max(0, Math.min(maxTier, Math.trunc(n)));
 }
 
 function coerceSidebarFuelValue(actor, raw) {
@@ -2000,36 +2042,27 @@ function registerStarshipFeaturesTabPart() {
 	VAS._sw5eStarshipFeaturesTabRegistered = true;
 }
 
-function registerStarshipTabsContextWrapper() {
-	const BAS = globalThis.dnd5e?.applications?.actor?.BaseActorSheet;
+export function applyStarshipTabsContext(context, sheet) {
 	const VAS = globalThis.dnd5e?.applications?.actor?.VehicleActorSheet;
-	if ( !BAS?.prototype || !VAS ) return;
-	try {
-		libWrapper.register(getModuleId(), "dnd5e.applications.actor.BaseActorSheet.prototype._prepareTabsContext", async function(wrapped, context, options) {
-			context = await wrapped.call(this, context, options);
-			if ( !(this instanceof VAS) || !isSw5eStarshipActor(this.actor) ) return context;
-			if ( !Array.isArray(context.tabs) ) return context;
+	if ( !VAS || !(sheet instanceof VAS) || !isSw5eStarshipActor(sheet.actor) ) return context;
+	if ( !Array.isArray(context?.tabs) ) return context;
 
-			const inventoryTab = context.tabs.find(tab => tab.tab === STOCK_CARGO_TAB_ID);
-			if ( inventoryTab ) inventoryTab.label = "DND5E.Inventory";
+	const inventoryTab = context.tabs.find(tab => tab.tab === STOCK_CARGO_TAB_ID);
+	if ( inventoryTab ) inventoryTab.label = "DND5E.Inventory";
 
-			context.tabs = context.tabs.filter(tab => tab.tab !== "crew");
+	context.tabs = context.tabs.filter(tab => tab.tab !== "crew");
 
-			if ( !context.tabs.some(tab => tab.tab === STARSHIP_FEATURES_TAB_ID) ) {
-				const inventoryIdx = context.tabs.findIndex(tab => tab.tab === STOCK_CARGO_TAB_ID);
-				const featuresTab = {
-					tab: STARSHIP_FEATURES_TAB_ID,
-					label: "DND5E.Features"
-				};
-				if ( inventoryIdx >= 0 ) context.tabs.splice(inventoryIdx + 1, 0, featuresTab);
-				else context.tabs.push(featuresTab);
-			}
-
-			return context;
-		}, "WRAPPER");
-	} catch ( err ) {
-		console.warn("SW5E MODULE | Could not wrap BaseActorSheet _prepareTabsContext for starship tab labels.", err);
+	if ( !context.tabs.some(tab => tab.tab === STARSHIP_FEATURES_TAB_ID) ) {
+		const inventoryIdx = context.tabs.findIndex(tab => tab.tab === STOCK_CARGO_TAB_ID);
+		const featuresTab = {
+			tab: STARSHIP_FEATURES_TAB_ID,
+			label: "DND5E.Features"
+		};
+		if ( inventoryIdx >= 0 ) context.tabs.splice(inventoryIdx + 1, 0, featuresTab);
+		else context.tabs.push(featuresTab);
 	}
+
+	return context;
 }
 
 /**
@@ -4734,7 +4767,6 @@ export function patchStarshipSheet() {
 	registerStarshipEffectsConditionPresentation();
 	registerStarshipEffectsSlowedToggleGuard();
 	registerStarshipFeaturesTabPart();
-	registerStarshipTabsContextWrapper();
 	registerStarshipVehicleSheetShowAbilitiesDefault();
 	suppressNativeStarshipStationsAbilityAndFeatures();
 	registerStarshipCargoInventoryWrappers();
