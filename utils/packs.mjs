@@ -9,6 +9,7 @@ import { compilePack, extractPack } from "@foundryvtt/foundryvtt-cli";
 //import { ClassicLevel } from "classic-level";
 import {
 	TARGET_DND5E_VERSION,
+	normalizeLegacyMasterActorSource,
 	normalizeLegacyMasterItemSource,
 	normalizeDnd5eItemSource,
 	normalizeEmbeddedDnd5eItemSources
@@ -541,6 +542,9 @@ function packageCommand() {
 function cleanPackEntry(data, { clearSourceId=true, ownership=0 }={}) {
 //	forceConvert = convertSW5EPackEntry(data, { forceConvert });
 //	backfillNpcWeapons(data, { packName });
+
+	normalizeLegacyMasterActorSource(data);
+	normalizeDnd5eItemSource(data);
 
 	if ( data.ownership ) data.ownership = { default: ownership };
 	if ( clearSourceId ) {

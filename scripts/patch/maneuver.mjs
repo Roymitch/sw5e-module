@@ -1,5 +1,5 @@
 import { getBestAbility } from "./../utils.mjs";
-import { getModuleType, getModuleTypeCandidates, isModuleType, normalizeModuleType, SETTINGS_NAMESPACE} from "../module-support.mjs";
+import { getModuleType, getModuleTypeCandidates, isModuleType, localizeOrFallback, normalizeModuleType, SETTINGS_NAMESPACE} from "../module-support.mjs";
 
 const PRECALCULATED_SPELLCASTING_KEY = "sw5e-preCalculatedSpellcastingClasses";
 const MANEUVER_TYPE = getModuleType("maneuver");
@@ -74,6 +74,7 @@ function prepareSuperiority() {
 		const isNPC = _this.type === "npc";
 		const sourceSuperiority = _this._source?.system?.superiority ?? {};
 		const superiorityFlags = _this.flags?.sw5e?.superiority ?? {};
+		const sourceTypes = sourceSuperiority.types ?? {};
 
 		// Prepare base progression data
 		const charProgression = ["superiority"].reduce((obj, superType) => {
@@ -148,26 +149,27 @@ function prepareSuperiority() {
 			const sourceKnown = sourceSuperiority.known ?? {};
 			const sourceDice = sourceSuperiority.dice ?? {};
 			const preparedDice = target.dice ?? {};
+			const baseDiceMax = obj.diceCount;
 			const activeEffectAdjustedMax = sourceDice.max == null ? Number(preparedDice.max) : NaN;
 			const effectiveKnownMax = sourceKnown.max ?? obj.maneuversKnownMax;
-			let effectiveDiceMax = sourceDice.max ?? obj.diceCount;
+			let effectiveDiceMax = sourceDice.max ?? baseDiceMax;
 			const effectiveDie = sourceSuperiority.die ?? obj.diceSize;
 			const effectiveLevel = sourceSuperiority.level ?? obj.casterLevel;
+			const bonuses = preparedDice.bonuses ?? sourceDice.bonuses ?? {};
+			const levelBonus = simplifyBonus(bonuses.level ?? 0, rollData) * effectiveLevel;
+			const overallBonus = simplifyBonus(bonuses.overall ?? 0, rollData);
+			let calculatedDiceMax = Math.max(0, baseDiceMax + levelBonus + overallBonus);
 			const sourceCurrentValue = Number.isFinite(Number(sourceDice.value)) ? Number(sourceDice.value) : null;
 			const previousMax = Number.isFinite(Number(superiorityFlags.diceMax)) ? Number(superiorityFlags.diceMax) : null;
 			const missingProgressData = [sourceDice.max, sourceSuperiority.die, sourceSuperiority.level].every(value => value == null);
 			let effectiveCurrentValue = sourceCurrentValue;
 
 			if ( sourceDice.max == null && effectiveDiceMax > 0 ) {
-				const bonuses = preparedDice.bonuses ?? sourceDice.bonuses ?? {};
-				const levelBonus = simplifyBonus(bonuses.level ?? 0, rollData) * effectiveLevel;
-				const overallBonus = simplifyBonus(bonuses.overall ?? 0, rollData);
-				const formulaMax = Math.max(0, effectiveDiceMax + levelBonus + overallBonus);
 				if ( Number.isFinite(activeEffectAdjustedMax) && activeEffectAdjustedMax !== obj.diceCount ) {
 					const aeDelta = activeEffectAdjustedMax - obj.diceCount;
-					effectiveDiceMax = Math.max(0, formulaMax + aeDelta);
+					effectiveDiceMax = Math.max(0, calculatedDiceMax + aeDelta);
 				} else {
-					effectiveDiceMax = formulaMax;
+					effectiveDiceMax = calculatedDiceMax;
 				}
 			}
 
@@ -194,6 +196,13 @@ function prepareSuperiority() {
 			if ( previousMax !== effectiveDiceMax ) updateData["flags.sw5e.superiority.diceMax"] = effectiveDiceMax;
 			if ( sourceCurrentValue !== effectiveCurrentValue ) updateData["system.superiority.dice.value"] = effectiveCurrentValue;
 			queueSuperioritySync(_this, updateData);
+
+			_this._sw5eSuperiorityRuntime = {
+				calculatedMax: calculatedDiceMax,
+				calculatedDie: obj.diceSize,
+				effectiveMax: effectiveDiceMax,
+				effectiveDie
+			};
 		}
 
 		const { attributes, superiority } = _this.system;
@@ -212,9 +221,16 @@ function prepareSuperiority() {
 		for (const [type, typeConfig] of Object.entries(superConfig.types)) {
 			const typeData = superiority.types[type];
 			const bonus = simplifyBonus(_this.system.bonuses?.superiority?.dc?.[type], rollData) + bonusAll;
+			const sourceType = sourceTypes?.[type] ?? {};
 			const best = getBestAbility(_this, typeConfig.attr, 0);
-			typeData.attr = best.id;
-			typeData.dc = base + best.mod + bonus;
+			const overrideAttr = sourceType.attr;
+			const resolvedAttr = (overrideAttr && _this.system.abilities?.[overrideAttr]) ? overrideAttr : best.id;
+			const resolvedMod = Number.isFinite(Number(_this.system.abilities?.[resolvedAttr]?.mod))
+				? Number(_this.system.abilities[resolvedAttr].mod)
+				: best.mod;
+			const overrideDc = Number.isFinite(Number(sourceType.dc)) ? Number(sourceType.dc) : null;
+			typeData.attr = resolvedAttr;
+			typeData.dc = overrideDc ?? (base + resolvedMod + bonus);
 		}
 	});
 }
@@ -315,8 +331,9 @@ function patchPowerbooks() {
 		// Register a maneuver section using the modern dnd5e spellbook shape.
 		const registerSection = (key, order, label, dataset) => {
 			if ( key in spellbook ) return spellbook[key];
+			const fallbackLabel = capitalize(dataset?.["type.value"] ?? key);
 			const section = spellbook[key] = {
-				label: game.i18n.localize(label),
+				label: localizeOrFallback(label, fallbackLabel),
 				columns,
 				order,
 				usesSlots: false,

@@ -1072,6 +1072,7 @@ export function getStarshipPowerRecoverySummary(actor) {
 }
 
 export function shouldMirrorStarshipLegacyAttributePath(systemPath) {
+	if ( systemPath === "system.details.tier" ) return true;
 	if ( systemPath === "system.attributes.power.routing" || systemPath === "system.attributes.power.die" ) return true;
 	if ( systemPath === "system.attributes.death.success" || systemPath === "system.attributes.death.failure" ) return true;
 	if ( systemPath === "system.attributes.systemDamage" ) return true;
@@ -1083,7 +1084,9 @@ export function shouldMirrorStarshipLegacyAttributePath(systemPath) {
 
 export function buildStarshipLegacyAttributeMirrorUpdate(systemPath, value) {
 	const update = { [systemPath]: value };
-	if ( systemPath === "system.attributes.power.routing" ) {
+	if ( systemPath === "system.details.tier" ) {
+		update["flags.sw5e.legacyStarshipActor.system.details.tier"] = value;
+	} else if ( systemPath === "system.attributes.power.routing" ) {
 		update[`${STARSHIP_LEGACY_ATTRIBUTE_FLAG_BASE}.power.routing`] = value;
 	} else if ( systemPath === "system.attributes.power.die" ) {
 		update[`${STARSHIP_LEGACY_ATTRIBUTE_FLAG_BASE}.power.die`] = value;

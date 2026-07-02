@@ -1,11 +1,15 @@
 import { getBestAbility } from "./../utils.mjs";
 import {
+  getModuleId,
   getModulePath,
   isModuleType,
+  localizeOrFallback,
   SETTINGS_NAMESPACE,
 } from "../module-support.mjs";
 import { openPowerPointConfig } from "../power-point-config.mjs";
 import { openPowerCastingAbilityConfig } from "../power-casting-ability-config.mjs";
+import { openSuperiorityAbilityConfig } from "../superiority-ability-config.mjs";
+import { openSuperiorityPointConfig } from "../superiority-point-config.mjs";
 import {
 	getBestPointsAbilityForCastType,
 	getEffectivePowercastingAbility,
@@ -17,6 +21,14 @@ const PRECALCULATED_SPELLCASTING_KEY = "sw5e-preCalculatedSpellcastingClasses";
 
 function getHtmlRoot(html) {
 	return html instanceof HTMLElement ? html : html?.[0] ?? html;
+}
+
+function registerWrapper(target, callback) {
+	try {
+		libWrapper.register(getModuleId(), target, callback, "WRAPPER");
+	} catch (err) {
+		console.warn(`SW5E | Failed to register powercasting wrapper for '${target}'.`, err);
+	}
 }
 
 /**
@@ -36,6 +48,17 @@ function formatSuperiorityPool(superiority) {
 	const die = Number.isFinite(Number(superiority?.die)) ? Number(superiority.die) : 0;
 	if ( !max || !die ) return null;
 	return `${current}/${max}d${die}`;
+}
+
+function patchPowersTabLabel() {
+	registerWrapper("dnd5e.applications.actor.BaseActorSheet.prototype._prepareTabsContext", async function (wrapped, context, options) {
+		context = await wrapped(context, options);
+		if ( Array.isArray(context?.tabs) ) {
+			const spellsTab = context.tabs.find(tab => tab?.tab === "spells");
+			if ( spellsTab ) spellsTab.label = localizeOrFallback("TYPES.Item.spellPl", "Powers");
+		}
+		return context;
+	});
 }
 
 function getPreparedPowercastingCards(actor) {
@@ -662,6 +685,7 @@ const FORCE_SUMMARY_SCHOOL_LABEL_KEYS = [
 	"SW5E.Powercasting.Force.School.Drk.Label",
 	"SW5E.Powercasting.Force.School.Uni.Label"
 ];
+const FORCE_SUMMARY_SCHOOL_FALLBACKS = ["Light", "Dark", "Universal"];
 
 /** Theme keys for force summary segments (order matches `preparedCards.force`). */
 const FORCE_SUMMARY_SEGMENT_THEME = ["lgt", "drk", "uni"];
@@ -671,6 +695,7 @@ const SUPERIORITY_SUMMARY_TYPE_LABEL_KEYS = [
 	"SW5E.Superiority.Type.Physical.Label",
 	"SW5E.Superiority.Type.General.Label"
 ];
+const SUPERIORITY_SUMMARY_TYPE_FALLBACKS = ["Mental", "Physical", "General"];
 
 const SUPERIORITY_SUMMARY_SEGMENT_THEME = ["mental", "physical", "general"];
 
@@ -693,8 +718,8 @@ function formatPowersTabBannerSegment(label, attr, attack, saveDc, themeKey) {
 	const atk = attack ?? "—";
 	const sv = (saveDc != null && Number.isFinite(Number(saveDc))) ? String(saveDc) : "—";
 	const L = foundry.utils.escapeHTML(label);
-	const atkLbl = game.i18n.localize("SW5E.Powercasting.PowersTabSummary.AtkAbbr");
-	const saveLbl = game.i18n.localize("SW5E.Powercasting.PowersTabSummary.SaveAbbr");
+	const atkLbl = localizeOrFallback("SW5E.Powercasting.PowersTabSummary.AtkAbbr", "Atk");
+	const saveLbl = localizeOrFallback("SW5E.Powercasting.PowersTabSummary.SaveAbbr", "Save");
 	const themeMod = (themeKey && POWERS_BANNER_SEGMENT_THEMES.has(themeKey))
 		? ` sw5e-powers-banner-seg--${themeKey}`
 		: "";
@@ -716,8 +741,9 @@ function joinPowersBannerSegments(segments) {
  */
 function buildPowersKnownSummaryRow(actor, castType, labelKey) {
 	const known = actor.system?.powercasting?.[castType]?.known;
-	const hint = game.i18n.localize("SW5E.Powercasting.PowersTabSummary.KnownHint");
-	const label = game.i18n.localize(labelKey);
+	const hint = localizeOrFallback("SW5E.Powercasting.PowersTabSummary.KnownHint", "Powers known");
+	const labelFallback = castType === "tech" ? "Tech powers known" : "Force powers known";
+	const label = localizeOrFallback(labelKey, labelFallback);
 	if ( !known ) {
 		return `<div class="sw5e-powers-known-badge" title="${foundry.utils.escapeHTML(hint)}">`
 			+ `<span class="sw5e-powers-known-label">${foundry.utils.escapeHTML(label)}</span>`
@@ -789,14 +815,17 @@ function injectPowersTabPowercastingSummary(root, actor, { isEditable = false } 
 	const blocks = [];
 
 	if ( hasForcecasting ) {
-		const title = game.i18n.localize("SW5E.Powercasting.Force.Label");
+		const title = localizeOrFallback("SW5E.Powercasting.Force.Label", "Forcecasting");
 		const forceKnown = buildPowersKnownSummaryRow(actor, "force", "SW5E.Powercasting.PowersTabSummary.PowersKnownForce");
-		const configureLabel = game.i18n.localize("SW5E.Powercasting.AbilityConfig.Title");
+		const configureLabel = localizeOrFallback("SW5E.Powercasting.AbilityConfig.Title", "Configure Powercasting");
 		const configCog = isEditable
 			? `<button type="button" class="sw5e-powercasting-ability-config unbutton control-button" data-action="configure-powercasting-abilities" data-tooltip title="${foundry.utils.escapeHTML(configureLabel)}" aria-label="${foundry.utils.escapeHTML(configureLabel)}"><i class="fas fa-cog" inert></i></button>`
 			: "";
 		const segs = preparedCards.force.map((card, i) => {
-			const lab = game.i18n.localize(FORCE_SUMMARY_SCHOOL_LABEL_KEYS[i] ?? FORCE_SUMMARY_SCHOOL_LABEL_KEYS[0]);
+			const lab = localizeOrFallback(
+				FORCE_SUMMARY_SCHOOL_LABEL_KEYS[i] ?? FORCE_SUMMARY_SCHOOL_LABEL_KEYS[0],
+				FORCE_SUMMARY_SCHOOL_FALLBACKS[i] ?? FORCE_SUMMARY_SCHOOL_FALLBACKS[0]
+			);
 			const theme = FORCE_SUMMARY_SEGMENT_THEME[i] ?? FORCE_SUMMARY_SEGMENT_THEME[0];
 			return formatPowersTabBannerSegment(lab, card.attr, card.attack, card.save, theme);
 		});
@@ -810,8 +839,8 @@ function injectPowersTabPowercastingSummary(root, actor, { isEditable = false } 
 
 	if ( hasTechcasting ) {
 		const t = preparedCards.tech;
-		const title = game.i18n.localize("SW5E.Powercasting.Tech.Label");
-		const school = game.i18n.localize("SW5E.Powercasting.Tech.School.Tec.Label");
+		const title = localizeOrFallback("SW5E.Powercasting.Tech.Label", "Techcasting");
+		const school = localizeOrFallback("SW5E.Powercasting.Tech.School.Tec.Label", "Technology");
 		const seg = formatPowersTabBannerSegment(school, t.attr, t.attack, t.save, "tec");
 		const techKnown = buildPowersKnownSummaryRow(actor, "tech", "SW5E.Powercasting.PowersTabSummary.PowersKnownTech");
 		blocks.push(`<div class="sw5e-powers-banner-block" data-sw5e-summary="tech">`
@@ -824,16 +853,23 @@ function injectPowersTabPowercastingSummary(root, actor, { isEditable = false } 
 
 	if ( hasSuperiority ) {
 		const dice = preparedCards.superiority[0]?.resource;
-		const kicker = foundry.utils.escapeHTML(game.i18n.localize("SW5E.Superiority.Label"))
+		const configureLabel = localizeOrFallback("SW5E.Superiority.Config.Ability.Title", "Configure Superiority");
+		const configCog = isEditable
+			? `<button type="button" class="sw5e-powercasting-ability-config unbutton control-button" data-action="configure-superiority-abilities" data-tooltip title="${foundry.utils.escapeHTML(configureLabel)}" aria-label="${foundry.utils.escapeHTML(configureLabel)}"><i class="fas fa-cog" inert></i></button>`
+			: "";
+		const kicker = foundry.utils.escapeHTML(localizeOrFallback("SW5E.Superiority.Label", "Superiority"))
 			+ (dice ? ` · ${foundry.utils.escapeHTML(dice)}` : "");
 		const segs = preparedCards.superiority.map((card, i) => {
-			const lab = game.i18n.localize(SUPERIORITY_SUMMARY_TYPE_LABEL_KEYS[i] ?? SUPERIORITY_SUMMARY_TYPE_LABEL_KEYS[0]);
+			const lab = localizeOrFallback(
+				SUPERIORITY_SUMMARY_TYPE_LABEL_KEYS[i] ?? SUPERIORITY_SUMMARY_TYPE_LABEL_KEYS[0],
+				SUPERIORITY_SUMMARY_TYPE_FALLBACKS[i] ?? SUPERIORITY_SUMMARY_TYPE_FALLBACKS[0]
+			);
 			const theme = SUPERIORITY_SUMMARY_SEGMENT_THEME[i] ?? SUPERIORITY_SUMMARY_SEGMENT_THEME[0];
 			return formatPowersTabBannerSegment(lab, card.attr, card.attack, card.save, theme);
 		});
 		blocks.push(`<div class="sw5e-powers-banner-block" data-sw5e-summary="superiority">`
 			+ `<div class="sw5e-powers-banner-head sw5e-powers-banner-head--single">`
-			+ `<div class="sw5e-powers-banner-head-left"><div class="sw5e-powers-banner-kicker">${kicker}</div></div>`
+			+ `<div class="sw5e-powers-banner-head-left"><div class="sw5e-powers-banner-kicker">${kicker}${configCog}</div></div>`
 			+ `</div>`
 			+ `<div class="sw5e-powers-banner-flow">${joinPowersBannerSegments(segs)}</div></div>`);
 	}
@@ -845,6 +881,11 @@ function injectPowersTabPowercastingSummary(root, actor, { isEditable = false } 
 		event.preventDefault();
 		event.stopPropagation();
 		openPowerCastingAbilityConfig(actor);
+	});
+	wrap.querySelector('[data-action="configure-superiority-abilities"]')?.addEventListener("click", event => {
+		event.preventDefault();
+		event.stopPropagation();
+		openSuperiorityAbilityConfig(actor);
 	});
 	powercastingCardsSection.prepend(wrap);
 }
@@ -1196,7 +1237,7 @@ function showPowercastingBar() {
 		const mountContainer = mountPoint.container;
 		if ( !mountContainer ) return;
 		let insertReference = mountPoint.reference;
-		const isEditable = typeof app.isEditable === "boolean" ? app.isEditable : false;
+		const isEditable = isActorSheetEditMode(app);
 		for (const castType of ["force", "tech"]) {
 			const castData = powerCasting[castType];
 			const value = Number.isFinite(Number(castData?.points?.value)) ? Number(castData.points.value) : 0;
@@ -1209,8 +1250,8 @@ function showPowercastingBar() {
 			if ( shouldRenderMeter ) {
 				const templateData = {
 					'castType': castType,
-					'pointsLabel': game.i18n.localize(`SW5E.Powercasting.${castType.capitalize()}.Point.Label`),
-					'configureLabel': `${game.i18n.localize(`SW5E.Powercasting.${castType.capitalize()}.Point.Label`)} Configuration`,
+					'pointsLabel': localizeOrFallback(`SW5E.Powercasting.${castType.capitalize()}.Point.Label`, castType === "force" ? "Force Points" : "Tech Points"),
+					'configureLabel': `${localizeOrFallback(`SW5E.Powercasting.${castType.capitalize()}.Point.Label`, castType === "force" ? "Force Points" : "Tech Points")} Configuration`,
 					'isEditable': isEditable,
 					'value': value,
 					'ariaMax': effectiveMax,
@@ -1257,7 +1298,8 @@ function showPowercastingBar() {
 			const maxSegment = dieSize > 0 ? `${diceMax}d${dieSize}` : String(diceMax);
 			const supTemplate = getModulePath("templates/superiority-sheet-tracker.hbs");
 			const supHtml = await foundry.applications.handlebars.renderTemplate(supTemplate, {
-				label: game.i18n.localize("SW5E.Superiority.Dice.Label"),
+				label: localizeOrFallback("SW5E.Superiority.Dice.Label", "Superiority Dice"),
+				configureLabel: localizeOrFallback("SW5E.Superiority.Config.Points.Title", "Superiority Dice Configuration"),
 				value: clampedDice,
 				maxSegment,
 				ariaMax: Math.max(1, diceMax),
@@ -1271,11 +1313,17 @@ function showPowercastingBar() {
 			if ( isEditable ) {
 				const progressClass = "superiority-dice-points";
 				const bar = supEl.querySelector(`.progress.${progressClass}`);
+				const configButton = supEl.querySelector('[data-action="configure-superiority-points"]');
 				const input = bar?.querySelector("input[name=\"system.superiority.dice.value\"]");
 				bar?.addEventListener("click", event => _toggleEditPoints(progressClass, event, true));
 				input?.addEventListener("blur", event => _toggleEditPoints(progressClass, event, false));
 				input?.addEventListener("focus", ev => ev.currentTarget.select());
 				input?.addEventListener("change", app._onChangeInputDelta.bind(app));
+				configButton?.addEventListener("click", event => {
+					event.preventDefault();
+					event.stopPropagation();
+					openSuperiorityPointConfig(data.actor);
+				});
 			}
 		}
 
@@ -1304,6 +1352,7 @@ function _toggleEditPoints(progressClass, event, edit) {
 export function patchPowercasting() {
 	adjustItemSpellcastingGetter();
 	normalizeDroppedPowerDefaults();
+	patchPowersTabLabel();
 	patchItemSheet();
 	patchPowerAbilityScore();
 	patchPowerbooks();

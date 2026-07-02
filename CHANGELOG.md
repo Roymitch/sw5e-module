@@ -1,5 +1,23 @@
 ## Changelog
 
+### [1.3.9] 2026-07-02
+
+### Added
+- **Superiority sheet controls:** character sheets now have edit-mode Superiority cogs on the Powers tab and the sidebar tracker, with dedicated dialogs for type ability overrides and Superiority Dice resource settings.
+
+### Changed
+- **Special Traits tab:** cleaned up SW5E-facing wording and localized the tab, section labels, and Original Class block without replacing the stock dnd5e sheet tab.
+
+### Fixed
+- **Localization loading:** resolved SW5E locale namespace collisions that prevented module translation keys from loading in Foundry, restoring SW5E `Powers` / `Powerbook` wording and eliminating raw `SW5E.*` labels on actor sheets and related UI.
+- **Character sheet labels:** restored localized SW5E wording for Special Traits, custom skills (`Lore`, `Piloting`, `Technology`), and SW5E weapon proficiencies on actor sheets.
+- **Theme regressions:** dark advancement dialogs are readable again, light-theme windows are less translucent, and advancement level lists have stronger contrast.
+- **Powers tab:** `powerCasting` items once again show the correct save DC in the roll column.
+- **Superiority data:** missing Fighter and Scholar superiority progression now backfills correctly, and the Scholar `Superiority Dice` feature again uses the scale-based die formula and resource path.
+- **Consumables / weapon normalization:** explosives again consume and destroy themselves correctly, burst/rapid blasters missing a base attack regain a normal attack activity for downstream integrations, and NPC/monster weapons no longer double-count flat ability-mod damage.
+- **Starship sidebar polish:** Initiative and Tier portrait badges now render with themed backgrounds in Light, Dark, and Underworld, and Tier is editable from the sidebar in Edit mode.
+- **Pause overlay:** restored safe SW5E custom pause rings, including Underworld Alloy, without resizing the root `#pause` container or crowding the chat/sidebar region.
+
 ### [1.3.8] 2026-06-24
 
 ### Added

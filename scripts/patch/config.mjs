@@ -164,6 +164,7 @@ export function patchConfig(config, strict = true) {
 		slw: "SW5E.WeaponSimpleLightweaponProficiency",
 		svb: "SW5E.WeaponSimpleVibroweaponProficiency"
 	}
+	preLocalize("weaponProficiencies");
 	if (strict) config.weaponProficienciesMap = {};
 	config.weaponProficienciesMap = {
 		...config.weaponProficienciesMap,
@@ -1924,11 +1925,17 @@ export function patchConfig(config, strict = true) {
 			shortRest: true
 		}
 	};
-	preLocalize("powercasting", { key: "label", sort: true });
-	preLocalize("powercasting.force.progression", { key: "label" });
-	preLocalize("powercasting.tech.progression", { key: "label" });
-	preLocalize("powercasting.force.schools", { key: "label", sort: true });
-	preLocalize("powercasting.tech.schools", { key: "label", sort: true });
+	// SW5E adds these config entries after dnd5e's one-time pre-localization pass, so
+	// re-run the same stock-facing paths plus the module-specific camelCase namespace.
+	preLocalize("spellcasting", { key: "label" });
+	preLocalize("spellcasting.preparationModes", { key: "label" });
+	preLocalize("powerCasting", { key: "label", sort: true });
+	preLocalize("powerCasting.force.focus", { key: "label" });
+	preLocalize("powerCasting.tech.focus", { key: "label" });
+	preLocalize("powerCasting.force.progression", { key: "label" });
+	preLocalize("powerCasting.tech.progression", { key: "label" });
+	preLocalize("powerCasting.force.schools", { key: "label", sort: true });
+	preLocalize("powerCasting.tech.schools", { key: "label", sort: true });
 
 	if (strict) config.spellSchools = {};
 	config.spellSchools = {
@@ -1936,6 +1943,7 @@ export function patchConfig(config, strict = true) {
 		...config.powerCasting.force.schools,
 		...config.powerCasting.tech.schools
 	};
+	preLocalize("spellSchools", { key: "label", sort: true });
 	// Superiority
 	config.superiority = {
 		label: "SW5E.Superiority.Label",
@@ -1979,6 +1987,7 @@ export function patchConfig(config, strict = true) {
 			}
 		}
 	};
+	preLocalize("superiority", { key: "label" });
 	preLocalize("superiority.progression", { key: "label" });
 	preLocalize("superiority.types", { key: "label" });
 	// Weapons
@@ -2359,6 +2368,7 @@ export function patchConfig(config, strict = true) {
 			placeholder: 1
 		}
 	};
+	preLocalize("characterFlags", { keys: ["name", "hint", "section"] });
 	// Source Books
 	if (strict) config.sourceBooks = {};
 	config.sourceBooks = {

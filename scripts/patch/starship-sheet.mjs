@@ -828,6 +828,7 @@ function customizeStarshipPortraitBadges(root, actor, app = null) {
 	const shell = getStarshipSidebarShell(root, app);
 	const portrait = shell?.querySelector(".portrait");
 	if ( !(portrait instanceof HTMLElement) ) return;
+	const tierEditable = app?.isEditable !== false && isStarshipSheetEditMode(app);
 
 	const initLabel = localizeOrFallback("DND5E.Initiative", "Initiative");
 	const initDisplay = formatStarshipInitiativeTotal(actor);
@@ -871,13 +872,43 @@ function customizeStarshipPortraitBadges(root, actor, app = null) {
 	let tierBadge = portrait.querySelector(".sw5e-starship-tier-badge");
 	if ( !(tierBadge instanceof HTMLElement) ) {
 		tierBadge = document.createElement("div");
-		tierBadge.className = "loyalty-badge badge sw5e-starship-tier-badge";
+		tierBadge.className = "loyalty-badge badge sw5e-starship-tier-badge sw5e-starship-system-path-scope";
 		portrait.append(tierBadge);
 	}
+	tierBadge.classList.add("sw5e-starship-system-path-scope");
 	tierBadge.hidden = false;
 	tierBadge.removeAttribute("aria-hidden");
-	tierBadge.textContent = String(tierValue);
 	tierBadge.dataset.tooltip = tierLabel;
+	tierBadge.classList.toggle("sw5e-starship-tier-badge--editable", tierEditable);
+	const tierDisplay = String(tierValue);
+	if ( tierEditable ) {
+		let input = tierBadge.querySelector("input[name=\"system.details.tier\"]");
+		if ( !(input instanceof HTMLInputElement) ) {
+			tierBadge.textContent = "";
+			input = document.createElement("input");
+			input.type = "number";
+			input.name = "system.details.tier";
+			input.className = "sw5e-starship-tier-badge-input";
+			input.min = "0";
+			input.step = "1";
+			input.inputMode = "numeric";
+			input.dataset.dtype = "Number";
+			input.setAttribute("aria-label", tierLabel);
+			input.title = tierLabel;
+			tierBadge.append(input);
+		}
+		input.value = tierDisplay;
+		input.disabled = false;
+	} else {
+		let value = tierBadge.querySelector(".sw5e-starship-tier-badge-value");
+		if ( !(value instanceof HTMLElement) ) {
+			tierBadge.textContent = "";
+			value = document.createElement("span");
+			value.className = "sw5e-starship-tier-badge-value";
+			tierBadge.append(value);
+		}
+		value.textContent = tierDisplay;
+	}
 	tierBadge.setAttribute("aria-label", `${tierLabel}: ${tierValue}`);
 }
 
@@ -1414,6 +1445,7 @@ function ensureStarshipVitalsDelegate(root, app) {
 
 /** SoTG Systems subtab: `name=` controls sit inside the vehicle sheet form; persist on `change` via trusted update (see delegate). */
 const STARSHIP_SYSTEMS_CORE_DIRECT_PATHS = new Set([
+	"system.details.tier",
 	"system.attributes.power.routing",
 	"system.attributes.power.die",
 	"system.attributes.fuel.value",
@@ -1430,6 +1462,17 @@ const STARSHIP_SYSTEMS_CORE_DIRECT_PATHS = new Set([
 /** @returns {Promise<void>} */
 async function persistStarshipFuelPowerSystemPath(act, systemPath, value) {
 	await persistStarshipLegacyAttributePath(act, systemPath, value);
+}
+
+function coerceStarshipTier(actor, raw) {
+	const legacySystem = getLegacyStarshipActorSystem(actor);
+	const prev = Number(actor?.system?.details?.tier ?? legacySystem.details?.tier);
+	const fallback = Number.isFinite(prev) ? Math.max(0, Math.trunc(prev)) : 0;
+	const trimmed = String(raw ?? "").trim();
+	if ( trimmed === "" ) return fallback;
+	const n = Number(trimmed);
+	if ( !Number.isFinite(n) ) return fallback;
+	return Math.max(0, Math.trunc(n));
 }
 
 function coerceSidebarFuelValue(actor, raw) {
@@ -1503,7 +1546,9 @@ function ensureStarshipTrustedSystemPathDelegate(root, app) {
 		if ( inSystemPathScope && el.name && STARSHIP_SYSTEMS_CORE_DIRECT_PATHS.has(el.name) ) {
 			const path = el.name;
 			let value;
-			if ( path === "system.attributes.power.routing" ) {
+			if ( path === "system.details.tier" ) {
+				value = coerceStarshipTier(act, el.value);
+			} else if ( path === "system.attributes.power.routing" ) {
 				if ( !STARSHIP_ROUTING_KEYS_VISIBLE.includes(el.value) ) return;
 				value = el.value;
 			} else if ( path === "system.attributes.fuel.value" ) {

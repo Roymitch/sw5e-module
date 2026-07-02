@@ -1,4 +1,4 @@
-import { getModulePath } from "./module-support.mjs";
+import { getModulePath, localizeOrFallback } from "./module-support.mjs";
 import { applySw5eThemeScope } from "./theme.mjs";
 import {
 	getPowercastingAbilityOptionIds,
@@ -14,15 +14,20 @@ const FORCE_SCHOOL_LABEL_KEYS = {
 	drk: "SW5E.Powercasting.Force.School.Drk.Label",
 	uni: "SW5E.Powercasting.Force.School.Uni.Label"
 };
+const FORCE_SCHOOL_LABEL_FALLBACKS = {
+	lgt: "Light",
+	drk: "Dark",
+	uni: "Universal Force Ability"
+};
 
 function labelAbility(id) {
-	if ( !id ) return game.i18n.localize("SW5E.Powercasting.AbilityConfig.UseDefault");
+	if ( !id ) return localizeOrFallback("SW5E.Powercasting.AbilityConfig.UseDefault", "Use Default");
 	const cfg = CONFIG.DND5E.abilities[id];
 	return cfg?.label ? game.i18n.localize(cfg.label) : id.toUpperCase();
 }
 
 function buildAbilityOptions(selected) {
-	const options = [{ value: "", label: game.i18n.localize("SW5E.Powercasting.AbilityConfig.UseDefault"), selected: !selected }];
+	const options = [{ value: "", label: localizeOrFallback("SW5E.Powercasting.AbilityConfig.UseDefault", "Use Default"), selected: !selected }];
 	for ( const id of getPowercastingAbilityOptionIds() ) {
 		options.push({ value: id, label: labelAbility(id), selected: selected === id });
 	}
@@ -57,7 +62,7 @@ export class PowerCastingAbilityConfigApp extends HandlebarsApplicationMixin(App
 	};
 
 	get title() {
-		return game.i18n.localize("SW5E.Powercasting.AbilityConfig.Title");
+		return localizeOrFallback("SW5E.Powercasting.AbilityConfig.Title", "Configure Powercasting");
 	}
 
 	async _prepareContext() {
@@ -68,30 +73,33 @@ export class PowerCastingAbilityConfigApp extends HandlebarsApplicationMixin(App
 
 		const schoolRows = FORCE_SCHOOLS.map(school => ({
 			school,
-			schoolLabel: game.i18n.localize(FORCE_SCHOOL_LABEL_KEYS[school]),
+			schoolLabel: localizeOrFallback(FORCE_SCHOOL_LABEL_KEYS[school], FORCE_SCHOOL_LABEL_FALLBACKS[school] ?? school),
 			abilityOptions: buildAbilityOptions(sourceForce?.[school]?.attr ?? ""),
 			pointsOptions: buildAbilityOptions(overrides?.force?.[school]?.pointsAbility ?? "")
 		}));
 
 		const uniModeOptions = UNI_MODES.map(mode => ({
 			value: mode,
-			label: game.i18n.localize(`SW5E.Powercasting.AbilityConfig.UniMode.${mode}`),
+			label: localizeOrFallback(
+				`SW5E.Powercasting.AbilityConfig.UniMode.${mode}`,
+				mode === "fixed" ? "Fixed Universal Ability" : "Highest Effective Light/Dark"
+			),
 			selected: uniMode === mode
 		}));
 
 		return {
-			forceLabel: game.i18n.localize("SW5E.Powercasting.Force.Label"),
+			forceLabel: localizeOrFallback("SW5E.Powercasting.Force.Label", "Forcecasting"),
 			primarySchoolRows: schoolRows.filter(row => row.school !== "uni"),
 			uniFixedOptions: buildAbilityOptions(sourceForce?.uni?.attr ?? ""),
 			uniModeOptions,
 			uniMode,
 			showUniFixed: uniMode === "fixed",
-			resetLabel: game.i18n.localize("SW5E.Powercasting.AbilityConfig.Reset"),
-			saveLabel: game.i18n.localize("SW5E.Powercasting.AbilityConfig.Save"),
-			abilityColumnLabel: game.i18n.localize("SW5E.Powercasting.AbilityConfig.CastingAbility"),
-			pointsColumnLabel: game.i18n.localize("SW5E.Powercasting.AbilityConfig.PointsAbility"),
-			uniModeLabel: game.i18n.localize("SW5E.Powercasting.AbilityConfig.UniMode.Label"),
-			uniFixedLabel: game.i18n.localize("SW5E.Powercasting.AbilityConfig.UniFixedAbility")
+			resetLabel: localizeOrFallback("SW5E.Powercasting.AbilityConfig.Reset", "Reset to Defaults"),
+			saveLabel: localizeOrFallback("SW5E.Powercasting.AbilityConfig.Save", "Save Changes"),
+			abilityColumnLabel: localizeOrFallback("SW5E.Powercasting.AbilityConfig.CastingAbility", "Casting Ability"),
+			pointsColumnLabel: localizeOrFallback("SW5E.Powercasting.AbilityConfig.PointsAbility", "Max Force Points Ability"),
+			uniModeLabel: localizeOrFallback("SW5E.Powercasting.AbilityConfig.UniMode.Label", "Universal Force Ability"),
+			uniFixedLabel: localizeOrFallback("SW5E.Powercasting.AbilityConfig.UniFixedAbility", "Universal Force Ability")
 		};
 	}
 

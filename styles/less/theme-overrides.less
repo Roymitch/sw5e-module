@@ -546,28 +546,6 @@ body[data-sw5e-theme="sw5e-dark"] #interface.themed #players #players-expand:is(
     0 0 10px color-mix(in srgb, var(--sw5e-secondary-button) 22%, transparent) !important;
 }
 
-body[data-sw5e-theme="sw5e-light"] #pause {
-  color: var(--sw5e-foundry-text-muted) !important;
-}
-
-body[data-sw5e-theme="sw5e-light"] #pause figcaption {
-  color: var(--sw5e-theme-heading) !important;
-  text-shadow:
-    0 1px 2px rgba(255, 255, 255, 0.85),
-    0 0 12px color-mix(in srgb, var(--sw5e-line-color) 30%, transparent) !important;
-}
-
-body[data-sw5e-theme="sw5e-dark"] #pause {
-  color: var(--sw5e-foundry-text-muted) !important;
-}
-
-body[data-sw5e-theme="sw5e-dark"] #pause figcaption {
-  color: var(--sw5e-theme-heading) !important;
-  text-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.75),
-    0 0 14px color-mix(in srgb, var(--sw5e-line-color) 28%, transparent) !important;
-}
-
 /* Foundry core UI — mirror variables onto application/window shells (Phase F1c) */
 body[data-sw5e-theme="sw5e-light"] :is(.application, .window-app),
 body[data-sw5e-theme="sw5e-dark"] :is(.application, .window-app) {
@@ -3998,6 +3976,139 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.advancement.trait.tra
   background: var(--sw5e-light-hover-tint) !important;
 }
 
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet {
+  --radio-list-hover: rgba(32, 161, 208, 0.14);
+  background: linear-gradient(180deg, rgba(30, 34, 38, 0.98), rgba(15, 18, 22, 0.97)) !important;
+  background-image: linear-gradient(180deg, rgba(30, 34, 38, 0.98), rgba(15, 18, 22, 0.97)) !important;
+  border-color: color-mix(in srgb, var(--sw5e-line-color) 42%, transparent) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .window-header {
+  border-bottom-color: color-mix(in srgb, var(--sw5e-line-color) 34%, transparent) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .window-content {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(.card, fieldset.card, .drop-area) {
+  background: rgba(18, 22, 28, 0.78) !important;
+  border-color: var(--sw5e-dark-muted-control-border) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(.card .header, .card.table .header, fieldset.card > .header) {
+  background: linear-gradient(180deg, rgba(54, 54, 54, 0.94) 0%, rgba(22, 22, 22, 0.98) 100%) !important;
+  color: var(--sw5e-theme-muted-text) !important;
+  border: 1px solid var(--sw5e-dark-muted-control-border) !important;
+  border-left: 3px solid var(--sw5e-theme-heading) !important;
+  border-radius: 3px 3px 0 0 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 0 0 1px rgba(6, 15, 22, 0.28) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(.card .header, .card.table .header, fieldset.card > .header) > * {
+  color: var(--sw5e-theme-muted-text) !important;
+  font-family: var(--sw5e-font-body) !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.72) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet fieldset.card > legend {
+  color: var(--sw5e-theme-heading) !important;
+  background: linear-gradient(180deg, rgba(24, 24, 24, 0.92) 0%, rgba(18, 22, 28, 0.88) 100%) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet fieldset.card > legend::before {
+  box-shadow: none !important;
+  outline: none !important;
+  border: 1px solid var(--sw5e-dark-muted-control-border) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .card.table.items .items-list > li:nth-child(odd) {
+  background: rgba(24, 24, 24, 0.64) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .card.table.items .items-list > li:nth-child(even) {
+  background: rgba(31, 37, 42, 0.58) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .card.table.items .items-list > li {
+  border-bottom: 1px solid color-mix(in srgb, var(--sw5e-dark-muted-control-border) 66%, transparent) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .drop-area {
+  color: var(--sw5e-theme-muted-text) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .hint.warning {
+  color: var(--sw5e-theme-heading) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .form-group > label,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .form-group.stacked > label {
+  color: var(--sw5e-theme-text) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(input, select, textarea) {
+  background: rgba(18, 22, 28, 0.88) !important;
+  border: 1px solid var(--sw5e-dark-muted-control-border) !important;
+  color: var(--sw5e-theme-text) !important;
+  color-scheme: dark;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(input, select, textarea):is(:hover, :focus, :focus-visible) {
+  border-color: var(--sw5e-line-color) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--sw5e-line-color) 24%, transparent) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(input[type="checkbox"], input[type="radio"]) {
+  accent-color: var(--sw5e-line-color);
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.ability-score-improvement .ability-scores li > label:first-child {
+  color: var(--sw5e-theme-heading) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.ability-score-improvement .ability-scores li > button.control-button:is(.plus, .minus) {
+  background: rgba(24, 24, 24, 0.72) !important;
+  color: var(--sw5e-secondary-button) !important;
+  border: 1px solid rgba(32, 161, 208, 0.35) !important;
+  border-radius: 4px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  filter: none !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.ability-score-improvement .ability-scores li > button.control-button:is(.plus, .minus):is(:hover, :focus, :focus-visible) {
+  background: rgba(32, 161, 208, 0.14) !important;
+  color: var(--sw5e-line-color) !important;
+  border-color: rgba(32, 161, 208, 0.55) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(nav.dialog-buttons, footer.form-footer) > :is(button, [type="submit"]) {
+  background: rgba(24, 24, 24, 0.72) !important;
+  background-image: none !important;
+  border: 1px solid var(--sw5e-dark-muted-control-border) !important;
+  border-radius: var(--sw5e-starship-radius-sm, 6px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  color: var(--sw5e-theme-text) !important;
+  filter: none !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(nav.dialog-buttons, footer.form-footer) > :is(button, [type="submit"]):is(:hover, :focus-visible) {
+  background: rgba(32, 161, 208, 0.14) !important;
+  background-image: none !important;
+  border-color: var(--sw5e-line-color) !important;
+  color: var(--sw5e-theme-text) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(nav.dialog-buttons, footer.form-footer) > :is(button, [type="submit"])[autofocus],
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet button.dialog-button.default {
+  background: var(--sw5e-theme-primary-button) !important;
+  border-color: color-mix(in srgb, var(--sw5e-theme-primary-button) 72%, black) !important;
+  color: var(--sw5e-theme-button-text) !important;
+}
+
 /* SW5E Light — item/config app file-picker browse buttons (Custom Icon, etc.) */
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2:is(.advancement.sheet, .config-sheet, .sheet.item) :is(file-picker, document-tags) > button {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(236, 243, 248, 0.88) 100%) !important;
@@ -4263,6 +4374,58 @@ body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item
   font-size: 10px !important;
   font-weight: 700 !important;
   letter-spacing: 0.05em !important;
+}
+
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list > li {
+  margin-block: 0.4rem !important;
+  border: 1px solid color-mix(in srgb, var(--sw5e-light-muted-control-border) 72%, transparent) !important;
+  border-radius: var(--sw5e-starship-radius-sm, 6px);
+  background: color-mix(in srgb, var(--sw5e-theme-surface-strong) 74%, rgba(255, 255, 255, 0.88)) !important;
+  box-shadow: var(--sw5e-light-card-shadow-soft) !important;
+  overflow: hidden;
+}
+
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list > li > :not(:is(.items-header, .level-header, .choices-header, .replacement-header)) {
+  padding-inline: 0.55rem !important;
+}
+
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list .items-list > li {
+  min-height: 2.8rem;
+  border-bottom: 1px solid rgba(13, 153, 204, 0.14) !important;
+}
+
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list .items-list > li:last-child {
+  border-bottom: none !important;
+}
+
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list .items-list > li:is(:hover, :focus-within) {
+  background: rgba(13, 153, 204, 0.08) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list > li {
+  margin-block: 0.4rem !important;
+  border: 1px solid color-mix(in srgb, var(--sw5e-dark-muted-control-border) 82%, transparent) !important;
+  border-radius: var(--sw5e-starship-radius-sm, 6px);
+  background: rgba(18, 22, 28, 0.82) !important;
+  box-shadow: var(--sw5e-dark-chat-datapad-shadow) !important;
+  overflow: hidden;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list > li > :not(:is(.items-header, .level-header, .choices-header, .replacement-header)) {
+  padding-inline: 0.55rem !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list .items-list > li {
+  min-height: 2.8rem;
+  border-bottom: 1px solid rgba(32, 161, 208, 0.16) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list .items-list > li:last-child {
+  border-bottom: none !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list .items-list > li:is(:hover, :focus-within) {
+  background: rgba(32, 161, 208, 0.1) !important;
 }
 
 /* Starship sheet — S1 SotG shell (SW5E Light/Dark) */

@@ -32,7 +32,9 @@ system:
   crewed: false
   uses:
     max: ''
-    recovery: []
+    recovery:
+      - period: sr
+        type: recoverAll
     spent: 0
   type:
     value: class
@@ -58,7 +60,7 @@ system:
         units: ft
         override: false
       roll:
-        formula: 1d4
+        formula: '@scale.scholar.superiority-dice-size.die'
         prompt: false
         visible: false
       target:
@@ -76,7 +78,10 @@ system:
         scaling:
           allowed: false
         spellSlot: true
-        targets: []
+        targets:
+          - type: attribute
+            value: '1'
+            target: superiority.dice.value
       effects: []
       flags: {}
       uses:

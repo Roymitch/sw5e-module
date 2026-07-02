@@ -44,6 +44,7 @@ import { registerModuleSettings } from "./settings.mjs";
 import { patchVariantRules } from "./patch/variantRules.mjs";
 import { patchCharacterDeploymentSheet } from "./patch/character-deployment-sheet.mjs";
 import { patchCharacterSheetTabNavigation } from "./patch/character-sheet-tab-navigation.mjs";
+import { patchSpecialTraitsSheet } from "./patch/special-traits-sheet.mjs";
 import { getCharacterDeploymentSummary } from "./character-deployments.mjs";
 import { registerCharacterFeaturesDiagnostics } from "./dev/character-features-diagnostics.mjs";
 import { characterImporterApi, registerCharacterImporterHooks } from "./character-importer.mjs";
@@ -117,6 +118,7 @@ Hooks.once('init', async function() {
 	patchVariantRules();
 	patchCharacterDeploymentSheet();
 	patchCharacterSheetTabNavigation();
+	patchSpecialTraitsSheet();
 });
 
 Hooks.once('ready', async function() {

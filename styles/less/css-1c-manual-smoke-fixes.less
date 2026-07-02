@@ -397,6 +397,21 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.npc 
   filter: var(--sw5e-underworld-sidebar-ornament-shadow) !important;
 }
 
+@{ship-portrait-light} :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) {
+  background: var(--sw5e-light-sidebar-ornament-fill) !important;
+  box-shadow: inset 0 0 0 1px var(--sw5e-light-sidebar-ornament-inner-line) !important;
+}
+
+@{ship-portrait-dark} :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) {
+  background: var(--sw5e-dark-sidebar-ornament-fill) !important;
+  box-shadow: inset 0 0 0 1px var(--sw5e-dark-sidebar-ornament-inner-line) !important;
+}
+
+@{ship-portrait-underworld} :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) {
+  background: var(--sw5e-underworld-sidebar-ornament-fill) !important;
+  box-shadow: inset 0 0 0 1px var(--sw5e-underworld-sidebar-ornament-inner-line) !important;
+}
+
 @{ship-portrait-light} :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge)::before,
 @{ship-portrait-light} :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge)::after,
 @{ship-portrait-dark} :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge)::before,
@@ -462,10 +477,8 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.npc 
   padding: 0.1rem 0.3rem;
   margin: 0 !important;
   border-radius: 50%;
-  background: none !important;
   background-image: none !important;
   border: 0 !important;
-  box-shadow: none !important;
   isolation: isolate;
 }
 
@@ -486,4 +499,38 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.npc 
 @{ship-portrait-underworld} :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) > * {
   position: relative;
   z-index: 1;
+}
+
+@{ship-portrait-light} .sw5e-starship-tier-badge-input,
+@{ship-portrait-dark} .sw5e-starship-tier-badge-input,
+@{ship-portrait-underworld} .sw5e-starship-tier-badge-input {
+  width: 100%;
+  max-width: 2.4rem;
+  padding: 0;
+  margin: 0;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  font: inherit;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  appearance: textfield;
+}
+
+@{ship-portrait-light} .sw5e-starship-tier-badge-input:focus-visible,
+@{ship-portrait-dark} .sw5e-starship-tier-badge-input:focus-visible,
+@{ship-portrait-underworld} .sw5e-starship-tier-badge-input:focus-visible {
+  outline: none;
+}
+
+@{ship-portrait-light} .sw5e-starship-tier-badge-input::-webkit-outer-spin-button,
+@{ship-portrait-light} .sw5e-starship-tier-badge-input::-webkit-inner-spin-button,
+@{ship-portrait-dark} .sw5e-starship-tier-badge-input::-webkit-outer-spin-button,
+@{ship-portrait-dark} .sw5e-starship-tier-badge-input::-webkit-inner-spin-button,
+@{ship-portrait-underworld} .sw5e-starship-tier-badge-input::-webkit-outer-spin-button,
+@{ship-portrait-underworld} .sw5e-starship-tier-badge-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

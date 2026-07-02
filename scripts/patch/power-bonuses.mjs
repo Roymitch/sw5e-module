@@ -324,6 +324,45 @@ function patchPowerSaveDc() {
 	});
 }
 
+function patchPowerSheetSaveDisplay() {
+	registerWrapper("dnd5e.applications.actor.BaseActorSheet.prototype._prepareItem", function (wrapped, item, ctx) {
+		const result = wrapped(item, ctx);
+		if ( !isPowerCastingItem(item) ) return result;
+
+		const saveActivity = item.system.activities?.getByType?.("save")?.[0]
+			?? item.system.activities?.contents?.find?.(activity => activity?.type === "save");
+		if ( !saveActivity?.save ) return result;
+
+		const rawAbilities = saveActivity.save.ability;
+		const abilities = normalizeSaveAbilities(rawAbilities);
+		if ( !abilities.length ) return result;
+
+		const rollData = saveActivity.getRollData?.({ deterministic: true })
+			?? item.getRollData?.({ deterministic: true })
+			?? this.actor?.getRollData?.()
+			?? {};
+		const castType = getPowerCastType(item);
+		const preparedDc = getPreparedPowerDc(this.actor, item);
+		const saveTargetBonus = getPowerSaveTargetDcBonus(this.actor, castType, rawAbilities, rollData);
+		const computedDc = Number.isFinite(preparedDc) ? preparedDc + saveTargetBonus : Number(saveActivity.save?.dc?.value ?? ctx.save?.dc?.value);
+		const ability = abilities.length === 1
+			? CONFIG.DND5E.abilities[abilities[0]]?.abbreviation
+			: game.i18n.localize("DND5E.AbbreviationDC");
+
+		ctx.save = {
+			...(ctx.save ?? {}),
+			...saveActivity.save,
+			ability,
+			dc: {
+				...(ctx.save?.dc ?? {}),
+				...(saveActivity.save?.dc ?? {}),
+				value: Number.isFinite(computedDc) ? computedDc : null
+			}
+		};
+		return result;
+	});
+}
+
 /** @returns {readonly string[]} */
 export function getPowerBonusEffectKeys() {
 	const castingAbilityKeys = ABILITY_KEYS.flatMap(ab => [
@@ -361,4 +400,5 @@ export function getPowerBonusEffectKeys() {
 export function patchPowerBonuses() {
 	patchPowerAttackBonuses();
 	patchPowerSaveDc();
+	patchPowerSheetSaveDisplay();
 }

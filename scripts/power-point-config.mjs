@@ -1,4 +1,4 @@
-import { getModulePath } from "./module-support.mjs";
+import { getModulePath, localizeOrFallback } from "./module-support.mjs";
 import { applySw5eThemeScope } from "./theme.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -21,7 +21,11 @@ function parseNullableNumberInput(value) {
 }
 
 function formatPointsLabel(castType) {
-	return game.i18n.localize(`SW5E.Powercasting.${castType.capitalize()}.Point.Label`);
+	const fallbacks = {
+		force: "Force Points",
+		tech: "Tech Points"
+	};
+	return localizeOrFallback(`SW5E.Powercasting.${castType.capitalize()}.Point.Label`, fallbacks[castType] ?? "Power Points");
 }
 
 function getPowerPointRuntime(actor, castType) {

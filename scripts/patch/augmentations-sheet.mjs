@@ -9,6 +9,7 @@ import {
 	isActorValidAugmentationTarget,
 	normalizeActorAugmentations
 } from "../augmentations.mjs";
+import { localizeOrFallback } from "../module-support.mjs";
 
 function getHtmlRoot(html) {
 	return html instanceof HTMLElement ? html : html?.[0] ?? html;
@@ -47,16 +48,16 @@ function effectiveDiffersFromDerived(state) {
  */
 function buildInlineAugmentationsSection(actor, state, { editMode = false } = {}) {
 	const installedCount = getInstalledAugmentationCount(actor, state);
-	const title = foundry.utils.escapeHTML(game.i18n.localize("SW5E.Augmentations.InlineTitle"));
-	const emptyLabel = foundry.utils.escapeHTML(game.i18n.localize("SW5E.Augmentations.InlineAdd"));
+	const title = foundry.utils.escapeHTML(localizeOrFallback("SW5E.Augmentations.InlineTitle", "Cybernetic Augmentations"));
+	const emptyLabel = foundry.utils.escapeHTML(localizeOrFallback("SW5E.Augmentations.InlineAdd", "Add Cybernetic Augmentations"));
 	const notes = [];
 
 	if ( !isActorValidAugmentationTarget(actor) ) {
-		notes.push(`<p class="sw5e-bodymods-inline-note sw5e-bodymods-inline-note--warn">${foundry.utils.escapeHTML(game.i18n.localize("SW5E.Augmentations.InlineInvalidTargetHint"))}</p>`);
+		notes.push(`<p class="sw5e-bodymods-inline-note sw5e-bodymods-inline-note--warn">${foundry.utils.escapeHTML(localizeOrFallback("SW5E.Augmentations.InlineInvalidTargetHint", "Default rules target humanoids and beasts; use Manage to adjust or install with item-specific valid targets."))}</p>`);
 	}
 
 	if ( hasSideEffectOverrides(state) || effectiveDiffersFromDerived(state) ) {
-		notes.push(`<p class="sw5e-bodymods-inline-note sw5e-bodymods-inline-note--accent">${foundry.utils.escapeHTML(game.i18n.localize("SW5E.Augmentations.InlineOverridesHint"))}</p>`);
+		notes.push(`<p class="sw5e-bodymods-inline-note sw5e-bodymods-inline-note--accent">${foundry.utils.escapeHTML(localizeOrFallback("SW5E.Augmentations.InlineOverridesHint", "Effective values differ from RAW thresholds (GM overrides)."))}</p>`);
 	}
 
 	const hasInstalled = installedCount > 0;

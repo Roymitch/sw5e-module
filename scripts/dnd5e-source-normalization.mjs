@@ -103,6 +103,258 @@ function normalizePowerCastingDefaults(item) {
 	return changed
 }
 
+function hasProperty(properties, key) {
+	if ( Array.isArray(properties) ) return properties.includes(key)
+	if ( typeof properties?.has === "function" ) return properties.has(key)
+	if ( isObjectLike(properties) ) return Boolean(properties[key])
+	return false
+}
+
+function normalizeActivityDistanceUnits(units) {
+	return units === "feet" ? "ft" : units || "ft"
+}
+
+function hasItemUsePool(item) {
+	const uses = item?.system?.uses ?? {}
+	if ( uses.value !== undefined && uses.value !== null ) return true
+	if ( uses.max === 0 ) return true
+	if ( typeof uses.max === "string" ) return uses.max.trim() !== ""
+	return Number.isFinite(Number(uses.max))
+}
+
+function getWeaponAttackClassification(item) {
+	const actionType = item?.system?.actionType
+	if ( actionType === "mwak" ) return "melee"
+	if ( actionType === "rwak" ) return "ranged"
+	const typeValue = item?.system?.type?.value ?? ""
+	if ( typeof typeValue === "string" && /BL$/i.test(typeValue) ) return "ranged"
+	const rangeValue = Number(item?.system?.range?.value)
+	return Number.isFinite(rangeValue) && rangeValue > 0 ? "ranged" : "melee"
+}
+
+function normalizeMissingWeaponAttackActivity(item) {
+	if ( item?.type !== "weapon" ) return false
+	if ( !hasOwnKeys(item?.system?.activities) ) return false
+
+	const activities = Object.values(item.system.activities)
+	const hasAttack = activities.some(activity => activity?.type === "attack")
+	if ( hasAttack ) return false
+
+	const hasAltFireModes = hasProperty(item.system?.properties, "burst")
+		|| hasProperty(item.system?.properties, "rapid")
+		|| activities.some(activity => ["Burst Attack", "Rapid Attack"].includes(activity?.name))
+	if ( !hasAltFireModes ) return false
+
+	const classification = getWeaponAttackClassification(item)
+	const attackActivity = {
+		_id: "sw5e0attack00000",
+		activation: {
+			type: item.system.activation?.type || "action"
+		},
+		attack: {
+			ability: "",
+			bonus: "",
+			flat: false,
+			type: {
+				classification: "weapon",
+				value: classification
+			}
+		},
+		damage: {
+			critical: {},
+			parts: []
+		},
+		description: {},
+		duration: {
+			units: item.system.duration?.units || "inst"
+		},
+		img: null,
+		range: {
+			override: false,
+			units: normalizeActivityDistanceUnits(item.system.range?.units),
+			value: item.system.range?.value ?? ""
+		},
+		target: {
+			template: {
+				contiguous: false,
+				units: "ft",
+				type: ""
+			},
+			affects: {
+				choice: false,
+				type: ""
+			},
+			override: false,
+			prompt: false
+		},
+		type: "attack",
+		consumption: {
+			targets: hasItemUsePool(item)
+				? [{ type: "itemUses", target: "", value: "1" }]
+				: []
+		}
+	}
+
+	item.system.activities = {
+		[attackActivity._id]: attackActivity,
+		...item.system.activities
+	}
+	return true
+}
+
+function getAbilityModifier(actor, abilityId) {
+	const ability = actor?.system?.abilities?.[abilityId]
+	if ( !isObjectLike(ability) ) return null
+	const directMod = Number(ability.mod)
+	if ( Number.isFinite(directMod) ) return directMod
+	const score = Number(ability.value)
+	if ( !Number.isFinite(score) ) return null
+	return Math.floor((score - 10) / 2)
+}
+
+function normalizeExplosiveSelfConsumption(item) {
+	if ( item?.type !== "consumable" ) return false
+	if ( item?.system?.type?.value !== "explosive" ) return false
+
+	item.system ??= {}
+	item.system.uses ??= {}
+	let changed = false
+
+	if ( `${item.system.uses.max ?? ""}`.trim() === "" ) {
+		item.system.uses.max = "1"
+		changed = true
+	}
+
+	if ( item.system.uses.autoDestroy !== true ) {
+		item.system.uses.autoDestroy = true
+		changed = true
+	}
+
+	for ( const activity of Object.values(item.system.activities ?? {}) ) {
+		if ( !isObjectLike(activity) ) continue
+		activity.consumption ??= {}
+		activity.consumption.scaling ??= { allowed: false }
+		const targets = activity.consumption.targets
+		if ( Array.isArray(targets) && targets.length > 0 ) continue
+		activity.consumption.targets = [{ type: "itemUses", target: "", value: "1" }]
+		changed = true
+	}
+
+	return changed
+}
+
+function normalizeClassSuperiorityProgression(item) {
+	if ( item?.type !== "class" ) return false
+	const identifier = item?.system?.identifier
+	if ( !identifier || !["fighter", "scholar"].includes(identifier) ) return false
+
+	const progression = item.system?.spellcasting?.superiorityProgression
+	if ( progression && progression !== "none" ) return false
+
+	const expected = identifier === "fighter" ? "half" : "full"
+	item.system.spellcasting ??= {}
+	item.system.spellcasting.superiorityProgression = expected
+	return true
+}
+
+function isLegacyScholarSuperiorityFeature(item) {
+	if ( item?.type !== "feat" ) return false
+	if ( item?.system?.identifier !== "superiority-dice" ) return false
+	if ( item?.system?.requirements === "Scholar" ) return true
+	const importerUid = item?.flags?.["sw5e-importer"]?.uid ?? ""
+	return importerUid.includes("sourceName-scholar")
+}
+
+function normalizeLegacyScholarSuperiorityFeature(item) {
+	if ( !isLegacyScholarSuperiorityFeature(item) ) return false
+
+	const activity = Object.values(item.system?.activities ?? {}).find(entry => entry?.type === "utility")
+	if ( !activity ) return false
+
+	let changed = false
+	activity.roll ??= {}
+	if ( activity.roll.formula !== "@scale.scholar.superiority-dice-size.die" ) {
+		activity.roll.formula = "@scale.scholar.superiority-dice-size.die"
+		changed = true
+	}
+
+	activity.consumption ??= {}
+	activity.consumption.scaling ??= { allowed: false }
+	if ( activity.consumption.spellSlot !== true ) {
+		activity.consumption.spellSlot = true
+		changed = true
+	}
+
+	const expectedTargets = [{ type: "attribute", value: "1", target: "superiority.dice.value" }]
+	if ( JSON.stringify(activity.consumption.targets ?? []) !== JSON.stringify(expectedTargets) ) {
+		activity.consumption.targets = expectedTargets
+		changed = true
+	}
+
+	item.system.uses ??= {}
+	const expectedRecovery = [{ period: "sr", type: "recoverAll" }]
+	if ( JSON.stringify(item.system.uses.recovery ?? []) !== JSON.stringify(expectedRecovery) ) {
+		item.system.uses.recovery = expectedRecovery
+		changed = true
+	}
+
+	return changed
+}
+
+function removeTrailingAbilityBonus(formula, abilityMod) {
+	if ( !abilityMod || typeof formula !== "string" ) return { formula, changed: false }
+	const compact = formula.replace(/\s+/g, "")
+	const match = compact.match(/^((?:\d+d\d+)(?:[+-]\d+d\d+)*)\+(\d+)$/i)
+	if ( !match ) return { formula, changed: false }
+	if ( Number(match[2]) !== abilityMod ) return { formula, changed: false }
+	return { formula: match[1], changed: true }
+}
+
+function normalizeDamagePartsAbilityBonus(parts, abilityMod) {
+	if ( !Array.isArray(parts) || !abilityMod ) return false
+	let changed = false
+
+	for ( const part of parts ) {
+		if ( Array.isArray(part) && typeof part[0] === "string" ) {
+			const normalized = removeTrailingAbilityBonus(part[0], abilityMod)
+			if ( normalized.changed ) {
+				part[0] = normalized.formula
+				changed = true
+			}
+			continue
+		}
+
+		if ( !isObjectLike(part) ) continue
+		const numericBonus = Number(part.bonus)
+		if ( Number.isFinite(numericBonus) && numericBonus === abilityMod ) {
+			part.bonus = ""
+			changed = true
+		}
+	}
+
+	return changed
+}
+
+function normalizeNpcEmbeddedWeaponDamage(actor) {
+	if ( actor?.type !== "npc" ) return false
+	if ( !Array.isArray(actor?.items) || !actor.items.length ) return false
+
+	let changed = false
+	for ( const item of actor.items ) {
+		if ( item?.type !== "weapon" ) continue
+		const abilityId = item?.system?.ability
+		const abilityMod = getAbilityModifier(actor, abilityId)
+		if ( !Number.isFinite(abilityMod) || abilityMod <= 0 ) continue
+
+		changed = normalizeDamagePartsAbilityBonus(item.system?.damage?.parts, abilityMod) || changed
+		for ( const activity of Object.values(item.system?.activities ?? {}) ) {
+			changed = normalizeDamagePartsAbilityBonus(activity?.damage?.parts, abilityMod) || changed
+		}
+	}
+
+	return changed
+}
+
 function activityHasMeasuredTemplate(activity) {
 	const template = activity?.target?.template
 	if ( template === true ) return true
@@ -304,6 +556,10 @@ export function normalizeDnd5eItemSource(item, { targetSystemVersion=TARGET_DND5
 	changed = normalizeLegacyManeuverPromptDefaults(item) || changed
 	changed = normalizeLegacyManeuverSourceClass(item) || changed
 	changed = normalizePowerCastingDefaults(item) || changed
+	changed = normalizeMissingWeaponAttackActivity(item) || changed
+	changed = normalizeExplosiveSelfConsumption(item) || changed
+	changed = normalizeClassSuperiorityProgression(item) || changed
+	changed = normalizeLegacyScholarSuperiorityFeature(item) || changed
 
 	if ( changed ) changed = normalizeSystemStats(item, { targetSystemVersion }) || changed
 
@@ -413,6 +669,8 @@ export function normalizeLegacyMasterActorSource(actor) {
 			changed = true
 		}
 	}
+
+	changed = normalizeNpcEmbeddedWeaponDamage(actor) || changed
 
 	return changed
 }

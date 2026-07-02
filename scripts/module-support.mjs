@@ -50,6 +50,11 @@ export function getModuleSettingValue(key, fallback) {
 	}
 }
 
+export function localizeOrFallback(key, fallback = key) {
+	const localized = getGame()?.i18n?.localize?.(key);
+	return (!localized || localized === key) ? fallback : localized;
+}
+
 export function getModuleId() {
 	const fromUrl = import.meta.url.match(/\/modules\/([^/]+)\//)?.[1];
 	if ( fromUrl ) return fromUrl;

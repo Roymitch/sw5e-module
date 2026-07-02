@@ -106,12 +106,12 @@ body[data-sw5e-theme="sw5e-light"] {
   --sw5e-foundry-canvas-1: #e4ecf1;
   --sw5e-foundry-canvas-2: #eef4f8;
   --sw5e-foundry-canvas-3: #f7fafc;
-  --sw5e-foundry-app-window-background: linear-gradient(180deg, rgba(248, 251, 253, 0) 0%, rgba(226, 237, 244, 0) 100%), url("/modules/sw5e-module/assets/ui/parchments/sw5e-light-parchment.png");
-  --sw5e-foundry-window-content-background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(236, 243, 248, 0.88) 100%);
-  --sw5e-foundry-window-canvas-1: rgba(255, 255, 255, 0.84);
-  --sw5e-foundry-window-canvas-2: rgba(248, 251, 253, 0.88);
-  --sw5e-foundry-window-canvas-3: rgba(241, 246, 249, 0.9);
-  --sw5e-foundry-window-titlebar-background: rgba(226, 237, 244, 0.78);
+  --sw5e-foundry-app-window-background: linear-gradient(180deg, rgba(248, 251, 253, 0.72) 0%, rgba(226, 237, 244, 0.66) 100%), url("/modules/sw5e-module/assets/ui/parchments/sw5e-light-parchment.png");
+  --sw5e-foundry-window-content-background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(236, 243, 248, 0.95) 100%);
+  --sw5e-foundry-window-canvas-1: rgba(255, 255, 255, 0.94);
+  --sw5e-foundry-window-canvas-2: rgba(248, 251, 253, 0.96);
+  --sw5e-foundry-window-canvas-3: rgba(241, 246, 249, 0.98);
+  --sw5e-foundry-window-titlebar-background: rgba(226, 237, 244, 0.9);
   --sw5e-foundry-window-titlebar-border: color-mix(in srgb, var(--sw5e-line-color) 34%, rgba(67, 67, 67, 0.18));
   --sw5e-foundry-window-titlebar-text: var(--sw5e-theme-text);
   --sw5e-foundry-window-close-color: var(--sw5e-theme-secondary-button);
@@ -5162,56 +5162,6 @@ section.sw5e-droid-customizations-manager .sw5e-aug-actions .sw5e-aug-remove:foc
   }
 }
 
-/* Global pause overlay — SW5E-style dual rings (SW5E Light/Dark only; see assets/ui/) */
-@keyframes sw5e-pause-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-body[data-sw5e-theme="sw5e-light"] #pause,
-body[data-sw5e-theme="sw5e-dark"] #pause {
-  background: none;
-  height: 128px;
-}
-
-/* Hide only the confirmed native dnd5e ampersand pause icon; preserve third-party #pause images. */
-body[data-sw5e-theme="sw5e-light"] #pause.dnd5e2 img[src*="systems/dnd5e/ui/official/ampersand.svg"],
-body[data-sw5e-theme="sw5e-dark"] #pause.dnd5e2 img[src*="systems/dnd5e/ui/official/ampersand.svg"] {
-  display: none !important;
-}
-
-body[data-sw5e-theme="sw5e-light"] #pause::before,
-body[data-sw5e-theme="sw5e-dark"] #pause::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 128px;
-  height: 128px;
-  margin-left: -64px;
-  background: url("/modules/sw5e-module/assets/ui/pause-inner.svg") no-repeat 50% 50%;
-  animation: sw5e-pause-spin 10s linear infinite;
-  pointer-events: none;
-}
-
-body[data-sw5e-theme="sw5e-light"] #pause::after,
-body[data-sw5e-theme="sw5e-dark"] #pause::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 128px;
-  height: 128px;
-  margin-left: -64px;
-  background: url("/modules/sw5e-module/assets/ui/pause-outer.svg") no-repeat 50% 50%;
-  animation: sw5e-pause-spin 5s linear infinite reverse;
-  pointer-events: none;
-}
-
 /* Character Deployment — Features tab: mirror dnd5e 5.2.x `section.classes` pill row + `.level-selector` */
 
 /* Nested inside stock class pills strip: wrappers must not break flex layout */
@@ -5822,20 +5772,6 @@ body[data-sw5e-theme="sw5e-dark"] #interface.themed #players #players-expand:is(
   background: rgba(32, 161, 208, 0.14) !important;
   border-color: rgba(32, 161, 208, 0.65) !important;
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--sw5e-line-color) 24%, transparent), 0 0 10px color-mix(in srgb, var(--sw5e-secondary-button) 22%, transparent) !important;
-}
-body[data-sw5e-theme="sw5e-light"] #pause {
-  color: var(--sw5e-foundry-text-muted) !important;
-}
-body[data-sw5e-theme="sw5e-light"] #pause figcaption {
-  color: var(--sw5e-theme-heading) !important;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85), 0 0 12px color-mix(in srgb, var(--sw5e-line-color) 30%, transparent) !important;
-}
-body[data-sw5e-theme="sw5e-dark"] #pause {
-  color: var(--sw5e-foundry-text-muted) !important;
-}
-body[data-sw5e-theme="sw5e-dark"] #pause figcaption {
-  color: var(--sw5e-theme-heading) !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.75), 0 0 14px color-mix(in srgb, var(--sw5e-line-color) 28%, transparent) !important;
 }
 /* Foundry core UI — mirror variables onto application/window shells (Phase F1c) */
 body[data-sw5e-theme="sw5e-light"] :is(.application, .window-app),
@@ -8620,6 +8556,116 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.advancement.trait.tra
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.advancement.trait.trait-selector .trait-list label:hover {
   background: var(--sw5e-light-hover-tint) !important;
 }
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet {
+  --radio-list-hover: rgba(32, 161, 208, 0.14);
+  background: linear-gradient(180deg, rgba(30, 34, 38, 0.98), rgba(15, 18, 22, 0.97)) !important;
+  background-image: linear-gradient(180deg, rgba(30, 34, 38, 0.98), rgba(15, 18, 22, 0.97)) !important;
+  border-color: color-mix(in srgb, var(--sw5e-line-color) 42%, transparent) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .window-header {
+  border-bottom-color: color-mix(in srgb, var(--sw5e-line-color) 34%, transparent) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .window-content {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(.card, fieldset.card, .drop-area) {
+  background: rgba(18, 22, 28, 0.78) !important;
+  border-color: var(--sw5e-dark-muted-control-border) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(.card .header, .card.table .header, fieldset.card > .header) {
+  background: linear-gradient(180deg, rgba(54, 54, 54, 0.94) 0%, rgba(22, 22, 22, 0.98) 100%) !important;
+  color: var(--sw5e-theme-muted-text) !important;
+  border: 1px solid var(--sw5e-dark-muted-control-border) !important;
+  border-left: 3px solid var(--sw5e-theme-heading) !important;
+  border-radius: 3px 3px 0 0 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 0 0 1px rgba(6, 15, 22, 0.28) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(.card .header, .card.table .header, fieldset.card > .header) > * {
+  color: var(--sw5e-theme-muted-text) !important;
+  font-family: var(--sw5e-font-body) !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.72) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet fieldset.card > legend {
+  color: var(--sw5e-theme-heading) !important;
+  background: linear-gradient(180deg, rgba(24, 24, 24, 0.92) 0%, rgba(18, 22, 28, 0.88) 100%) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet fieldset.card > legend::before {
+  box-shadow: none !important;
+  outline: none !important;
+  border: 1px solid var(--sw5e-dark-muted-control-border) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .card.table.items .items-list > li:nth-child(odd) {
+  background: rgba(24, 24, 24, 0.64) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .card.table.items .items-list > li:nth-child(even) {
+  background: rgba(31, 37, 42, 0.58) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .card.table.items .items-list > li {
+  border-bottom: 1px solid color-mix(in srgb, var(--sw5e-dark-muted-control-border) 66%, transparent) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .drop-area {
+  color: var(--sw5e-theme-muted-text) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .hint.warning {
+  color: var(--sw5e-theme-heading) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .form-group > label,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet .form-group.stacked > label {
+  color: var(--sw5e-theme-text) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(input, select, textarea) {
+  background: rgba(18, 22, 28, 0.88) !important;
+  border: 1px solid var(--sw5e-dark-muted-control-border) !important;
+  color: var(--sw5e-theme-text) !important;
+  color-scheme: dark;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(input, select, textarea):is(:hover, :focus, :focus-visible) {
+  border-color: var(--sw5e-line-color) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--sw5e-line-color) 24%, transparent) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(input[type="checkbox"], input[type="radio"]) {
+  accent-color: var(--sw5e-line-color);
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.ability-score-improvement .ability-scores li > label:first-child {
+  color: var(--sw5e-theme-heading) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.ability-score-improvement .ability-scores li > button.control-button:is(.plus, .minus) {
+  background: rgba(24, 24, 24, 0.72) !important;
+  color: var(--sw5e-secondary-button) !important;
+  border: 1px solid rgba(32, 161, 208, 0.35) !important;
+  border-radius: 4px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  filter: none !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.ability-score-improvement .ability-scores li > button.control-button:is(.plus, .minus):is(:hover, :focus, :focus-visible) {
+  background: rgba(32, 161, 208, 0.14) !important;
+  color: var(--sw5e-line-color) !important;
+  border-color: rgba(32, 161, 208, 0.55) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(nav.dialog-buttons, footer.form-footer) > :is(button, [type="submit"]) {
+  background: rgba(24, 24, 24, 0.72) !important;
+  background-image: none !important;
+  border: 1px solid var(--sw5e-dark-muted-control-border) !important;
+  border-radius: var(--sw5e-starship-radius-sm, 6px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  color: var(--sw5e-theme-text) !important;
+  filter: none !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(nav.dialog-buttons, footer.form-footer) > :is(button, [type="submit"]):is(:hover, :focus-visible) {
+  background: rgba(32, 161, 208, 0.14) !important;
+  background-image: none !important;
+  border-color: var(--sw5e-line-color) !important;
+  color: var(--sw5e-theme-text) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet :is(nav.dialog-buttons, footer.form-footer) > :is(button, [type="submit"])[autofocus],
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.advancement.sheet button.dialog-button.default {
+  background: var(--sw5e-theme-primary-button) !important;
+  border-color: color-mix(in srgb, var(--sw5e-theme-primary-button) 72%, black) !important;
+  color: var(--sw5e-theme-button-text) !important;
+}
 /* SW5E Light — item/config app file-picker browse buttons (Custom Icon, etc.) */
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2:is(.advancement.sheet, .config-sheet, .sheet.item) :is(file-picker, document-tags) > button {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(236, 243, 248, 0.88) 100%) !important;
@@ -8794,6 +8840,48 @@ body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item
   font-size: 10px !important;
   font-weight: 700 !important;
   letter-spacing: 0.05em !important;
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list > li {
+  margin-block: 0.4rem !important;
+  border: 1px solid color-mix(in srgb, var(--sw5e-light-muted-control-border) 72%, transparent) !important;
+  border-radius: var(--sw5e-starship-radius-sm, 6px);
+  background: color-mix(in srgb, var(--sw5e-theme-surface-strong) 74%, rgba(255, 255, 255, 0.88)) !important;
+  box-shadow: var(--sw5e-light-card-shadow-soft) !important;
+  overflow: hidden;
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list > li > :not(:is(.items-header, .level-header, .choices-header, .replacement-header)) {
+  padding-inline: 0.55rem !important;
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list .items-list > li {
+  min-height: 2.8rem;
+  border-bottom: 1px solid rgba(13, 153, 204, 0.14) !important;
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list .items-list > li:last-child {
+  border-bottom: none !important;
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list .items-list > li:is(:hover, :focus-within) {
+  background: rgba(13, 153, 204, 0.08) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list > li {
+  margin-block: 0.4rem !important;
+  border: 1px solid color-mix(in srgb, var(--sw5e-dark-muted-control-border) 82%, transparent) !important;
+  border-radius: var(--sw5e-starship-radius-sm, 6px);
+  background: rgba(18, 22, 28, 0.82) !important;
+  box-shadow: var(--sw5e-dark-chat-datapad-shadow) !important;
+  overflow: hidden;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list > li > :not(:is(.items-header, .level-header, .choices-header, .replacement-header)) {
+  padding-inline: 0.55rem !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list .items-list > li {
+  min-height: 2.8rem;
+  border-bottom: 1px solid rgba(32, 161, 208, 0.16) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list .items-list > li:last-child {
+  border-bottom: none !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet:is(.actor, .item) .advancement .level-list .items-list > li:is(:hover, :focus-within) {
+  background: rgba(32, 161, 208, 0.1) !important;
 }
 /* Starship sheet — S1 SotG shell (SW5E Light/Dark) */
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-panel {
@@ -11773,13 +11861,6 @@ body[data-sw5e-theme="sw5e-underworld"] #interface.themed #hotbar-page-controls 
   color: var(--sw5e-foundry-control-text) !important;
   box-shadow: none !important;
 }
-body[data-sw5e-theme="sw5e-underworld"] #pause {
-  color: var(--sw5e-foundry-text-muted) !important;
-}
-body[data-sw5e-theme="sw5e-underworld"] #pause figcaption {
-  color: var(--sw5e-theme-heading) !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.75), 0 0 14px var(--sw5e-underworld-glow-purple) !important;
-}
 /* Foundry application/window shells */
 body[data-sw5e-theme="sw5e-underworld"] :is(.application, .window-app) {
   --color-text-primary: var(--sw5e-foundry-text);
@@ -14058,6 +14139,83 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2-journal.applicat
   border-color: var(--sw5e-underworld-chat-datapad-border) !important;
   background: color-mix(in srgb, var(--sw5e-underworld-panel-strong) 72%, black) !important;
   color: var(--sw5e-theme-text);
+}
+/* Pause overlay — single source of truth.
+   Do not change the root `#pause` layout box. Decorative art must anchor to child content only. */
+@keyframes sw5e-pause-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+body[data-sw5e-theme="sw5e-light"] #pause,
+body[data-sw5e-theme="sw5e-dark"] #pause,
+body[data-sw5e-theme="sw5e-underworld"] #pause {
+  color: var(--sw5e-foundry-text-muted) !important;
+}
+body[data-sw5e-theme="sw5e-light"] #pause figcaption,
+body[data-sw5e-theme="sw5e-dark"] #pause figcaption,
+body[data-sw5e-theme="sw5e-underworld"] #pause figcaption {
+  position: relative;
+  isolation: isolate;
+}
+body[data-sw5e-theme="sw5e-light"] #pause figcaption {
+  color: var(--sw5e-theme-heading) !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85), 0 0 12px color-mix(in srgb, var(--sw5e-line-color) 30%, transparent) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] #pause figcaption {
+  color: var(--sw5e-theme-heading) !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.75), 0 0 14px color-mix(in srgb, var(--sw5e-line-color) 28%, transparent) !important;
+}
+body[data-sw5e-theme="sw5e-underworld"] #pause figcaption {
+  color: var(--sw5e-theme-heading) !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.75), 0 0 14px var(--sw5e-underworld-glow-purple) !important;
+}
+/* Preserve stock image layout, but hide the confirmed native DND ampersand art when SW5E custom rings are active. */
+body[data-sw5e-theme="sw5e-light"] #pause img[src*="systems/dnd5e/ui/official/ampersand.svg"],
+body[data-sw5e-theme="sw5e-dark"] #pause img[src*="systems/dnd5e/ui/official/ampersand.svg"],
+body[data-sw5e-theme="sw5e-underworld"] #pause img[src*="systems/dnd5e/ui/official/ampersand.svg"] {
+  visibility: hidden !important;
+}
+/* Decorative rings attach to figcaption so the root `#pause` box stays under Foundry's control. */
+body[data-sw5e-theme="sw5e-light"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::before,
+body[data-sw5e-theme="sw5e-light"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::after,
+body[data-sw5e-theme="sw5e-dark"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::before,
+body[data-sw5e-theme="sw5e-dark"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::after,
+body[data-sw5e-theme="sw5e-underworld"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::before,
+body[data-sw5e-theme="sw5e-underworld"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::after {
+  content: "";
+  position: absolute;
+  top: -112px;
+  left: 50%;
+  width: 128px;
+  height: 128px;
+  margin-left: -64px;
+  pointer-events: none;
+  z-index: -1;
+}
+body[data-sw5e-theme="sw5e-light"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::before,
+body[data-sw5e-theme="sw5e-dark"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::before,
+body[data-sw5e-theme="sw5e-underworld"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::before {
+  z-index: -2;
+}
+body[data-sw5e-theme="sw5e-light"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::before,
+body[data-sw5e-theme="sw5e-dark"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::before,
+body[data-sw5e-theme="sw5e-underworld"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::before {
+  background: url("/modules/sw5e-module/assets/ui/pause-inner.svg") no-repeat 50% 50%;
+  animation: sw5e-pause-spin 10s linear infinite;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.4));
+  opacity: 0.95;
+}
+body[data-sw5e-theme="sw5e-light"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::after,
+body[data-sw5e-theme="sw5e-dark"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::after,
+body[data-sw5e-theme="sw5e-underworld"] #pause:has(img[src*="systems/dnd5e/ui/official/ampersand.svg"]) figcaption::after {
+  background: url("/modules/sw5e-module/assets/ui/pause-outer.svg") no-repeat 50% 50%;
+  animation: sw5e-pause-spin 5s linear infinite reverse;
+  filter: drop-shadow(0 0 14px rgba(0, 0, 0, 0.45));
+  opacity: 0.92;
 }
 /* —— Scoped dialog / app themes —— */
 /* Cybernetic Augmentations dialog — SW5E Light / Dark / Underworld.
@@ -17403,6 +17561,18 @@ body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-stars
 body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative) {
   filter: var(--sw5e-underworld-sidebar-ornament-shadow) !important;
 }
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) {
+  background: var(--sw5e-light-sidebar-ornament-fill) !important;
+  box-shadow: inset 0 0 0 1px var(--sw5e-light-sidebar-ornament-inner-line) !important;
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) {
+  background: var(--sw5e-dark-sidebar-ornament-fill) !important;
+  box-shadow: inset 0 0 0 1px var(--sw5e-dark-sidebar-ornament-inner-line) !important;
+}
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) {
+  background: var(--sw5e-underworld-sidebar-ornament-fill) !important;
+  box-shadow: inset 0 0 0 1px var(--sw5e-underworld-sidebar-ornament-inner-line) !important;
+}
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge)::before,
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge)::after,
 body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative, .sw5e-starship-tier-badge)::before,
@@ -17460,10 +17630,8 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehi
   padding: 0.1rem 0.3rem;
   margin: 0 !important;
   border-radius: 50%;
-  background: none !important;
   background-image: none !important;
   border: 0 !important;
-  box-shadow: none !important;
   isolation: isolate;
 }
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.loyalty-badge.badge, .sw5e-starship-tier-badge) {
@@ -17480,6 +17648,37 @@ body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-stars
 body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) > * {
   position: relative;
   z-index: 1;
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-tier-badge-input,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-tier-badge-input,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-tier-badge-input {
+  width: 100%;
+  max-width: 2.4rem;
+  padding: 0;
+  margin: 0;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  font: inherit;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  appearance: textfield;
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-tier-badge-input:focus-visible,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-tier-badge-input:focus-visible,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-tier-badge-input:focus-visible {
+  outline: none;
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-tier-badge-input::-webkit-outer-spin-button,
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-tier-badge-input::-webkit-inner-spin-button,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-tier-badge-input::-webkit-outer-spin-button,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-tier-badge-input::-webkit-inner-spin-button,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-tier-badge-input::-webkit-outer-spin-button,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-tier-badge-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 /* —— Item / manager surfaces —— */
 /* Item sheet — Modification Chassis compact panel (theme polish) */
@@ -20913,69 +21112,4 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor:is(.chara
 .chat-message .dice-total.sw5e-mastery-reroll-total-highlight {
   transition: color 0.2s ease, text-shadow 0.2s ease;
   text-shadow: 0 0 8px color-mix(in srgb, var(--color-shadow-highlight, #4fc3f7) 35%, transparent);
-}
-
-/* Book journal compendia — reflow GMBinder images into document flow */
-.journal-sheet .sw5e-book-image,
-.journal-entry .sw5e-book-image,
-.prosemirror .sw5e-book-image {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  margin: 1rem auto;
-  clear: both;
-  position: static !important;
-  z-index: auto !important;
-  transform: none !important;
-}
-
-.journal-sheet .sw5e-book-image-row,
-.journal-entry .sw5e-book-image-row,
-.prosemirror .sw5e-book-image-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 0.25rem;
-  margin: 1rem 0;
-  clear: both;
-  width: 100%;
-}
-
-.journal-sheet .sw5e-book-image-row .sw5e-book-image,
-.journal-entry .sw5e-book-image-row .sw5e-book-image,
-.prosemirror .sw5e-book-image-row .sw5e-book-image {
-  flex: 0 1 auto;
-  max-height: 200px;
-  width: auto;
-  max-width: 14%;
-  min-width: 60px;
-  margin: 0;
-  clear: none;
-}
-
-.journal-sheet .sw5e-book-table,
-.journal-entry .sw5e-book-table,
-.prosemirror .sw5e-book-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 0.75rem 0;
-}
-
-.journal-sheet .sw5e-book-table th,
-.journal-sheet .sw5e-book-table td,
-.journal-entry .sw5e-book-table th,
-.journal-entry .sw5e-book-table td,
-.prosemirror .sw5e-book-table th,
-.prosemirror .sw5e-book-table td {
-  border: 1px solid color-mix(in srgb, var(--color-border-light-tertiary, #666) 70%, transparent);
-  padding: 0.35rem 0.6rem;
-  vertical-align: top;
-}
-
-.journal-sheet .sw5e-book-table th,
-.journal-entry .sw5e-book-table th,
-.prosemirror .sw5e-book-table th {
-  background: color-mix(in srgb, var(--color-border-dark-4, #2a3a4a) 55%, transparent);
-  font-weight: 600;
 }
