@@ -933,6 +933,27 @@ function mergePersistedMigrationSource(source, updateData) {
 /*  Low level migration utilities
 /* -------------------------------------------- */
 
+const DROID_CLASS_SPECIES_EFFECT_IMG_REMAPS = Object.freeze({
+	"Droid%20Class%20I.webp": "Droid-ClassI.webp",
+	"Droid%20Class%20II.webp": "Droid-ClassIi.webp",
+	"Droid%20Class%20III.webp": "Droid-ClassIii.webp",
+	"Droid%20Class%20IV.webp": "Droid-ClassIv.webp",
+	"Droid%20Class%20V.webp": "Droid-ClassV.webp",
+	"Droid Class I.webp": "Droid-ClassI.webp",
+	"Droid Class II.webp": "Droid-ClassIi.webp",
+	"Droid Class III.webp": "Droid-ClassIii.webp",
+	"Droid Class IV.webp": "Droid-ClassIv.webp",
+	"Droid Class V.webp": "Droid-ClassV.webp"
+});
+
+function remapDroidClassSpeciesEffectImage(path) {
+	if ( typeof path !== "string" ) return path;
+	for ( const [badSuffix, goodSuffix] of Object.entries(DROID_CLASS_SPECIES_EFFECT_IMG_REMAPS) ) {
+		if ( path.endsWith(badSuffix) ) return `${path.slice(0, -badSuffix.length)}${goodSuffix}`;
+	}
+	return path;
+}
+
 /**
  * Migrate any module images from system or old module path to new one.
  * @param {object} objectData      Object data to migrate.
@@ -974,7 +995,7 @@ function _migrateImage(objectData, updateData) {
 			continue;
 		}
 
-		let newPath = normalizeModuleImagePath(path);
+		let newPath = remapDroidClassSpeciesEffectImage(normalizeModuleImagePath(path));
 		if ( prop === "prototypeToken.texture.src" ) {
 			const actorAvatar = normalizeModuleImagePath(foundry.utils.getProperty(objectData, "img"));
 			const canonicalMonsterToken = getMonsterTokenPathFromAvatar(actorAvatar);

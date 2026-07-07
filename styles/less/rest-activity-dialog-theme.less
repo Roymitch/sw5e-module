@@ -1,85 +1,57 @@
 /* dnd5e rest + activity usage + activity config + starship repair dialogs — SW5E Light / Dark / Underworld.
    Scoped via data-sw5e-theme-root from scripts/theme.mjs */
 
-@dlg-light: ~'body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root[data-sw5e-theme-root="rest-dialog"].dnd5e2.application, body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root[data-sw5e-theme-root="activity-dialog"].dnd5e2.application, body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root[data-sw5e-theme-root="activity-config"].dnd5e2.application, body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root[data-sw5e-theme-root="starship-activity-config"].dnd5e2.application';
-@dlg-dark: ~'body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root[data-sw5e-theme-root="rest-dialog"].dnd5e2.application, body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root[data-sw5e-theme-root="activity-dialog"].dnd5e2.application, body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root[data-sw5e-theme-root="activity-config"].dnd5e2.application, body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root[data-sw5e-theme-root="starship-activity-config"].dnd5e2.application';
-@dlg-underworld: ~'body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root[data-sw5e-theme-root="rest-dialog"].dnd5e2.application, body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root[data-sw5e-theme-root="activity-dialog"].dnd5e2.application, body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root[data-sw5e-theme-root="activity-config"].dnd5e2.application, body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root[data-sw5e-theme-root="starship-activity-config"].dnd5e2.application';
+@rest-shell-light: ~'body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root[data-sw5e-theme-root="rest-dialog"].dnd5e2.application, body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root[data-sw5e-theme-root="activity-dialog"].dnd5e2.application, body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root[data-sw5e-theme-root="activity-config"].dnd5e2.application, body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root[data-sw5e-theme-root="starship-activity-config"].dnd5e2.application';
+@rest-shell-dark: ~'body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root[data-sw5e-theme-root="rest-dialog"].dnd5e2.application, body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root[data-sw5e-theme-root="activity-dialog"].dnd5e2.application, body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root[data-sw5e-theme-root="activity-config"].dnd5e2.application, body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root[data-sw5e-theme-root="starship-activity-config"].dnd5e2.application';
+@rest-shell-underworld: ~'body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root[data-sw5e-theme-root="rest-dialog"].dnd5e2.application, body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root[data-sw5e-theme-root="activity-dialog"].dnd5e2.application, body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root[data-sw5e-theme-root="activity-config"].dnd5e2.application, body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root[data-sw5e-theme-root="starship-activity-config"].dnd5e2.application';
 
 /* ——— SW5E Light ——— */
-@{dlg-light} {
-  background: linear-gradient(180deg, rgba(248, 251, 253, 0.96), rgba(226, 237, 244, 0.94)) !important;
-  background-image: linear-gradient(180deg, rgba(248, 251, 253, 0.96), rgba(226, 237, 244, 0.94)) !important;
-  border-color: color-mix(in srgb, var(--sw5e-line-color) 38%, transparent) !important;
-  color: var(--sw5e-theme-text) !important;
-  color-scheme: light;
-}
+.sw5e-dialog-shell-light-root(@rest-shell-light);
 
-@{dlg-light} .window-header {
-  border-bottom-color: color-mix(in srgb, var(--sw5e-line-color) 32%, transparent) !important;
-}
+.sw5e-dialog-shell-light-window-header(@rest-shell-light);
 
-@{dlg-light} :is(.window-title, .window-header h1) {
-  color: var(--sw5e-theme-heading) !important;
-  font-family: var(--sw5e-font-heading) !important;
-}
+.sw5e-dialog-shell-light-window-title(@rest-shell-light);
 
-@{dlg-light} .window-subtitle {
+@{rest-shell-light} .window-subtitle {
   color: var(--sw5e-theme-muted-text) !important;
 }
 
-@{dlg-light} .window-content {
-  background-color: transparent !important;
-  background-image: none !important;
+.sw5e-dialog-shell-light-window-content(@rest-shell-light);
+
+@{rest-shell-light} form.standard-form {
   color: var(--sw5e-theme-text) !important;
 }
 
-@{dlg-light} form.standard-form {
-  color: var(--sw5e-theme-text) !important;
-}
-
-@{dlg-light} :is(fieldset, fieldset.card) {
+@{rest-shell-light} :is(fieldset, fieldset.card) {
   border: 1px solid var(--sw5e-light-muted-control-border) !important;
   border-radius: var(--sw5e-starship-radius-sm, 6px);
   background: color-mix(in srgb, var(--sw5e-theme-surface-strong) 72%, transparent) !important;
   color: var(--sw5e-theme-text) !important;
 }
 
-@{dlg-light} :is(fieldset, fieldset.card) > legend {
+@{rest-shell-light} :is(fieldset, fieldset.card) > legend {
   color: var(--sw5e-theme-heading) !important;
   font-family: var(--sw5e-font-heading) !important;
 }
 
-@{dlg-light} .form-group label {
+@{rest-shell-light} .form-group label {
   color: var(--sw5e-theme-text) !important;
 }
 
-@{dlg-light} :is(p.hint, .notes, .hint) {
+@{rest-shell-light} :is(p.hint, .notes, .hint) {
   color: var(--sw5e-theme-muted-text) !important;
 }
 
-@{dlg-light} :is(input, select, textarea) {
-  background: rgba(255, 255, 255, 0.94) !important;
-  border: 1px solid var(--sw5e-light-muted-control-border) !important;
-  color: var(--sw5e-theme-text) !important;
-  color-scheme: light;
-}
+.sw5e-dialog-shell-light-inputs(@rest-shell-light);
 
-@{dlg-light} :is(input, select, textarea):is(:hover, :focus, :focus-visible) {
+@{rest-shell-light} :is(input, select, textarea):is(:hover, :focus, :focus-visible) {
   border-color: var(--sw5e-line-color) !important;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--sw5e-line-color) 22%, transparent) !important;
 }
 
-@{dlg-light} :is(dnd5e-checkbox, input[type="checkbox"], input[type="radio"]) {
-  --checkbox-border-color: var(--sw5e-light-muted-control-border);
-  --checkbox-empty-color: var(--sw5e-light-checkbox-empty-color);
-  --checkbox-fill-color: var(--sw5e-line-color);
-  --checkbox-background-color: var(--sw5e-line-color);
-  --checkbox-checked-color: var(--sw5e-line-color);
-  accent-color: var(--sw5e-line-color);
-  color-scheme: light;
-}
+.sw5e-dialog-shell-light-checkboxes(@rest-shell-light);
 
-@{dlg-light} {
+@{rest-shell-light} {
   button.dice-button,
   button[data-action="use"] {
     background-color: rgba(248, 251, 253, 0.92) !important;
@@ -121,80 +93,52 @@
 }
 
 /* ——— SW5E Dark ——— */
-@{dlg-dark} {
-  background: linear-gradient(180deg, rgba(28, 32, 36, 0.98), rgba(18, 20, 22, 0.96)) !important;
-  background-image: linear-gradient(180deg, rgba(28, 32, 36, 0.98), rgba(18, 20, 22, 0.96)) !important;
-  border-color: color-mix(in srgb, var(--sw5e-line-color) 42%, transparent) !important;
-  color: var(--sw5e-theme-text) !important;
-  color-scheme: dark;
-}
+.sw5e-dialog-shell-dark-root(@rest-shell-dark);
 
-@{dlg-dark} .window-header {
-  border-bottom-color: color-mix(in srgb, var(--sw5e-line-color) 28%, transparent) !important;
-}
+.sw5e-dialog-shell-dark-window-header(@rest-shell-dark);
 
-@{dlg-dark} :is(.window-title, .window-header h1) {
-  color: var(--sw5e-theme-heading) !important;
-  font-family: var(--sw5e-font-heading) !important;
-}
+.sw5e-dialog-shell-dark-window-title(@rest-shell-dark);
 
-@{dlg-dark} .window-subtitle {
+@{rest-shell-dark} .window-subtitle {
   color: var(--sw5e-theme-muted-text) !important;
 }
 
-@{dlg-dark} .window-content {
-  background-color: transparent !important;
-  background-image: none !important;
+.sw5e-dialog-shell-dark-window-content(@rest-shell-dark);
+
+@{rest-shell-dark} form.standard-form {
   color: var(--sw5e-theme-text) !important;
 }
 
-@{dlg-dark} form.standard-form {
-  color: var(--sw5e-theme-text) !important;
-}
-
-@{dlg-dark} :is(fieldset, fieldset.card) {
+@{rest-shell-dark} :is(fieldset, fieldset.card) {
   border: 1px solid var(--sw5e-dark-muted-control-border) !important;
   border-radius: var(--sw5e-starship-radius-sm, 6px);
   background: rgba(24, 24, 24, 0.42) !important;
   color: var(--sw5e-theme-text) !important;
 }
 
-@{dlg-dark} :is(fieldset, fieldset.card) > legend {
+@{rest-shell-dark} :is(fieldset, fieldset.card) > legend {
   color: var(--sw5e-theme-heading) !important;
   font-family: var(--sw5e-font-heading) !important;
 }
 
-@{dlg-dark} .form-group label {
+@{rest-shell-dark} .form-group label {
   color: var(--sw5e-theme-text) !important;
 }
 
-@{dlg-dark} :is(p.hint, .notes, .hint) {
+@{rest-shell-dark} :is(p.hint, .notes, .hint) {
   color: var(--sw5e-theme-muted-text) !important;
 }
 
-@{dlg-dark} :is(input, select, textarea) {
-  background: rgba(18, 22, 28, 0.88) !important;
-  border: 1px solid var(--sw5e-dark-muted-control-border) !important;
-  color: var(--sw5e-theme-text) !important;
-  color-scheme: dark;
-}
+.sw5e-dialog-shell-dark-inputs(@rest-shell-dark);
 
-@{dlg-dark} :is(input, select, textarea):is(:hover, :focus, :focus-visible) {
+@{rest-shell-dark} :is(input, select, textarea):is(:hover, :focus, :focus-visible) {
   border-color: var(--sw5e-line-color) !important;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--sw5e-line-color) 24%, transparent) !important;
 }
 
-@{dlg-dark} :is(dnd5e-checkbox, input[type="checkbox"], input[type="radio"]) {
-  --checkbox-border-color: var(--sw5e-dark-muted-control-border);
-  --checkbox-empty-color: rgba(24, 24, 24, 0.82);
-  --checkbox-fill-color: var(--sw5e-line-color);
-  --checkbox-background-color: var(--sw5e-line-color);
-  --checkbox-checked-color: var(--sw5e-line-color);
-  accent-color: var(--sw5e-line-color);
-  color-scheme: dark;
-}
+.sw5e-dialog-shell-dark-checkboxes(@rest-shell-dark);
 
-@{dlg-dark} {
+@{rest-shell-dark} {
   button.dice-button,
   button[data-action="use"] {
     background: rgba(24, 24, 24, 0.56) !important;
@@ -236,80 +180,61 @@
 }
 
 /* ——— Underworld Alloy ——— */
-@{dlg-underworld} {
-  background: linear-gradient(180deg, var(--sw5e-underworld-panel-strong), var(--sw5e-underworld-bg)) !important;
-  background-image: linear-gradient(180deg, var(--sw5e-underworld-panel-strong), var(--sw5e-underworld-bg)) !important;
-  border-color: var(--sw5e-underworld-muted-control-border) !important;
-  color: var(--sw5e-theme-text) !important;
-  color-scheme: dark;
-}
+.sw5e-dialog-shell-underworld-root(@rest-shell-underworld);
 
-@{dlg-underworld} .window-header {
-  border-bottom-color: var(--sw5e-underworld-row-divider) !important;
-}
+.sw5e-dialog-shell-underworld-window-header(@rest-shell-underworld);
 
-@{dlg-underworld} :is(.window-title, .window-header h1) {
-  color: var(--sw5e-theme-heading) !important;
-  font-family: var(--sw5e-font-heading) !important;
-}
+.sw5e-dialog-shell-underworld-window-title(@rest-shell-underworld);
 
-@{dlg-underworld} .window-subtitle {
+@{rest-shell-underworld} .window-subtitle {
   color: var(--sw5e-theme-muted-text) !important;
 }
 
-@{dlg-underworld} .window-content {
+@{rest-shell-underworld} .window-content {
   background-color: transparent !important;
   background-image: none !important;
   color: var(--sw5e-theme-text) !important;
 }
 
-@{dlg-underworld} form.standard-form {
+@{rest-shell-underworld} form.standard-form {
   color: var(--sw5e-theme-text) !important;
 }
 
-@{dlg-underworld} :is(fieldset, fieldset.card) {
+@{rest-shell-underworld} :is(fieldset, fieldset.card) {
   border: 1px solid var(--sw5e-underworld-muted-control-border) !important;
   border-radius: 6px;
   background: color-mix(in srgb, var(--sw5e-underworld-panel) 82%, black) !important;
   color: var(--sw5e-theme-text) !important;
 }
 
-@{dlg-underworld} :is(fieldset, fieldset.card) > legend {
+@{rest-shell-underworld} :is(fieldset, fieldset.card) > legend {
   color: var(--sw5e-theme-heading) !important;
   font-family: var(--sw5e-font-heading) !important;
 }
 
-@{dlg-underworld} .form-group label {
+@{rest-shell-underworld} .form-group label {
   color: var(--sw5e-theme-text) !important;
 }
 
-@{dlg-underworld} :is(p.hint, .notes, .hint) {
+@{rest-shell-underworld} :is(p.hint, .notes, .hint) {
   color: var(--sw5e-theme-muted-text) !important;
 }
 
-@{dlg-underworld} :is(input, select, textarea) {
+@{rest-shell-underworld} :is(input, select, textarea) {
   background: var(--sw5e-underworld-input-bg) !important;
   border: 1px solid var(--sw5e-underworld-muted-control-border) !important;
   color: var(--sw5e-theme-text) !important;
   color-scheme: dark;
 }
 
-@{dlg-underworld} :is(input, select, textarea):is(:hover, :focus, :focus-visible) {
+@{rest-shell-underworld} :is(input, select, textarea):is(:hover, :focus, :focus-visible) {
   border-color: color-mix(in srgb, var(--sw5e-underworld-neon-cyan) 58%, var(--sw5e-underworld-border)) !important;
   box-shadow: 0 0 0 2px var(--sw5e-underworld-control-ring) !important;
 }
 
-@{dlg-underworld} :is(dnd5e-checkbox, input[type="checkbox"], input[type="radio"]) {
-  --checkbox-border-color: var(--sw5e-underworld-muted-control-border);
-  --checkbox-empty-color: color-mix(in srgb, var(--sw5e-underworld-panel) 88%, black);
-  --checkbox-fill-color: var(--sw5e-underworld-neon-cyan);
-  --checkbox-background-color: var(--sw5e-underworld-neon-cyan);
-  --checkbox-checked-color: var(--sw5e-underworld-neon-cyan);
-  accent-color: var(--sw5e-underworld-neon-cyan);
-  color-scheme: dark;
-}
+.sw5e-dialog-shell-underworld-checkboxes(@rest-shell-underworld);
 
-@{dlg-underworld} {
+@{rest-shell-underworld} {
   button.dice-button,
   button[data-action="use"] {
     background-color: color-mix(in srgb, var(--sw5e-underworld-olive) 42%, var(--sw5e-underworld-panel)) !important;
