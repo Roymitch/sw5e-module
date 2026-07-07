@@ -401,8 +401,22 @@ export function isDnd5eJournalApp(app, element) {
 	return docName === "JournalEntry" || docName === "JournalEntryPage";
 }
 
+/**
+ * Foundry ActiveEffectConfig (ApplicationV2) — scope fallback when renderActiveEffectConfig
+ * does not fire or re-render omits the dedicated hook.
+ */
+function isActiveEffectConfigApp(app, element) {
+	if ( !(element instanceof HTMLElement) ) return false;
+	if ( app?.constructor?.name === "ActiveEffectConfig" ) return true;
+	return element.classList.contains("active-effect-config");
+}
+
 function applyDnd5eThemedApplicationFromHook(app, html) {
 	const root = getHtmlRoot(html) ?? getAppRoot(app);
+	if ( isActiveEffectConfigApp(app, root) ) {
+		applySw5eThemeScope(html, { scope: "active-effect-config" });
+		return;
+	}
 	if ( isSw5eAugmentationsApp(app, root) ) {
 		applySw5eThemeScope(html, { scope: "cybernetics" });
 		return;

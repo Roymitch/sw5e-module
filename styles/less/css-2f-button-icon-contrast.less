@@ -213,3 +213,57 @@
 )@{light-primary-exclude}:is(:hover, :focus, :focus-visible):not(:disabled) @{light-icon-children} {
   color: var(--sw5e-light-control-icon-color-hover) !important;
 }
+
+/* =============================================================================
+ * Active Effect config — Changes tab row controls (loads after ae-config LESS;
+ * beats dnd5e system CSS cascade on scoped surfaces)
+ * ============================================================================= */
+
+@ae-config-light: ~'body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root[data-sw5e-theme-root="active-effect-config"]:is(.application, .window-app, .dnd5e2.application)';
+@ae-config-changes-control: ~':is(
+  .effect-controls @{light-control-shell},
+  .controls @{light-control-shell},
+  [data-application-part="changes"] @{light-control-shell},
+  [data-application-part="changes"] :is([data-action="add"], [data-action="delete"], [data-action="create"], [data-action="edit"]),
+  :is([data-action="add"], [data-action="delete"], [data-action="create"], [data-action="edit"])
+)';
+
+@{ae-config-light} @{ae-config-changes-control}@{light-primary-exclude}:not(.active):not(.selected):not([aria-pressed="true"]):not([aria-selected="true"]):not(:disabled) {
+  --button-background-color: transparent;
+  --button-hover-background-color: var(--sw5e-light-hover-tint);
+  --button-text-color: var(--sw5e-light-control-icon-color);
+  --button-hover-text-color: var(--sw5e-light-control-icon-color-hover);
+  --control-button-text-color: var(--sw5e-light-control-icon-color);
+  --icon-fill: currentColor;
+  background: rgba(255, 255, 255, 0.88) !important;
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  background-image: none !important;
+  border: 1px solid var(--sw5e-light-muted-control-border) !important;
+  border-radius: var(--sw5e-starship-radius-sm, 6px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.46) !important;
+  color: var(--sw5e-light-control-icon-color) !important;
+  filter: none !important;
+}
+
+@{ae-config-light} @{ae-config-changes-control}@{light-primary-exclude}:is(:hover, :focus, :focus-visible):not(:disabled) {
+  background: var(--sw5e-light-hover-tint) !important;
+  color: var(--sw5e-light-control-icon-color-hover) !important;
+  border-color: color-mix(in srgb, var(--sw5e-light-active-control-border) 54%, transparent) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--sw5e-light-active-control-border) 24%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+}
+
+@{ae-config-light} @{ae-config-changes-control}@{light-primary-exclude} @{light-icon-children} {
+  color: inherit !important;
+  --icon-fill: currentColor !important;
+  fill: currentColor;
+  opacity: 1 !important;
+}
+
+@{ae-config-light} @{ae-config-changes-control}@{light-primary-exclude}::before,
+@{ae-config-light} @{ae-config-changes-control}@{light-primary-exclude}::after,
+@{ae-config-light} @{ae-config-changes-control}@{light-primary-exclude} > i::before {
+  color: inherit !important;
+  font-family: var(--font-awesome) !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: currentColor;
+}
