@@ -692,49 +692,7 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2 .pills .pill:not(.gre
   min-width: 0;
 }
 
-/* SotG inner tabs (Overview / Crew / Skills) — orphaned markup (SOTG_SUB_TAB_IDS = overview only).
- * Retained as unscoped fallback; themed overrides in theme-overrides.less if class reappears. */
-.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-sotg-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sw5e-starship-space-xs);
-  padding-bottom: var(--sw5e-starship-space-sm);
-  border-bottom: var(--sw5e-starship-border-subtle);
-}
-
-.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-sotg-tab {
-  appearance: none;
-  margin: 0;
-  cursor: pointer;
-  font: inherit;
-  line-height: 1.2;
-  padding: var(--sw5e-starship-space-xs) var(--sw5e-starship-space-md);
-  border-radius: var(--sw5e-starship-radius-sm);
-  border: var(--sw5e-starship-border-subtle);
-  background: rgb(0 0 0 / 12%);
-  color: var(--dnd5e-color-tan);
-  transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
-}
-
-.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-sotg-tab:hover,
-.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-sotg-tab:focus-visible {
-  border-color: rgb(255 255 255 / 16%);
-  color: var(--dnd5e-color-parchment);
-  outline: none;
-}
-
-.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-sotg-tab.active {
-  border-color: var(--dnd5e-color-gold);
-  background: rgb(230 171 72 / 12%);
-  color: var(--dnd5e-color-parchment);
-}
-
-.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-sotg-panels {
-  display: flex;
-  flex-direction: column;
-  flex: 0 1 auto;
-  min-width: 0;
-}
+/* SotG inner tabs — removed 2026-07-07 (CSS-4B-5): orphaned nav/tab markup; overview-only panel remains. */
 
 .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-sotg-panel {
   display: flex;
@@ -2952,9 +2910,7 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2 .pills .pill:not(.gre
 }
 
 .sheet.item .sw5e-chassis-slot-card,
-.dnd5e2.sheet.item .sw5e-chassis-slot-card,
-.sheet.item .sw5e-chassis-slot-cell,
-.dnd5e2.sheet.item .sw5e-chassis-slot-cell {
+.dnd5e2.sheet.item .sw5e-chassis-slot-card {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -2968,17 +2924,13 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2 .pills .pill:not(.gre
 }
 
 .sheet.item .sw5e-chassis-slot-card--empty,
-.dnd5e2.sheet.item .sw5e-chassis-slot-card--empty,
-.sheet.item .sw5e-chassis-slot-cell.is-empty,
-.dnd5e2.sheet.item .sw5e-chassis-slot-cell.is-empty {
+.dnd5e2.sheet.item .sw5e-chassis-slot-card--empty {
   border-style: dashed;
   opacity: 0.72;
 }
 
 .sheet.item .sw5e-chassis-slot-card.sw5e-chassis-drop-target--active,
-.dnd5e2.sheet.item .sw5e-chassis-slot-card.sw5e-chassis-drop-target--active,
-.sheet.item .sw5e-chassis-slot-cell.sw5e-chassis-drop-target--active,
-.dnd5e2.sheet.item .sw5e-chassis-slot-cell.sw5e-chassis-drop-target--active {
+.dnd5e2.sheet.item .sw5e-chassis-slot-card.sw5e-chassis-drop-target--active {
   border-color: rgb(98 121 170 / 72%);
   background: rgb(98 121 170 / 14%);
   opacity: 1;
@@ -3004,9 +2956,7 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2 .pills .pill:not(.gre
 }
 
 .sheet.item .sw5e-chassis-slot-card--installed,
-.dnd5e2.sheet.item .sw5e-chassis-slot-card--installed,
-.sheet.item .sw5e-chassis-slot-cell.is-occupied,
-.dnd5e2.sheet.item .sw5e-chassis-slot-cell.is-occupied {
+.dnd5e2.sheet.item .sw5e-chassis-slot-card--installed {
   border-color: var(--dnd5e-color-gold, rgba(180, 160, 100, 0.45));
   background: rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 0 0 1px rgba(180, 160, 100, 0.12);
@@ -3145,71 +3095,6 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2 .pills .pill:not(.gre
   margin-top: auto;
 }
 
-/* Installed mods */
-.sheet.item .sw5e-chassis-installed,
-.dnd5e2.sheet.item .sw5e-chassis-installed {
-  margin: 0.35rem 0 0.45rem;
-}
-
-.sheet.item .sw5e-chassis-mod-list,
-.dnd5e2.sheet.item .sw5e-chassis-mod-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.sheet.item .sw5e-chassis-mod-card,
-.dnd5e2.sheet.item .sw5e-chassis-mod-card {
-  padding: 0.35rem 0.4rem;
-  border-radius: 3px;
-  border: 1px solid var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.08));
-  background: rgba(0, 0, 0, 0.14);
-}
-
-.sheet.item .sw5e-chassis-mod-title,
-.dnd5e2.sheet.item .sw5e-chassis-mod-title {
-  font-size: var(--font-size-13);
-  font-weight: 600;
-  line-height: 1.25;
-  margin-bottom: 0.2rem;
-}
-
-.sheet.item .sw5e-chassis-mod-tags,
-.dnd5e2.sheet.item .sw5e-chassis-mod-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-}
-
-.sheet.item .sw5e-chassis-tag,
-.dnd5e2.sheet.item .sw5e-chassis-tag {
-  display: inline-block;
-  padding: 0.08rem 0.35rem;
-  border-radius: 2px;
-  font-size: var(--font-size-10);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.08));
-  opacity: 0.92;
-}
-
-.sheet.item .sw5e-chassis-mod-foot,
-.dnd5e2.sheet.item .sw5e-chassis-mod-foot {
-  margin-top: 0.25rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.sheet.item .sw5e-chassis-empty,
-.dnd5e2.sheet.item .sw5e-chassis-empty {
-  margin: 0;
-  font-style: italic;
-}
-
 /* Installation log — collapsible (Phase 2) */
 .sheet.item .sw5e-chassis-installed-details,
 .dnd5e2.sheet.item .sw5e-chassis-installed-details {
@@ -3230,81 +3115,6 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2 .pills .pill:not(.gre
   margin-top: 0.35rem;
   padding: 0.35rem 0 0 0.45rem;
   border-left: 2px solid var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.12));
-}
-
-/* Actions — hierarchy */
-.sheet.item .sw5e-chassis-actions,
-.dnd5e2.sheet.item .sw5e-chassis-actions {
-  margin-top: 0.45rem;
-  padding-top: 0.4rem;
-  border-top: 1px solid var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.08));
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.sheet.item .sw5e-chassis-actions-group,
-.dnd5e2.sheet.item .sw5e-chassis-actions-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.sheet.item .sw5e-chassis-actions-heading,
-.dnd5e2.sheet.item .sw5e-chassis-actions-heading {
-  margin: 0;
-  font-size: var(--font-size-10);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  opacity: 0.75;
-}
-
-.sheet.item .sw5e-chassis-actions-heading--danger,
-.dnd5e2.sheet.item .sw5e-chassis-actions-heading--danger {
-  color: var(--color-warm-2, #c53030);
-  opacity: 0.95;
-}
-
-.sheet.item .sw5e-chassis-actions-hint,
-.dnd5e2.sheet.item .sw5e-chassis-actions-hint {
-  margin: 0 0 0.1rem;
-  font-size: var(--font-size-11);
-  line-height: 1.35;
-}
-
-.sheet.item .sw5e-chassis-actions-divider,
-.dnd5e2.sheet.item .sw5e-chassis-actions-divider {
-  margin: 0.15rem 0;
-  border: 0;
-  border-top: 1px solid var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.1));
-}
-
-.sheet.item .sw5e-chassis-actions-row,
-.dnd5e2.sheet.item .sw5e-chassis-actions-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.sheet.item .sw5e-chassis-actions-row--primary .sw5e-chassis-btn,
-.dnd5e2.sheet.item .sw5e-chassis-actions-row--primary .sw5e-chassis-btn {
-  flex: 1 1 auto;
-  min-width: 10rem;
-  justify-content: center;
-}
-
-.sheet.item .sw5e-chassis-actions-row--secondary,
-.dnd5e2.sheet.item .sw5e-chassis-actions-row--secondary {
-  justify-content: flex-start;
-}
-
-.sheet.item .sw5e-chassis-actions-row--utility,
-.dnd5e2.sheet.item .sw5e-chassis-actions-row--utility {
-  justify-content: flex-end;
-  gap: 0.45rem;
-  opacity: 0.92;
 }
 
 .sheet.item .sw5e-chassis-btn,
@@ -3781,58 +3591,6 @@ section.sw5e-augmentations-manager .sw5e-aug-installed-copy {
 
 section.sw5e-augmentations-manager .sw5e-aug-installed-header {
   min-width: 0;
-}
-
-section.sw5e-augmentations-manager .sw5e-aug-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  font-size: var(--font-size-12);
-  margin: 0.32rem 0 0.6rem;
-  border: 1px solid rgb(255 255 255 / 10%);
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-section.sw5e-augmentations-manager .sw5e-aug-table th,
-section.sw5e-augmentations-manager .sw5e-aug-table td {
-  border: none;
-  border-bottom: 1px solid rgb(255 255 255 / 7%);
-  border-right: 1px solid rgb(255 255 255 / 5%);
-  padding: 0.35rem 0.45rem;
-  text-align: left;
-  vertical-align: top;
-}
-
-section.sw5e-augmentations-manager .sw5e-aug-table th:last-child,
-section.sw5e-augmentations-manager .sw5e-aug-table td:last-child {
-  border-right: none;
-}
-
-section.sw5e-augmentations-manager .sw5e-aug-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-section.sw5e-augmentations-manager .sw5e-aug-table thead th {
-  background: rgb(0 0 0 / 28%);
-  font-size: var(--font-size-11);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 6%);
-}
-
-section.sw5e-augmentations-manager .sw5e-aug-table tbody tr:nth-child(even) td {
-  background: rgb(0 0 0 / 12%);
-}
-
-section.sw5e-augmentations-manager .sw5e-aug-table tbody tr:nth-child(odd) td {
-  background: rgb(0 0 0 / 6%);
-}
-
-section.sw5e-augmentations-manager tr.sw5e-aug-differs td {
-  background: rgb(230 171 72 / 10%) !important;
-  box-shadow: inset 0 0 0 1px rgb(230 171 72 / 18%);
 }
 
 section.sw5e-augmentations-manager .sw5e-augmentations-gm {
@@ -4579,45 +4337,6 @@ section.sw5e-droid-customizations-manager .sw5e-droid-motor-preview-value {
   font-weight: 700;
   color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 4%);
   font-variant-numeric: tabular-nums;
-}
-
-section.sw5e-droid-customizations-manager .sw5e-aug-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  font-size: var(--font-size-12);
-  margin: 0.32rem 0 0.6rem;
-  border: 1px solid rgb(255 255 255 / 10%);
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-section.sw5e-droid-customizations-manager .sw5e-aug-table th,
-section.sw5e-droid-customizations-manager .sw5e-aug-table td {
-  border: none;
-  border-bottom: 1px solid rgb(255 255 255 / 7%);
-  border-right: 1px solid rgb(255 255 255 / 5%);
-  padding: 0.35rem 0.45rem;
-  text-align: left;
-  vertical-align: top;
-}
-
-section.sw5e-droid-customizations-manager .sw5e-aug-table th:last-child,
-section.sw5e-droid-customizations-manager .sw5e-aug-table td:last-child {
-  border-right: none;
-}
-
-section.sw5e-droid-customizations-manager .sw5e-aug-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-section.sw5e-droid-customizations-manager .sw5e-aug-table thead th {
-  background: rgb(0 0 0 / 28%);
-  font-size: var(--font-size-11);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 6%);
 }
 
 section.sw5e-droid-customizations-manager .form-group {
