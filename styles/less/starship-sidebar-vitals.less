@@ -185,15 +185,31 @@
   background: linear-gradient(to right, var(--sw5e-starship-hull-dice-fill-1) 0%, var(--sw5e-starship-hull-dice-fill-2) 100%);
 }
 
-/* SW5E Light track tuning */
+/* SW5E Light — vital track shell parity with character sidebar meters */
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals {
-  --sw5e-starship-vital-track: color-mix(in srgb, var(--sw5e-theme-surface-strong) 42%, rgba(18, 22, 28, 0.28));
+  --sw5e-starship-vital-track: color-mix(in srgb, rgba(18, 28, 36, 0.88) 72%, var(--sw5e-light-muted-control-border));
 }
 
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .progress,
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .meter.hit-dice.progress {
-  border-color: color-mix(in srgb, var(--sw5e-line-color) 28%, transparent);
-  box-shadow: inset 0 0 10px rgba(137, 158, 171, 0.12);
+  border-color: var(--sw5e-light-meter-shell-border);
+  box-shadow: inset 0 0 14px rgba(137, 158, 171, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.52);
+}
+
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .sw5e-starship-vital-play-meter--interactive:is(:hover, :focus-within),
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .meter.hit-dice.progress.sw5e-starship-vital-play-meter--interactive:is(:hover, :focus-within) {
+  border-color: color-mix(in srgb, var(--sw5e-light-active-control-border) 58%, transparent);
+}
+
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-inline-input {
+  color: var(--sw5e-theme-text);
+  background: rgba(255, 255, 255, 0.92);
+  border-color: var(--sw5e-light-muted-control-border);
+}
+
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-inline-input:is(:hover, :focus, :focus-visible) {
+  box-shadow: 0 0 0 1px var(--sw5e-light-active-control-border), 0 0 8px color-mix(in srgb, var(--sw5e-light-active-control-border) 24%, transparent);
+  outline: none;
 }
 
 /* SW5E Dark */
