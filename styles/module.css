@@ -65,6 +65,9 @@ body[data-sw5e-theme="sw5e-light"] {
   --sw5e-light-muted-control-border: color-mix(in srgb, var(--sw5e-line-color) 34%, rgba(67, 67, 67, 0.18));
   --sw5e-light-active-control-border: var(--sw5e-line-color);
   --sw5e-light-icon-frame-border: color-mix(in srgb, var(--sw5e-line-color) 54%, rgba(255, 255, 255, 0.46));
+  --sw5e-light-control-icon-color: var(--sw5e-line-color);
+  --sw5e-light-control-icon-color-hover: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading));
+  --sw5e-light-control-icon-color-disabled: color-mix(in srgb, var(--sw5e-line-color) 42%, var(--sw5e-theme-muted-text));
   --sw5e-light-meter-shell-border: var(--sw5e-light-muted-control-border);
   --sw5e-light-card-header-background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(236, 243, 248, 0.92) 100%);
   --sw5e-light-section-header-background: linear-gradient(180deg, rgba(250, 251, 252, 0.98) 0%, rgba(228, 236, 241, 0.94) 100%);
@@ -137,6 +140,17 @@ body[data-sw5e-theme="sw5e-light"] {
   --color-canvas-1: var(--sw5e-foundry-canvas-1);
   --color-canvas-2: var(--sw5e-foundry-canvas-2);
   --color-canvas-3: var(--sw5e-foundry-canvas-3);
+}
+/* Scoped surfaces — dnd5e icon/button var baseline (css-2f enforcement loads later) */
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root {
+  --button-text-color: var(--sw5e-light-control-icon-color);
+  --button-hover-text-color: var(--sw5e-light-control-icon-color-hover);
+  --icon-fill: currentColor;
+  --control-button-text-color: var(--sw5e-light-control-icon-color);
+  --hint-icon-color: var(--sw5e-light-control-icon-color);
+  --item-control-header-color: var(--sw5e-light-control-icon-color);
+  --item-control-active-color: var(--sw5e-line-color);
+  --filter-control-active-color: var(--sw5e-line-color);
 }
 body[data-sw5e-theme="sw5e-dark"] {
   --sw5e-theme-page-edge: #585858;
@@ -20684,21 +20698,9 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2-journal.applicat
 }
 /* CSS-2F — SW5E Light button icon contrast across scoped .sw5e-theme-root surfaces.
    Root cause: dnd5e journal/apps set pale --button-text-color / --icon-fill (e.g. color-light-1)
-   on controls with pale SW5E Light shells, making FA / dnd5e-icon glyphs nearly invisible. */
+   on controls with pale SW5E Light shells, making FA / dnd5e-icon glyphs nearly invisible.
+   Canonical --sw5e-light-control-icon-* and scoped-root dnd5e var defaults: tokens.less */
 /* Shared control shells — mirrors theme-overrides icon-control bundle + journal/app surfaces */
-/* =============================================================================
- * SW5E Light — control icon tokens (dnd5e CSS variables + SW5e tokens)
- * ============================================================================= */
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root {
-  --sw5e-light-control-icon-color: var(--sw5e-line-color);
-  --sw5e-light-control-icon-color-hover: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading));
-  --sw5e-light-control-icon-color-disabled: color-mix(in srgb, var(--sw5e-line-color) 42%, var(--sw5e-theme-muted-text));
-  --control-button-text-color: var(--sw5e-light-control-icon-color);
-  --hint-icon-color: var(--sw5e-light-control-icon-color);
-  --item-control-header-color: var(--sw5e-light-control-icon-color);
-  --item-control-active-color: var(--sw5e-line-color);
-  --filter-control-active-color: var(--sw5e-line-color);
-}
 /* =============================================================================
  * Control shells — remap dnd5e button/icon variables; reinforce teal on pale surfaces
  * ============================================================================= */
@@ -21627,24 +21629,24 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root[data-sw5e-theme-root="active
  * ============================================================================= */
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.sheet.dnd5e2-journal.journal-entry.application .journal-sidebar :is(.inline-control, .create),
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.sheet.dnd5e2-journal.journal-entry.application :is( .journal-sidebar :is(.inline-control, .create, .collapse, .expand), .journal-sidebar button.unbutton, .journal-sidebar search button.filter-control, .action-buttons :is(.previous, .next, .create, .lock-mode), .journal-footer :is(button, a), .pages-footer :is(button, a), .edit-container :is(.editor-edit, button), .controls-dropdown .header-control button, prose-mirror menu button) {
-  --button-text-color: var(--sw5e-line-color) !important;
-  --button-hover-text-color: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading)) !important;
+  --button-text-color: var(--sw5e-light-control-icon-color) !important;
+  --button-hover-text-color: var(--sw5e-light-control-icon-color-hover) !important;
   --icon-fill: currentColor !important;
 }
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.sheet.dnd5e2-journal.journal-entry.application :is( .journal-sidebar :is(.inline-control, .create, .collapse, .expand), .journal-sidebar button.unbutton, .journal-sidebar search button.filter-control, .action-buttons :is(.previous, .next, .create, .lock-mode), .journal-footer :is(button, a), .pages-footer :is(button, a), .edit-container :is(.editor-edit, button), .controls-dropdown .header-control button, prose-mirror menu button):not(.default):not([type="submit"]):not(.dialog-button.default) {
-  color: var(--sw5e-line-color) !important;
+  color: var(--sw5e-light-control-icon-color) !important;
   filter: none !important;
   opacity: 1 !important;
 }
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.sheet.dnd5e2-journal.journal-entry.application :is( .journal-sidebar :is(.inline-control, .create, .collapse, .expand), .journal-sidebar button.unbutton, .journal-sidebar search button.filter-control, .action-buttons :is(.previous, .next, .create, .lock-mode), .journal-footer :is(button, a), .pages-footer :is(button, a), .edit-container :is(.editor-edit, button), .controls-dropdown .header-control button, prose-mirror menu button):is(:hover, :focus, :focus-visible):not(:disabled) {
-  --button-text-color: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading)) !important;
-  --button-hover-text-color: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading)) !important;
-  color: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading)) !important;
+  --button-text-color: var(--sw5e-light-control-icon-color-hover) !important;
+  --button-hover-text-color: var(--sw5e-light-control-icon-color-hover) !important;
+  color: var(--sw5e-light-control-icon-color-hover) !important;
 }
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.sheet.dnd5e2-journal.journal-entry.application :is( .journal-sidebar :is(.inline-control, .create, .collapse, .expand), .journal-sidebar button.unbutton, .journal-sidebar search button.filter-control, .action-buttons :is(.previous, .next, .create, .lock-mode), .journal-footer :is(button, a), .pages-footer :is(button, a), .edit-container :is(.editor-edit, button), .controls-dropdown .header-control button, prose-mirror menu button):disabled,
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.sheet.dnd5e2-journal.journal-entry.application :is( .journal-sidebar :is(.inline-control, .create, .collapse, .expand), .journal-sidebar button.unbutton, .journal-sidebar search button.filter-control, .action-buttons :is(.previous, .next, .create, .lock-mode), .journal-footer :is(button, a), .pages-footer :is(button, a), .edit-container :is(.editor-edit, button), .controls-dropdown .header-control button, prose-mirror menu button)[aria-disabled="true"] {
-  --button-text-color: color-mix(in srgb, var(--sw5e-line-color) 42%, var(--sw5e-theme-muted-text)) !important;
-  color: color-mix(in srgb, var(--sw5e-line-color) 42%, var(--sw5e-theme-muted-text)) !important;
+  --button-text-color: var(--sw5e-light-control-icon-color-disabled) !important;
+  color: var(--sw5e-light-control-icon-color-disabled) !important;
 }
 /* Restore Font Awesome on pseudo-element icon buttons (inline-control lacks `.icon` class) */
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.sheet.dnd5e2-journal.journal-entry.application :is( .journal-sidebar :is(.inline-control, .create, .collapse, .expand), .action-buttons :is(.previous, .next, .create, .lock-mode), search button.filter-control, .edit-container :is(.editor-edit, button), prose-mirror menu button, .controls-dropdown .header-control button),
@@ -21686,7 +21688,7 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2-journal.application :
 /* Bottom book navigation — FA on link ::before / ::after (not buttons) */
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2-journal.application.journal-entry .book-navigation a::before,
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2-journal.application.journal-entry .book-navigation a::after {
-  color: var(--sw5e-line-color) !important;
+  color: var(--sw5e-light-control-icon-color) !important;
   font-family: var(--font-awesome) !important;
   font-style: normal !important;
   font-weight: bold;
@@ -21694,7 +21696,7 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2-journal.application.j
   -webkit-text-fill-color: currentColor;
 }
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2-journal.application.journal-entry .book-navigation a:is(:hover, :focus, :focus-visible) {
-  color: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading)) !important;
+  color: var(--sw5e-light-control-icon-color-hover) !important;
 }
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2-journal.application.journal-entry .book-navigation a:is(:hover, :focus, :focus-visible)::before,
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2-journal.application.journal-entry .book-navigation a:is(:hover, :focus, :focus-visible)::after {

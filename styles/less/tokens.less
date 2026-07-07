@@ -54,6 +54,9 @@ body[data-sw5e-theme="sw5e-light"] {
   --sw5e-light-muted-control-border: color-mix(in srgb, var(--sw5e-line-color) 34%, rgba(67, 67, 67, 0.18));
   --sw5e-light-active-control-border: var(--sw5e-line-color);
   --sw5e-light-icon-frame-border: color-mix(in srgb, var(--sw5e-line-color) 54%, rgba(255, 255, 255, 0.46));
+  --sw5e-light-control-icon-color: var(--sw5e-line-color);
+  --sw5e-light-control-icon-color-hover: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading));
+  --sw5e-light-control-icon-color-disabled: color-mix(in srgb, var(--sw5e-line-color) 42%, var(--sw5e-theme-muted-text));
   --sw5e-light-meter-shell-border: var(--sw5e-light-muted-control-border);
   --sw5e-light-card-header-background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(236, 243, 248, 0.92) 100%);
   --sw5e-light-section-header-background: linear-gradient(180deg, rgba(250, 251, 252, 0.98) 0%, rgba(228, 236, 241, 0.94) 100%);
@@ -144,6 +147,18 @@ body[data-sw5e-theme="sw5e-light"] {
   --color-canvas-1: var(--sw5e-foundry-canvas-1);
   --color-canvas-2: var(--sw5e-foundry-canvas-2);
   --color-canvas-3: var(--sw5e-foundry-canvas-3);
+}
+
+/* Scoped surfaces — dnd5e icon/button var baseline (css-2f enforcement loads later) */
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root {
+  --button-text-color: var(--sw5e-light-control-icon-color);
+  --button-hover-text-color: var(--sw5e-light-control-icon-color-hover);
+  --icon-fill: currentColor;
+  --control-button-text-color: var(--sw5e-light-control-icon-color);
+  --hint-icon-color: var(--sw5e-light-control-icon-color);
+  --item-control-header-color: var(--sw5e-light-control-icon-color);
+  --item-control-active-color: var(--sw5e-line-color);
+  --filter-control-active-color: var(--sw5e-line-color);
 }
 
 body[data-sw5e-theme="sw5e-dark"] {

@@ -1,6 +1,7 @@
 /* CSS-2F — SW5E Light button icon contrast across scoped .sw5e-theme-root surfaces.
    Root cause: dnd5e journal/apps set pale --button-text-color / --icon-fill (e.g. color-light-1)
-   on controls with pale SW5E Light shells, making FA / dnd5e-icon glyphs nearly invisible. */
+   on controls with pale SW5E Light shells, making FA / dnd5e-icon glyphs nearly invisible.
+   Canonical --sw5e-light-control-icon-* and scoped-root dnd5e var defaults: tokens.less */
 
 @light-root: ~'body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root';
 
@@ -45,21 +46,6 @@
 )';
 
 @light-primary-exclude: ~':not(.default):not([type="submit"]):not(.dialog-button.default)';
-
-/* =============================================================================
- * SW5E Light — control icon tokens (dnd5e CSS variables + SW5e tokens)
- * ============================================================================= */
-
-@{light-root} {
-  --sw5e-light-control-icon-color: var(--sw5e-line-color);
-  --sw5e-light-control-icon-color-hover: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading));
-  --sw5e-light-control-icon-color-disabled: color-mix(in srgb, var(--sw5e-line-color) 42%, var(--sw5e-theme-muted-text));
-  --control-button-text-color: var(--sw5e-light-control-icon-color);
-  --hint-icon-color: var(--sw5e-light-control-icon-color);
-  --item-control-header-color: var(--sw5e-light-control-icon-color);
-  --item-control-active-color: var(--sw5e-line-color);
-  --filter-control-active-color: var(--sw5e-line-color);
-}
 
 /* =============================================================================
  * Control shells — remap dnd5e button/icon variables; reinforce teal on pale surfaces

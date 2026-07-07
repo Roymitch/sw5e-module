@@ -40,27 +40,27 @@
 
 @{journal-light-app} .journal-sidebar :is(.inline-control, .create),
 @{journal-light-app} @{journal-interior-controls} {
-  --button-text-color: var(--sw5e-line-color) !important;
-  --button-hover-text-color: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading)) !important;
+  --button-text-color: var(--sw5e-light-control-icon-color) !important;
+  --button-hover-text-color: var(--sw5e-light-control-icon-color-hover) !important;
   --icon-fill: currentColor !important;
 }
 
 @{journal-light-app} @{journal-interior-controls}:not(.default):not([type="submit"]):not(.dialog-button.default) {
-  color: var(--sw5e-line-color) !important;
+  color: var(--sw5e-light-control-icon-color) !important;
   filter: none !important;
   opacity: 1 !important;
 }
 
 @{journal-light-app} @{journal-interior-controls}:is(:hover, :focus, :focus-visible):not(:disabled) {
-  --button-text-color: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading)) !important;
-  --button-hover-text-color: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading)) !important;
-  color: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading)) !important;
+  --button-text-color: var(--sw5e-light-control-icon-color-hover) !important;
+  --button-hover-text-color: var(--sw5e-light-control-icon-color-hover) !important;
+  color: var(--sw5e-light-control-icon-color-hover) !important;
 }
 
 @{journal-light-app} @{journal-interior-controls}:disabled,
 @{journal-light-app} @{journal-interior-controls}[aria-disabled="true"] {
-  --button-text-color: color-mix(in srgb, var(--sw5e-line-color) 42%, var(--sw5e-theme-muted-text)) !important;
-  color: color-mix(in srgb, var(--sw5e-line-color) 42%, var(--sw5e-theme-muted-text)) !important;
+  --button-text-color: var(--sw5e-light-control-icon-color-disabled) !important;
+  color: var(--sw5e-light-control-icon-color-disabled) !important;
 }
 
 /* Restore Font Awesome on pseudo-element icon buttons (inline-control lacks `.icon` class) */
@@ -106,7 +106,7 @@
 /* Bottom book navigation — FA on link ::before / ::after (not buttons) */
 @{journal-light-any}.journal-entry .book-navigation a::before,
 @{journal-light-any}.journal-entry .book-navigation a::after {
-  color: var(--sw5e-line-color) !important;
+  color: var(--sw5e-light-control-icon-color) !important;
   font-family: var(--font-awesome) !important;
   font-style: normal !important;
   font-weight: bold;
@@ -115,7 +115,7 @@
 }
 
 @{journal-light-any}.journal-entry .book-navigation a:is(:hover, :focus, :focus-visible) {
-  color: color-mix(in srgb, var(--sw5e-line-color) 82%, var(--sw5e-theme-heading)) !important;
+  color: var(--sw5e-light-control-icon-color-hover) !important;
 }
 
 @{journal-light-any}.journal-entry .book-navigation a:is(:hover, :focus, :focus-visible)::before,
