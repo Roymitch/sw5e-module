@@ -42,6 +42,67 @@ function migrateSw5eStarshipPrototypeToken(actorData, updateData = null, { persi
 	return updateData;
 }
 
+function _isManeuverItem(item) {
+	if ( typeof item?.type !== "string" ) return false;
+	const normalizedType = item.type.split(".").at(-1) ?? item.type;
+	return normalizedType === "maneuver";
+}
+
+function _mapLegacySuperiorityProgression(progression) {
+	if ( progression === "" || progression === null || progression === undefined ) return null;
+	if ( progression === 0 || progression === "0" || progression === "none" ) return "none";
+	if ( progression === 0.5 || progression === "0.5" || progression === "half" ) return "half";
+	if ( progression === 1 || progression === "1" || progression === "full" ) return "full";
+	return null;
+}
+
+function _itemHasSuperiorityProgression(item) {
+	if ( !["class", "subclass"].includes(item?.type) ) return false;
+	const levels = Number(item.system?.levels ?? 0);
+	if ( item.type === "class" && !(levels >= 1) ) return false;
+
+	const progression = item.system?.spellcasting?.superiorityProgression;
+	if ( progression && progression !== "none" ) return true;
+
+	const mapped = _mapLegacySuperiorityProgression(item.system?.superiority?.progression);
+	return mapped != null && mapped !== "none";
+}
+
+function _actorHasSuperiorityProgression(actorData) {
+	for ( const item of actorData.items ?? [] ) {
+		if ( _itemHasSuperiorityProgression(item) ) return true;
+	}
+	return false;
+}
+
+function _actorHasSuperiorityIndicators(actorData) {
+	if ( _actorHasSuperiorityProgression(actorData) ) return true;
+	if ( actorData.system?.attributes?.super ) return true;
+	if ( (actorData.items ?? []).some(item => _isManeuverItem(item)) ) return true;
+	if ( Number(actorData.system?.details?.superiorityLevel ?? 0) > 0 ) return true;
+	return false;
+}
+
+/**
+ * Clear stale persisted superiority dice.max overrides written as 0.
+ * @param {object} actorData
+ * @param {object} updateData
+ * @returns {object}
+ * @private
+ */
+function _migrateStaleSuperiorityDiceMax(actorData, updateData) {
+	if ( !["character", "npc"].includes(actorData.type) ) return updateData;
+
+	const diceMax = foundry.utils.getProperty(actorData, "system.superiority.dice.max");
+	if ( diceMax !== 0 ) return updateData;
+	if ( !_actorHasSuperiorityIndicators(actorData) ) return updateData;
+
+	const path = "system.superiority.dice.max";
+	foundry.utils.setProperty(updateData, path, null);
+	foundry.utils.setProperty(actorData, path, null);
+	return updateData;
+}
+
 /**
  * Checks if the world needs migrating.
  * @returns {boolean}      Wheter migration is needed or not.
@@ -546,6 +607,37 @@ export async function convertLegacyWorldPayload(payload, {
 
 /* -------------------------------------------- */
 
+const LEGACY_SUPERIORITY_EFFECT_KEY_MAP = {
+	"system.attributes.super.dice.max": "system.superiority.dice.max",
+	"system.attributes.super.dice.value": "system.superiority.dice.value",
+	"system.attributes.super.die": "system.superiority.die",
+	"system.attributes.super.level": "system.superiority.level",
+	"bonuses.super.dc": "bonuses.superiority.dc.all",
+	"bonuses.super.physicalDC": "bonuses.superiority.dc.physical",
+	"bonuses.super.mentalDC": "bonuses.superiority.dc.mental"
+};
+
+/**
+ * Remap legacy standalone SW5e superiority Active Effect keys to dnd5e-module paths.
+ * @param {object} effect
+ * @param {object} updateData
+ * @returns {object}
+ * @private
+ */
+function _remapSuperiorityEffectKeys(effect, updateData) {
+	if ( !Array.isArray(effect.changes) ) return updateData;
+
+	let changed = false;
+	for ( const change of effect.changes ) {
+		const mappedKey = LEGACY_SUPERIORITY_EFFECT_KEY_MAP[change.key];
+		if ( !mappedKey ) continue;
+		change.key = mappedKey;
+		changed = true;
+	}
+	if ( changed ) updateData.changes = effect.changes;
+	return updateData;
+}
+
 /**
  * Migrate any active effects attached to the provided parent.
  * @param {object} parent           Data of the parent being migrated.
@@ -637,6 +729,7 @@ export const migrateActorData = function(actor, migrationData, flags={}, { actor
 	_migrateImage(workingActor, updateData);
 	_migrateObjectFlags(workingActor, updateData);
 	_migrateStalePowercastingKnownMax(workingActor, updateData);
+	_migrateStaleSuperiorityDiceMax(workingActor, updateData);
 
 	// Migrate embedded effects
 	if ( workingActor.effects ) {
@@ -751,6 +844,7 @@ export function migrateItemData(item, migrationData, flags={}) {
 export const migrateEffectData = function(effect, migrationData, { parent }={}) {
 	const updateData = {};
 	_migrateImage(effect, updateData);
+	_remapSuperiorityEffectKeys(effect, updateData);
 	_cleanEffect(effect, updateData, parent);
 	return updateData;
 };

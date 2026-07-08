@@ -1,4 +1,5 @@
 <form class="flexcol sw5e-power-casting-ability-config-form">
+	{{#if showForcecasting}}
 	<fieldset class="card">
 		<legend>{{forceLabel}}</legend>
 
@@ -48,6 +49,35 @@
 			</div>
 		</div>
 	</fieldset>
+	{{/if}}
+
+	{{#if showTechcasting}}
+	<fieldset class="card">
+		<legend>{{techLabel}}</legend>
+
+		<div class="form-group">
+			<label>{{techSchoolLabel}}</label>
+			<div class="form-fields sw5e-power-ability-row">
+				<div class="sw5e-power-ability-col">
+					<span class="sw5e-power-ability-col-label">{{abilityColumnLabel}}</span>
+					<select name="system.powercasting.tech.schools.tec.attr">
+						{{#each techAbilityOptions}}
+							<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+						{{/each}}
+					</select>
+				</div>
+				<div class="sw5e-power-ability-col">
+					<span class="sw5e-power-ability-col-label">{{techPointsColumnLabel}}</span>
+					<select name="flags.sw5e.powercastingOverrides.tech.tec.pointsAbility">
+						{{#each techPointsOptions}}
+							<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+						{{/each}}
+					</select>
+				</div>
+			</div>
+		</div>
+	</fieldset>
+	{{/if}}
 
 	<footer class="form-footer">
 		<button type="submit" class="dialog-button" data-action="reset">

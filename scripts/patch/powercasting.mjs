@@ -859,12 +859,16 @@ function injectPowersTabPowercastingSummary(root, actor, { isEditable = false } 
 	if ( hasTechcasting ) {
 		const t = preparedCards.tech;
 		const title = localizeOrFallback("SW5E.Powercasting.Tech.Label", "Techcasting");
+		const configureLabel = localizeOrFallback("SW5E.Powercasting.AbilityConfig.Title", "Configure Powercasting");
+		const configCog = isEditable
+			? `<button type="button" class="sw5e-powercasting-ability-config unbutton control-button" data-action="configure-powercasting-abilities" data-tooltip title="${foundry.utils.escapeHTML(configureLabel)}" aria-label="${foundry.utils.escapeHTML(configureLabel)}"><i class="fas fa-cog" inert></i></button>`
+			: "";
 		const school = localizeOrFallback("SW5E.Powercasting.Tech.School.Tec.Label", "Technology");
 		const seg = formatPowersTabBannerSegment(school, t.attr, t.attack, t.save, "tec");
 		const techKnown = buildPowersKnownSummaryRow(actor, "tech", "SW5E.Powercasting.PowersTabSummary.PowersKnownTech");
 		blocks.push(`<div class="sw5e-powers-banner-block" data-sw5e-summary="tech">`
 			+ `<div class="sw5e-powers-banner-head">`
-			+ `<div class="sw5e-powers-banner-head-left"><div class="sw5e-powers-banner-kicker">${foundry.utils.escapeHTML(title)}</div></div>`
+			+ `<div class="sw5e-powers-banner-head-left"><div class="sw5e-powers-banner-kicker">${foundry.utils.escapeHTML(title)}${configCog}</div></div>`
 			+ `<div class="sw5e-powers-banner-head-right">${techKnown}</div>`
 			+ `</div>`
 			+ `<div class="sw5e-powers-banner-flow">${seg}</div></div>`);
@@ -896,10 +900,12 @@ function injectPowersTabPowercastingSummary(root, actor, { isEditable = false } 
 	const wrap = document.createElement("div");
 	wrap.className = "sw5e-powers-summary sw5e-powers-banner";
 	wrap.innerHTML = blocks.join("");
-	wrap.querySelector('[data-action="configure-powercasting-abilities"]')?.addEventListener("click", event => {
-		event.preventDefault();
-		event.stopPropagation();
-		openPowerCastingAbilityConfig(actor);
+	wrap.querySelectorAll('[data-action="configure-powercasting-abilities"]').forEach(button => {
+		button.addEventListener("click", event => {
+			event.preventDefault();
+			event.stopPropagation();
+			openPowerCastingAbilityConfig(actor);
+		});
 	});
 	wrap.querySelector('[data-action="configure-superiority-abilities"]')?.addEventListener("click", event => {
 		event.preventDefault();

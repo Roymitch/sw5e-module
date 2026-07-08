@@ -148,6 +148,8 @@ export function getPowercastingOverrideEffectPaths() {
 		"flags.sw5e.powercastingOverrides.force.uni.pointsAbility",
 		"system.powercasting.force.schools.lgt.attr",
 		"system.powercasting.force.schools.drk.attr",
-		"system.powercasting.force.schools.uni.attr"
+		"system.powercasting.force.schools.uni.attr",
+		"flags.sw5e.powercastingOverrides.tech.tec.pointsAbility",
+		"system.powercasting.tech.schools.tec.attr"
 	]);
 }

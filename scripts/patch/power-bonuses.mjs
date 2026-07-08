@@ -57,6 +57,30 @@ export function getPreparedPowerDc(actor, item) {
 }
 
 /**
+ * Resolve save DC for a power item, honoring per-item powercasting ability overrides.
+ * @param {Actor5e} actor
+ * @param {Item5e|object} item
+ * @param {object} [rollData]
+ * @returns {number|null}
+ */
+export function resolvePowerItemDc(actor, item, rollData = {}) {
+	if ( !actor || !item?.system?.school ) return null;
+
+	const castType = getPowerCastType(item);
+	const school = item.system.school;
+	const itemAbility = String(item.system?.ability ?? "").trim();
+
+	if ( itemAbility && ABILITY_KEYS.includes(itemAbility) ) {
+		const base = 8 + (Number(actor.system?.attributes?.prof) || 0);
+		const mod = Number(actor.system?.abilities?.[itemAbility]?.mod) || 0;
+		const bonus = getPowerDcBonus(actor, castType, school, itemAbility, rollData);
+		return base + mod + bonus;
+	}
+
+	return getPreparedPowerDc(actor, item);
+}
+
+/**
  * Aggregate force/tech power attack bonuses for a power item.
  * @param {Actor5e} actor
  * @param {Item5e|object} item
@@ -307,7 +331,7 @@ function patchPowerSaveDc() {
 		const item = this.item;
 		if ( !isPowerCastingItem(item) || !this.save?.ability ) return;
 
-		const preparedDc = getPreparedPowerDc(this.actor, item);
+		const preparedDc = resolvePowerItemDc(this.actor, item, rollData);
 		if ( !Number.isFinite(preparedDc) ) return;
 
 		const castType = getPowerCastType(item);
@@ -342,7 +366,7 @@ function patchPowerSheetSaveDisplay() {
 			?? this.actor?.getRollData?.()
 			?? {};
 		const castType = getPowerCastType(item);
-		const preparedDc = getPreparedPowerDc(this.actor, item);
+		const preparedDc = resolvePowerItemDc(this.actor, item, rollData);
 		const saveTargetBonus = getPowerSaveTargetDcBonus(this.actor, castType, rawAbilities, rollData);
 		const computedDc = Number.isFinite(preparedDc) ? preparedDc + saveTargetBonus : Number(saveActivity.save?.dc?.value ?? ctx.save?.dc?.value);
 		const ability = abilities.length === 1

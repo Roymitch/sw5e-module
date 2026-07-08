@@ -42,6 +42,24 @@ function normalizeUniModeForDisplay(mode) {
 	return mode === "fixed" ? "fixed" : "highestEffective";
 }
 
+function actorHasForcecasting(actor) {
+	const actorClasses = actor?.itemTypes?.class ?? [];
+	const actorPowers = actor?.itemTypes?.spell ?? [];
+	return (
+		actorClasses.some(clss => ["consular", "guardian", "sentinel"].includes(clss.system?.identifier))
+		|| actorPowers.some(power => ["lgt", "drk", "uni"].includes(power.system?.school))
+	);
+}
+
+function actorHasTechcasting(actor) {
+	const actorClasses = actor?.itemTypes?.class ?? [];
+	const actorPowers = actor?.itemTypes?.spell ?? [];
+	return (
+		actorClasses.some(clss => ["engineer", "scout"].includes(clss.system?.identifier))
+		|| actorPowers.some(power => power.system?.school === "tec")
+	);
+}
+
 export class PowerCastingAbilityConfigApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	constructor({ actor } = {}) {
 		super();
@@ -68,8 +86,11 @@ export class PowerCastingAbilityConfigApp extends HandlebarsApplicationMixin(App
 	async _prepareContext() {
 		const actor = this.actor;
 		const sourceForce = foundry.utils.deepClone(actor?._source?.system?.powercasting?.force?.schools ?? {});
+		const sourceTech = foundry.utils.deepClone(actor?._source?.system?.powercasting?.tech?.schools?.tec ?? {});
 		const overrides = getPowercastingOverrides(actor);
 		const uniMode = normalizeUniModeForDisplay(overrides?.force?.uni?.mode);
+		const showForcecasting = actorHasForcecasting(actor);
+		const showTechcasting = actorHasTechcasting(actor);
 
 		const schoolRows = FORCE_SCHOOLS.map(school => ({
 			school,
@@ -88,12 +109,19 @@ export class PowerCastingAbilityConfigApp extends HandlebarsApplicationMixin(App
 		}));
 
 		return {
+			showForcecasting,
+			showTechcasting,
 			forceLabel: localizeOrFallback("SW5E.Powercasting.Force.Label", "Forcecasting"),
 			primarySchoolRows: schoolRows.filter(row => row.school !== "uni"),
 			uniFixedOptions: buildAbilityOptions(sourceForce?.uni?.attr ?? ""),
 			uniModeOptions,
 			uniMode,
 			showUniFixed: uniMode === "fixed",
+			techLabel: localizeOrFallback("SW5E.Powercasting.Tech.Label", "Techcasting"),
+			techSchoolLabel: localizeOrFallback("SW5E.Powercasting.Tech.School.Tec.Label", "Technology"),
+			techAbilityOptions: buildAbilityOptions(sourceTech?.attr ?? ""),
+			techPointsOptions: buildAbilityOptions(overrides?.tech?.tec?.pointsAbility ?? ""),
+			techPointsColumnLabel: localizeOrFallback("SW5E.Powercasting.AbilityConfig.PointsAbilityTech", "Max Tech Points Ability"),
 			resetLabel: localizeOrFallback("SW5E.Powercasting.AbilityConfig.Reset", "Reset to Defaults"),
 			saveLabel: localizeOrFallback("SW5E.Powercasting.AbilityConfig.Save", "Save Changes"),
 			abilityColumnLabel: localizeOrFallback("SW5E.Powercasting.AbilityConfig.CastingAbility", "Casting Ability"),
@@ -131,23 +159,33 @@ export class PowerCastingAbilityConfigApp extends HandlebarsApplicationMixin(App
 				updateData[`system.powercasting.force.schools.${school}.attr`] = null;
 				updateData[`system.powercasting.force.schools.${school}.dc`] = null;
 			}
+			updateData["system.powercasting.tech.schools.tec.attr"] = null;
+			updateData["system.powercasting.tech.schools.tec.dc"] = null;
 			updateData["flags.sw5e.powercastingOverrides"] = null;
 		} else {
-			for ( const school of ["lgt", "drk"] ) {
-				const attr = String(formData.get(`system.powercasting.force.schools.${school}.attr`) ?? "").trim();
-				updateData[`system.powercasting.force.schools.${school}.attr`] = attr || null;
-				const points = String(formData.get(`flags.sw5e.powercastingOverrides.force.${school}.pointsAbility`) ?? "").trim();
-				updateData[`flags.sw5e.powercastingOverrides.force.${school}.pointsAbility`] = points || null;
+			if ( actorHasForcecasting(this.actor) ) {
+				for ( const school of ["lgt", "drk"] ) {
+					const attr = String(formData.get(`system.powercasting.force.schools.${school}.attr`) ?? "").trim();
+					updateData[`system.powercasting.force.schools.${school}.attr`] = attr || null;
+					const points = String(formData.get(`flags.sw5e.powercastingOverrides.force.${school}.pointsAbility`) ?? "").trim();
+					updateData[`flags.sw5e.powercastingOverrides.force.${school}.pointsAbility`] = points || null;
+				}
+				const uniModeRaw = String(formData.get("flags.sw5e.powercastingOverrides.force.uni.mode") ?? "highestEffective").trim();
+				const uniMode = uniModeRaw === "fixed" ? "fixed" : "highestEffective";
+				updateData["flags.sw5e.powercastingOverrides.force.uni.mode"] = uniMode;
+				updateData["flags.sw5e.powercastingOverrides.force.uni.pointsAbility"] = null;
+				if ( uniMode === "fixed" ) {
+					const uniAttr = String(formData.get("system.powercasting.force.schools.uni.attr") ?? "").trim();
+					updateData["system.powercasting.force.schools.uni.attr"] = uniAttr || null;
+				} else {
+					updateData["system.powercasting.force.schools.uni.attr"] = null;
+				}
 			}
-			const uniModeRaw = String(formData.get("flags.sw5e.powercastingOverrides.force.uni.mode") ?? "highestEffective").trim();
-			const uniMode = uniModeRaw === "fixed" ? "fixed" : "highestEffective";
-			updateData["flags.sw5e.powercastingOverrides.force.uni.mode"] = uniMode;
-			updateData["flags.sw5e.powercastingOverrides.force.uni.pointsAbility"] = null;
-			if ( uniMode === "fixed" ) {
-				const uniAttr = String(formData.get("system.powercasting.force.schools.uni.attr") ?? "").trim();
-				updateData["system.powercasting.force.schools.uni.attr"] = uniAttr || null;
-			} else {
-				updateData["system.powercasting.force.schools.uni.attr"] = null;
+			if ( actorHasTechcasting(this.actor) ) {
+				const techAttr = String(formData.get("system.powercasting.tech.schools.tec.attr") ?? "").trim();
+				updateData["system.powercasting.tech.schools.tec.attr"] = techAttr || null;
+				const techPoints = String(formData.get("flags.sw5e.powercastingOverrides.tech.tec.pointsAbility") ?? "").trim();
+				updateData["flags.sw5e.powercastingOverrides.tech.tec.pointsAbility"] = techPoints || null;
 			}
 		}
 

@@ -257,6 +257,95 @@ function normalizeClassSuperiorityProgression(item) {
 	return true
 }
 
+function mapLegacySuperiorityProgression(progression) {
+	if ( progression === "" || progression === null || progression === undefined ) return null
+	if ( progression === 0 || progression === "0" || progression === "none" ) return "none"
+	if ( progression === 0.5 || progression === "0.5" || progression === "half" ) return "half"
+	if ( progression === 1 || progression === "1" || progression === "full" ) return "full"
+	return null
+}
+
+function normalizeLegacyClassSuperiorityProgression(item) {
+	if ( !["class", "subclass"].includes(item?.type) ) return false
+
+	const current = item.system?.spellcasting?.superiorityProgression
+	if ( current && current !== "none" ) return false
+
+	const legacyProgression = item.system?.superiority?.progression
+	const mapped = mapLegacySuperiorityProgression(legacyProgression)
+	if ( !mapped ) return false
+
+	item.system.spellcasting ??= {}
+	item.system.spellcasting.superiorityProgression = mapped
+	return true
+}
+
+function copyLegacySuperiorityScalar(target, legacyValue, currentValue, { skipZero = false } = {}) {
+	if ( legacyValue === undefined || legacyValue === null ) return false
+	if ( skipZero && legacyValue === 0 ) return false
+	if ( currentValue != null ) return false
+	return legacyValue
+}
+
+function normalizeLegacyActorSuperiority(actor) {
+	if ( !actor?.system ) return false
+
+	const legacySuper = actor.system.attributes?.super
+	if ( !isObjectLike(legacySuper) ) return false
+
+	let changed = false
+	actor.system.superiority ??= {}
+	actor.system.superiority.dice ??= {}
+	actor.system.superiority.dice.bonuses ??= {}
+	actor.system.superiority.known ??= {}
+
+	const dice = actor.system.superiority.dice
+	const legacyMax = copyLegacySuperiorityScalar(dice, legacySuper.dice?.max, dice.max, { skipZero: true })
+	if ( legacyMax !== false ) {
+		dice.max = legacyMax
+		changed = true
+	}
+
+	const legacyDie = copyLegacySuperiorityScalar(actor.system.superiority, legacySuper.die, actor.system.superiority.die)
+	if ( legacyDie !== false ) {
+		actor.system.superiority.die = legacyDie
+		changed = true
+	}
+
+	const legacyLevel = copyLegacySuperiorityScalar(actor.system.superiority, legacySuper.level, actor.system.superiority.level)
+	if ( legacyLevel !== false ) {
+		actor.system.superiority.level = legacyLevel
+		changed = true
+	}
+
+	const legacyKnownMax = copyLegacySuperiorityScalar(actor.system.superiority.known, legacySuper.known?.max, actor.system.superiority.known.max)
+	if ( legacyKnownMax !== false ) {
+		actor.system.superiority.known.max = legacyKnownMax
+		changed = true
+	}
+
+	const legacyBonuses = legacySuper.dice?.bonuses
+	if ( isObjectLike(legacyBonuses) ) {
+		for ( const [key, value] of Object.entries(legacyBonuses) ) {
+			if ( value == null ) continue
+			if ( dice.bonuses[key] != null ) continue
+			dice.bonuses[key] = value
+			changed = true
+		}
+	}
+
+	const legacyValue = legacySuper.dice?.value
+	if ( Number.isFinite(Number(legacyValue)) && dice.max == null ) {
+		const currentValue = dice.value
+		if ( currentValue == null || currentValue === 0 ) {
+			dice.value = Number(legacyValue)
+			changed = true
+		}
+	}
+
+	return changed
+}
+
 function isLegacyScholarSuperiorityFeature(item) {
 	if ( item?.type !== "feat" ) return false
 	if ( item?.system?.identifier !== "superiority-dice" ) return false
@@ -558,6 +647,7 @@ export function normalizeDnd5eItemSource(item, { targetSystemVersion=TARGET_DND5
 	changed = normalizePowerCastingDefaults(item) || changed
 	changed = normalizeMissingWeaponAttackActivity(item) || changed
 	changed = normalizeExplosiveSelfConsumption(item) || changed
+	changed = normalizeLegacyClassSuperiorityProgression(item) || changed
 	changed = normalizeClassSuperiorityProgression(item) || changed
 	changed = normalizeLegacyScholarSuperiorityFeature(item) || changed
 
@@ -671,6 +761,7 @@ export function normalizeLegacyMasterActorSource(actor) {
 	}
 
 	changed = normalizeNpcEmbeddedWeaponDamage(actor) || changed
+	changed = normalizeLegacyActorSuperiority(actor) || changed
 
 	return changed
 }
