@@ -58,7 +58,7 @@ body[data-sw5e-theme="sw5e-light"] {
   --sw5e-theme-input-border: rgba(13, 153, 204, 0.4);
   --sw5e-theme-color-scheme: light;
   --sw5e-theme-window-background: linear-gradient(90deg, rgba(175, 198, 214, 0.98) 0%, rgba(214, 214, 214, 0.92) 50%, rgba(175, 198, 214, 0.98) 100%), url("/modules/sw5e-module/assets/ui/parchments/sw5e-light-parchment.png");
-  --sw5e-theme-surface-background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.18) 100%), url("/modules/sw5e-module/assets/ui/parchments/sw5e-light-parchment.png");
+  --sw5e-theme-surface-background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(214, 214, 214, 0.7) 100%), url("/modules/sw5e-module/assets/ui/parchments/sw5e-light-parchment.png");
   --sw5e-theme-panel-background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(241, 246, 249, 0.82) 100%);
   --sw5e-theme-button-text: #ffffff;
   --sw5e-theme-shadow: 0 8px 20px rgba(39, 67, 87, 0.18);
@@ -111,7 +111,7 @@ body[data-sw5e-theme="sw5e-light"] {
   --sw5e-foundry-canvas-1: #e4ecf1;
   --sw5e-foundry-canvas-2: #eef4f8;
   --sw5e-foundry-canvas-3: #f7fafc;
-  --sw5e-foundry-app-window-background: linear-gradient(180deg, rgba(248, 251, 253, 0.72) 0%, rgba(226, 237, 244, 0.66) 100%), url("/modules/sw5e-module/assets/ui/parchments/sw5e-light-parchment.png");
+  --sw5e-foundry-app-window-background: linear-gradient(180deg, rgba(248, 251, 253, 0.88) 0%, rgba(226, 237, 244, 0.78) 100%), url("/modules/sw5e-module/assets/ui/parchments/sw5e-light-parchment.png");
   --sw5e-foundry-window-content-background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(236, 243, 248, 0.95) 100%);
   --sw5e-foundry-window-canvas-1: rgba(255, 255, 255, 0.94);
   --sw5e-foundry-window-canvas-2: rgba(248, 251, 253, 0.96);
@@ -180,7 +180,7 @@ body[data-sw5e-theme="sw5e-dark"] {
   --sw5e-theme-input-border: rgba(13, 153, 204, 0.55);
   --sw5e-theme-color-scheme: dark;
   --sw5e-theme-window-background: linear-gradient(90deg, rgba(88, 88, 88, 0.98) 0%, rgba(44, 44, 44, 0.94) 50%, rgba(88, 88, 88, 0.98) 100%), url("/modules/sw5e-module/assets/ui/parchments/sw5e-dark-parchment.png");
-  --sw5e-theme-surface-background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(0, 0, 0, 0.08) 100%), url("/modules/sw5e-module/assets/ui/parchments/sw5e-dark-parchment.png");
+  --sw5e-theme-surface-background: linear-gradient(180deg, rgba(56, 56, 56, 0.82) 0%, rgba(28, 28, 28, 0.88) 100%), url("/modules/sw5e-module/assets/ui/parchments/sw5e-dark-parchment.png");
   --sw5e-theme-panel-background: linear-gradient(180deg, rgba(56, 56, 56, 0.78) 0%, rgba(28, 28, 28, 0.92) 100%);
   --sw5e-theme-button-text: #ffffff;
   --sw5e-theme-shadow: 0 12px 24px rgba(0, 0, 0, 0.32);
@@ -299,10 +299,10 @@ body[data-sw5e-theme="sw5e-underworld"] {
   --sw5e-underworld-header-background-position: top center;
   --sw5e-underworld-header-background-size: 100% auto;
   --sw5e-underworld-header-banner-height: 320px;
-  --sw5e-underworld-header-opacity: 0.62;
-  --sw5e-underworld-header-opacity-reassert: 0.58;
+  --sw5e-underworld-header-opacity: 0.72;
+  --sw5e-underworld-header-opacity-reassert: 0.68;
   --sw5e-underworld-header-image-layer: var(--sw5e-underworld-header-image) no-repeat var(--sw5e-underworld-header-background-position) / var(--sw5e-underworld-header-background-size);
-  --sw5e-underworld-header-overlay: linear-gradient(180deg, color-mix(in srgb, var(--sw5e-underworld-graphite) 22%, transparent), color-mix(in srgb, var(--sw5e-underworld-bg-deep) 10%, transparent));
+  --sw5e-underworld-header-overlay: linear-gradient(180deg, color-mix(in srgb, var(--sw5e-underworld-graphite) 12%, transparent), color-mix(in srgb, var(--sw5e-underworld-bg-deep) 5%, transparent));
   --sw5e-underworld-chat-message-background: linear-gradient(180deg, var(--sw5e-underworld-panel-strong) 0%, var(--sw5e-underworld-panel) 100%);
   --sw5e-underworld-chat-datapad-panel: linear-gradient(180deg, var(--sw5e-underworld-panel-strong) 0%, var(--sw5e-underworld-graphite) 100%);
   --sw5e-underworld-chat-datapad-border: var(--sw5e-underworld-muted-control-border);

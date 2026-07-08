@@ -45,7 +45,7 @@ body[data-sw5e-theme="sw5e-light"] {
     linear-gradient(90deg, fade(@lightPageEdge, 98%) 0%, fade(@lightPageCenter, 92%) 50%, fade(@lightPageEdge, 98%) 100%),
     url("/modules/sw5e-module/assets/ui/parchments/sw5e-light-parchment.png");
   --sw5e-theme-surface-background:
-    linear-gradient(180deg, fade(#ffffff, 40%) 0%, fade(#ffffff, 18%) 100%),
+    linear-gradient(180deg, fade(#ffffff, 85%) 0%, fade(@lightPageCenter, 70%) 100%),
     url("/modules/sw5e-module/assets/ui/parchments/sw5e-light-parchment.png");
   --sw5e-theme-panel-background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(241, 246, 249, 0.82) 100%);
@@ -116,7 +116,7 @@ body[data-sw5e-theme="sw5e-light"] {
   --sw5e-foundry-canvas-2: #eef4f8;
   --sw5e-foundry-canvas-3: #f7fafc;
   --sw5e-foundry-app-window-background:
-    linear-gradient(180deg, rgba(248, 251, 253, 0.72) 0%, rgba(226, 237, 244, 0.66) 100%),
+    linear-gradient(180deg, rgba(248, 251, 253, 0.88) 0%, rgba(226, 237, 244, 0.78) 100%),
     url("/modules/sw5e-module/assets/ui/parchments/sw5e-light-parchment.png");
   --sw5e-foundry-window-content-background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(236, 243, 248, 0.95) 100%);
   --sw5e-foundry-window-canvas-1: rgba(255, 255, 255, 0.94);
@@ -193,7 +193,7 @@ body[data-sw5e-theme="sw5e-dark"] {
     linear-gradient(90deg, fade(@darkPageEdge, 98%) 0%, fade(@darkPageCenter, 94%) 50%, fade(@darkPageEdge, 98%) 100%),
     url("/modules/sw5e-module/assets/ui/parchments/sw5e-dark-parchment.png");
   --sw5e-theme-surface-background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(0, 0, 0, 0.08) 100%),
+    linear-gradient(180deg, rgba(56, 56, 56, 0.82) 0%, rgba(28, 28, 28, 0.88) 100%),
     url("/modules/sw5e-module/assets/ui/parchments/sw5e-dark-parchment.png");
   --sw5e-theme-panel-background:
     linear-gradient(180deg, rgba(56, 56, 56, 0.78) 0%, rgba(28, 28, 28, 0.92) 100%);
@@ -331,13 +331,13 @@ body[data-sw5e-theme="sw5e-underworld"] {
   --sw5e-underworld-header-background-position: top center;
   --sw5e-underworld-header-background-size: 100% auto;
   --sw5e-underworld-header-banner-height: 320px;
-  --sw5e-underworld-header-opacity: 0.62;
-  --sw5e-underworld-header-opacity-reassert: 0.58;
+  --sw5e-underworld-header-opacity: 0.72;
+  --sw5e-underworld-header-opacity-reassert: 0.68;
   --sw5e-underworld-header-image-layer: var(--sw5e-underworld-header-image) no-repeat var(--sw5e-underworld-header-background-position) / var(--sw5e-underworld-header-background-size);
   --sw5e-underworld-header-overlay: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--sw5e-underworld-graphite) 22%, transparent),
-    color-mix(in srgb, var(--sw5e-underworld-bg-deep) 10%, transparent)
+    color-mix(in srgb, var(--sw5e-underworld-graphite) 12%, transparent),
+    color-mix(in srgb, var(--sw5e-underworld-bg-deep) 5%, transparent)
   );
   --sw5e-underworld-chat-message-background: linear-gradient(180deg, var(--sw5e-underworld-panel-strong) 0%, var(--sw5e-underworld-panel) 100%);
   --sw5e-underworld-chat-datapad-panel: linear-gradient(180deg, var(--sw5e-underworld-panel-strong) 0%, var(--sw5e-underworld-graphite) 100%);

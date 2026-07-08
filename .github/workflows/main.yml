@@ -139,6 +139,7 @@ jobs:
             module.json                          \
             README.md                            \
             LICENSE                              \
+            assets/                              \
             applications/                        \
             icons/                               \
             languages/                           \
@@ -149,6 +150,12 @@ jobs:
             --exclude "packs/_source/*"
           # Don't forget to add a backslash at the end of the line for any
           # additional files or directories!
+
+      - name: Verify Module Archive Includes Theme Assets
+        run: |
+          unzip -l ./module.zip | grep -F "assets/ui/parchments/sw5e-light-parchment.png"
+          unzip -l ./module.zip | grep -F "assets/ui/parchments/sw5e-dark-parchment.png"
+          unzip -l ./module.zip | grep -F "assets/ui/SW5e-logo2.svg"
 
 
       # Update the GitHub release with the manifest and module archive files.
