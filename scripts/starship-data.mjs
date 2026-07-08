@@ -909,9 +909,9 @@ export function deriveStarshipPools(actor) {
 		if ( profile ) sizeSystem = { ...sizeSystem, ...profile };
 	}
 
-	// Tier: try size system, then stored legacy actor system, then HullPoints advancement max key.
+	// Tier: actor details first, then size item, then HullPoints advancement max key.
 	const legacyActorSystem = getLegacyStarshipActorSystem(actor) ?? {};
-	let tier = toFiniteNumber(sizeSystem.tier ?? legacyActorSystem.details?.tier, null);
+	let tier = toFiniteNumber(legacyActorSystem.details?.tier ?? sizeSystem.tier, null);
 	if ( tier === null ) {
 		const hullAdv = liveSizeItem?.system?.advancement?.find?.(a => a.type === "HullPoints");
 		const advKeys = hullAdv?.value ? Object.keys(hullAdv.value).map(Number).filter(Number.isFinite) : [];
@@ -1118,12 +1118,25 @@ export function buildStarshipLegacyAttributeBatchMirrorUpdate(entries = []) {
 	}), {});
 }
 
+async function syncStarshipSizeItemTier(actor, tier) {
+	const sizeItem = getLegacyStarshipSize(actor?.items?.contents ?? []);
+	if ( !sizeItem?.id ) return;
+	const legacy = { ...(sizeItem.flags?.sw5e?.legacyStarshipSize ?? {}), tier };
+	await actor.updateEmbeddedDocuments("Item", [{
+		_id: sizeItem.id,
+		"flags.sw5e.legacyStarshipSize": legacy
+	}]);
+}
+
 export async function persistStarshipLegacyAttributePath(actor, systemPath, value, { mirror = true } = {}) {
 	const isStarship = actor?.type === "vehicle" && actor?.flags?.sw5e?.legacyStarshipActor?.type === "starship";
 	const payload = mirror && isStarship && shouldMirrorStarshipLegacyAttributePath(systemPath)
 		? buildStarshipLegacyAttributeMirrorUpdate(systemPath, value)
 		: { [systemPath]: value };
 	await actor.update(payload);
+	if ( systemPath === "system.details.tier" && isStarship ) {
+		await syncStarshipSizeItemTier(actor, value);
+	}
 }
 
 export function getStarshipAdvancedPowerContext(actor) {

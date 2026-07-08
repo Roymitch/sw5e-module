@@ -145,8 +145,9 @@ async function whisperAmmoFailure(actor, weapon, activity, message) {
 
 /**
  * @param {import("@league/foundry").documents.Activity} activity
+ * @returns {boolean}
  */
-async function onPreUseActivity(activity) {
+function onPreUseActivity(activity) {
 	const weapon = getRealEmbeddedItemFromActivity(activity);
 	const actor = weapon?.parent;
 	if ( !isReloadableActor(actor) ) return true;
@@ -161,7 +162,7 @@ async function onPreUseActivity(activity) {
 	const message = buildAmmoFailureMessage(weapon, activity, remaining, cost);
 	if ( !message ) return true;
 
-	await whisperAmmoFailure(actor, weapon, activity, message);
+	void whisperAmmoFailure(actor, weapon, activity, message);
 	return false;
 }
 

@@ -18,6 +18,7 @@ import {
 	normalizeLegacyStarshipItemSource
 } from "./starship-data.mjs";
 import { normalizeAdvancementGrants } from "./proficiency-utils.mjs";
+import { migrateBlasterWeaponData } from "./blaster-migration.mjs";
 
 const MIGRATABLE_COMPENDIUM_DOCUMENTS = ["Actor", "Item", "Scene", "JournalEntry", "RollTable"];
 
@@ -1121,9 +1122,11 @@ function _migrateImage(objectData, updateData) {
 			|| isKnownBrokenExternalImage(normalized);
 	};
 	const props = ["img", "texture.src", "prototypeToken.texture.src"];
-	// ActiveEffect5e#icon is deprecated since Foundry v12 (migrated to img); avoid accessing it.
+	// ActiveEffect5e#icon is deprecated since Foundry v12 (migrated to img); avoid accessing it on documents.
+	// Legacy embedded effect source data may still store icon — migrate it when present on plain objects.
 	const isEffect = objectData?.documentName === "ActiveEffect" || (objectData?.changes && Array.isArray(objectData.changes));
 	if ( !isEffect ) props.push("icon");
+	else if ( typeof objectData?.icon === "string" ) props.push("icon");
 	for (const prop of props) {
 		const path = foundry.utils.getProperty(objectData, prop);
 		if ( isInvalidImageValue(path) ) {
@@ -1561,41 +1564,6 @@ function _migrateWeaponData(itemData, updateData) {
 	return updateData;
 }
 
-const BLASTER_AMMO_TYPES = new Set(["powerCell", "cartridge"]);
-
-function _getBlasterAmmoTypes(itemData) {
-	const types = itemData?.system?.ammo?.types;
-	if ( Array.isArray(types) && types.length ) return types;
-	const legacyTypes = itemData?.flags?.sw5e?.reload?.types;
-	return Array.isArray(legacyTypes) ? legacyTypes : [];
-}
-
-function _getBlasterReloadMax(itemData) {
-	const ammoMax = Number(itemData?.system?.ammo?.max);
-	if ( Number.isFinite(ammoMax) && (ammoMax > 0) ) return ammoMax;
-
-	const systemRel = Number(itemData?.system?.properties?.rel ?? itemData?.system?.properties?.ovr);
-	if ( Number.isFinite(systemRel) && (systemRel > 0) ) return systemRel;
-
-	const flagRel = Number(
-		itemData?.flags?.sw5e?.properties?.rel
-		?? itemData?.flags?.sw5e?.properties?.reload
-		?? itemData?.flags?.sw5e?.properties?.ovr
-	);
-	return Number.isFinite(flagRel) && (flagRel > 0) ? flagRel : 0;
-}
-
 function _migrateBlasterAmmoData(itemData, updateData) {
-	if ( itemData.type !== "weapon" ) return updateData;
-	if ( !_getBlasterAmmoTypes(itemData).some(type => BLASTER_AMMO_TYPES.has(type)) ) return updateData;
-
-	const reloadMax = _getBlasterReloadMax(itemData);
-	if ( reloadMax <= 0 ) return updateData;
-
-	const usesMax = itemData?.system?.uses?.max;
-	if ( usesMax == null || usesMax === "" ) {
-		updateData["system.uses.max"] = String(reloadMax);
-	}
-
-	return updateData;
+	return migrateBlasterWeaponData(itemData, updateData);
 }
