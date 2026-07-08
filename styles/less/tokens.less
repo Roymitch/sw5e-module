@@ -161,6 +161,17 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root {
   --filter-control-active-color: var(--sw5e-line-color);
 }
 
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root {
+  --button-text-color: var(--sw5e-underworld-control-icon-color);
+  --button-hover-text-color: var(--sw5e-underworld-control-icon-color-hover);
+  --icon-fill: currentColor;
+  --control-button-text-color: var(--sw5e-underworld-control-icon-color);
+  --hint-icon-color: var(--sw5e-underworld-control-icon-color);
+  --item-control-header-color: var(--sw5e-underworld-control-icon-color);
+  --item-control-active-color: var(--sw5e-underworld-control-icon-color-hover);
+  --filter-control-active-color: var(--sw5e-underworld-control-icon-color-hover);
+}
+
 body[data-sw5e-theme="sw5e-dark"] {
   --sw5e-theme-page-edge: @darkPageEdge;
   --sw5e-theme-page-center: @darkPageCenter;
@@ -255,6 +266,10 @@ body[data-sw5e-theme="sw5e-underworld"] {
   --sw5e-underworld-success: #4ade80;
   --sw5e-underworld-glow-purple: color-mix(in srgb, var(--sw5e-underworld-neon-purple) 24%, transparent);
   --sw5e-underworld-glow-blue: color-mix(in srgb, var(--sw5e-underworld-neon-blue) 18%, transparent);
+  --sw5e-underworld-text-glow-contrast: 0 0 8px var(--sw5e-underworld-glow-purple);
+  --sw5e-underworld-text-shadow-readable: 0 1px 2px rgba(0, 0, 0, 0.65);
+  --sw5e-underworld-list-row-title-accent: #2ff924;
+  --sw5e-underworld-list-row-title-glow: color-mix(in srgb, var(--sw5e-underworld-list-row-title-accent) 22%, transparent);
 
   /* Semantic theme tokens */
   --sw5e-theme-page-edge: var(--sw5e-underworld-bg-deep);
@@ -297,6 +312,9 @@ body[data-sw5e-theme="sw5e-underworld"] {
   --sw5e-underworld-icon-frame-border: color-mix(in srgb, var(--sw5e-underworld-neon-purple) 34%, var(--sw5e-underworld-border));
   --sw5e-underworld-meter-shell-border: var(--sw5e-underworld-muted-control-border);
   --sw5e-underworld-control-ring: color-mix(in srgb, var(--sw5e-underworld-neon-cyan) 42%, transparent);
+  --sw5e-underworld-control-icon-color: var(--sw5e-underworld-neon-cyan);
+  --sw5e-underworld-control-icon-color-hover: var(--sw5e-underworld-neon-blue);
+  --sw5e-underworld-control-icon-color-disabled: color-mix(in srgb, var(--sw5e-underworld-neon-cyan) 42%, var(--sw5e-theme-muted-text));
   --sw5e-underworld-card-header-background: linear-gradient(180deg, var(--sw5e-underworld-panel-strong) 0%, var(--sw5e-underworld-panel) 100%);
   --sw5e-underworld-section-header-background: linear-gradient(180deg, var(--sw5e-underworld-graphite) 0%, var(--sw5e-underworld-panel) 100%);
   --sw5e-underworld-hover-tint: color-mix(in srgb, var(--sw5e-underworld-neon-blue) 10%, var(--sw5e-underworld-panel) 90%);
@@ -305,10 +323,22 @@ body[data-sw5e-theme="sw5e-underworld"] {
   --sw5e-underworld-card-shadow-soft: 0 4px 14px rgba(0, 0, 0, 0.28);
   --sw5e-underworld-panel-fill-strong: linear-gradient(180deg, var(--sw5e-underworld-panel-strong) 0%, var(--sw5e-underworld-panel) 100%);
   --sw5e-underworld-proficiency-inactive: color-mix(in srgb, var(--sw5e-theme-muted-text) 72%, var(--sw5e-underworld-graphite) 28%);
-  --sw5e-underworld-tab-inactive-fill: linear-gradient(180deg, var(--sw5e-underworld-graphite) 0%, var(--sw5e-underworld-panel) 100%);
+  --sw5e-underworld-tab-inactive-fill: var(--sw5e-underworld-panel-fill-strong);
   --sw5e-underworld-tab-active-fill: linear-gradient(180deg, var(--sw5e-underworld-panel-strong) 0%, color-mix(in srgb, var(--sw5e-underworld-neon-blue) 12%, var(--sw5e-underworld-panel)) 100%);
   --sw5e-underworld-tab-glow-soft: 0 0 0 1px color-mix(in srgb, var(--sw5e-underworld-neon-blue) 18%, transparent), 0 2px 8px var(--sw5e-underworld-glow-blue);
   --sw5e-underworld-tab-glow-strong: 0 0 0 1px color-mix(in srgb, var(--sw5e-underworld-neon-magenta) 28%, transparent), 0 0 12px var(--sw5e-underworld-glow-purple);
+  --sw5e-underworld-header-image: url("/modules/sw5e-module/styles/UA_Header.webp");
+  --sw5e-underworld-header-background-position: top center;
+  --sw5e-underworld-header-background-size: 100% auto;
+  --sw5e-underworld-header-banner-height: 320px;
+  --sw5e-underworld-header-opacity: 0.62;
+  --sw5e-underworld-header-opacity-reassert: 0.58;
+  --sw5e-underworld-header-image-layer: var(--sw5e-underworld-header-image) no-repeat var(--sw5e-underworld-header-background-position) / var(--sw5e-underworld-header-background-size);
+  --sw5e-underworld-header-overlay: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--sw5e-underworld-graphite) 22%, transparent),
+    color-mix(in srgb, var(--sw5e-underworld-bg-deep) 10%, transparent)
+  );
   --sw5e-underworld-chat-message-background: linear-gradient(180deg, var(--sw5e-underworld-panel-strong) 0%, var(--sw5e-underworld-panel) 100%);
   --sw5e-underworld-chat-datapad-panel: linear-gradient(180deg, var(--sw5e-underworld-panel-strong) 0%, var(--sw5e-underworld-graphite) 100%);
   --sw5e-underworld-chat-datapad-border: var(--sw5e-underworld-muted-control-border);

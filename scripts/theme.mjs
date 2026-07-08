@@ -241,6 +241,30 @@ export function isDnd5eAdvancementConfigApp(app, element) {
 }
 
 /**
+ * dnd5e level-up AdvancementManager wizard (Application5e).
+ * Root: `.dnd5e2.application.advancement.manager` (upstream hardcodes `theme-light`).
+ */
+export function isDnd5eAdvancementManagerApp(app, element) {
+	if ( !(element instanceof HTMLElement) ) return false;
+	if ( element.classList.contains("advancement-migration") ) return false;
+	if ( app?.constructor?.name === "AdvancementManager" ) return true;
+	if ( !element.classList.contains("dnd5e2") ) return false;
+	if ( !element.classList.contains("application") ) return false;
+	if ( !element.classList.contains("advancement") ) return false;
+	return element.classList.contains("manager");
+}
+
+function applyDnd5eAdvancementManagerDnd5eThemeClass(root) {
+	const theme = getSw5eTheme();
+	if ( isSw5eThemeOff(theme) ) return;
+	if ( theme !== SW5E_THEMES.SW5E_DARK && theme !== SW5E_THEMES.SW5E_UNDERWORLD ) return;
+	for ( const element of collectScopedElements(root) ) {
+		element.classList.remove("theme-light");
+		element.classList.add("theme-dark");
+	}
+}
+
+/**
  * dnd5e D20 roll configuration dialogs (ability checks, saving throws, etc.).
  * ApplicationV2 apps with `.dnd5e2.application.roll-configuration`.
  */
@@ -443,6 +467,11 @@ function applyDnd5eThemedApplicationFromHook(app, html) {
 	}
 	if ( isDnd5eAdvancementConfigApp(app, root) ) {
 		applySw5eThemeScope(html, { scope: "advancement-config" });
+		return;
+	}
+	if ( isDnd5eAdvancementManagerApp(app, root) ) {
+		applySw5eThemeScope(html, { scope: "advancement-manager" });
+		applyDnd5eAdvancementManagerDnd5eThemeClass(root);
 		return;
 	}
 	if ( isDnd5eRollConfigurationApp(app, root) ) {

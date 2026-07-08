@@ -1,0 +1,207 @@
+/* dnd5e level-up AdvancementManager — SW5E Light / Dark / Underworld.
+   Scoped via data-sw5e-theme-root="advancement-manager" (scripts/theme.mjs). */
+
+@mgr-light: ~'body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root[data-sw5e-theme-root="advancement-manager"].dnd5e2.application.advancement.manager';
+@mgr-dark: ~'body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root[data-sw5e-theme-root="advancement-manager"].dnd5e2.application.advancement.manager';
+@mgr-underworld: ~'body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root[data-sw5e-theme-root="advancement-manager"].dnd5e2.application.advancement.manager';
+
+@mgr-footer-buttons: ~':is(nav.dialog-buttons, footer.form-footer) > :is(button, [type="submit"], [type="button"])';
+
+/* ——— SW5E Light ——— */
+.sw5e-dialog-shell-light-root(@mgr-light);
+
+.sw5e-dialog-shell-light-window-header(@mgr-light);
+
+.sw5e-dialog-shell-light-window-title(@mgr-light);
+
+.sw5e-dialog-shell-light-window-content(@mgr-light);
+
+@{mgr-light} {
+  --dnd5e-application-background: var(--sw5e-theme-page-center);
+}
+
+@{mgr-light} .window-subtitle {
+  color: var(--sw5e-theme-muted-text) !important;
+}
+
+@{mgr-light} .window-content {
+  color: var(--sw5e-theme-text) !important;
+}
+
+@{mgr-light} :is(h3, h4, .form-group > label, .form-group.stacked > label) {
+  color: var(--sw5e-theme-text) !important;
+}
+
+@{mgr-light} :is(p.hint, .notes, .hint) {
+  color: var(--sw5e-theme-muted-text) !important;
+}
+
+@{mgr-light} :is(ol, ul, li, p) {
+  color: var(--sw5e-theme-text);
+}
+
+.sw5e-dialog-shell-light-inputs(@mgr-light);
+
+.sw5e-dialog-shell-light-checkboxes(@mgr-light);
+
+@{mgr-light} @{mgr-footer-buttons} {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(236, 243, 248, 0.88) 100%) !important;
+  background-image: none !important;
+  border: 1px solid var(--sw5e-light-muted-control-border) !important;
+  border-radius: var(--sw5e-starship-radius-sm, 6px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: var(--sw5e-secondary-button) !important;
+  filter: none !important;
+}
+
+@{mgr-light} @{mgr-footer-buttons}:is(:hover, :focus, :focus-visible) {
+  background: color-mix(in srgb, var(--sw5e-light-active-control-border) 14%, rgba(255, 255, 255, 0.9)) !important;
+  background-image: none !important;
+  border-color: color-mix(in srgb, var(--sw5e-light-active-control-border) 58%, transparent) !important;
+  color: var(--sw5e-line-color) !important;
+}
+
+@{mgr-light} @{mgr-footer-buttons}[autofocus],
+@{mgr-light} button.dialog-button.default {
+  background: var(--sw5e-theme-primary-button) !important;
+  border-color: color-mix(in srgb, var(--sw5e-theme-primary-button) 82%, black) !important;
+  color: var(--sw5e-theme-button-text) !important;
+}
+
+/* ——— SW5E Dark ——— */
+.sw5e-dialog-shell-dark-root(@mgr-dark);
+
+.sw5e-dialog-shell-dark-window-header(@mgr-dark);
+
+.sw5e-dialog-shell-dark-window-title(@mgr-dark);
+
+.sw5e-dialog-shell-dark-window-content(@mgr-dark);
+
+@{mgr-dark} {
+  --dnd5e-application-background: transparent;
+}
+
+@{mgr-dark} .window-subtitle {
+  color: var(--sw5e-theme-muted-text) !important;
+}
+
+@{mgr-dark} .window-content {
+  color: var(--sw5e-theme-text) !important;
+}
+
+@{mgr-dark} :is(h3, h4, .form-group > label, .form-group.stacked > label) {
+  color: var(--sw5e-theme-text) !important;
+}
+
+@{mgr-dark} :is(p.hint, .notes, .hint) {
+  color: var(--sw5e-theme-muted-text) !important;
+}
+
+@{mgr-dark} :is(ol, ul, li, p) {
+  color: var(--sw5e-theme-text);
+}
+
+.sw5e-dialog-shell-dark-inputs(@mgr-dark);
+
+@{mgr-dark} :is(input, select, textarea):is(:hover, :focus, :focus-visible) {
+  border-color: var(--sw5e-line-color) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--sw5e-line-color) 24%, transparent) !important;
+}
+
+.sw5e-dialog-shell-dark-checkboxes(@mgr-dark);
+
+@{mgr-dark} @{mgr-footer-buttons} {
+  background: rgba(24, 24, 24, 0.72) !important;
+  background-image: none !important;
+  border: 1px solid var(--sw5e-dark-muted-control-border) !important;
+  border-radius: var(--sw5e-starship-radius-sm, 6px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  color: var(--sw5e-theme-text) !important;
+  filter: none !important;
+}
+
+@{mgr-dark} @{mgr-footer-buttons}:is(:hover, :focus, :focus-visible) {
+  background: rgba(32, 161, 208, 0.14) !important;
+  background-image: none !important;
+  border-color: var(--sw5e-line-color) !important;
+  color: var(--sw5e-theme-text) !important;
+}
+
+@{mgr-dark} @{mgr-footer-buttons}[autofocus],
+@{mgr-dark} button.dialog-button.default {
+  background: var(--sw5e-theme-primary-button) !important;
+  border-color: color-mix(in srgb, var(--sw5e-theme-primary-button) 72%, black) !important;
+  color: var(--sw5e-theme-button-text) !important;
+}
+
+/* ——— Underworld Alloy ——— */
+.sw5e-dialog-shell-underworld-root(@mgr-underworld);
+
+.sw5e-dialog-shell-underworld-window-header(@mgr-underworld);
+
+.sw5e-dialog-shell-underworld-window-title(@mgr-underworld);
+
+@{mgr-underworld} {
+  --dnd5e-application-background: transparent;
+}
+
+@{mgr-underworld} .window-content {
+  background-color: transparent !important;
+  background-image: none !important;
+  color: var(--sw5e-theme-text) !important;
+}
+
+@{mgr-underworld} .window-subtitle {
+  color: var(--sw5e-theme-muted-text) !important;
+}
+
+@{mgr-underworld} :is(h3, h4, .form-group > label, .form-group.stacked > label) {
+  color: var(--sw5e-theme-text) !important;
+}
+
+@{mgr-underworld} :is(p.hint, .notes, .hint) {
+  color: var(--sw5e-theme-muted-text) !important;
+}
+
+@{mgr-underworld} :is(ol, ul, li, p) {
+  color: var(--sw5e-theme-text);
+}
+
+@{mgr-underworld} :is(input, select, textarea) {
+  background: var(--sw5e-underworld-input-bg) !important;
+  border: 1px solid var(--sw5e-underworld-muted-control-border) !important;
+  color: var(--sw5e-theme-text) !important;
+  color-scheme: dark;
+}
+
+@{mgr-underworld} :is(input, select, textarea):is(:hover, :focus, :focus-visible) {
+  border-color: color-mix(in srgb, var(--sw5e-underworld-neon-cyan) 58%, var(--sw5e-underworld-border)) !important;
+  box-shadow: 0 0 0 2px var(--sw5e-underworld-control-ring) !important;
+}
+
+.sw5e-dialog-shell-underworld-checkboxes(@mgr-underworld);
+
+@{mgr-underworld} @{mgr-footer-buttons} {
+  background-color: color-mix(in srgb, var(--sw5e-underworld-olive) 42%, var(--sw5e-underworld-panel)) !important;
+  background-image: none !important;
+  border: 1px solid var(--sw5e-underworld-muted-control-border) !important;
+  border-radius: 6px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  color: var(--sw5e-theme-text) !important;
+  filter: none !important;
+}
+
+@{mgr-underworld} @{mgr-footer-buttons}:is(:hover, :focus, :focus-visible) {
+  background-color: var(--sw5e-underworld-hover-tint) !important;
+  background-image: none !important;
+  border-color: color-mix(in srgb, var(--sw5e-underworld-neon-cyan) 55%, var(--sw5e-underworld-border)) !important;
+  color: var(--sw5e-theme-text) !important;
+  box-shadow: 0 0 10px var(--sw5e-underworld-glow-blue) !important;
+}
+
+@{mgr-underworld} @{mgr-footer-buttons}[autofocus],
+@{mgr-underworld} button.dialog-button.default {
+  background: var(--sw5e-theme-primary-button) !important;
+  border-color: color-mix(in srgb, var(--sw5e-theme-primary-button) 72%, black) !important;
+  color: var(--sw5e-theme-button-text) !important;
+}

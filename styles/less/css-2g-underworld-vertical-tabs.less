@@ -1,0 +1,50 @@
+/* CSS-2G Underworld — character/NPC vertical tab backing (re-assert after icon-control rules).
+   Parity with SW5E Light re-assert in theme-overrides.less (~2034–2084). */
+
+/* Vertical tabs */
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item {
+  background: var(--sw5e-underworld-tab-inactive-fill) !important;
+  color: var(--sw5e-theme-text) !important;
+  --icon-fill: var(--sw5e-underworld-neon-cyan);
+  border-color: var(--sw5e-underworld-muted-control-border) !important;
+  box-shadow: var(--sw5e-underworld-tab-glow-soft) !important;
+}
+
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item::after {
+  border-color: color-mix(in srgb, var(--sw5e-underworld-neon-cyan) 28%, var(--sw5e-underworld-border)) !important;
+}
+
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item :is(i, dnd5e-icon) {
+  color: inherit !important;
+  --icon-fill: currentColor;
+}
+
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item:is(:hover, :focus, :focus-visible):not(.active) {
+  background: var(--sw5e-underworld-hover-tint) !important;
+  color: var(--sw5e-underworld-neon-cyan) !important;
+  --icon-fill: var(--sw5e-underworld-neon-cyan);
+  border-color: color-mix(in srgb, var(--sw5e-underworld-neon-cyan) 48%, var(--sw5e-underworld-border)) !important;
+  box-shadow:
+    0 0 0 1px var(--sw5e-underworld-control-ring),
+    0 0 10px var(--sw5e-underworld-glow-blue) !important;
+}
+
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item.active {
+  background: var(--sw5e-underworld-tab-active-fill) !important;
+  color: var(--sw5e-underworld-neon-cyan) !important;
+  --icon-fill: var(--sw5e-underworld-neon-cyan);
+  border-color: color-mix(in srgb, var(--sw5e-underworld-neon-cyan) 55%, var(--sw5e-underworld-border)) !important;
+  box-shadow: var(--sw5e-underworld-tab-glow-strong), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item.active::after {
+  border-color: color-mix(in srgb, var(--sw5e-underworld-neon-magenta) 42%, transparent) !important;
+}
+
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item.active:is(:hover, :focus, :focus-visible) {
+  border-color: color-mix(in srgb, var(--sw5e-underworld-neon-cyan) 62%, var(--sw5e-underworld-border)) !important;
+  box-shadow:
+    var(--sw5e-underworld-tab-glow-strong),
+    0 0 14px var(--sw5e-underworld-glow-blue),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}

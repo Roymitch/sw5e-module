@@ -570,6 +570,48 @@ export const migrateEffects = function(parent, migrationData) {
 /* -------------------------------------------- */
 
 /**
+ * Whether an actor has at least one class item with non-none powercasting progression.
+ * @param {object} actorData
+ * @param {"force"|"tech"} castType
+ * @returns {boolean}
+ * @private
+ */
+function _actorHasPowercastingProgression(actorData, castType) {
+	const progressionKey = castType === "force" ? "forceProgression" : "techProgression";
+	for ( const item of actorData.items ?? [] ) {
+		if ( item.type !== "class" ) continue;
+		const levels = Number(item.system?.levels ?? 0);
+		if ( !(levels >= 1) ) continue;
+		const progression = item.system?.spellcasting?.[progressionKey];
+		if ( progression && progression !== "none" ) return true;
+	}
+	return false;
+}
+
+/**
+ * Clear stale persisted powercasting known.max overrides written as 0.
+ * @param {object} actorData
+ * @param {object} updateData
+ * @returns {object}
+ * @private
+ */
+function _migrateStalePowercastingKnownMax(actorData, updateData) {
+	if ( actorData.type !== "character" ) return updateData;
+
+	for ( const castType of ["force", "tech"] ) {
+		const knownMax = foundry.utils.getProperty(actorData, `system.powercasting.${castType}.known.max`);
+		if ( knownMax !== 0 ) continue;
+		if ( !_actorHasPowercastingProgression(actorData, castType) ) continue;
+
+		const path = `system.powercasting.${castType}.known.max`;
+		foundry.utils.setProperty(updateData, path, null);
+		foundry.utils.setProperty(actorData, path, null);
+	}
+
+	return updateData;
+}
+
+/**
  * Migrate a single Actor document to incorporate latest data model changes
  * Return an Object of updateData to be applied
  * @param {object} actor                The actor data object to update
@@ -594,6 +636,7 @@ export const migrateActorData = function(actor, migrationData, flags={}, { actor
 
 	_migrateImage(workingActor, updateData);
 	_migrateObjectFlags(workingActor, updateData);
+	_migrateStalePowercastingKnownMax(workingActor, updateData);
 
 	// Migrate embedded effects
 	if ( workingActor.effects ) {

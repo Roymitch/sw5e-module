@@ -613,7 +613,13 @@ function preparePowercasting() {
 					hasOverride: false,
 					effectiveMax: getNumericValue(target.points?.max) ?? getNumericValue(obj.points) ?? 0
 				};
-				target.known.max ??= obj.powersKnownMax;
+				const sourcePowercasting = _this._source?.system?.powercasting?.[castType] ?? {};
+				const sourceKnown = sourcePowercasting.known ?? {};
+				let effectiveKnownMax = sourceKnown.max ?? obj.powersKnownMax;
+				if ( sourceKnown.max === 0 && obj.powersKnownMax > 0 ) {
+					effectiveKnownMax = obj.powersKnownMax;
+				}
+				target.known.max = effectiveKnownMax;
 				target.level ??= obj.casterLevel;
 				target.limit ??= obj.limit;
 				target.maxPowerLevel ??= obj.maxPowerLevel;
