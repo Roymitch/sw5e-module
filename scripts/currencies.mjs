@@ -1,3 +1,5 @@
+import { getModulePath } from "./module-support.mjs";
+
 export const BASE_CURRENCY_KEY = "gc";
 
 const CURRENCY_ALIASES = Object.freeze({
@@ -11,9 +13,34 @@ const CURRENCY_ALIASES = Object.freeze({
 	"imperial-credit": BASE_CURRENCY_KEY
 });
 
+const DND5E_GOLD_ICON = "systems/dnd5e/icons/currency/gold.webp";
+const FOUNDRY_COINS_ICON = "icons/svg/coins.svg"; // absolute last resort if gold path is unavailable
+
 function toFiniteNumber(value, fallback=null) {
 	const numeric = Number(value);
 	return Number.isFinite(numeric) ? numeric : fallback;
+}
+
+function isNonEmptyString(value) {
+	return typeof value === "string" && value.trim().length > 0;
+}
+
+/**
+ * Resolve a valid icon path for Galactic Credits.
+ * Precedence: existing gc.icon → module asset → dnd5e gold → Foundry coins.
+ * Do not inherit gp.icon — stock dnd5e always has gold.webp, which would hide the SW5e coin.
+ */
+function resolveGcCurrencyIcon(existing={}) {
+	if ( isNonEmptyString(existing.icon) ) return existing.icon.trim();
+
+	try {
+		const moduleIcon = getModulePath("assets/currency/gc.svg");
+		if ( isNonEmptyString(moduleIcon) ) return moduleIcon;
+	} catch {
+		/* fall through to system defaults */
+	}
+
+	return isNonEmptyString(DND5E_GOLD_ICON) ? DND5E_GOLD_ICON : FOUNDRY_COINS_ICON;
 }
 
 export function getBaseCurrencyKey() {
@@ -61,6 +88,8 @@ export function applySw5eGalacticCreditsDefault(config) {
 		label: "SW5E.CurrencyGC",
 		abbreviation: "SW5E.CurrencyAbbrGC",
 		conversion: 1,
-		...existing
+		...existing,
+		// Always assign last so an empty/undefined existing.icon cannot wipe the resolved path.
+		icon: resolveGcCurrencyIcon(existing)
 	};
 }

@@ -1,7 +1,7 @@
 {{!-- Core tab: operational overview (skills, crew, fuel, routing). Weapons, Equipment, and cargo on Inventory; Actions, Modifications, Systems on Features. --}}
 {{#*inline "sw5e-sotg-item-row"}}
 {{!-- Cargo-style row: primary strip PLAY=use/post, EDIT=edit sheet; icon controls like inventory `controls.hbs`. --}}
-<li class="item sw5e-starship-item-row sw5e-starship-item-row--sotg" data-item-id="{{id}}" data-item-name="{{name}}"{{#if sotgPanel}} data-sotg-panel="{{sotgPanel}}"{{/if}}>
+<li class="item sw5e-starship-item-row sw5e-starship-item-row--sotg" data-item-id="{{id}}" data-item-name="{{name}}"{{#if sourceActorUuid}} data-source-actor-uuid="{{sourceActorUuid}}"{{/if}}{{#if sotgPanel}} data-sotg-panel="{{sotgPanel}}"{{/if}}>
   <div class="item-row sw5e-starship-item-row--sotg-inner">
     <button
       type="button"
@@ -46,11 +46,13 @@
           class="unbutton config-button item-control item-action"
           data-sw5e-action="edit-item"
           data-item-id="{{id}}"
+          {{#if sourceActorUuid}}data-source-actor-uuid="{{sourceActorUuid}}"{{/if}}
           data-tooltip
           aria-label="{{ localize "DND5E.ItemEdit" }}"
         >
           <i class="fa-solid fa-pen-to-square" inert></i>
         </button>
+        {{#if allowDelete}}
         <button
           type="button"
           class="unbutton config-button item-control item-action sw5e-starship-item-button-danger"
@@ -61,6 +63,7 @@
         >
           <i class="fa-solid fa-trash" inert></i>
         </button>
+        {{/if}}
       </span>
       <button
         type="button"
@@ -170,12 +173,15 @@
   </header>
   <div class="sw5e-starship-groups sw5e-starship-groups-stacked items-list">
     {{#each crewRoleGroups}}
-      <article class="sw5e-starship-group items-section card">
-        <div class="items-header header sw5e-starship-group-header">
+      <article
+        class="sw5e-starship-group items-section card{{#if collapsed}} is-collapsed{{/if}}"
+        data-sw5e-crew-role-group="{{groupKey}}"
+      >
+        <div class="items-header header sw5e-starship-group-header sw5e-starship-crew-role-group-header">
           <h3 class="item-name">
             <div class="name name-stacked">
               <span class="title">{{label}}</span>
-              <span class="subtitle sw5e-starship-group-subtitle">Use the icon to roll or post to chat, open details when needed, or remove items directly from this tab.</span>
+              <span class="subtitle sw5e-starship-group-subtitle">{{localize "SW5E.StarshipSheet.CrewRolesGroupHint"}}</span>
             </div>
           </h3>
           <div class="item-header sw5e-starship-sotg-group-actions always-visible">
@@ -191,14 +197,28 @@
                   Manage in {{manageLabel}}
                 </button>
               {{/if}}
+              <button
+                type="button"
+                class="sw5e-starship-crew-role-collapse sw5e-starship-core-collapsible-toggle"
+                data-sw5e-crew-role-collapse="1"
+                data-expand-label="{{expandLabel}}"
+                data-collapse-label="{{collapseLabel}}"
+                aria-expanded="{{#if collapsed}}false{{else}}true{{/if}}"
+                title="{{#if collapsed}}{{expandLabel}}{{else}}{{collapseLabel}}{{/if}}"
+                aria-label="{{#if collapsed}}{{expandLabel}}{{else}}{{collapseLabel}}{{/if}}"
+              >
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+              </button>
             </div>
           </div>
         </div>
-        <ol class="item-list unlist sw5e-starship-item-list sw5e-starship-item-list--sotg">
-          {{#each items}}
-            {{> sw5e-sotg-item-row}}
-          {{/each}}
-        </ol>
+        <div class="sw5e-starship-crew-role-group-body sw5e-starship-core-collapsible-body">
+          <ol class="item-list unlist sw5e-starship-item-list sw5e-starship-item-list--sotg">
+            {{#each items}}
+              {{> sw5e-sotg-item-row}}
+            {{/each}}
+          </ol>
+        </div>
       </article>
     {{/each}}
   </div>

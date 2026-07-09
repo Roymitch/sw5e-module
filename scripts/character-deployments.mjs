@@ -205,7 +205,9 @@ export function getCharacterDeploymentSummary(actor) {
 					ventures.push({
 						id: item.id ?? "",
 						name: item.name ?? "",
-						identifier: typeof item.system?.identifier === "string" ? item.system.identifier : ""
+						identifier: typeof item.system?.identifier === "string" ? item.system.identifier : "",
+						requirements: typeof item.system?.requirements === "string" ? item.system.requirements : "",
+						img: typeof item.img === "string" ? item.img : ""
 					});
 				}
 				continue;
@@ -244,7 +246,9 @@ export function getCharacterDeploymentSummary(actor) {
 				deploymentFeatures.push({
 					id: item.id ?? "",
 					name: item.name ?? "",
-					identifier: typeof item.system?.identifier === "string" ? item.system.identifier : ""
+					identifier: typeof item.system?.identifier === "string" ? item.system.identifier : "",
+					requirements: typeof item.system?.requirements === "string" ? item.system.requirements : "",
+					img: typeof item.img === "string" ? item.img : ""
 				});
 			}
 		}
@@ -272,4 +276,98 @@ export function getCharacterDeploymentSummary(actor) {
 		out.warnings.push("SW5E.DeploymentSummary.WarningFailed");
 		return out;
 	}
+}
+
+/**
+ * Normalize a Deployment / feature name for parent matching.
+ *
+ * @param {unknown} value
+ * @returns {string}
+ */
+export function normalizeDeploymentGroupingKey(value) {
+	if ( typeof value !== "string" ) return "";
+	return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "");
+}
+
+/**
+ * Parse leading Deployment name from requirements text (e.g. "Technician 1st Rank").
+ *
+ * @param {unknown} requirements
+ * @returns {string}
+ */
+export function parseDeploymentHintFromRequirements(requirements) {
+	if ( typeof requirements !== "string" ) return "";
+	const match = requirements.trim().match(/^([^\d(]+?)(?:\s*(?:\(|\d|$))/);
+	return match?.[1]?.trim?.() ?? "";
+}
+
+/**
+ * Resolve the parent Deployment display label for a feature/venture on a character.
+ *
+ * @param {unknown} featureItem
+ * @param {Array<{ name?: string, identifier?: string }>} parentDeployments
+ * @param {{ ventureFallback?: string, featureFallback?: string }} [options]
+ * @returns {string}
+ */
+export function resolveDeploymentParentLabel(featureItem, parentDeployments = [], options = {}) {
+	const featureFallback = options.featureFallback ?? "Deployment Features";
+	const ventureFallback = options.ventureFallback ?? "Ventures";
+	const isVenture = isVentureFeat(featureItem);
+	const hint = parseDeploymentHintFromRequirements(featureItem?.system?.requirements);
+	const normalizedHint = normalizeDeploymentGroupingKey(hint);
+
+	if ( normalizedHint && Array.isArray(parentDeployments) ) {
+		for ( const parent of parentDeployments ) {
+			const candidates = [
+				typeof parent?.name === "string" ? parent.name : "",
+				typeof parent?.identifier === "string" ? parent.identifier : ""
+			];
+			if ( candidates.some(name => normalizeDeploymentGroupingKey(name) === normalizedHint) ) {
+				return (typeof parent?.name === "string" && parent.name.trim())
+					? parent.name.trim()
+					: (hint || featureFallback);
+			}
+		}
+		if ( hint ) return hint;
+	}
+
+	return isVenture ? ventureFallback : featureFallback;
+}
+
+/**
+ * Group a character's deployment features and ventures under parent Deployment labels.
+ * Returns live Item documents for sheet actions.
+ *
+ * @param {unknown} actor
+ * @param {{ featureFallback?: string, ventureFallback?: string }} [options]
+ * @returns {Array<{ label: string, items: object[] }>}
+ */
+export function groupCharacterDeploymentFeaturesByParent(actor, options = {}) {
+	const summary = getCharacterDeploymentSummary(actor);
+	if ( !summary.hasAny ) return [];
+
+	const buckets = new Map();
+	const ensureBucket = label => {
+		const key = label || options.featureFallback || "Deployment Features";
+		if ( !buckets.has(key) ) buckets.set(key, []);
+		return buckets.get(key);
+	};
+
+	const pushEntry = entry => {
+		const item = actor?.items?.get?.(entry.id);
+		if ( !item ) return;
+		const label = resolveDeploymentParentLabel(item, summary.deployments, options);
+		ensureBucket(label).push(item);
+	};
+
+	for ( const entry of summary.deploymentFeatures ) pushEntry(entry);
+	for ( const entry of summary.ventures ) pushEntry(entry);
+
+	return Array.from(buckets.entries())
+		.map(([label, items]) => ({
+			label,
+			items: items.sort((left, right) => String(left?.name ?? "").localeCompare(String(right?.name ?? "")))
+		}))
+		.filter(group => group.items.length)
+		.sort((left, right) => left.label.localeCompare(right.label));
 }

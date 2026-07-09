@@ -42,6 +42,10 @@ import {
 	setStarshipSystemDamageLevel
 } from "../starship-system-damage.mjs";
 import { buildVehicleStarshipCrewContext, buildVehicleAvailableActors, deployStarshipCrew, undeployStarshipCrew, toggleStarshipActiveCrew } from "../starship-character.mjs";
+import {
+	groupCharacterDeploymentFeaturesByParent,
+	normalizeDeploymentGroupingKey
+} from "../character-deployments.mjs";
 import { getExpandedProficiencyHoverLabel } from "./proficiency.mjs";
 import { openStarshipMovementConfig } from "../starship-movement-config.mjs";
 import { openStarshipVitalConfig } from "../starship-vital-config.mjs";
@@ -796,8 +800,12 @@ function buildStarshipSidebarSummaryLabels() {
 const STARSHIP_SUPPRESSED_SIDEBAR_OPTION_NAMES = new Set([
 	"flags.dnd5e.showVehicleInitiative",
 	"flags.dnd5e.showVehicleQuality",
+	"flags.dnd5e.showVehicleAbilities",
 	"system.attributes.actions.stations"
 ]);
+
+/** Per-user collapse map for Core Deployment feature groups (`true` = collapsed). */
+const STARSHIP_CREW_ROLE_COLLAPSE_USER_FLAG = "starshipCrewRoleCollapse";
 
 function isStarshipSidebarShellElement(el) {
 	if ( !(el instanceof HTMLElement) ) return false;
@@ -975,7 +983,40 @@ function syncLegacyPowerRoutingToggleVisual(toggle, checked) {
 }
 
 /**
- * Edit-mode sidebar option: per-actor legacy Power Routing override (slide toggle under Show Abilities).
+ * Place Show Power Routing inside `aside.sheet-sidebar` at the Abilities Display Options slot.
+ * Never anchors to sheet-header Play/Edit toggles or `app.element` prepend.
+ * @param {HTMLElement} aside
+ * @param {HTMLElement} toggle
+ */
+function placeStarshipLegacyPowerRoutingSidebarToggle(aside, toggle) {
+	if ( !(aside instanceof HTMLElement) || !(toggle instanceof HTMLElement) ) return;
+
+	const abilitiesInput = aside.querySelector('input[name="flags.dnd5e.showVehicleAbilities"]');
+	const abilitiesRow = abilitiesInput
+		? getStarshipSuppressedSidebarOptionRow(abilitiesInput)
+		: null;
+	if ( abilitiesRow instanceof HTMLElement && abilitiesRow.parentElement === aside ) {
+		if ( toggle.nextElementSibling !== abilitiesRow ) {
+			abilitiesRow.insertAdjacentElement("beforebegin", toggle);
+		}
+		return;
+	}
+
+	const nameBlock = aside.querySelector(":scope > .name")
+		?? getStarshipSidebarNameBlock(aside);
+	if ( nameBlock instanceof HTMLElement && nameBlock.parentElement === aside ) {
+		if ( toggle.previousElementSibling !== nameBlock ) {
+			nameBlock.insertAdjacentElement("afterend", toggle);
+		}
+		return;
+	}
+
+	if ( toggle.parentElement !== aside ) aside.append(toggle);
+}
+
+/**
+ * Edit-mode sidebar option: per-actor legacy Power Routing override.
+ * Mounted in the stock Show Abilities slot (Abilities is suppressed on starships).
  */
 function mountStarshipLegacyPowerRoutingSidebarToggle(root, actor, app = null) {
 	if ( !isSw5eStarshipActor(actor) ) return;
@@ -987,6 +1028,9 @@ function mountStarshipLegacyPowerRoutingSidebarToggle(root, actor, app = null) {
 		existing?.remove();
 		return;
 	}
+
+	const aside = getStarshipSidebarAside(shell);
+	if ( !(aside instanceof HTMLElement) ) return;
 
 	const checked = getActorLegacyPowerRoutingFlag(actor);
 	const labelText = localizeOrFallback(
@@ -1014,20 +1058,14 @@ function mountStarshipLegacyPowerRoutingSidebarToggle(root, actor, app = null) {
 		icon.setAttribute("inert", "");
 
 		toggle.append(input, document.createTextNode(labelText), icon);
-
-		const abilitiesInput = shell.querySelector('input[name="flags.dnd5e.showVehicleAbilities"]');
-		const abilitiesLabel = abilitiesInput?.closest("label.slide-toggle");
-		if ( abilitiesLabel instanceof HTMLElement ) {
-			abilitiesLabel.insertAdjacentElement("afterend", toggle);
-		} else {
-			shell.append(toggle);
-		}
 	} else {
 		const input = toggle.querySelector("input[data-sw5e-legacy-power-routing-toggle]");
 		let node = input?.nextSibling;
 		while ( node && node.nodeType !== Node.TEXT_NODE ) node = node.nextSibling;
 		if ( node?.nodeType === Node.TEXT_NODE ) node.textContent = labelText;
 	}
+
+	placeStarshipLegacyPowerRoutingSidebarToggle(aside, toggle);
 
 	toggle.title = tooltipText;
 	toggle.dataset.tooltip = tooltipText;
@@ -1785,12 +1823,52 @@ function ensureStarshipCorePanelCollapseDelegate(container, app) {
 	container.dataset.sw5eCoreCollapseDelegate = "1";
 	container.addEventListener("click", async event => {
 		if ( event.target.closest("[data-sw5e-crew-command], [data-sw5e-fuel-action]") ) return;
+		const crewRoleToggle = event.target.closest("[data-sw5e-crew-role-collapse]");
+		if ( crewRoleToggle ) {
+			event.preventDefault();
+			event.stopPropagation();
+			await toggleStarshipCrewRoleGroupCollapse(crewRoleToggle, app);
+			return;
+		}
 		const collapseToggle = resolveStarshipCoreCollapseToggle(event.target);
 		if ( !collapseToggle ) return;
 		event.preventDefault();
 		event.stopPropagation();
 		await toggleStarshipCorePanelCollapse(collapseToggle, app);
 	});
+}
+
+/**
+ * Per-user collapse for Deployment feature groups (no actor.update).
+ *
+ * @param {HTMLElement} toggle
+ * @param {object} app
+ */
+async function toggleStarshipCrewRoleGroupCollapse(toggle, app) {
+	const group = toggle.closest("[data-sw5e-crew-role-group]");
+	if ( !(group instanceof HTMLElement) ) return;
+	const groupKey = group.dataset.sw5eCrewRoleGroup;
+	if ( !groupKey ) return;
+
+	const willCollapse = !group.classList.contains("is-collapsed");
+	group.classList.toggle("is-collapsed", willCollapse);
+	group.querySelectorAll("[data-sw5e-crew-role-collapse]").forEach(btn => {
+		btn.setAttribute("aria-expanded", willCollapse ? "false" : "true");
+		const expandLabel = btn.dataset.expandLabel
+			?? localizeOrFallback("SW5E.StarshipSheet.CrewRolesGroupExpand", "Expand deployment features");
+		const collapseLabel = btn.dataset.collapseLabel
+			?? localizeOrFallback("SW5E.StarshipSheet.CrewRolesGroupCollapse", "Collapse deployment features");
+		const label = willCollapse ? expandLabel : collapseLabel;
+		btn.title = label;
+		btn.setAttribute("aria-label", label);
+		if ( Object.prototype.hasOwnProperty.call(btn.dataset, "tooltip") ) btn.dataset.tooltip = label;
+	});
+
+	try {
+		await persistCrewRoleGroupCollapse(app?.actor, groupKey, willCollapse);
+	} catch ( err ) {
+		console.error("SW5E MODULE | Crew role group collapse update failed.", err);
+	}
 }
 
 function ensureStarshipAdvancedPowerDelegate(root, app) {
@@ -3759,17 +3837,209 @@ function getItemPriceLabel(item) {
 	return [formatSheetNumber(value), abbr].filter(Boolean).join(" ").trim();
 }
 
-function makeItemEntry(item, defaultTab = STOCK_CARGO_TAB_ID, actor = null, { sotgPanel = null } = {}) {
+function makeItemEntry(item, defaultTab = STOCK_CARGO_TAB_ID, actor = null, {
+	sotgPanel = null,
+	meta = null,
+	sourceActorUuid = null,
+	allowDelete = true,
+	supportsSheetNavigation = undefined
+} = {}) {
 	return {
 		id: item.id,
 		name: item.name,
-		meta: getItemMeta(item, actor),
+		meta: meta ?? getItemMeta(item, actor),
 		img: resolveStarshipSheetImageUrl(item.img),
 		defaultTab,
 		sotgPanel,
+		sourceActorUuid: sourceActorUuid || null,
+		allowDelete: allowDelete !== false,
+		supportsSheetNavigation,
 		weightLabel: getItemWeightLabel(item),
 		priceLabel: getItemPriceLabel(item)
 	};
+}
+
+function resolveCrewActorFromUuid(uuid) {
+	if ( !uuid ) return null;
+	return globalThis.fromUuidSync?.(uuid)
+		?? globalThis.game?.actors?.get(uuid)
+		?? null;
+}
+
+function formatCrewRoleMeta(crewRecord) {
+	const name = crewRecord?.name ?? "Crew";
+	const roles = [];
+	if ( crewRecord?.isPilot ) roles.push("Pilot");
+	else if ( crewRecord?.isCrew ) roles.push("Crew");
+	return roles.length ? `${name} · ${roles.join(", ")}` : name;
+}
+
+/**
+ * @param {string} label
+ * @returns {string}
+ */
+function crewRoleGroupKeyFromLabel(label) {
+	return normalizeDeploymentGroupingKey(label) || "group";
+}
+
+/**
+ * @param {object} starshipActor
+ * @returns {Record<string, boolean>}
+ */
+function getCrewRoleCollapseMapForStarship(starshipActor) {
+	const uuid = starshipActor?.uuid;
+	if ( !uuid ) return {};
+	const root = game?.user?.getFlag?.(getModuleId(), STARSHIP_CREW_ROLE_COLLAPSE_USER_FLAG);
+	const map = root && typeof root === "object" ? root[uuid] : null;
+	return map && typeof map === "object" ? map : {};
+}
+
+/**
+ * @param {object} starshipActor
+ * @param {string} groupKey
+ * @param {boolean} collapsed
+ */
+async function persistCrewRoleGroupCollapse(starshipActor, groupKey, collapsed) {
+	const uuid = starshipActor?.uuid;
+	if ( !uuid || !groupKey || !game?.user?.setFlag ) return;
+	const moduleId = getModuleId();
+	const root = foundry?.utils?.deepClone?.(
+		game.user.getFlag(moduleId, STARSHIP_CREW_ROLE_COLLAPSE_USER_FLAG) ?? {}
+	) ?? JSON.parse(JSON.stringify(game.user.getFlag(moduleId, STARSHIP_CREW_ROLE_COLLAPSE_USER_FLAG) ?? {}));
+	const shipMap = { ...(root[uuid] && typeof root[uuid] === "object" ? root[uuid] : {}) };
+	shipMap[groupKey] = Boolean(collapsed);
+	root[uuid] = shipMap;
+	await game.user.setFlag(moduleId, STARSHIP_CREW_ROLE_COLLAPSE_USER_FLAG, root);
+}
+
+/**
+ * Default collapsed unless the viewing user's assigned character contributed items to the group.
+ * Explicit user-flag entries override defaults. Attached-to-vessel defaults collapsed.
+ *
+ * @param {object} group
+ * @param {Record<string, boolean>} collapseMap
+ * @param {string|null} viewerCharacterUuid
+ * @param {string} attachedLabel
+ * @returns {boolean}
+ */
+function resolveCrewRoleGroupCollapsed(group, collapseMap, viewerCharacterUuid, attachedLabel) {
+	const key = group.groupKey;
+	if ( key && Object.prototype.hasOwnProperty.call(collapseMap, key) ) {
+		return Boolean(collapseMap[key]);
+	}
+	if ( group.label === attachedLabel ) return true;
+	if ( viewerCharacterUuid && Array.isArray(group.items) ) {
+		const mine = group.items.some(entry => entry?.sourceActorUuid === viewerCharacterUuid);
+		if ( mine ) return false;
+	}
+	return true;
+}
+
+/**
+ * Live-read Deployment features from assigned pilot/crew PCs, grouped by parent Deployment.
+ * Vessel-attached ship deployment items trail in an "Attached to vessel" group.
+ *
+ * @param {object} actor Starship vehicle actor
+ * @param {ReturnType<typeof categorizeStarshipItems>} categorized
+ * @returns {Array<object>}
+ */
+function buildCrewRoleGroupsFromAssignedCrew(actor, categorized) {
+	const featureFallback = localizeOrFallback("SW5E.FeatureCategory.Deployments", "Deployment Features");
+	const ventureFallback = localizeOrFallback("SW5E.FeatureCategory.Ventures", "Ventures");
+	const attachedLabel = localizeOrFallback("SW5E.StarshipSheet.CrewRolesAttachedVessel", "Attached to vessel");
+	const expandLabel = localizeOrFallback("SW5E.StarshipSheet.CrewRolesGroupExpand", "Expand deployment features");
+	const collapseLabel = localizeOrFallback("SW5E.StarshipSheet.CrewRolesGroupCollapse", "Collapse deployment features");
+	const crewCtx = buildVehicleStarshipCrewContext(actor);
+	const roster = Array.isArray(crewCtx?.roster) ? crewCtx.roster : [];
+	const collapseMap = getCrewRoleCollapseMapForStarship(actor);
+	const viewerCharacterUuid = game?.user?.character?.uuid ?? null;
+
+	/** @type {Map<string, { label: string, items: object[], firstItemId: string|null }>} */
+	const groupsByLabel = new Map();
+
+	const ensureGroup = label => {
+		const key = label || featureFallback;
+		if ( !groupsByLabel.has(key) ) {
+			groupsByLabel.set(key, {
+				label: key,
+				items: [],
+				firstItemId: null
+			});
+		}
+		return groupsByLabel.get(key);
+	};
+
+	for ( const crewRecord of roster ) {
+		if ( !crewRecord?.isPilot && !crewRecord?.isCrew ) continue;
+		const crewActor = resolveCrewActorFromUuid(crewRecord.uuid);
+		if ( !crewActor ) {
+			console.warn(`SW5E MODULE | Crew deployment features: could not resolve actor ${crewRecord.uuid}`);
+			continue;
+		}
+
+		const parentGroups = groupCharacterDeploymentFeaturesByParent(crewActor, {
+			featureFallback,
+			ventureFallback
+		});
+		const meta = formatCrewRoleMeta(crewRecord);
+
+		for ( const parentGroup of parentGroups ) {
+			const group = ensureGroup(parentGroup.label);
+			for ( const item of parentGroup.items ) {
+				const entry = makeItemEntry(item, STARSHIP_TAB_ID, actor, {
+					sotgPanel: "overview",
+					meta,
+					sourceActorUuid: crewRecord.uuid,
+					allowDelete: false,
+					supportsSheetNavigation: false
+				});
+				group.items.push(entry);
+				if ( !group.firstItemId ) group.firstItemId = entry.id;
+			}
+		}
+	}
+
+	const vesselItems = categorized?.roles?.items ?? [];
+	if ( vesselItems.length ) {
+		const group = ensureGroup(attachedLabel);
+		const sorted = [...vesselItems].sort((left, right) => left.name.localeCompare(right.name));
+		for ( const item of sorted ) {
+			const entry = makeItemEntry(item, STARSHIP_TAB_ID, actor, {
+				sotgPanel: "overview",
+				allowDelete: true
+			});
+			group.items.push(entry);
+			if ( !group.firstItemId ) group.firstItemId = entry.id;
+		}
+	}
+
+	return Array.from(groupsByLabel.values())
+		.map(group => {
+			const groupKey = crewRoleGroupKeyFromLabel(group.label);
+			const entry = {
+				label: group.label,
+				groupKey,
+				count: group.items.length,
+				defaultTab: STARSHIP_TAB_ID,
+				manageLabel: "Core",
+				scrollTo: STARSHIP_TAB_ID,
+				firstItemId: group.firstItemId,
+				showEconomy: false,
+				sotgPanel: "overview",
+				supportsSheetNavigation: false,
+				expandLabel,
+				collapseLabel,
+				items: group.items.sort((left, right) => left.name.localeCompare(right.name))
+			};
+			entry.collapsed = resolveCrewRoleGroupCollapsed(entry, collapseMap, viewerCharacterUuid, attachedLabel);
+			return entry;
+		})
+		.filter(group => group.items.length)
+		.sort((left, right) => {
+			if ( left.label === attachedLabel ) return 1;
+			if ( right.label === attachedLabel ) return -1;
+			return left.label.localeCompare(right.label);
+		});
 }
 
 function categorizeStarshipItems(actor) {
@@ -3831,8 +4101,8 @@ function partitionStarshipGroups(actor) {
 		modificationsGroups: build(["modifications"]),
 		/** Size classification item(s) + passive Starship Features feats — tab "Systems" */
 		systemsGroups: build(["size", "features"]),
-		/** Deployments / crew roles — Core crew panel */
-		crewRoleGroups: build(["roles"])
+		/** Deployments / crew roles — Core crew panel (live from assigned PCs + vessel-attached) */
+		crewRoleGroups: buildCrewRoleGroupsFromAssignedCrew(actor, groups)
 	};
 }
 
@@ -3926,6 +4196,19 @@ function buildOverviewAbilitiesContext(actor, editable = false) {
 
 function getStarshipSidebarShell(root, app = null) {
 	return (app?.element instanceof HTMLElement ? app.element : null) ?? root;
+}
+
+/**
+ * Resolve the vehicle sidebar column (`aside.sheet-sidebar`), not the full sheet shell.
+ * @param {HTMLElement} shell
+ * @returns {HTMLElement|null}
+ */
+function getStarshipSidebarAside(shell) {
+	if ( !(shell instanceof HTMLElement) ) return null;
+	if ( shell.matches("aside.sheet-sidebar, aside.sidebar") ) return shell;
+	return shell.querySelector(
+		"aside.sheet-sidebar, [data-application-part='sidebar'] aside.sheet-sidebar, [data-application-part='sidebar'] .sheet-sidebar, aside.sidebar, .sheet-sidebar"
+	);
 }
 
 function findStarshipSidebarPillsGroup(shell, labelText) {
@@ -4208,13 +4491,34 @@ function getEventTargetElement(event) {
 }
 
 /**
+ * Resolve a SoTG row item from the starship or a crew source actor UUID.
+ *
+ * @param {object} app
+ * @param {HTMLElement|null} row
+ * @returns {{ item: object|null, sourceActor: object|null }}
+ */
+function resolveSotgRowItem(app, row) {
+	const shipActor = app?.actor ?? app?.document ?? null;
+	const itemId = row?.dataset?.itemId;
+	if ( !itemId ) return { item: null, sourceActor: null };
+
+	const sourceUuid = row?.dataset?.sourceActorUuid || null;
+	if ( sourceUuid ) {
+		const sourceActor = resolveCrewActorFromUuid(sourceUuid);
+		const item = sourceActor?.items?.get?.(itemId) ?? null;
+		return { item, sourceActor };
+	}
+
+	return { item: shipActor?.items?.get?.(itemId) ?? null, sourceActor: shipActor };
+}
+
+/**
  * Primary strip: EDIT → item sheet edit; PLAY → use/post (`useStarshipItem`).
  * Systems classification rows: no-op in PLAY (preserves prior gating).
+ * Crew-sourced rows resolve items on the assigned PC actor.
  */
 async function onStarshipSotgPrimaryItemAction(app, row, event) {
-	const actor = app.actor ?? app.document;
-	const id = row?.dataset?.itemId;
-	const item = id ? actor?.items?.get(id) : null;
+	const { item, sourceActor } = resolveSotgRowItem(app, row);
 	if ( !item ) return;
 
 	if ( isStarshipSheetEditMode(app) ) {
@@ -4226,14 +4530,14 @@ async function onStarshipSotgPrimaryItemAction(app, row, event) {
 
 	if ( row.closest(".sw5e-starship-systems-groups") ) return;
 
-	await useStarshipItem(item, actor, event);
+	await useStarshipItem(item, sourceActor ?? item.actor, event);
 }
 
 async function starshipSotgContextDispatch(app, targetEl, action) {
-	const actor = app.actor ?? app.document;
-	const itemId = targetEl.closest("[data-item-id]")?.dataset?.itemId;
-	const item = itemId ? actor?.items?.get(itemId) : null;
+	const row = targetEl?.closest?.(".sw5e-starship-item-row--sotg[data-item-id]") ?? targetEl?.closest?.("[data-item-id]");
+	const { item, sourceActor } = resolveSotgRowItem(app, row);
 	if ( !item ) return;
+	const isExternal = Boolean(row?.dataset?.sourceActorUuid);
 
 	const ItemSheet5e = getDnd5eItemSheet5e();
 	switch ( action ) {
@@ -4246,17 +4550,21 @@ async function starshipSotgContextDispatch(app, targetEl, action) {
 			else await item.sheet?.render(true);
 			return;
 		case "delete":
+			if ( isExternal ) return;
 			await item.deleteDialog?.();
 			return;
 		case "duplicate":
+			if ( isExternal ) return;
 			await item.clone?.({
 				name: game.i18n.format("DOCUMENT.CopyOf", { name: item.name })
 			}, { save: true, addSource: true });
 			return;
 		case "attune":
+			if ( isExternal ) return;
 			await item.update?.({ "system.attuned": !item.system.attuned });
 			return;
 		case "equip":
+			if ( isExternal ) return;
 			await item.update?.({ "system.equipped": !item.system.equipped });
 			return;
 		default:
@@ -4270,9 +4578,9 @@ async function starshipSotgContextDispatch(app, targetEl, action) {
  */
 function prepareStarshipSotgItemContextMenu(element, app) {
 	const row = element.closest(".sw5e-starship-item-row--sotg[data-item-id]");
-	const actor = app.actor ?? app.document;
-	const item = row ? actor?.items?.get(row.dataset.itemId) : null;
+	const { item, sourceActor } = resolveSotgRowItem(app, row);
 	if ( !item ) return;
+	const isExternal = Boolean(row?.dataset?.sourceActorUuid);
 
 	const compendiumLocked = game.packs.get(item.pack)?.locked;
 	const sheetOwnerEditable = app.isEditable !== false;
@@ -4287,17 +4595,23 @@ function prepareStarshipSotgItemContextMenu(element, app) {
 		icon: " ",
 		condition: () => item.isOwner && !compendiumLocked && sheetOwnerEditable && sheetEditMode,
 		callback: li => { void starshipSotgContextDispatch(app, li, "edit"); }
-	}, {
-		name: "DND5E.ContextMenuActionDuplicate",
-		icon: " ",
-		condition: () => item.canDuplicate && item.isOwner && !compendiumLocked,
-		callback: li => { void starshipSotgContextDispatch(app, li, "duplicate"); }
-	}, {
-		name: "DND5E.ContextMenuActionDelete",
-		icon: " ",
-		condition: () => item.canDelete && item.isOwner && !compendiumLocked && sheetOwnerEditable && sheetEditMode,
-		callback: li => { void starshipSotgContextDispatch(app, li, "delete"); }
-	}, {
+	}];
+
+	if ( !isExternal ) {
+		options.push({
+			name: "DND5E.ContextMenuActionDuplicate",
+			icon: " ",
+			condition: () => item.canDuplicate && item.isOwner && !compendiumLocked,
+			callback: li => { void starshipSotgContextDispatch(app, li, "duplicate"); }
+		}, {
+			name: "DND5E.ContextMenuActionDelete",
+			icon: " ",
+			condition: () => item.canDelete && item.isOwner && !compendiumLocked && sheetOwnerEditable && sheetEditMode,
+			callback: li => { void starshipSotgContextDispatch(app, li, "delete"); }
+		});
+	}
+
+	options.push({
 		name: "DND5E.DisplayCard",
 		icon: " ",
 		callback: () => item.displayCard?.()
@@ -4305,11 +4619,11 @@ function prepareStarshipSotgItemContextMenu(element, app) {
 		name: localizeOrFallback("SW5E.StarshipSheet.SotgContextUseOrRoll", "Use or roll item"),
 		icon: " ",
 		condition: () => item.isOwner && (typeof item.use === "function" || typeof item.rollAttack === "function"),
-		callback: () => { void useStarshipItem(item, actor); },
+		callback: () => { void useStarshipItem(item, sourceActor ?? item.actor); },
 		group: "action"
-	}];
+	});
 
-	if ( actor && !actor.system?.isGroup ) {
+	if ( !isExternal && sourceActor && !sourceActor.system?.isGroup ) {
 		if ( "equipped" in item.system ) {
 			options.push({
 				name: `DND5E.ContextMenuAction${item.system.equipped ? "Unequip" : "Equip"}`,
@@ -4503,7 +4817,9 @@ async function renderStarshipLayer(app, html, data) {
 
 	const withIntegrated = arr => arr.map(group => ({
 		...group,
-		supportsSheetNavigation: integrated && group.defaultTab !== null
+		supportsSheetNavigation: group.supportsSheetNavigation === false
+			? false
+			: (integrated && group.defaultTab !== null)
 	}));
 
 	const sheetEditMode = isStarshipSheetEditMode(app);
@@ -4531,7 +4847,7 @@ async function renderStarshipLayer(app, html, data) {
 		crewRolesTitle: localizeOrFallback("SW5E.StarshipSheet.CrewRolesTitle", "Crew roles"),
 		crewRolesLede: localizeOrFallback(
 			"SW5E.StarshipSheet.CrewRolesLede",
-			"Deployment and venture features attached to this vessel."
+			"Deployment and venture features from assigned pilot and crew, grouped by Deployment. Vessel-attached items appear separately."
 		),
 		overviewLandingKicker: localizeOrFallback("SW5E.StarshipSheet.OverviewKicker", "Overview"),
 		overviewLandingTitle: localizeOrFallback("SW5E.StarshipSheet.OverviewTitle", "Starship at a glance"),
@@ -4663,8 +4979,8 @@ async function renderStarshipLayer(app, html, data) {
 		event.stopPropagation();
 		const action = actionNode.dataset.sw5eAction
 			?? actionNode.getAttribute("data-sw5e-action");
-		const itemId = actionNode.dataset.itemId ?? actionNode.getAttribute("data-item-id");
-		const item = itemId ? sheetActor?.items?.get(itemId) : null;
+		const actionRow = actionNode.closest(".sw5e-starship-item-row--sotg[data-item-id]") ?? actionNode;
+		const { item } = resolveSotgRowItem(app, actionRow);
 
 		if ( action === "edit-item" ) {
 			const ItemSheet5e = getDnd5eItemSheet5e();
@@ -4674,12 +4990,13 @@ async function renderStarshipLayer(app, html, data) {
 		}
 
 		if ( action === "delete-item" ) {
-			if ( !item ) return;
+			if ( !item || actionRow?.dataset?.sourceActorUuid ) return;
 			if ( typeof item.deleteDialog === "function" ) await item.deleteDialog();
 			return;
 		}
 
 		if ( action === "focus-item" ) {
+			if ( actionRow?.dataset?.sourceActorUuid ) return;
 			const focusItem = actionNode.dataset.itemId ? sheetActor?.items?.get(actionNode.dataset.itemId) : null;
 			const focusTab = actionNode.dataset.tab || resolveStarshipItemPrimaryTab(focusItem);
 			focusSheetItem(root, app, actionNode.dataset.itemId, focusTab);
