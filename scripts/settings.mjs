@@ -1,6 +1,7 @@
 import { CHASSIS_SETTING_KEYS, CHASSIS_RULES_MODES } from "./chassis.mjs";
 import { LEGACY_SETTINGS_NAMESPACE, SETTINGS_NAMESPACE } from "./module-support.mjs";
 import { SHOW_LEGACY_POWER_ROUTING_SETTING } from "./starship-routing-gate.mjs";
+import { SPACE_STATION_VARIANT_SETTING } from "./space-station.mjs";
 import {
 	onSw5eThemeChange,
 	SW5E_DEFAULT_THEME,
@@ -132,6 +133,16 @@ export function registerModuleSettings() {
 		config: true,
 		type: Boolean,
 		default: false
+	});
+
+	game.settings.register(SETTINGS_NAMESPACE, SPACE_STATION_VARIANT_SETTING, {
+		name: "SW5E.variant.SpaceStation.Name",
+		hint: "SW5E.variant.SpaceStation.Hint",
+		scope: "world",
+		config: true,
+		type: Boolean,
+		default: false,
+		requiresReload: true
 	});
 
 	// // Use old starship movement calculation rules

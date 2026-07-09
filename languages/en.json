@@ -1035,10 +1035,7 @@
 	"SW5E.StarshipCrewActivate": "Activate Crew Member",
 	"SW5E.StarshipCrewDeactivate": "Deactivate Crew Member",
 	"SW5E.StarshipCrewRemove": "Remove Crew Member",
-	"SW5E.StarshipSheet.CrewRolesTitle": "Crew roles",
-	"SW5E.StarshipSheet.CrewRolesLede": "Deployment and venture features from assigned pilot and crew, grouped by Deployment. Vessel-attached items appear separately.",
 	"SW5E.StarshipSheet.CrewRolesAttachedVessel": "Attached to vessel",
-	"SW5E.StarshipSheet.CrewRolesGroupHint": "Use the icon to roll or post to chat, or open details on the crew member's sheet. Vessel-attached items can be removed from this tab.",
 	"SW5E.StarshipSheet.CrewRolesGroupExpand": "Expand deployment features",
 	"SW5E.StarshipSheet.CrewRolesGroupCollapse": "Collapse deployment features",
 	"SW5E.Starship.Roll.NoCrewPBTitle": "Starship skill",
@@ -1927,7 +1924,13 @@
 		"SimplifiedForcecasting": "Simplified forcecasting",
 		"SimplifiedForcecastingHint": "When selected, players use their universal forcecasting ability for dark and light powers instead of just universal powers.",
 		"AllowFeatsAndASI": "ASI and a feat",
-		"AllowFeatsAndASIHint": "When a player has the opportunity to choose between adding 2 to their ability scores or a feat, instead allow them to add 1 to an ability score and choose a feat."
+		"AllowFeatsAndASIHint": "When a player has the opportunity to choose between adding 2 to their ability scores or a feat, instead allow them to add 1 to an ability score and choose a feat.",
+		"SpaceStation": {
+			"Name": "Space Station variant",
+			"Hint": "When enabled, starships flagged as space stations use station rules: fixed flying/turning speeds (50/100), doubled suite maximum, +2 hull points per hull die, AC −2, and related stock options. Disable to roll back station derive overrides.",
+			"SizeWarning": "{name} is flagged as a space station but is smaller than Large. Space stations are intended for Large and larger sizes.",
+			"CreateOption": "Space Station"
+		}
 	},
 	"SW5E.SubclassInvocations.LimitedTitle": "Limited Invocations"
 }

@@ -602,6 +602,11 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2 .pills .pill:not(.gre
   display: none !important;
 }
 
+/* Stock Armor Class trait-line; portrait AC badge is authoritative for starships. */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-suppress-stock-ac {
+  display: none !important;
+}
+
 /*
  * dnd5e 5.2.x vehicle sidebar: Hit Points are `div.pills-group` (see templates/actors/vehicle/sidebar.hbs), not `.meter-group`.
  * PLAY: block contains `input[name^="system.attributes.hp."]` (hidden). EDIT: block has `button[data-config="hitPoints"]` only until inline expand.

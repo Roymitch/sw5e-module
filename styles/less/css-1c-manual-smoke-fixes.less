@@ -310,3 +310,117 @@ body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.application.roll-confi
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* ——— Starship portrait AC badge (shield clip, character parity) ——— */
+@{ship-portrait-light} .sw5e-starship-ac-badge,
+@{ship-portrait-dark} .sw5e-starship-ac-badge,
+@{ship-portrait-underworld} .sw5e-starship-ac-badge {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  bottom: 0;
+  isolation: isolate;
+  background: none !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: var(--sw5e-theme-text) !important;
+}
+
+@{ship-portrait-light} .sw5e-starship-ac-badge {
+  filter: var(--sw5e-light-sidebar-ornament-shadow) !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.48);
+}
+
+@{ship-portrait-dark} .sw5e-starship-ac-badge {
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.36)) !important;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.45);
+}
+
+@{ship-portrait-underworld} .sw5e-starship-ac-badge {
+  filter: var(--sw5e-underworld-sidebar-ornament-shadow) !important;
+}
+
+@{ship-portrait-light} .sw5e-starship-ac-badge::before,
+@{ship-portrait-light} .sw5e-starship-ac-badge::after,
+@{ship-portrait-dark} .sw5e-starship-ac-badge::before,
+@{ship-portrait-dark} .sw5e-starship-ac-badge::after,
+@{ship-portrait-underworld} .sw5e-starship-ac-badge::before,
+@{ship-portrait-underworld} .sw5e-starship-ac-badge::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+  clip-path: polygon(50% 0, 84% 12%, 94% 46%, 78% 86%, 50% 100%, 22% 86%, 6% 46%, 16% 12%);
+}
+
+@{ship-portrait-light} .sw5e-starship-ac-badge::before,
+@{ship-portrait-dark} .sw5e-starship-ac-badge::before,
+@{ship-portrait-underworld} .sw5e-starship-ac-badge::before {
+  inset: 0;
+  z-index: -2;
+}
+
+@{ship-portrait-light} .sw5e-starship-ac-badge::before {
+  background: var(--sw5e-light-sidebar-ornament-outline-strong);
+}
+
+@{ship-portrait-light} .sw5e-starship-ac-badge::after {
+  inset: 3px;
+  background: var(--sw5e-light-sidebar-ornament-fill);
+  box-shadow: inset 0 0 0 1px var(--sw5e-light-sidebar-ornament-inner-line);
+}
+
+@{ship-portrait-dark} .sw5e-starship-ac-badge::before {
+  background: var(--sw5e-dark-sidebar-ornament-outline-strong);
+}
+
+@{ship-portrait-dark} .sw5e-starship-ac-badge::after {
+  inset: 3px;
+  background: var(--sw5e-dark-sidebar-ornament-fill);
+  box-shadow: inset 0 0 0 1px var(--sw5e-dark-sidebar-ornament-inner-line);
+}
+
+@{ship-portrait-underworld} .sw5e-starship-ac-badge::before {
+  background: var(--sw5e-underworld-sidebar-ornament-outline-strong);
+}
+
+@{ship-portrait-underworld} .sw5e-starship-ac-badge::after {
+  inset: 3px;
+  background: var(--sw5e-underworld-sidebar-ornament-fill);
+  box-shadow: inset 0 0 0 1px var(--sw5e-underworld-sidebar-ornament-inner-line);
+}
+
+@{ship-portrait-light} .sw5e-starship-ac-badge > *,
+@{ship-portrait-dark} .sw5e-starship-ac-badge > *,
+@{ship-portrait-underworld} .sw5e-starship-ac-badge > * {
+  position: relative;
+  z-index: 1;
+}
+
+@{ship-portrait-light}.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge,
+@{ship-portrait-dark}.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge,
+@{ship-portrait-underworld}.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+@{ship-portrait-light}.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge::before {
+  background: rgba(18, 40, 54, 0.44);
+}
+
+@{ship-portrait-light}.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge::after {
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.78), 0 0 0 1px rgba(18, 40, 54, 0.18);
+}
+
+@{ship-portrait-dark}.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge::before,
+@{ship-portrait-underworld}.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge::before {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+@{ship-portrait-dark}.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge::after,
+@{ship-portrait-underworld}.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge::after {
+  background: rgba(12, 16, 20, 0.88);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.38);
+}

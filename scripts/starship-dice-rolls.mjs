@@ -8,6 +8,7 @@ import {
 	getStarshipEffectiveShieldMax,
 	getStarshipEffectiveShieldRegenRateMult
 } from "./starship-system-damage.mjs";
+import { getSpaceStationHullDieBonus, isActiveSpaceStationActor } from "./space-station.mjs";
 
 function localizeOrFallback(key, fallback, data = {}) {
 	const formatted = game?.i18n?.format?.(key, data);
@@ -88,7 +89,10 @@ export async function previewStarshipHullDieRoll(actor, { denomination, stagedHp
 		return null;
 	}
 
-	const formula = `max(0, 1${die} + @abilities.con.mod)`;
+	const hullDieBonus = isActiveSpaceStationActor(actor) ? getSpaceStationHullDieBonus() : 0;
+	const formula = hullDieBonus > 0
+		? `max(0, 1${die} + @abilities.con.mod + ${hullDieBonus})`
+		: `max(0, 1${die} + @abilities.con.mod)`;
 	const roll = await new Roll(formula, actor?.getRollData?.() ?? {}).evaluate();
 	const hpGain = Math.min(headroom, Math.max(0, Math.trunc(roll.total)));
 	return { roll, hpGain, total: roll.total, die };

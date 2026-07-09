@@ -3,9 +3,23 @@ import {
 	createBlankLegacyStarshipActorData,
 	getStarshipPrototypeTokenDimensions
 } from "../starship-data.mjs";
+import {
+	buildSpaceStationAcPenaltyEffectData,
+	getSpaceStationBaseStockModUuids,
+	isActiveSpaceStationActor,
+	isSpaceStationRoleSpecializationFeat,
+	isSpaceStationSizeBelowLarge,
+	isSw5eSpaceStationActor,
+	resolveSpaceStationRoleSpecializationModUuids,
+	SPACE_STATION_AC_EFFECT_FLAG,
+	STARSHIP_VARIANT_SPACE_STATION
+} from "../space-station.mjs";
+import { SETTINGS_NAMESPACE } from "../module-support.mjs";
 
 const STARSHIP_CREATE_VALUE = "__sw5e_starship__";
+const SPACE_STATION_CREATE_VALUE = "__sw5e_space_station__";
 const STARSHIP_CREATE_FLAG = "flags.sw5e.createStarship";
+const SPACE_STATION_CREATE_FLAG = "flags.sw5e.createSpaceStation";
 const DEBUG_PREFIX = "sw5e-module | starship-create";
 
 /** @see dnd5e `templates/apps/document-create.hbs` — Vehicle option lives in `ol.unlist.card > li`. */
@@ -51,11 +65,6 @@ function getTypeRadioName(form) {
 	return vehicle instanceof HTMLInputElement ? vehicle.name : "";
 }
 
-function getTypeRadios(form) {
-	const name = getTypeRadioName(form);
-	return name ? Array.from(form.querySelectorAll(`input[type="radio"][name="${CSS.escape(name)}"]`)) : [];
-}
-
 function getVehicleTypeRadio(form) {
 	return form.querySelector(VEHICLE_RADIO_SELECTOR);
 }
@@ -64,6 +73,13 @@ function getStarshipTypeRadio(form) {
 	const name = getTypeRadioName(form);
 	return name
 		? form.querySelector(`input[type="radio"][name="${CSS.escape(name)}"][value="${STARSHIP_CREATE_VALUE}"]`)
+		: null;
+}
+
+function getSpaceStationTypeRadio(form) {
+	const name = getTypeRadioName(form);
+	return name
+		? form.querySelector(`input[type="radio"][name="${CSS.escape(name)}"][value="${SPACE_STATION_CREATE_VALUE}"]`)
 		: null;
 }
 
@@ -76,144 +92,164 @@ function getStarshipOptionLabel() {
 	return localizeOrFallback("TYPES.Actor.starship", "Starship");
 }
 
-function ensureStarshipSelectOption(typeSelect) {
+function getSpaceStationOptionLabel() {
+	return localizeOrFallback("SW5E.variant.SpaceStation.CreateOption", "Space Station");
+}
+
+function ensureSelectOption(typeSelect, value, label, afterValue) {
 	if ( !(typeSelect instanceof HTMLSelectElement) ) return;
-	if ( typeSelect.querySelector(`option[value="${STARSHIP_CREATE_VALUE}"]`) ) return;
+	if ( typeSelect.querySelector(`option[value="${value}"]`) ) return;
 
 	const option = document.createElement("option");
-	option.value = STARSHIP_CREATE_VALUE;
-	option.textContent = getStarshipOptionLabel();
+	option.value = value;
+	option.textContent = label;
 
-	const vehicleOption = typeSelect.querySelector('option[value="vehicle"]');
-	if ( vehicleOption ) vehicleOption.insertAdjacentElement("afterend", option);
+	const afterOption = typeSelect.querySelector(`option[value="${afterValue}"]`);
+	if ( afterOption ) afterOption.insertAdjacentElement("afterend", option);
 	else typeSelect.append(option);
 }
 
+function ensureStarshipSelectOption(typeSelect) {
+	ensureSelectOption(typeSelect, STARSHIP_CREATE_VALUE, getStarshipOptionLabel(), "vehicle");
+	ensureSelectOption(typeSelect, SPACE_STATION_CREATE_VALUE, getSpaceStationOptionLabel(), STARSHIP_CREATE_VALUE);
+}
+
 /**
- * dnd5e 5.2.x `document-create.hbs` structure:
- * <ol class="unlist card">
- *   <li><label>{{ dnd5e-icon }}<span>{{ label }}</span><input type="radio" name="type" value="..."></label></li>
- * </ol>
- * Clone the entire `<li>` so icons, label layout, and radio match stock rows.
+ * Clone a type-list row and remap its radio to a custom create value.
+ * @param {HTMLFormElement} form
+ * @param {string} createValue
+ * @param {string} label
+ * @param {HTMLElement} insertAfterRow
  */
-function ensureStarshipRadioOption(form) {
-	if ( getStarshipTypeRadio(form) ) {
-		console.debug(`${DEBUG_PREFIX} Starship radio already in DOM; skipping row insert`);
-		return;
-	}
+function insertClonedTypeRadioRow(form, createValue, label, insertAfterRow) {
+	const existing = form.querySelector(
+		`input[type="radio"][name="${CSS.escape(getTypeRadioName(form))}"][value="${createValue}"]`
+	);
+	if ( existing ) return existing.closest("li") ?? existing;
 
 	const vehicleRadio = getVehicleTypeRadio(form);
-	if ( !(vehicleRadio instanceof HTMLInputElement) ) {
-		console.debug(`${DEBUG_PREFIX} Vehicle radio not found`, { selector: VEHICLE_RADIO_SELECTOR });
-		return;
-	}
+	if ( !(vehicleRadio instanceof HTMLInputElement) || !(insertAfterRow instanceof HTMLElement) ) return null;
 
-	const vehicleRow =
-		vehicleRadio.closest(`${TYPE_LIST_SELECTOR} > li`)
-		?? vehicleRadio.closest("li");
-	if ( !vehicleRow ) {
-		console.debug(`${DEBUG_PREFIX} Vehicle row <li> not found (expected ${TYPE_LIST_SELECTOR} > li)`);
-		return;
-	}
-
-	console.debug(`${DEBUG_PREFIX} Vehicle row <li> found`, { vehicleRow, listSelector: TYPE_LIST_SELECTOR });
-
-	const row = vehicleRow.cloneNode(true);
-	console.debug(`${DEBUG_PREFIX} Full Vehicle row cloned (deep clone)`, row);
-
+	const row = insertAfterRow.cloneNode(true);
 	const cloneRadio =
-		row.querySelector(`input[type="radio"][name="${CSS.escape(vehicleRadio.name)}"][value="vehicle"]`)
-		?? row.querySelector(VEHICLE_RADIO_SELECTOR);
-	if ( !(cloneRadio instanceof HTMLInputElement) ) {
-		console.debug(`${DEBUG_PREFIX} Cloned row has no vehicle radio to remap`);
-		return;
-	}
+		row.querySelector(`input[type="radio"][name="${CSS.escape(vehicleRadio.name)}"]`)
+		?? row.querySelector('input[type="radio"]');
+	if ( !(cloneRadio instanceof HTMLInputElement) ) return null;
 
 	row.querySelectorAll("[id]").forEach(el => el.removeAttribute("id"));
 
 	const newId =
 		(typeof foundry !== "undefined" && foundry.utils?.randomID)
 			? foundry.utils.randomID()
-			: `sw5e-starship-type-${Date.now()}`;
+			: `sw5e-type-${Date.now()}`;
 
 	cloneRadio.name = vehicleRadio.name;
-	cloneRadio.value = STARSHIP_CREATE_VALUE;
+	cloneRadio.value = createValue;
 	cloneRadio.checked = false;
 	cloneRadio.required = vehicleRadio.required;
 	cloneRadio.disabled = false;
 	cloneRadio.id = newId;
 
 	const labelEl = cloneRadio.closest("label");
-	if ( labelEl instanceof HTMLLabelElement )
-		labelEl.setAttribute("for", newId);
+	if ( labelEl instanceof HTMLLabelElement ) labelEl.setAttribute("for", newId);
 
 	const textSpan = labelEl?.querySelector(":scope > span");
-	if ( textSpan ) {
-		textSpan.textContent = getStarshipOptionLabel();
-		console.debug(`${DEBUG_PREFIX} Label text set on label > span`, textSpan);
-	} else {
-		console.debug(`${DEBUG_PREFIX} No :scope > span under label; row structure may differ`, { labelEl });
-	}
+	if ( textSpan ) textSpan.textContent = label;
 
-	vehicleRow.insertAdjacentElement("afterend", row);
-	console.debug(`${DEBUG_PREFIX} Cloned row inserted after Vehicle <li>`, { after: vehicleRow, inserted: row });
-
-	const starshipRadioVerify = getStarshipTypeRadio(form);
-	console.debug(`${DEBUG_PREFIX} Starship radio present after insert`, { starshipRadioVerify, newId });
+	insertAfterRow.insertAdjacentElement("afterend", row);
+	return row;
 }
 
-function getStarshipMarkerInput(form) {
-	return form.querySelector(`input[type="hidden"][name="${STARSHIP_CREATE_FLAG}"]`);
+function ensureStarshipRadioOption(form) {
+	if ( getStarshipTypeRadio(form) && getSpaceStationTypeRadio(form) ) return;
+
+	const vehicleRadio = getVehicleTypeRadio(form);
+	if ( !(vehicleRadio instanceof HTMLInputElement) ) return;
+
+	const vehicleRow =
+		vehicleRadio.closest(`${TYPE_LIST_SELECTOR} > li`)
+		?? vehicleRadio.closest("li");
+	if ( !vehicleRow ) return;
+
+	const starshipRow = insertClonedTypeRadioRow(
+		form,
+		STARSHIP_CREATE_VALUE,
+		getStarshipOptionLabel(),
+		vehicleRow
+	);
+	insertClonedTypeRadioRow(
+		form,
+		SPACE_STATION_CREATE_VALUE,
+		getSpaceStationOptionLabel(),
+		starshipRow ?? vehicleRow
+	);
 }
 
-function syncStarshipMarker(form, isStarship) {
-	const existingInput = getStarshipMarkerInput(form);
-	if ( !isStarship ) {
+function getHiddenFlagInput(form, name) {
+	return form.querySelector(`input[type="hidden"][name="${name}"]`);
+}
+
+function syncHiddenFlag(form, name, enabled) {
+	const existingInput = getHiddenFlagInput(form, name);
+	if ( !enabled ) {
 		existingInput?.remove();
 		return;
 	}
-
 	if ( existingInput ) {
 		existingInput.value = "true";
 		return;
 	}
-
 	const input = document.createElement("input");
 	input.type = "hidden";
-	input.name = STARSHIP_CREATE_FLAG;
+	input.name = name;
 	input.value = "true";
 	form.append(input);
+}
+
+function syncCreateMarkers(form, { isStarship, isSpaceStation }) {
+	syncHiddenFlag(form, STARSHIP_CREATE_FLAG, isStarship || isSpaceStation);
+	syncHiddenFlag(form, SPACE_STATION_CREATE_FLAG, isSpaceStation);
 }
 
 function prepareStarshipSubmission(form) {
 	const typeSelect = form.querySelector('select[name="type"]');
 	if ( typeSelect instanceof HTMLSelectElement ) {
-		const isStarship = typeSelect.value === STARSHIP_CREATE_VALUE;
-		syncStarshipMarker(form, isStarship);
-		if ( isStarship ) {
-			console.debug(`${DEBUG_PREFIX} submit remap (select): starship -> vehicle + createStarship flag`);
-			typeSelect.value = "vehicle";
-		}
+		const isSpaceStation = typeSelect.value === SPACE_STATION_CREATE_VALUE;
+		const isStarship = typeSelect.value === STARSHIP_CREATE_VALUE || isSpaceStation;
+		syncCreateMarkers(form, { isStarship, isSpaceStation });
+		if ( isStarship ) typeSelect.value = "vehicle";
 		return;
 	}
 
 	const starshipRadio = getStarshipTypeRadio(form);
+	const stationRadio = getSpaceStationTypeRadio(form);
 	const vehicleRadio = getVehicleTypeRadio(form);
-	if ( !(starshipRadio instanceof HTMLInputElement) || !(vehicleRadio instanceof HTMLInputElement) ) return;
+	if ( !(vehicleRadio instanceof HTMLInputElement) ) return;
 
-	const isStarship = starshipRadio.checked;
-	syncStarshipMarker(form, isStarship);
+	const isSpaceStation = stationRadio instanceof HTMLInputElement && stationRadio.checked;
+	const isStarship = (starshipRadio instanceof HTMLInputElement && starshipRadio.checked) || isSpaceStation;
+	syncCreateMarkers(form, { isStarship, isSpaceStation });
 	if ( isStarship ) {
-		starshipRadio.checked = false;
+		if ( starshipRadio ) starshipRadio.checked = false;
+		if ( stationRadio ) stationRadio.checked = false;
 		vehicleRadio.checked = true;
-		console.debug(`${DEBUG_PREFIX} submit remap (radio): __sw5e_starship__ -> vehicle + createStarship flag`);
 	}
 }
 
 function isPendingStarshipCreate(document, data = {}) {
-	return data?.flags?.sw5e?.createStarship
+	return Boolean(
+		data?.flags?.sw5e?.createStarship
 		?? document?._source?.flags?.sw5e?.createStarship
-		?? false;
+		?? false
+	);
+}
+
+function isPendingSpaceStationCreate(document, data = {}) {
+	return Boolean(
+		data?.flags?.sw5e?.createSpaceStation
+		?? document?._source?.flags?.sw5e?.createSpaceStation
+		?? false
+	);
 }
 
 function isSw5eStarshipActorData(data) {
@@ -246,13 +282,34 @@ function syncStarshipPrototypeTokenSource(document, data = {}) {
 	return true;
 }
 
-function applyBlankStarshipSeed(document) {
+function applyBlankStarshipSeed(document, { asSpaceStation = false } = {}) {
 	const source = createBlankLegacyStarshipActorData(document.toObject());
+	if ( asSpaceStation ) {
+		source.flags ??= {};
+		source.flags.sw5e ??= {};
+		source.flags.sw5e.legacyStarshipActor ??= { type: "starship", system: {} };
+		source.flags.sw5e.legacyStarshipActor.variant = STARSHIP_VARIANT_SPACE_STATION;
+		// Stations are Large+ by RAW; seed Large so soft size warning is not immediate.
+		source.system ??= {};
+		source.system.traits ??= {};
+		if ( !source.system.traits.size || source.system.traits.size === "med" ) {
+			source.system.traits.size = "lg";
+		}
+		source.flags.sw5e.legacyStarshipActor.system ??= {};
+		source.flags.sw5e.legacyStarshipActor.system.traits ??= {};
+		source.flags.sw5e.legacyStarshipActor.system.traits.size = source.system.traits.size;
+	}
 	applyStarshipPrototypeTokenDimensions(source, source.system?.traits?.size);
 	document.updateSource(source);
 
-	if ( document._source?.flags?.sw5e ) delete document._source.flags.sw5e.createStarship;
-	if ( document.flags?.sw5e ) delete document.flags.sw5e.createStarship;
+	if ( document._source?.flags?.sw5e ) {
+		delete document._source.flags.sw5e.createStarship;
+		delete document._source.flags.sw5e.createSpaceStation;
+	}
+	if ( document.flags?.sw5e ) {
+		delete document.flags.sw5e.createStarship;
+		delete document.flags.sw5e.createSpaceStation;
+	}
 }
 
 async function repairCreatedStarshipPrototypeToken(actor) {
@@ -268,15 +325,104 @@ async function repairCreatedStarshipPrototypeToken(actor) {
 	return true;
 }
 
-function syncStarshipMarkerFromForm(form) {
+function actorHasSpaceStationAcEffect(actor) {
+	return (actor?.effects?.contents ?? []).some(effect =>
+		effect?.flags?.[SETTINGS_NAMESPACE]?.[SPACE_STATION_AC_EFFECT_FLAG]
+		|| effect?.flags?.sw5e?.[SPACE_STATION_AC_EFFECT_FLAG]
+	);
+}
+
+function actorHasStockModFromUuid(actor, uuid) {
+	const id = uuid?.split(".")?.pop?.() ?? "";
+	return (actor?.items?.contents ?? []).some(item => {
+		const sourceId = item.flags?.core?.sourceId ?? item._stats?.compendiumSource ?? "";
+		return sourceId === uuid || (id && sourceId.endsWith(`.${id}`)) || item._id === id;
+	});
+}
+
+/**
+ * Resolve and embed missing stock mods by UUID. Soft-warns on resolve failure.
+ * @param {Actor} actor
+ * @param {string[]} uuids
+ * @returns {Promise<Item[]>}
+ */
+async function grantMissingStockModsFromUuids(actor, uuids = []) {
+	const missingUuids = uuids.filter(uuid => uuid && !actorHasStockModFromUuid(actor, uuid));
+	if ( !missingUuids.length ) return [];
+
+	const docs = [];
+	for ( const uuid of missingUuids ) {
+		try {
+			const doc = await fromUuid(uuid);
+			if ( doc ) docs.push(doc.toObject());
+			else {
+				ui.notifications?.warn?.(
+					`SW5E: Could not resolve space station stock modification (${uuid}).`
+				);
+			}
+		} catch ( err ) {
+			console.warn(`${DEBUG_PREFIX} Failed to resolve stock mod ${uuid}`, err);
+			ui.notifications?.warn?.(
+				`SW5E: Could not resolve space station stock modification (${uuid}).`
+			);
+		}
+	}
+	if ( !docs.length ) return [];
+	return actor.createEmbeddedDocuments("Item", docs);
+}
+
+/**
+ * Grant base stock Central Computer + AC −2 effect after station create (not during render).
+ * @param {Actor} actor
+ */
+export async function ensureSpaceStationCreateGrants(actor) {
+	if ( !actor || actor.pack || !actor.isOwner ) return;
+	if ( !isSw5eSpaceStationActor(actor) ) return;
+
+	const updates = [];
+	if ( !actorHasSpaceStationAcEffect(actor) ) {
+		const effectData = buildSpaceStationAcPenaltyEffectData(actor.uuid);
+		updates.push(actor.createEmbeddedDocuments("ActiveEffect", [effectData]));
+	}
+
+	updates.push(grantMissingStockModsFromUuids(actor, getSpaceStationBaseStockModUuids()));
+	await Promise.all(updates);
+}
+
+/**
+ * When a Space Station Role Specialization feat is added, grant missing size-based stock mods.
+ * @param {Item} item
+ * @param {string} [userId]
+ */
+export async function ensureSpaceStationRoleSpecializationGrants(item, userId) {
+	if ( userId && game.user?.id !== userId ) return;
+	if ( !item || item.pack ) return;
+	if ( !isSpaceStationRoleSpecializationFeat(item) ) return;
+
+	const actor = item.actor;
+	if ( !actor || actor.pack || !actor.isOwner ) return;
+	if ( !isActiveSpaceStationActor(actor) ) return;
+
+	const uuids = resolveSpaceStationRoleSpecializationModUuids(item);
+	if ( !uuids.length ) return;
+
+	await grantMissingStockModsFromUuids(actor, uuids);
+}
+
+function syncCreateMarkersFromForm(form) {
 	const typeSelect = form.querySelector('select[name="type"]');
 	if ( typeSelect instanceof HTMLSelectElement ) {
-		syncStarshipMarker(form, typeSelect.value === STARSHIP_CREATE_VALUE);
+		const isSpaceStation = typeSelect.value === SPACE_STATION_CREATE_VALUE;
+		const isStarship = typeSelect.value === STARSHIP_CREATE_VALUE || isSpaceStation;
+		syncCreateMarkers(form, { isStarship, isSpaceStation });
 		return;
 	}
 
 	const starshipRadio = getStarshipTypeRadio(form);
-	syncStarshipMarker(form, starshipRadio instanceof HTMLInputElement && starshipRadio.checked);
+	const stationRadio = getSpaceStationTypeRadio(form);
+	const isSpaceStation = stationRadio instanceof HTMLInputElement && stationRadio.checked;
+	const isStarship = (starshipRadio instanceof HTMLInputElement && starshipRadio.checked) || isSpaceStation;
+	syncCreateMarkers(form, { isStarship, isSpaceStation });
 }
 
 function attachStarshipCreateListeners(form) {
@@ -285,13 +431,13 @@ function attachStarshipCreateListeners(form) {
 
 	const typeSelect = form.querySelector('select[name="type"]');
 	if ( typeSelect instanceof HTMLSelectElement ) {
-		typeSelect.addEventListener("change", () => syncStarshipMarkerFromForm(form));
+		typeSelect.addEventListener("change", () => syncCreateMarkersFromForm(form));
 	} else {
 		form.addEventListener("change", ev => {
 			const name = getTypeRadioName(form);
 			if ( !name || !(ev.target instanceof HTMLInputElement) ) return;
 			if ( ev.target.name !== name || ev.target.type !== "radio" ) return;
-			syncStarshipMarkerFromForm(form);
+			syncCreateMarkersFromForm(form);
 		});
 	}
 
@@ -300,7 +446,7 @@ function attachStarshipCreateListeners(form) {
 
 /**
  * Duplicate row prevention: {@link ensureStarshipRadioOption} exits early if
- * `input[type="radio"][value="__sw5e_starship__"]` already exists.
+ * both custom radios already exist.
  *
  * Listener duplication: {@link attachStarshipCreateListeners} uses
  * `form.dataset.sw5eStarshipCreateListeners`.
@@ -313,20 +459,24 @@ function injectStarshipCreateOption(app, html) {
 	const typeSelect = form.querySelector('select[name="type"]');
 	if ( typeSelect instanceof HTMLSelectElement ) {
 		ensureStarshipSelectOption(typeSelect);
-		syncStarshipMarkerFromForm(form);
+		syncCreateMarkersFromForm(form);
 		attachStarshipCreateListeners(form);
 		return;
 	}
 
 	ensureStarshipRadioOption(form);
-	syncStarshipMarkerFromForm(form);
+	syncCreateMarkersFromForm(form);
 	attachStarshipCreateListeners(form);
 }
 
 export function patchStarshipCreate() {
 	Hooks.on("renderApplicationV2", injectStarshipCreateOption);
 	Hooks.on("preCreateActor", (document, data) => {
-		if ( isPendingStarshipCreate(document, data) ) applyBlankStarshipSeed(document);
+		if ( isPendingStarshipCreate(document, data) ) {
+			applyBlankStarshipSeed(document, {
+				asSpaceStation: isPendingSpaceStationCreate(document, data)
+			});
+		}
 		syncStarshipPrototypeTokenSource(document, data);
 	});
 	Hooks.on("createActor", (actor, _options, userId) => {
@@ -334,5 +484,26 @@ export function patchStarshipCreate() {
 		void repairCreatedStarshipPrototypeToken(actor).catch(err => {
 			console.warn(`${DEBUG_PREFIX} Failed to repair created starship token dimensions`, err);
 		});
+		if ( isSw5eSpaceStationActor(actor) ) {
+			void ensureSpaceStationCreateGrants(actor).catch(err => {
+				console.warn(`${DEBUG_PREFIX} Failed to apply space station create grants`, err);
+			});
+		}
+	});
+	Hooks.on("updateActor", (actor, changed, _options, userId) => {
+		if ( game.user?.id !== userId ) return;
+		const variant = foundry.utils.getProperty(changed, "flags.sw5e.legacyStarshipActor.variant");
+		if ( variant !== STARSHIP_VARIANT_SPACE_STATION ) return;
+		if ( !isSw5eSpaceStationActor(actor) ) return;
+		void ensureSpaceStationCreateGrants(actor).catch(err => {
+			console.warn(`${DEBUG_PREFIX} Failed to apply space station convert grants`, err);
+		});
+	});
+	Hooks.on("createItem", (item, _options, userId) => {
+		void ensureSpaceStationRoleSpecializationGrants(item, userId).catch(err => {
+			console.warn(`${DEBUG_PREFIX} Failed to apply Role Specialization stock mods`, err);
+		});
 	});
 }
+
+export { isSpaceStationSizeBelowLarge };

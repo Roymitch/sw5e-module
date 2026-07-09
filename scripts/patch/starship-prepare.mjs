@@ -108,7 +108,36 @@ export function patchStarshipPrepare() {
 
 			return result;
 		}, "WRAPPER");
+
+		// prepareArmorClass runs after prepareAbilities in VehicleData.prepareDerivedData;
+		// apply flat+bonus here so it is not overwritten by the flat early-return.
+		libWrapper.register(getModuleId(), "dnd5e.dataModels.actor.VehicleData.prototype.prepareDerivedData", function(wrapped, ...args) {
+			const result = wrapped(...args);
+			const actorSource = getActorSource(this);
+			const isStarship = actorSource?.flags?.sw5e?.legacyStarshipActor?.type === "starship";
+			if ( !isStarship ) return result;
+			applyStarshipFlatArmorClassBonus(this.attributes?.ac);
+			if ( this.attributes?.ac?.value ) {
+				this.attributes.ac.motionless = this.attributes.ac.value
+					- Math.max(0, this.abilities?.dex?.mod ?? 0);
+			}
+			return result;
+		}, "WRAPPER");
 	} catch ( err ) {
 		console.warn(`${HOOKS_NAMESPACE.toUpperCase()} | Skipping incompatible starship prepare wrapper target.`, err);
 	}
+}
+
+/**
+ * dnd5e flat AC sets `value = flat` and returns before adding `bonus`.
+ * Starships use flat AC; Active Effects (station −2) write `ac.bonus` and must affect display.
+ * @param {object|null|undefined} ac
+ */
+function applyStarshipFlatArmorClassBonus(ac) {
+	if ( !ac || (typeof ac !== "object") ) return;
+	if ( ac.calc !== "flat" ) return;
+	const flat = Number(ac.flat);
+	if ( !Number.isFinite(flat) ) return;
+	const bonus = Number(ac.bonus) || 0;
+	ac.value = flat + bonus;
 }

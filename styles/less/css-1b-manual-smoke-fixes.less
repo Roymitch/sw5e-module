@@ -74,7 +74,7 @@
 @ship-portrait-dark: ~'body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait';
 @ship-portrait-underworld: ~'body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait';
 
-@{ship-portrait-light} :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) {
+@{ship-portrait-light} :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge, .sw5e-starship-ac-badge) {
   background: var(--sw5e-light-sidebar-ornament-fill) !important;
   background-image: none !important;
   border: 1px solid var(--sw5e-light-sidebar-ornament-outline) !important;
@@ -84,7 +84,7 @@
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.42);
 }
 
-@{ship-portrait-dark} :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) {
+@{ship-portrait-dark} :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge, .sw5e-starship-ac-badge) {
   background: var(--sw5e-dark-sidebar-ornament-fill) !important;
   background-image: none !important;
   border: 1px solid var(--sw5e-dark-sidebar-ornament-outline) !important;
@@ -94,13 +94,22 @@
   text-shadow: 0 0 6px rgba(0, 0, 0, 0.45);
 }
 
-@{ship-portrait-underworld} :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) {
+@{ship-portrait-underworld} :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge, .sw5e-starship-ac-badge) {
   background: var(--sw5e-underworld-sidebar-ornament-fill) !important;
   background-image: none !important;
   border: 1px solid var(--sw5e-underworld-sidebar-ornament-outline) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
   color: var(--sw5e-theme-text) !important;
   filter: none !important;
+}
+
+/* AC badge uses shield clip (not circular border from the shared ornament rule above). */
+@{ship-portrait-light} .sw5e-starship-ac-badge,
+@{ship-portrait-dark} .sw5e-starship-ac-badge,
+@{ship-portrait-underworld} .sw5e-starship-ac-badge {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: none !important;
 }
 
 /* Starship skill roll config — notes under configuration */

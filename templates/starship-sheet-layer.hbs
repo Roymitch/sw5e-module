@@ -163,12 +163,10 @@
 
 {{#*inline "sw5e-starship-crew-roles"}}
 {{#if crewRoleGroups.length}}
-<section class="sw5e-starship-crew-roles" aria-label="{{crewRolesTitle}}">
+<section class="sw5e-starship-crew-roles" aria-label="{{crewRolesKicker}}">
   <header class="sw5e-starship-section-header sw5e-starship-crew-roles-header">
     <div>
       <span class="sw5e-starship-kicker">{{crewRolesKicker}}</span>
-      <h2>{{crewRolesTitle}}</h2>
-      <p class="sw5e-starship-crew-roles-lede">{{crewRolesLede}}</p>
     </div>
   </header>
   <div class="sw5e-starship-groups sw5e-starship-groups-stacked items-list">
@@ -181,7 +179,6 @@
           <h3 class="item-name">
             <div class="name name-stacked">
               <span class="title">{{label}}</span>
-              <span class="subtitle sw5e-starship-group-subtitle">{{localize "SW5E.StarshipSheet.CrewRolesGroupHint"}}</span>
             </div>
           </h3>
           <div class="item-header sw5e-starship-sotg-group-actions always-visible">

@@ -56,6 +56,10 @@ import {
 	registerStarshipEffectsSlowedToggleGuard
 } from "../starship-conditions.mjs";
 import { registerStarshipTokenStatusHooks } from "../starship-token-status.mjs";
+import {
+	isActiveSpaceStationActor,
+	isSpaceStationSizeBelowLarge
+} from "../space-station.mjs";
 /**
  * dnd5e pack asset — used only for on-sheet display when art is missing or fails to load (not persisted to actors).
  * @see https://github.com/foundryvtt/dnd5e — `icons/svg/actors/vehicle.svg`
@@ -679,6 +683,31 @@ function suppressStockVehicleHpMeterForStarship(root, actor, app = null) {
 	for ( const group of shell.querySelectorAll(".pills-group") ) markIfStockHpContainer(group);
 }
 
+/**
+ * Hide stock vehicle Armor Class trait-line once the portrait AC badge is authoritative.
+ * @param {HTMLElement} root
+ * @param {Actor} actor
+ * @param {Application} [app]
+ */
+function suppressStockVehicleArmorClassForStarship(root, actor, app = null) {
+	if ( !isSw5eStarshipActor(actor) ) return;
+	const shell = getStarshipSidebarShell(root, app)
+		?? (app?.element instanceof HTMLElement ? app.element : null)
+		?? root;
+	if ( !(shell instanceof HTMLElement) ) return;
+
+	for ( const btn of shell.querySelectorAll("[data-action=\"showConfiguration\"][data-config=\"armorClass\"]") ) {
+		if ( !(btn instanceof HTMLElement) ) continue;
+		if ( btn.closest(".sw5e-starship-ac-badge, .portrait .ac-badge") ) continue;
+		const group = btn.closest(".pills-group");
+		if ( !(group instanceof HTMLElement) ) continue;
+		if ( group.closest(".portrait") ) continue;
+		group.classList.add("sw5e-starship-suppress-stock-ac");
+		group.setAttribute("hidden", "");
+		group.setAttribute("aria-hidden", "true");
+	}
+}
+
 const STARSHIP_SUPPRESSED_STOCK_MOVEMENT_LABELS = new Set(["Speed", "Travel Speed", "Travel Pace"]);
 
 function suppressStockVehicleMovementSidebarForStarship(root, actor, app = null) {
@@ -961,12 +990,66 @@ function customizeStarshipPortraitBadges(root, actor, app = null) {
 		value.textContent = tierDisplay;
 	}
 	tierBadge.setAttribute("aria-label", `${tierLabel}: ${tierValue}`);
+
+	injectStarshipPortraitAcBadge(portrait, actor, app, playMode);
+}
+
+/**
+ * Character-parity Armor Class badge on the starship portrait.
+ * PLAY: numeric AC. EDIT: cog → stock ArmorClassConfig (`data-config="armorClass"`).
+ * @param {HTMLElement} portrait
+ * @param {Actor} actor
+ * @param {Application} [app]
+ * @param {boolean} playMode
+ */
+function injectStarshipPortraitAcBadge(portrait, actor, app, playMode) {
+	if ( !(portrait instanceof HTMLElement) ) return;
+	const acLabel = localizeOrFallback("DND5E.ArmorClass", "Armor Class");
+	const acConfigLabel = localizeOrFallback("DND5E.ArmorConfig", "Armor Configuration");
+	const acValue = Number(actor?.system?.attributes?.ac?.value);
+	const acDisplay = Number.isFinite(acValue) ? String(Math.trunc(acValue)) : "—";
+	const editable = app?.isEditable !== false && !playMode;
+
+	let acBadge = portrait.querySelector(".sw5e-starship-ac-badge");
+	if ( !(acBadge instanceof HTMLElement) ) {
+		acBadge = document.createElement("div");
+		acBadge.className = "ac-badge badge sw5e-starship-ac-badge";
+		portrait.append(acBadge);
+	}
+	acBadge.classList.add("ac-badge", "badge", "sw5e-starship-ac-badge");
+	acBadge.hidden = false;
+	acBadge.removeAttribute("hidden");
+	acBadge.setAttribute("aria-label", `${acLabel}: ${acDisplay}`);
+	acBadge.replaceChildren();
+
+	if ( editable ) {
+		const button = document.createElement("button");
+		button.type = "button";
+		button.className = "config-button unbutton";
+		button.dataset.action = "showConfiguration";
+		button.dataset.config = "armorClass";
+		button.dataset.tooltip = "DND5E.ArmorConfig";
+		button.setAttribute("aria-label", acConfigLabel);
+		const icon = document.createElement("i");
+		icon.className = "fas fa-cog";
+		icon.setAttribute("inert", "");
+		button.append(icon);
+		acBadge.append(button);
+	} else {
+		const valueEl = document.createElement("div");
+		valueEl.dataset.attribution = "attributes.ac";
+		valueEl.dataset.attributionCaption = "DND5E.ArmorClass";
+		valueEl.dataset.tooltipDirection = "DOWN";
+		valueEl.textContent = acDisplay;
+		acBadge.append(valueEl);
+	}
 }
 
 function applyStarshipSidebarChrome(root, actor, app = null) {
 	if ( !isSw5eStarshipActor(actor) ) return;
 	suppressStockVehicleSidebarControlsForStarship(root, actor, app);
 	customizeStarshipPortraitBadges(root, actor, app);
+	suppressStockVehicleArmorClassForStarship(root, actor, app);
 	mountStarshipLegacyPowerRoutingSidebarToggle(root, actor, app);
 }
 
@@ -4745,11 +4828,30 @@ async function openAddCrewDialog(actor) {
 	});
 }
 
+/**
+ * Soft RAW size warning for space stations below Large. Notification only — no data writes.
+ * Throttled per actor uuid for the session to avoid toast spam on re-render.
+ * @param {Actor} actor
+ */
+function maybeWarnSpaceStationUndersized(actor) {
+	if ( !isActiveSpaceStationActor(actor) ) return;
+	if ( !isSpaceStationSizeBelowLarge(actor) ) return;
+	const uuid = actor.uuid ?? actor.id;
+	globalThis.sw5eSpaceStationSizeWarn ??= new Set();
+	if ( globalThis.sw5eSpaceStationSizeWarn.has(uuid) ) return;
+	globalThis.sw5eSpaceStationSizeWarn.add(uuid);
+	ui.notifications?.warn?.(localizeOrFallback(
+		"SW5E.variant.SpaceStation.SizeWarning",
+		"{name} is flagged as a space station but is smaller than Large. Space stations are intended for Large and larger sizes."
+	).replaceAll("{name}", actor.name ?? "Space Station"));
+}
+
 async function renderStarshipLayer(app, html, data) {
 	const actor = data.actor ?? app.actor;
 	if ( !isSw5eStarshipActor(actor) ) return;
 
 	await ensureStarshipDefaultShowVehicleAbilities(actor);
+	maybeWarnSpaceStationUndersized(actor);
 
 	const root = getHtmlRoot(html);
 	if ( !root ) return;
@@ -4844,11 +4946,6 @@ async function renderStarshipLayer(app, html, data) {
 		systemsCore: buildSystemsCoreContext(actor),
 		crewRoleGroups: withIntegrated(crewRoleGroups),
 		crewRolesKicker: localizeOrFallback("SW5E.Feature.Deployment.Label", "Deployments"),
-		crewRolesTitle: localizeOrFallback("SW5E.StarshipSheet.CrewRolesTitle", "Crew roles"),
-		crewRolesLede: localizeOrFallback(
-			"SW5E.StarshipSheet.CrewRolesLede",
-			"Deployment and venture features from assigned pilot and crew, grouped by Deployment. Vessel-attached items appear separately."
-		),
 		overviewLandingKicker: localizeOrFallback("SW5E.StarshipSheet.OverviewKicker", "Overview"),
 		overviewLandingTitle: localizeOrFallback("SW5E.StarshipSheet.OverviewTitle", "Starship at a glance"),
 		overviewLandingLede: localizeOrFallback(

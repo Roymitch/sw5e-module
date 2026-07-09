@@ -20,6 +20,11 @@ import {
 	resolveStarshipSlowedLevel
 } from "./starship-system-damage.mjs";
 import { resolveStarshipDefaultAdvantageMode, postStarshipSaveAutoFailMessage, shouldStarshipSaveAutoFail } from "./starship-roll-modifiers.mjs";
+import {
+	getSpaceStationFixedMovement,
+	getSpaceStationHyperspaceTravelTimeMultiplier,
+	isActiveSpaceStationActor
+} from "./space-station.mjs";
 
 const LEGACY_STARSHIP_PACKS = new Set([
 	"starshipactions",
@@ -652,6 +657,12 @@ export function normalizeLegacyStarshipActorData(data) {
 		type: "starship",
 		system: cloneData(data.system ?? legacySystem)
 	};
+	const existingVariant = legacyRecord?.variant
+		?? characterRecord?.variant
+		?? flags.legacyStarshipActor?.variant;
+	if ( existingVariant === "spaceStation" ) {
+		flags.legacyStarshipActor.variant = "spaceStation";
+	}
 
 	return true;
 }
@@ -664,10 +675,13 @@ export function createBlankLegacyStarshipActorData(data = {}) {
 
 	const flags = ensureSw5eFlags(source);
 	delete flags.createStarship;
+	delete flags.createSpaceStation;
+	const priorVariant = flags.legacyStarshipActor?.variant;
 	flags.legacyStarshipActor = {
 		type: "starship",
 		system: cloneData(flags.legacyStarshipActor?.system ?? source.system ?? {})
 	};
+	if ( priorVariant === "spaceStation" ) flags.legacyStarshipActor.variant = "spaceStation";
 
 	normalizeLegacyStarshipActorData(source);
 	// Blank starship creation: seed the same dnd5e vehicle-sheet flag so the first paint matches sheet-side defaulting (see `ensureStarshipDefaultShowVehicleAbilities`).
@@ -684,6 +698,15 @@ function getStoredLegacyStarshipActorSystem(actor) {
 export function isStarshipFlagVehicle(actor) {
 	return actor?.type === "vehicle" && actor?.flags?.sw5e?.legacyStarshipActor?.type === "starship";
 }
+
+export {
+	getStarshipVariant,
+	getStarshipModificationInstallDcAdjustment,
+	isActiveSpaceStationActor,
+	isSw5eSpaceStationActor,
+	STARSHIP_VARIANT_SPACE_STATION,
+	STARSHIP_VARIANT_STARSHIP
+} from "./space-station.mjs";
 
 export function getLegacyStarshipActorSystem(actor) {
 	const flagSystem = getStoredLegacyStarshipActorSystem(actor);
@@ -748,7 +771,8 @@ export function deriveStarshipMovementData({
 	sizeSystem = null,
 	routingState = null,
 	ignoreOverrides = false,
-	slowedLevel = 0
+	slowedLevel = 0,
+	spaceStationFixed = false
 } = {}) {
 	const resolvedSizeSystem = sizeSystem ?? getLegacySizeSystem(getLegacyStarshipSize(items));
 	const movementProfile = getMovementProfile(items, resolvedSizeSystem);
@@ -762,6 +786,26 @@ export function deriveStarshipMovementData({
 		?? 0;
 	const fallbackTurn = getMovementBaseValue(legacyMovement.turn)
 		?? fallbackSpace;
+	const units = liveMovement.units ?? legacyMovement.units ?? "ft";
+
+	// Space Station variant: flying 50 / turning 100; ignore bonuses, routing, overrides, Slowed.
+	if ( spaceStationFixed ) {
+		const { space, turn } = getSpaceStationFixedMovement();
+		return {
+			space,
+			turn,
+			units,
+			baseSpaceSpeed: space,
+			baseTurnSpeed: turn,
+			profileSource: "spaceStation",
+			enginesMultiplier: 1,
+			slowedLevel: 0,
+			spaceBeforeSlowed: space,
+			turnBeforeSlowed: turn,
+			spaceStationFixed: true
+		};
+	}
+
 	const strengthMod = getAbilityModifier(liveAbilities, legacyAbilities, "str");
 	const dexterityMod = getAbilityModifier(liveAbilities, legacyAbilities, "dex");
 	const constitutionMod = getAbilityModifier(liveAbilities, legacyAbilities, "con");
@@ -800,14 +844,15 @@ export function deriveStarshipMovementData({
 	return {
 		space: toFiniteNumber(space, fallbackSpace) ?? fallbackSpace,
 		turn: toFiniteNumber(turn, fallbackTurn) ?? fallbackTurn,
-		units: liveMovement.units ?? legacyMovement.units ?? "ft",
+		units,
 		baseSpaceSpeed,
 		baseTurnSpeed,
 		profileSource: movementProfile.source,
 		enginesMultiplier: routing.enginesMultiplier,
 		slowedLevel: resolvedSlowedLevel,
 		spaceBeforeSlowed: toFiniteNumber(spaceBeforeSlowed, fallbackSpace) ?? fallbackSpace,
-		turnBeforeSlowed: toFiniteNumber(turnBeforeSlowed, fallbackTurn) ?? fallbackTurn
+		turnBeforeSlowed: toFiniteNumber(turnBeforeSlowed, fallbackTurn) ?? fallbackTurn,
+		spaceStationFixed: false
 	};
 }
 
@@ -820,7 +865,8 @@ export function getStarshipBaseDerivedMovement(actor) {
 		items,
 		liveAbilities: actor?.system?.abilities ?? {},
 		liveMovement: actor?.system?.attributes?.movement ?? {},
-		ignoreOverrides: true
+		ignoreOverrides: true,
+		spaceStationFixed: isActiveSpaceStationActor(actor)
 	});
 }
 
@@ -850,16 +896,19 @@ export function getDerivedStarshipRuntime(actor, { liveAbilities, liveMovement }
 	const items = actor?.items?.contents ?? actor?._source?.items ?? [];
 	const routing = resolveStarshipPowerRoutingState(actor, legacySystem);
 	const crew = getStarshipCrewState(actor, legacySystem);
-	const slowedLevel = resolveStarshipSlowedLevel(actor);
+	const spaceStationFixed = isActiveSpaceStationActor(actor);
+	const slowedLevel = spaceStationFixed ? 0 : resolveStarshipSlowedLevel(actor);
 	const movement = deriveStarshipMovementData({
 		legacySystem,
 		items,
 		liveAbilities: liveAbilities ?? actor?.system?.abilities ?? {},
 		liveMovement: liveMovement ?? actor?.system?.attributes?.movement ?? {},
 		routingState: routing,
-		slowedLevel
+		slowedLevel,
+		spaceStationFixed
 	});
 	const travel = deriveStarshipTravelData({ legacySystem, items, crewState: crew });
+	travel.hyperspaceTimeMultiplier = getSpaceStationHyperspaceTravelTimeMultiplier(actor);
 	return { movement, travel, crew, routing };
 }
 
@@ -950,10 +999,11 @@ export function deriveStarshipPools(actor) {
 	const conValue = toFiniteNumber(actor?.system?.abilities?.con?.value, 10);
 	const conMod = Math.floor((conValue - 10) / 2);
 	const modSlotMax = toFiniteNumber(sizeSystem.modBaseCap, 0);
-	const suiteMax = Math.max(0,
+	let suiteMax = Math.max(0,
 		toFiniteNumber(sizeSystem.modMaxSuitesBase, 0)
 		+ toFiniteNumber(sizeSystem.modMaxSuitesMult, 0) * conMod
 	);
+	if ( isActiveSpaceStationActor(actor) ) suiteMax *= 2;
 	const isModItem = (item) => {
 		if ( item.flags?.sw5e?.legacyStarshipMod ) return true;
 		if ( item.type === "starshipmod" ) return true;

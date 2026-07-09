@@ -954,6 +954,11 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2 .pills .pill:not(.gre
   display: none !important;
 }
 
+/* Stock Armor Class trait-line; portrait AC badge is authoritative for starships. */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-suppress-stock-ac {
+  display: none !important;
+}
+
 /*
  * dnd5e 5.2.x vehicle sidebar: Hit Points are `div.pills-group` (see templates/actors/vehicle/sidebar.hbs), not `.meter-group`.
  * PLAY: block contains `input[name^="system.attributes.hp."]` (hidden). EDIT: block has `button[data-config="hitPoints"]` only until inline expand.
@@ -16051,9 +16056,48 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e
 .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-tier-badge {
   cursor: default;
 }
+/* Portrait AC badge — character-parity shield; bottom-left to clear init (TR) + tier (BR). */
+.sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-ac-badge {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  bottom: 0;
+  width: 2.65rem;
+  height: 2.65rem;
+  min-width: 2.65rem;
+  min-height: 2.65rem;
+  margin: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1;
+  font-size: var(--font-size-16, 1rem);
+  font-weight: 700;
+  background-image: none !important;
+  background: none !important;
+  place-content: center;
+  isolation: isolate;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+}
+.sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-ac-badge > * {
+  position: relative;
+  z-index: 1;
+  line-height: 1;
+}
+.sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-ac-badge .config-button {
+  width: 100%;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  font-size: inherit;
+}
 .sw5e-starship-suppress-stock-quality,
 .sw5e-starship-suppress-stock-sidebar-option,
-.sw5e-starship-suppress-stock-action-pips {
+.sw5e-starship-suppress-stock-action-pips,
+.sw5e-starship-suppress-stock-ac {
   display: none !important;
 }
 /* System Damage pips — scoped away from generic `.sheet-sidebar .pips .pip` theme rules. */
@@ -16362,7 +16406,7 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.npc 
   text-shadow: var(--sw5e-underworld-text-glow-contrast) !important;
 }
 /* ——— Starship portrait/status badges — SW5E Light / Dark / Underworld ——— */
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) {
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge, .sw5e-starship-ac-badge) {
   background: var(--sw5e-light-sidebar-ornament-fill) !important;
   background-image: none !important;
   border: 1px solid var(--sw5e-light-sidebar-ornament-outline) !important;
@@ -16371,7 +16415,7 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-star
   filter: none !important;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.42);
 }
-body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) {
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge, .sw5e-starship-ac-badge) {
   background: var(--sw5e-dark-sidebar-ornament-fill) !important;
   background-image: none !important;
   border: 1px solid var(--sw5e-dark-sidebar-ornament-outline) !important;
@@ -16380,13 +16424,21 @@ body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-stars
   filter: none !important;
   text-shadow: 0 0 6px rgba(0, 0, 0, 0.45);
 }
-body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge) {
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait :is(.initiative, .initiative-wrapper .initiative, .loyalty-badge.badge, .sw5e-starship-tier-badge, .sw5e-starship-ac-badge) {
   background: var(--sw5e-underworld-sidebar-ornament-fill) !important;
   background-image: none !important;
   border: 1px solid var(--sw5e-underworld-sidebar-ornament-outline) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
   color: var(--sw5e-theme-text) !important;
   filter: none !important;
+}
+/* AC badge uses shield clip (not circular border from the shared ornament rule above). */
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: none !important;
 }
 /* Starship skill roll config — notes under configuration */
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.application.roll-configuration.sw5e-starship-skill-roll-config .sw5e-starship-skill-roll-form .notes,
@@ -17078,6 +17130,102 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehi
 body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-tier-badge-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+/* ——— Starship portrait AC badge (shield clip, character parity) ——— */
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  bottom: 0;
+  isolation: isolate;
+  background: none !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: var(--sw5e-theme-text) !important;
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge {
+  filter: var(--sw5e-light-sidebar-ornament-shadow) !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.48);
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge {
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.36)) !important;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.45);
+}
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge {
+  filter: var(--sw5e-underworld-sidebar-ornament-shadow) !important;
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::before,
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::after,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::before,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::after,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::before,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+  clip-path: polygon(50% 0, 84% 12%, 94% 46%, 78% 86%, 50% 100%, 22% 86%, 6% 46%, 16% 12%);
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::before,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::before,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::before {
+  inset: 0;
+  z-index: -2;
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::before {
+  background: var(--sw5e-light-sidebar-ornament-outline-strong);
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::after {
+  inset: 3px;
+  background: var(--sw5e-light-sidebar-ornament-fill);
+  box-shadow: inset 0 0 0 1px var(--sw5e-light-sidebar-ornament-inner-line);
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::before {
+  background: var(--sw5e-dark-sidebar-ornament-outline-strong);
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::after {
+  inset: 3px;
+  background: var(--sw5e-dark-sidebar-ornament-fill);
+  box-shadow: inset 0 0 0 1px var(--sw5e-dark-sidebar-ornament-inner-line);
+}
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::before {
+  background: var(--sw5e-underworld-sidebar-ornament-outline-strong);
+}
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge::after {
+  inset: 3px;
+  background: var(--sw5e-underworld-sidebar-ornament-fill);
+  box-shadow: inset 0 0 0 1px var(--sw5e-underworld-sidebar-ornament-inner-line);
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge > *,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge > *,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait .sw5e-starship-ac-badge > * {
+  position: relative;
+  z-index: 1;
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge::before {
+  background: rgba(18, 40, 54, 0.44);
+}
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge::after {
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.78), 0 0 0 1px rgba(18, 40, 54, 0.18);
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge::before,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge::before {
+  background: rgba(0, 0, 0, 0.72);
+}
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge::after,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait.sw5e-starship-portrait--mode-play .sw5e-starship-ac-badge::after {
+  background: rgba(12, 16, 20, 0.88);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.38);
 }
 /* —— Item / manager surfaces —— */
 /* Item sheet — Modification Chassis compact panel (theme polish) */
