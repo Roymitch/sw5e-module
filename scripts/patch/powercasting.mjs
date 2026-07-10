@@ -1279,6 +1279,8 @@ function showPowercastingBar() {
 					'configureLabel': `${localizeOrFallback(`SW5E.Powercasting.${castType.capitalize()}.Point.Label`, castType === "force" ? "Force Points" : "Tech Points")} Configuration`,
 					'isEditable': isEditable,
 					'value': value,
+					'temp': temp,
+					'tempLabel': game.i18n.localize("DND5E.TMP"),
 					'ariaMax': effectiveMax,
 					'tempmax': tempmax,
 					'tempmaxSign': (tempmax > 0) ? 'temp-positive' : (tempmax < 0) ? 'temp-negative' : '',
@@ -1295,6 +1297,11 @@ function showPowercastingBar() {
 				container.append(renderedHtml);
 				const containerElement = container[0];
 				insertReference = insertPowercastingElement(containerElement, mountPoint, mountContainer, insertReference);
+				const tempInput = containerElement.querySelector('input[name$=".points.temp"]');
+				if ( app.isEditable !== false ) {
+					tempInput?.addEventListener("focus", ev => ev.currentTarget.select());
+					tempInput?.addEventListener("change", app._onChangeInputDelta.bind(app));
+				}
 				if ( isEditable ) {
 					const progressClass = `${castType}-points`;
 					const pointBar = containerElement.querySelector(`.progress.${progressClass}`);

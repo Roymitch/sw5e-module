@@ -1,13 +1,26 @@
 ## Changelog
 
-### [1.3.9] 2026-07-02
+### [1.3.9] 2026-07-10
 
 ### Added
 - **Superiority sheet controls:** character sheets now have edit-mode Superiority cogs on the Powers tab and the sidebar tracker, with dedicated dialogs for type ability overrides and Superiority Dice resource settings.
+- **Tech powercasting configuration:** Configure Powercasting now supports tech casting ability overrides alongside Force Light/Dark/Universal, including per-item casting-ability save DC resolution and tech override effect paths.
+- **Space station variant:** optional world setting for space-station rules (fixed movement, doubled suite max, +2 hull per die, AC −2, stock modifications on create/convert); Role Specialization feats by size (Large/Huge/Gargantuan) with soft RAW size warning when flagged below Large.
+- **Starship flat Damage Reduction (SotG):** replaces armor-based ion/lightning/necrotic resistance modeling with flat DR; `starship` AC calculation mode; equipment/plating Active Effect DR; sidebar Play/Edit DR display with manual override; world setting to toggle flat DR automation; Drake's Shipyard ships migrated from `flat` AC calc.
+- **Starship crew-role groups:** Core crew UI groups assigned PCs by deployment/venture roles with per-user collapse state, crew-sourced feature resolution, and restricted context actions for external items.
+- **Starship AC badge:** portrait AC badge on starship sheets matching character-sheet UI.
+- **Galactic Credit icon:** module `assets/currency/gc.svg` with currency resolution fallbacks for GC display.
+- **Species languages:** added 14 missing species languages (Advb, Aingtii, Anomid Sign Language, Anx, Baragwinian, Caamasi, Culisetto, Ho'Din, Notho, Pantoran, Patrolian, Quermian, Ugor, Xextese).
+- **Advancement Manager theming:** full SW5E Light, Dark, and Underworld theming for the dnd5e level-up Advancement Manager wizard.
 
 ### Changed
 - **Special Traits tab:** cleaned up SW5E-facing wording and localized the tab, section labels, and Original Class block without replacing the stock dnd5e sheet tab.
 - **Actor sheet tabs:** powercasting, starship, and Special Traits tab-label adjustments now share a single `_prepareTabsContext` wrapper instead of competing libWrapper registrations.
+- **Starship tier:** sheet tier prefers `actor.system.details.tier` over size-item tier, and syncs the size item when tier is updated from the sheet.
+- **Blaster migration:** extracted managed-blaster migration into `scripts/blaster-migration.mjs` for reuse and clearer world-item upgrade paths.
+- **Theme packaging:** `assets/` is included in the release zip; CI verifies parchment and logo theme files are present in `module.zip`.
+- **Theme polish:** light/dark surface gradients and opacities; Underworld header watermark and button-icon contrast; Active Effect config and checkbox token scoping; SW5E Light starship sidebar and control-icon token centralization; CSS/LESS mixin extraction for dialog shells and compendium browsers.
+- **Starship sheet cleanup:** removed orphaned SotG tab markup and unused related CSS.
 
 ### Fixed
 - **Localization loading:** resolved SW5E locale namespace collisions that prevented module translation keys from loading in Foundry, restoring SW5E `Powers` / `Powerbook` wording and eliminating raw `SW5E.*` labels on actor sheets and related UI.
@@ -16,12 +29,20 @@
 - **Startup / libWrapper:** consolidated duplicate `BaseActorSheet._prepareTabsContext` registrations from powercasting, starship, and Special Traits patches into one module-owned wrapper, removing init-time libWrapper duplicate-registration errors.
 - **Blaster reload warnings:** narrowed legacy blaster ammo warnings to stale runtime state only; modern blasters with `system.uses` no longer warn solely because compatibility metadata like `flags.sw5e.reload.types` is still present.
 - **Blaster migration:** world item migration now backfills `system.uses.max` for managed blasters instead of writing obsolete `system.ammo.value`.
-- **Theme regressions:** dark advancement dialogs are readable again, light-theme windows are less translucent, and advancement level lists have stronger contrast.
+- **Theme regressions:** dark advancement dialogs are readable again, light-theme windows are less translucent, and advancement level lists have stronger contrast; parchment theme assets no longer 404 in packaged releases.
 - **Powers tab:** `powerCasting` items once again show the correct save DC in the roll column.
-- **Superiority data:** missing Fighter and Scholar superiority progression now backfills correctly, and the Scholar `Superiority Dice` feature again uses the scale-based die formula and resource path.
+- **Superiority data:** missing Fighter and Scholar superiority progression now backfills correctly, and the Scholar `Superiority Dice` feature again uses the scale-based die formula and resource path; legacy superiority scalars, stale `dice.max` zeros, and legacy superiority Active Effect keys are remapped on migration.
+- **Powercasting known max:** migration clears stale `known.max` overrides written as `0` when an actor has no active powercasting progression.
 - **Consumables / weapon normalization:** explosives again consume and destroy themselves correctly, burst/rapid blasters missing a base attack regain a normal attack activity for downstream integrations, and NPC/monster weapons no longer double-count flat ability-mod damage.
 - **Starship sidebar polish:** Initiative and Tier portrait badges now render with themed backgrounds in Light, Dark, and Underworld, and Tier is editable from the sidebar in Edit mode.
 - **Pause overlay:** restored safe SW5E custom pause rings, including Underworld Alloy, without resizing the root `#pause` container or crowding the chat/sidebar region.
+- **Species icons:** fixed icons for HoloNet Guide to the Galaxy species pack entries.
+- **Droid species images:** migrate legacy URL-encoded droid class effect image paths to hyphenated filenames.
+
+### Migration
+- Bumped `needsMigrationVersion` through `0.39` (droid image paths), `0.40` (powercasting `known.max` cleanup), and `0.41` (blaster migration module / starship tier sync).
+- Flat DR and space-station behavior apply at runtime; Drake's Shipyard AC-calc and armor DR source updates require a compendium rebuild/import to appear in packed data.
+- Older world-copied starships, blasters, and superiority actors may need migration or refresh to pick up the new data shapes.
 
 ### [1.3.8] 2026-06-24
 

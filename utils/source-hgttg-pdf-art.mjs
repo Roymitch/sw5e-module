@@ -12,7 +12,9 @@ const ART_DIR = path.join(ROOT, "icons", "packs", "Species", "hgttg");
 const CACHE_DIR = path.join(ROOT, "utils", ".hgttg-pdf-art-cache");
 const MANIFEST_PATH = path.join(ROOT, "utils", "hgttg-pdf-art-sources.json");
 const REPORT_PATH = path.join(ROOT, "utils", "hgttg-pdf-art-report.md");
-const ATTRIBUTION_PATH = path.join(ROOT, "ATTRIBUTION-HGTTG-ART.md");
+const ATTRIBUTION_PATH = path.join(ROOT, "ATTRIBUTION.md");
+const ATTRIBUTION_SECTION_START = "<!-- BEGIN:HGTTG-SPECIES-ART -->";
+const ATTRIBUTION_SECTION_END = "<!-- END:HGTTG-SPECIES-ART -->";
 const DEFAULT_PDF_PATH = path.resolve(ROOT, "..", "..", "SW5e Docs", "hgttg.pdf");
 const DEFAULT_MARKDOWN_PATH = path.resolve(ROOT, "..", "..", "SW5e Docs", "hgttg.md");
 const MODULE_ART_PREFIX = "modules/sw5e-module/icons/packs/Species/hgttg";
@@ -711,18 +713,16 @@ async function applyPdfArt(manifest) {
 function buildAttribution(manifest) {
 	const mapped = (manifest.species ?? []).filter(entry => entry.status === "mapped" && entry.modulePath);
 	const lines = [
-		"# HGTTG Species Art Attribution",
-		"",
 		"HGTTG species art is extracted from the provided Heretic's Guide to the Galaxy PDF source document.",
 		"",
 		`Generated: ${new Date().toISOString()}`,
-		`PDF: ${manifest.pdfPath}`,
+		"PDF: Heretic's Guide to the Galaxy (local maintainer source; not committed)",
 		"",
-		"## PDF-Sourced Images",
+		"### PDF-Sourced Images",
 		""
 	];
 	for ( const entry of mapped ) {
-		lines.push(`### ${entry.name}`);
+		lines.push(`#### ${entry.name}`);
 		lines.push("");
 		lines.push(`- Local file: \`${entry.modulePath}\``);
 		lines.push(`- PDF page: ${entry.pdfPage}`);
@@ -730,6 +730,17 @@ function buildAttribution(manifest) {
 		lines.push("");
 	}
 	return `${lines.join("\n")}\n`;
+}
+
+async function writeHgttgAttributionSection(sectionBody) {
+	const text = await fs.readFile(ATTRIBUTION_PATH, "utf8");
+	const start = text.indexOf(ATTRIBUTION_SECTION_START);
+	const end = text.indexOf(ATTRIBUTION_SECTION_END);
+	if ( start === -1 || end === -1 || end < start ) {
+		throw new Error(`Missing ${ATTRIBUTION_SECTION_START} / ${ATTRIBUTION_SECTION_END} markers in ${ATTRIBUTION_PATH}.`);
+	}
+	const next = `${text.slice(0, start + ATTRIBUTION_SECTION_START.length)}\n\n${sectionBody.trim()}\n\n${text.slice(end)}`;
+	await fs.writeFile(ATTRIBUTION_PATH, next, "utf8");
 }
 
 async function extractAndApply() {
@@ -753,7 +764,7 @@ async function extractAndApply() {
 	let applied = { appliedSpecies: 0, appliedFeatures: 0, resetSpecies: 0, resetFeatures: 0 };
 	if ( !ARGS.has("--no-apply") ) {
 		applied = await applyPdfArt(manifest);
-		await fs.writeFile(ATTRIBUTION_PATH, buildAttribution(manifest), "utf8");
+		await writeHgttgAttributionSection(buildAttribution(manifest));
 	}
 	const mapped = manifest.species.filter(entry => entry.status === "mapped").length;
 	const missing = manifest.species.filter(entry => entry.status === "missing").length;

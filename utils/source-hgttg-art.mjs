@@ -10,7 +10,9 @@ const SPECIES_FEATURES_DIR = path.join(ROOT, "packs", "_source", "hgttgspeciesfe
 const ART_DIR = path.join(ROOT, "icons", "packs", "Species", "hgttg");
 const MANIFEST_PATH = path.join(ROOT, "utils", "hgttg-art-sources.json");
 const REPORT_PATH = path.join(ROOT, "utils", "hgttg-art-report.md");
-const ATTRIBUTION_PATH = path.join(ROOT, "ATTRIBUTION-HGTTG-ART.md");
+const ATTRIBUTION_PATH = path.join(ROOT, "ATTRIBUTION.md");
+const ATTRIBUTION_SECTION_START = "<!-- BEGIN:HGTTG-SPECIES-ART -->";
+const ATTRIBUTION_SECTION_END = "<!-- END:HGTTG-SPECIES-ART -->";
 const WOKIEEPEDIA_API = "https://starwars.fandom.com/api.php";
 const MODULE_ART_PREFIX = "modules/sw5e-module/icons/packs/Species/hgttg";
 const GENERIC_ICON = "icons/svg/mystery-man.svg";
@@ -447,14 +449,12 @@ async function applyApprovedArt(manifest) {
 function buildAttribution(manifest) {
 	const approved = (manifest.species ?? []).filter(entry => entry.approved && entry.modulePath && entry.selected);
 	const lines = [
-		"# HGTTG Species Art Attribution",
-		"",
-		"This file records approved Wookieepedia image sources bundled for HGTTG species art.",
+		"This section records approved Wookieepedia image sources bundled for HGTTG species art.",
 		"Images may include copyrighted Star Wars material and should remain manually reviewed before distribution.",
 		"",
 		`Generated: ${new Date().toISOString()}`,
 		"",
-		"## Approved Images",
+		"### Approved Images",
 		""
 	];
 	if ( !approved.length ) {
@@ -463,7 +463,7 @@ function buildAttribution(manifest) {
 		return `${lines.join("\n")}\n`;
 	}
 	for ( const entry of approved ) {
-		lines.push(`### ${entry.name}`);
+		lines.push(`#### ${entry.name}`);
 		lines.push("");
 		lines.push(`- Local file: \`${entry.modulePath}\``);
 		lines.push(`- Page: ${entry.selected.pageUrl || entry.selected.pageTitle}`);
@@ -474,6 +474,17 @@ function buildAttribution(manifest) {
 		lines.push("");
 	}
 	return `${lines.join("\n")}\n`;
+}
+
+async function writeHgttgAttributionSection(sectionBody) {
+	const text = await fs.readFile(ATTRIBUTION_PATH, "utf8");
+	const start = text.indexOf(ATTRIBUTION_SECTION_START);
+	const end = text.indexOf(ATTRIBUTION_SECTION_END);
+	if ( start === -1 || end === -1 || end < start ) {
+		throw new Error(`Missing ${ATTRIBUTION_SECTION_START} / ${ATTRIBUTION_SECTION_END} markers in ${ATTRIBUTION_PATH}.`);
+	}
+	const next = `${text.slice(0, start + ATTRIBUTION_SECTION_START.length)}\n\n${sectionBody.trim()}\n\n${text.slice(end)}`;
+	await fs.writeFile(ATTRIBUTION_PATH, next, "utf8");
 }
 
 async function main() {
@@ -496,10 +507,10 @@ async function main() {
 		const downloaded = await downloadApprovedArt(manifest);
 		const { appliedSpecies, appliedFeatures } = await applyApprovedArt(manifest);
 		await writeJson(MANIFEST_PATH, manifest);
-		await fs.writeFile(ATTRIBUTION_PATH, buildAttribution(manifest), "utf8");
+		await writeHgttgAttributionSection(buildAttribution(manifest));
 		console.log(`Downloaded ${downloaded} approved images.`);
 		console.log(`Applied art to ${appliedSpecies} species and ${appliedFeatures} features.`);
-		console.log(`Wrote ${path.relative(ROOT, ATTRIBUTION_PATH)}.`);
+		console.log(`Updated HGTTG section in ${path.relative(ROOT, ATTRIBUTION_PATH)}.`);
 		return;
 	}
 

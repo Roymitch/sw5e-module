@@ -9,6 +9,7 @@ import { patchBlasterAmmoUx } from "./patch/blaster-ammo-ux.mjs";
 import { patchChassisItemSheet } from "./patch/chassis-item-sheet.mjs";
 import { patchPowercasting } from "./patch/powercasting.mjs";
 import { patchForceRecovery } from "./patch/force-recovery.mjs";
+import { patchIdealOfTheTranquil } from "./patch/ideal-of-the-tranquil.mjs";
 import { patchProficiencyInit, patchProficiencyReady } from "./patch/proficiency.mjs";
 import { patchProperties } from "./patch/properties.mjs";
 import { patchEquippableAttunement } from "./patch/equippable-attunement.mjs";
@@ -100,6 +101,7 @@ Hooks.once('init', async function() {
 	patchBlasterAmmoUx();
 	patchPowercasting();
 	patchForceRecovery();
+	patchIdealOfTheTranquil();
 	patchProficiencyInit();
 	patchProperties();
 	patchEquippableAttunement();
