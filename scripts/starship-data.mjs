@@ -487,13 +487,18 @@ function buildVehicleSystem(legacySystem = {}, items = [], existingSystem = {}) 
 	applyDerivedStarshipMovement(runtimeSystem, derivedMovement);
 	applyDerivedStarshipTravel(runtimeSystem, derivedTravel);
 	const acFlat = toFiniteNumber(runtimeSystem.attributes?.ac?.flat, 10) ?? 10;
+	// SotG Starships calc: armor base + capped Dex + ac.bonus. Preserve explicit Flat/Custom/etc.
+	const storedAcCalc = runtimeSystem.attributes?.ac?.calc;
+	let acCalc = (typeof storedAcCalc === "string" && storedAcCalc) ? storedAcCalc : "starship";
+	// Prior slice defaulted to Equipped Armor (`default`); migrate to dedicated Starships calc.
+	if ( acCalc === "default" ) acCalc = "starship";
 
 	const system = cloneData(runtimeSystem) ?? {};
 	// Remove legacy vehicleType — dnd5e migrates it to details.type, which would overwrite our "space" value.
 	delete system.vehicleType;
 	system.attributes = mergeStarshipSystemData(runtimeSystem.attributes, {
 		ac: {
-			calc: "flat",
+			calc: acCalc,
 			flat: acFlat,
 			motionless: runtimeSystem.attributes?.ac?.motionless ?? ""
 		},

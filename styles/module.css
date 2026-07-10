@@ -16222,6 +16222,24 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e
 body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-system-damage button.sw5e-starship-system-damage-pip.filled.death {
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sw5e-underworld-neon-cyan, #3fd0b8) 28%, transparent), 0 0 0 1px color-mix(in srgb, var(--sw5e-underworld-neon-magenta, #ff4d8d) 55%, transparent), 0 0 8px var(--sw5e-system-damage-death-glow) !important;
 }
+/* Starship sidebar Damage Reduction — align with stock pills-group rows. */
+.dnd5e2.sheet.actor.sw5e-starship-sheet :is(.sheet-sidebar, [data-application-part="sidebar"]) .sw5e-starship-sidebar-damage-reduction {
+  margin-bottom: 0.28rem;
+}
+.dnd5e2.sheet.actor.sw5e-starship-sheet :is(.sheet-sidebar, [data-application-part="sidebar"]) .sw5e-starship-sidebar-damage-reduction > h3.icon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+.dnd5e2.sheet.actor.sw5e-starship-sheet :is(.sheet-sidebar, [data-application-part="sidebar"]) .sw5e-starship-sidebar-damage-reduction .sw5e-starship-sidebar-dr-input {
+  margin-left: auto;
+  width: 3.25rem;
+  min-width: 2.5rem;
+  text-align: right;
+  font: inherit;
+  font-weight: 700;
+}
 /* Character/NPC (and stock starship) Effects condition hover — beats parchment-as-text remap */
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor .tab[data-tab="effects"] .conditions-list .condition:not(.sw5e-starship-effects-condition) {
   --dnd5e-condition-hover: var(--sw5e-light-hover-tint);

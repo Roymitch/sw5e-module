@@ -130,7 +130,8 @@ export function patchStarshipPrepare() {
 
 /**
  * dnd5e flat AC sets `value = flat` and returns before adding `bonus`.
- * Starships use flat AC; Active Effects (station −2) write `ac.bonus` and must affect display.
+ * Only patch when `calc === "flat"` (homebrew Flat override). SotG `starship` / `default`
+ * calcs already include `ac.bonus` via stock prepareArmorClass — do not double-add.
  * @param {object|null|undefined} ac
  */
 function applyStarshipFlatArmorClassBonus(ac) {

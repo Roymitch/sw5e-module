@@ -50,6 +50,12 @@ import { getExpandedProficiencyHoverLabel } from "./proficiency.mjs";
 import { openStarshipMovementConfig } from "../starship-movement-config.mjs";
 import { openStarshipVitalConfig } from "../starship-vital-config.mjs";
 import {
+	getStarshipEquipmentFlatDamageReduction,
+	getStarshipFlatDamageReduction,
+	getStarshipFlatDamageReductionManual,
+	persistStarshipFlatDamageReductionManual
+} from "../starship-damage-reduction.mjs";
+import {
 	registerStarshipConditionStatusEffectHooks,
 	registerStarshipEffectsConditionPresentation,
 	registerStarshipEffectsContextWrapper,
@@ -361,7 +367,7 @@ function getStarshipSidebarScrollTopFromEditTarget(shell, editTarget) {
 	const hostFromTarget = (() => {
 		if ( !(editTarget instanceof HTMLElement) ) return null;
 		const scope = editTarget.closest(
-			".sw5e-starship-sidebar-vitals, .sw5e-starship-sidebar-movement, .sw5e-starship-destruction-tray, .sw5e-starship-sidebar-system-damage"
+			".sw5e-starship-sidebar-vitals, .sw5e-starship-sidebar-movement, .sw5e-starship-sidebar-damage-reduction, .sw5e-starship-destruction-tray, .sw5e-starship-sidebar-system-damage"
 		);
 		if ( !scope || !shell.contains(scope) ) return null;
 		let el = scope.parentElement;
@@ -4358,6 +4364,102 @@ async function renderStarshipSidebarMovement(root, actor, app = null) {
 	bindStarshipSidebarMovementConfig(movementBlock, actor, app);
 }
 
+function buildStarshipSidebarDamageReductionContext(actor, app = null) {
+	const sheetEditMode = Boolean(isStarshipSheetEditMode(app) && app?.isEditable !== false);
+	const manual = getStarshipFlatDamageReductionManual(actor);
+	const equipment = getStarshipEquipmentFlatDamageReduction(actor);
+	const value = getStarshipFlatDamageReduction(actor);
+	const label = localizeOrFallback("SW5E.StarshipSheet.DamageReduction", "Damage Reduction");
+	return {
+		sheetEditMode,
+		editable: sheetEditMode && actor?.isOwner !== false,
+		showInPlay: !sheetEditMode && value > 0,
+		label,
+		playDisplay: `${label}: ${value}`,
+		inputValue: manual !== null ? String(manual) : "",
+		placeholder: String(equipment)
+	};
+}
+
+function bindStarshipSidebarDamageReduction(block, actor, app) {
+	if ( !(block instanceof HTMLElement) ) return;
+	const input = block.querySelector("[data-sw5e-starship-dr-manual]");
+	if ( !(input instanceof HTMLInputElement) ) return;
+	if ( input.dataset.sw5eDrBound === "1" ) return;
+	input.dataset.sw5eDrBound = "1";
+
+	input.addEventListener("keydown", event => {
+		if ( event.key === "Enter" ) event.currentTarget.blur();
+		if ( event.key === "Escape" ) {
+			event.currentTarget.value = event.currentTarget.defaultValue;
+			event.currentTarget.blur();
+		}
+	});
+
+	input.addEventListener("change", async event => {
+		const act = app?.actor ?? actor;
+		if ( !act || app?.isEditable === false ) return;
+		const raw = String(event.currentTarget.value ?? "").trim();
+		try {
+			stashStarshipPendingSidebarScroll(app, event.currentTarget);
+			if ( raw === "" ) await persistStarshipFlatDamageReductionManual(act, null);
+			else await persistStarshipFlatDamageReductionManual(act, raw);
+		} catch ( err ) {
+			consumeStarshipPendingSidebarScroll(app);
+			console.error("SW5E MODULE | Starship sidebar damage reduction update failed.", err);
+		}
+	});
+}
+
+async function renderStarshipSidebarDamageReduction(root, actor, app = null) {
+	const shell = getStarshipSidebarShell(root, app);
+	if ( !(shell instanceof HTMLElement) ) return;
+
+	shell.querySelectorAll(".sw5e-starship-sidebar-damage-reduction").forEach(node => node.remove());
+
+	const ctx = buildStarshipSidebarDamageReductionContext(actor, app);
+	if ( !ctx.sheetEditMode && !ctx.showInPlay ) return;
+
+	const resistancesLabel = (() => {
+		try {
+			return game.i18n.localize("DND5E.Resistances");
+		} catch {
+			return "Resistances";
+		}
+	})();
+	const immunitiesLabel = (() => {
+		try {
+			return game.i18n.localize("DND5E.Immunities");
+		} catch {
+			return "Immunities";
+		}
+	})();
+	const resistancesGroup = findStarshipSidebarPillsGroup(shell, resistancesLabel)
+		?? findStarshipSidebarPillsGroup(shell, "Resistances");
+	const immunitiesGroup = findStarshipSidebarPillsGroup(shell, immunitiesLabel)
+		?? findStarshipSidebarPillsGroup(shell, "Immunities");
+	const insertBefore = resistancesGroup ?? immunitiesGroup
+		?? shell.querySelector(
+			".sheet-sidebar .pills-group, [data-application-part='sidebar'] .pills-group, .sidebar .pills-group"
+		);
+	const insertParent = insertBefore?.parentElement ?? getStarshipSidebarAside(shell);
+	if ( !insertParent ) return;
+
+	const rendered = await foundry.applications.handlebars.renderTemplate(
+		getModulePath("templates/starship-sidebar-damage-reduction.hbs"),
+		ctx
+	);
+	const mount = document.createElement("div");
+	mount.innerHTML = rendered.trim();
+	const drBlock = mount.firstElementChild;
+	if ( !(drBlock instanceof HTMLElement) ) return;
+
+	if ( insertBefore?.parentElement === insertParent ) insertParent.insertBefore(drBlock, insertBefore);
+	else insertParent.append(drBlock);
+
+	bindStarshipSidebarDamageReduction(drBlock, actor, app);
+}
+
 function getStarshipSidebarNameBlock(shell) {
 	if ( !(shell instanceof HTMLElement) ) return null;
 	return shell.querySelector(
@@ -4882,6 +4984,7 @@ async function renderStarshipLayer(app, html, data) {
 	await renderStarshipSidebarDestructionSaves(root, actor, app);
 	removeStarshipSidebarSummary(root);
 	await renderStarshipSidebarMovement(root, actor, app);
+	await renderStarshipSidebarDamageReduction(root, actor, app);
 	applyStarshipSidebarChrome(root, actor, app);
 	// Same task as sidebar mount: set scroll before the browser paints the new summary at 0 (async gap below would flash).
 	applyStarshipSheetScrollPositions(app, {

@@ -9341,17 +9341,9 @@ items:
     effects:
       - _id: lZtTUpAfXnUIPiuz
         changes:
-          - key: system.traits.dr.value
-            mode: 2
-            value: ion
-            priority: 20
-          - key: system.traits.dr.value
-            mode: 2
-            value: lightning
-            priority: 20
-          - key: system.traits.dr.value
-            mode: 2
-            value: necrotic
+          - key: flags.sw5e.flatDamageReduction
+            mode: 5
+            value: '6'
             priority: 20
         disabled: false
         duration:
@@ -10960,17 +10952,9 @@ effects:
     _key: '!actors.effects!LVFuVcFl4gF7tNoR.aVU9cMGdSSxt6mSu'
   - _id: Gwn2JXh3D5BS4XpV
     changes:
-      - key: system.traits.dr.value
-        mode: 2
-        value: ion
-        priority: 20
-      - key: system.traits.dr.value
-        mode: 2
-        value: lightning
-        priority: 20
-      - key: system.traits.dr.value
-        mode: 2
-        value: necrotic
+      - key: flags.sw5e.flatDamageReduction
+        mode: 5
+        value: '6'
         priority: 20
     disabled: false
     duration:
@@ -11225,7 +11209,7 @@ flags:
         attributes:
           ac:
             flat: 0
-            calc: flat
+            calc: starship
             formula: ''
             motionless: ''
           hp:
@@ -11660,7 +11644,7 @@ system:
   attributes:
     ac:
       flat: 0
-      calc: flat
+      calc: starship
       formula: ''
       motionless: ''
     hp:

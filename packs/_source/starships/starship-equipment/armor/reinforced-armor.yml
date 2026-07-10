@@ -5,17 +5,9 @@ img: modules/sw5e-module/icons/packs/Starship%20Equipment/ReinforcedArmor.webp
 effects:
   - _id: lZtTUpAfXnUIPiuz
     changes:
-      - key: system.traits.dr.value
-        mode: 2
-        value: ion
-        priority: 20
-      - key: system.traits.dr.value
-        mode: 2
-        value: lightning
-        priority: 20
-      - key: system.traits.dr.value
-        mode: 2
-        value: necrotic
+      - key: flags.sw5e.flatDamageReduction
+        mode: 5
+        value: '6'
         priority: 20
     disabled: false
     duration:

@@ -639,7 +639,13 @@ export function patchConfig(config, strict = true) {
 		heavyshieldgenerator: "Compendium.sw5e-module.equipment.Item.2u9493AUhrh2AfES",
 	};
 	config.shieldIds = normalizeCompendiumRecord(config.shieldIds);
-	config.armorClasses.unarmoredMonk.formula = "10 + @abilities.dex.mod + max(@abilities.wis.mod, @abilities.cha.mod)"
+	config.armorClasses.unarmoredMonk.formula = "10 + @abilities.dex.mod + max(@abilities.wis.mod, @abilities.cha.mod)";
+	// SotG starship AC: equipped armor base (10) + capped Dex; Tier/other bonuses via ac.bonus AEs.
+	config.armorClasses.starship = {
+		label: "SW5E.ArmorClassStarship",
+		formula: "@attributes.ac.armor + @attributes.ac.dex"
+	};
+	preLocalize("armorClasses", { key: "label" });
 	// Consumables
 	if (strict) {
 		delete config.consumableTypes.ammo.blowgunNeedle;
