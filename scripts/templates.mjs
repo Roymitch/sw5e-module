@@ -14,7 +14,10 @@ async function preloadHandlebarsTemplates() {
 		getModulePath("templates/items/chassis-panel.hbs"),
 		getModulePath("templates/items/chassis-install-browser.hbs"),
 		getModulePath("templates/apps/augmentations-manager.hbs"),
-		getModulePath("templates/apps/droid-customizations-manager.hbs")
+		getModulePath("templates/apps/droid-customizations-manager.hbs"),
+		// Actor sheet meters (preload so equip-driven rerenders avoid template compile)
+		getModulePath("templates/powercasting-sheet-tracker.hbs"),
+		getModulePath("templates/superiority-sheet-tracker.hbs")
 	];
 
 	const paths = {};

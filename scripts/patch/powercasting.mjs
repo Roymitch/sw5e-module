@@ -918,14 +918,7 @@ function injectPowersTabPowercastingSummary(root, actor, { isEditable = false } 
 }
 
 function showPowercastingStats() {
-	Hooks.on("renderBaseActorSheet", function (app, html, context, options) {
-		const root = getHtmlRoot(html);
-		const actor = context?.actor ?? app.actor;
-		if ( !root || !actor ) return;
-		const isEditable = isActorSheetEditMode(app);
-		injectPowersTabPowercastingSummary(root, actor, { isEditable });
-	});
-
+	// F-012: single inject path — ApplicationV2 character/NPC sheets only (v13).
 	Hooks.on("renderActorSheetV2", function (app, html, data) {
 		const root = getHtmlRoot(html);
 		const actor = data?.actor ?? app.actor;
@@ -1250,117 +1243,157 @@ function makePowerPointsConsumable() {
 	});
 }
 
-function showPowercastingBar() {
-	Hooks.on("renderActorSheetV2", async (app, html, data) => {
-		const root = getHtmlRoot(html);
-		if ( !root ) return;
-		if (data.actor.type != "character" && data.actor.type != "npc") {
-			return;
-		}
-		root.querySelectorAll(".sw5e-powercasting-meter, .sw5e-superiority-meter").forEach(node => node.remove());
+/** @type {Function|null} */
+let powercastingMeterTemplate = null;
+/** @type {Function|null} */
+let superiorityMeterTemplate = null;
+/** @type {Promise<void>|null} */
+let meterTemplatesReady = null;
 
-		const powerCasting = data.actor.system.powercasting;
-		const mountPoint = getPowercastingMountPoint(root, data.actor.type);
-		const mountContainer = mountPoint.container;
-		if ( !mountContainer ) return;
-		let insertReference = mountPoint.reference;
-		const isEditable = isActorSheetEditMode(app);
-		for (const castType of ["force", "tech"]) {
-			const castData = powerCasting[castType];
-			const value = Number.isFinite(Number(castData?.points?.value)) ? Number(castData.points.value) : 0;
-			const temp = Number.isFinite(Number(castData?.points?.temp)) ? Number(castData.points.temp) : 0;
-			const max = Number.isFinite(Number(castData?.points?.max)) ? Number(castData.points.max) : 0;
-			const tempmax = Number.isFinite(Number(castData?.points?.tempmax)) ? Number(castData.points.tempmax) : 0;
-			const effectiveMax = Math.max(0, max + tempmax);
-			const clampedValue = Math.max(0, Math.min(value, effectiveMax || value));
-			const shouldRenderMeter = shouldShowSidebarPowerMeter(data.actor, castType);
-			if ( shouldRenderMeter ) {
-				const templateData = {
-					'castType': castType,
-					'pointsLabel': localizeOrFallback(`SW5E.Powercasting.${castType.capitalize()}.Point.Label`, castType === "force" ? "Force Points" : "Tech Points"),
-					'configureLabel': `${localizeOrFallback(`SW5E.Powercasting.${castType.capitalize()}.Point.Label`, castType === "force" ? "Force Points" : "Tech Points")} Configuration`,
-					'isEditable': isEditable,
-					'value': value,
-					'temp': temp,
-					'tempLabel': game.i18n.localize("DND5E.TMP"),
-					'ariaMax': effectiveMax,
-					'tempmax': tempmax,
-					'tempmaxSign': (tempmax > 0) ? 'temp-positive' : (tempmax < 0) ? 'temp-negative' : '',
-					'effectiveMax': effectiveMax,
-					'pct': effectiveMax > 0 ? (clampedValue / effectiveMax) * 100 : 0,
-					'bonus': game.dnd5e.utils.formatNumber(tempmax, { signDisplay: "always" })
-				};
+/**
+ * F-006: compile meter templates once (also listed in scripts/templates.mjs preload).
+ * @returns {Promise<void>}
+ */
+function ensureMeterTemplatesLoaded() {
+	if ( powercastingMeterTemplate && superiorityMeterTemplate ) return Promise.resolve();
+	if ( meterTemplatesReady ) return meterTemplatesReady;
+	meterTemplatesReady = (async () => {
+		const hb = foundry.applications.handlebars;
+		powercastingMeterTemplate = await hb.getTemplate(getModulePath("templates/powercasting-sheet-tracker.hbs"));
+		superiorityMeterTemplate = await hb.getTemplate(getModulePath("templates/superiority-sheet-tracker.hbs"));
+	})().catch(err => {
+		meterTemplatesReady = null;
+		console.error("SW5E | Failed to preload powercasting/superiority meter templates", err);
+		throw err;
+	});
+	return meterTemplatesReady;
+}
 
-				let container = $('<div class="meter-group sw5e-powercasting-meter"></div>');
+function renderCachedTemplate(compiled, data) {
+	if ( typeof compiled !== "function" ) return "";
+	return compiled(data, {
+		allowProtoMethodsByDefault: true,
+		allowProtoPropertiesByDefault: true
+	});
+}
 
-				const templateFile = getModulePath("templates/powercasting-sheet-tracker.hbs");
-				const renderedHtml = await foundry.applications.handlebars.renderTemplate(templateFile, templateData);
+function injectPowercastingMeters(app, html, data) {
+	const root = getHtmlRoot(html);
+	if ( !root ) return;
+	if (data.actor.type != "character" && data.actor.type != "npc") {
+		return;
+	}
+	root.querySelectorAll(".sw5e-powercasting-meter, .sw5e-superiority-meter").forEach(node => node.remove());
 
-				container.append(renderedHtml);
-				const containerElement = container[0];
-				insertReference = insertPowercastingElement(containerElement, mountPoint, mountContainer, insertReference);
-				const tempInput = containerElement.querySelector('input[name$=".points.temp"]');
-				if ( app.isEditable !== false ) {
-					tempInput?.addEventListener("focus", ev => ev.currentTarget.select());
-					tempInput?.addEventListener("change", app._onChangeInputDelta.bind(app));
-				}
-				if ( isEditable ) {
-					const progressClass = `${castType}-points`;
-					const pointBar = containerElement.querySelector(`.progress.${progressClass}`);
-					const configButton = containerElement.querySelector('[data-action="configure-power-points"]');
-					const currentInput = pointBar?.querySelector('input[name$=".points.value"]');
-					pointBar?.addEventListener("click", event => _toggleEditPoints(progressClass, event, true));
-					currentInput?.addEventListener("blur", event => _toggleEditPoints(progressClass, event, false));
-					currentInput?.addEventListener("focus", ev => ev.currentTarget.select());
-					currentInput?.addEventListener("change", app._onChangeInputDelta.bind(app));
-					configButton?.addEventListener("click", event => {
-						event.preventDefault();
-						event.stopPropagation();
-						openPowerPointConfig(data.actor, castType);
-					});
-				}
+	const powerCasting = data.actor.system.powercasting;
+	const mountPoint = getPowercastingMountPoint(root, data.actor.type);
+	const mountContainer = mountPoint.container;
+	if ( !mountContainer ) return;
+	let insertReference = mountPoint.reference;
+	const isEditable = isActorSheetEditMode(app);
+	for (const castType of ["force", "tech"]) {
+		const castData = powerCasting[castType];
+		const value = Number.isFinite(Number(castData?.points?.value)) ? Number(castData.points.value) : 0;
+		const temp = Number.isFinite(Number(castData?.points?.temp)) ? Number(castData.points.temp) : 0;
+		const max = Number.isFinite(Number(castData?.points?.max)) ? Number(castData.points.max) : 0;
+		const tempmax = Number.isFinite(Number(castData?.points?.tempmax)) ? Number(castData.points.tempmax) : 0;
+		const effectiveMax = Math.max(0, max + tempmax);
+		const clampedValue = Math.max(0, Math.min(value, effectiveMax || value));
+		const shouldRenderMeter = shouldShowSidebarPowerMeter(data.actor, castType);
+		if ( shouldRenderMeter ) {
+			const templateData = {
+				'castType': castType,
+				'pointsLabel': localizeOrFallback(`SW5E.Powercasting.${castType.capitalize()}.Point.Label`, castType === "force" ? "Force Points" : "Tech Points"),
+				'configureLabel': `${localizeOrFallback(`SW5E.Powercasting.${castType.capitalize()}.Point.Label`, castType === "force" ? "Force Points" : "Tech Points")} Configuration`,
+				'isEditable': isEditable,
+				'value': value,
+				'temp': temp,
+				'tempLabel': game.i18n.localize("DND5E.TMP"),
+				'ariaMax': effectiveMax,
+				'tempmax': tempmax,
+				'tempmaxSign': (tempmax > 0) ? 'temp-positive' : (tempmax < 0) ? 'temp-negative' : '',
+				'effectiveMax': effectiveMax,
+				'pct': effectiveMax > 0 ? (clampedValue / effectiveMax) * 100 : 0,
+				'bonus': game.dnd5e.utils.formatNumber(tempmax, { signDisplay: "always" })
+			};
+
+			let container = $('<div class="meter-group sw5e-powercasting-meter"></div>');
+			container.append(renderCachedTemplate(powercastingMeterTemplate, templateData));
+			const containerElement = container[0];
+			insertReference = insertPowercastingElement(containerElement, mountPoint, mountContainer, insertReference);
+			const tempInput = containerElement.querySelector('input[name$=".points.temp"]');
+			if ( app.isEditable !== false ) {
+				tempInput?.addEventListener("focus", ev => ev.currentTarget.select());
+				tempInput?.addEventListener("change", app._onChangeInputDelta.bind(app));
 			}
-		}
-
-		if ( shouldShowSuperioritySidebarMeter(data.actor) ) {
-			const sup = data.actor.system.superiority ?? {};
-			const dice = sup.dice ?? {};
-			const dieSize = getNumericValue(sup.die) ?? 0;
-			const diceMax = Math.max(0, getNumericValue(dice.max) ?? 0);
-			const diceVal = Math.max(0, getNumericValue(dice.value) ?? 0);
-			const clampedDice = diceMax > 0 ? Math.min(diceVal, diceMax) : diceVal;
-			const maxSegment = dieSize > 0 ? `${diceMax}d${dieSize}` : String(diceMax);
-			const supTemplate = getModulePath("templates/superiority-sheet-tracker.hbs");
-			const supHtml = await foundry.applications.handlebars.renderTemplate(supTemplate, {
-				label: localizeOrFallback("SW5E.Superiority.Dice.Label", "Superiority Dice"),
-				configureLabel: localizeOrFallback("SW5E.Superiority.Config.Points.Title", "Superiority Dice Configuration"),
-				value: clampedDice,
-				maxSegment,
-				ariaMax: Math.max(1, diceMax),
-				pct: diceMax > 0 ? (clampedDice / diceMax) * 100 : 0,
-				isEditable
-			});
-			const supContainer = $('<div class="meter-group sw5e-superiority-meter"></div>');
-			supContainer.append(supHtml);
-			const supEl = supContainer[0];
-			insertReference = insertPowercastingElement(supEl, mountPoint, mountContainer, insertReference);
 			if ( isEditable ) {
-				const progressClass = "superiority-dice-points";
-				const bar = supEl.querySelector(`.progress.${progressClass}`);
-				const configButton = supEl.querySelector('[data-action="configure-superiority-points"]');
-				const input = bar?.querySelector("input[name=\"system.superiority.dice.value\"]");
-				bar?.addEventListener("click", event => _toggleEditPoints(progressClass, event, true));
-				input?.addEventListener("blur", event => _toggleEditPoints(progressClass, event, false));
-				input?.addEventListener("focus", ev => ev.currentTarget.select());
-				input?.addEventListener("change", app._onChangeInputDelta.bind(app));
+				const progressClass = `${castType}-points`;
+				const pointBar = containerElement.querySelector(`.progress.${progressClass}`);
+				const configButton = containerElement.querySelector('[data-action="configure-power-points"]');
+				const currentInput = pointBar?.querySelector('input[name$=".points.value"]');
+				pointBar?.addEventListener("click", event => _toggleEditPoints(progressClass, event, true));
+				currentInput?.addEventListener("blur", event => _toggleEditPoints(progressClass, event, false));
+				currentInput?.addEventListener("focus", ev => ev.currentTarget.select());
+				currentInput?.addEventListener("change", app._onChangeInputDelta.bind(app));
 				configButton?.addEventListener("click", event => {
 					event.preventDefault();
 					event.stopPropagation();
-					openSuperiorityPointConfig(data.actor);
+					openPowerPointConfig(data.actor, castType);
 				});
 			}
 		}
+	}
 
+	if ( shouldShowSuperioritySidebarMeter(data.actor) ) {
+		const sup = data.actor.system.superiority ?? {};
+		const dice = sup.dice ?? {};
+		const dieSize = getNumericValue(sup.die) ?? 0;
+		const diceMax = Math.max(0, getNumericValue(dice.max) ?? 0);
+		const diceVal = Math.max(0, getNumericValue(dice.value) ?? 0);
+		const clampedDice = diceMax > 0 ? Math.min(diceVal, diceMax) : diceVal;
+		const maxSegment = dieSize > 0 ? `${diceMax}d${dieSize}` : String(diceMax);
+		const supHtml = renderCachedTemplate(superiorityMeterTemplate, {
+			label: localizeOrFallback("SW5E.Superiority.Dice.Label", "Superiority Dice"),
+			configureLabel: localizeOrFallback("SW5E.Superiority.Config.Points.Title", "Superiority Dice Configuration"),
+			value: clampedDice,
+			maxSegment,
+			ariaMax: Math.max(1, diceMax),
+			pct: diceMax > 0 ? (clampedDice / diceMax) * 100 : 0,
+			isEditable
+		});
+		const supContainer = $('<div class="meter-group sw5e-superiority-meter"></div>');
+		supContainer.append(supHtml);
+		const supEl = supContainer[0];
+		insertReference = insertPowercastingElement(supEl, mountPoint, mountContainer, insertReference);
+		if ( isEditable ) {
+			const progressClass = "superiority-dice-points";
+			const bar = supEl.querySelector(`.progress.${progressClass}`);
+			const configButton = supEl.querySelector('[data-action="configure-superiority-points"]');
+			const input = bar?.querySelector("input[name=\"system.superiority.dice.value\"]");
+			bar?.addEventListener("click", event => _toggleEditPoints(progressClass, event, true));
+			input?.addEventListener("blur", event => _toggleEditPoints(progressClass, event, false));
+			input?.addEventListener("focus", ev => ev.currentTarget.select());
+			input?.addEventListener("change", app._onChangeInputDelta.bind(app));
+			configButton?.addEventListener("click", event => {
+				event.preventDefault();
+				event.stopPropagation();
+				openSuperiorityPointConfig(data.actor);
+			});
+		}
+	}
+}
+
+function showPowercastingBar() {
+	Hooks.once("setup", () => {
+		void ensureMeterTemplatesLoaded();
+	});
+
+	Hooks.on("renderActorSheetV2", (app, html, data) => {
+		if ( powercastingMeterTemplate && superiorityMeterTemplate ) {
+			injectPowercastingMeters(app, html, data);
+			return;
+		}
+		void ensureMeterTemplatesLoaded().then(() => injectPowercastingMeters(app, html, data));
 	});
 }
 
