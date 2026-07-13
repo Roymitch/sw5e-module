@@ -1,7 +1,7 @@
 _id: xuFFIcAv1Ob3c8Ft
 name: Mandalorian Trooper
 type: npc
-img: ''
+img: icons/svg/mystery-man.svg
 items:
   - _id: XS5A2OhmljCgpYVG
     name: Mesh armor
@@ -13,67 +13,11 @@ items:
     flags:
       timestamp: '2022-05-14T22:39:42.1497153+00:00'
       uid: Equipment.name-mesh_armor.equipmentCategory-armor
-      betterRollssw5e:
-        critRange:
-          type: String
-          value: ''
-        critDamage:
-          type: String
-          value: ''
-        quickDesc:
-          type: Boolean
-          value: true
-          altValue: true
-        quickAttack:
-          type: Boolean
-          value: true
-          altValue: true
-        quickSave:
-          type: Boolean
-          value: true
-          altValue: true
-        quickDamage:
-          type: Array
-          value: []
-          altValue: []
-          context: []
-        quickProperties:
-          type: Boolean
-          value: true
-          altValue: true
-        quickCharges:
-          type: Boolean
-          value:
-            quantity: false
-            use: false
-            resource: true
-          altValue:
-            quantity: false
-            use: false
-            resource: true
-        quickOther:
-          type: Boolean
-          value: true
-          altValue: true
-          context: ''
-        quickFlavor:
-          type: Boolean
-          value: true
-          altValue: true
-        quickPrompt:
-          type: Boolean
-          value: false
-          altValue: false
       core:
         sourceId: Compendium.sw5e-module.equipment.WalIq3DWny0Ud4Vn
     system:
       description:
-        value: >-
-          <p>Providing solid protection for a minimal cost, mesh armor is
-          considered excellent protection for entrenched troops or guards.
-          However, this protection comes at a cost of mobility, limiting its
-          uses by rapidly advancing infantry. Still, it provides more mobility
-          than battle armor.</p>
+        value: <p>Providing solid protection for a minimal cost, mesh armor is considered excellent protection for entrenched troops or guards. However, this protection comes at a cost of mobility, limiting its uses by rapidly advancing infantry. Still, it provides more mobility than battle armor.</p>
         chat: ''
         unidentified: ''
       requirements: ''
@@ -136,23 +80,6 @@ items:
         max: 0
         dt: null
         conditions: ''
-      attributes:
-        capx:
-          value: null
-        dmgred:
-          value: null
-        regrateco:
-          value: null
-        cscap:
-          value: null
-        sscap:
-          value: null
-        fuelcostsmod:
-          value: null
-        powerdicerec:
-          value: ''
-        hdclass:
-          value: null
       modify:
         chassis: none
         augmentSlots: 0
@@ -169,22 +96,6 @@ items:
       stealth: false
       properties: []
       proficient: true
-      capx:
-        value: null
-      dmgred:
-        value: null
-      regrateco:
-        value: null
-      cscap:
-        value: null
-      sscap:
-        value: null
-      fuelcostsmod:
-        value: null
-      powerdicerec:
-        value: null
-      hdclass:
-        value: null
       modifications:
         chassisType: none
         augmentSlots: 0
@@ -228,57 +139,6 @@ items:
     flags:
       timestamp: '2022-05-14T22:39:42.1507145+00:00'
       uid: Equipment.name-light_shield_generator.equipmentCategory-armor
-      betterRollssw5e:
-        critRange:
-          type: String
-          value: ''
-        critDamage:
-          type: String
-          value: ''
-        quickDesc:
-          type: Boolean
-          value: true
-          altValue: true
-        quickAttack:
-          type: Boolean
-          value: true
-          altValue: true
-        quickSave:
-          type: Boolean
-          value: true
-          altValue: true
-        quickDamage:
-          type: Array
-          value: []
-          altValue: []
-          context: []
-        quickProperties:
-          type: Boolean
-          value: true
-          altValue: true
-        quickCharges:
-          type: Boolean
-          value:
-            quantity: false
-            use: false
-            resource: true
-          altValue:
-            quantity: false
-            use: false
-            resource: true
-        quickOther:
-          type: Boolean
-          value: true
-          altValue: true
-          context: ''
-        quickFlavor:
-          type: Boolean
-          value: true
-          altValue: true
-        quickPrompt:
-          type: Boolean
-          value: false
-          altValue: false
       core:
         sourceId: Compendium.sw5e-module.equipment.eMXpw3HIVMnaNFQ1
     system:
@@ -346,23 +206,6 @@ items:
         max: 0
         dt: null
         conditions: ''
-      attributes:
-        capx:
-          value: null
-        dmgred:
-          value: null
-        regrateco:
-          value: null
-        cscap:
-          value: null
-        sscap:
-          value: null
-        fuelcostsmod:
-          value: null
-        powerdicerec:
-          value: ''
-        hdclass:
-          value: null
       modify:
         chassis: none
         augmentSlots: 0
@@ -379,22 +222,6 @@ items:
       stealth: false
       properties: []
       proficient: true
-      capx:
-        value: null
-      dmgred:
-        value: null
-      regrateco:
-        value: null
-      cscap:
-        value: null
-      sscap:
-        value: null
-      fuelcostsmod:
-        value: null
-      powerdicerec:
-        value: null
-      hdclass:
-        value: null
       modifications:
         chassisType: none
         augmentSlots: 0
@@ -440,9 +267,7 @@ items:
         sourceId: Item.Cw84nrTDobL85XMz
     system:
       description:
-        value: >-
-          <p>As a bonus action, the trooper can move up to its speed toward a
-          hostile creature that it can see.</p>
+        value: <p>As a bonus action, the trooper can move up to its speed toward a hostile creature that it can see.</p>
         chat: ''
         unidentified: ''
       requirements: ''
@@ -494,10 +319,6 @@ items:
       recharge:
         value: null
         charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
       attunement: null
     ownership:
       default: 0
@@ -521,9 +342,7 @@ items:
         sourceId: Item.jlKzF3BcuLixwStU
     system:
       description:
-        value: >-
-          <p>The trooper has advantage on Wisdom (Perception) checks that rely
-          on hearing or sight.</p>
+        value: <p>The trooper has advantage on Wisdom (Perception) checks that rely on hearing or sight.</p>
         chat: ''
         unidentified: ''
       requirements: ''
@@ -575,10 +394,6 @@ items:
       recharge:
         value: null
         charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
       attunement: null
     ownership:
       default: 0
@@ -602,9 +417,7 @@ items:
         sourceId: Item.awBOLTfQmfDh22Wj
     system:
       description:
-        value: >-
-          <p>The trooper's weapons deal one extra die of damage and are
-          enhanced.</p>
+        value: <p>The trooper's weapons deal one extra die of damage and are enhanced.</p>
         chat: ''
         unidentified: ''
       requirements: ''
@@ -656,10 +469,6 @@ items:
       recharge:
         value: null
         charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
       attunement: null
     ownership:
       default: 0
@@ -683,9 +492,7 @@ items:
         sourceId: Item.tGOFsFayCUrOYdBH
     system:
       description:
-        value: >-
-          <p>The trooper makes two weapon attacks and throws an electrostun
-          grenade, if available.</p>
+        value: <p>The trooper makes two weapon attacks and throws an electrostun grenade, if available.</p>
         chat: ''
         unidentified: ''
       requirements: ''
@@ -737,10 +544,6 @@ items:
       recharge:
         value: null
         charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
       attunement: null
     ownership:
       default: 0
@@ -769,21 +572,12 @@ items:
           rel: 12
     system:
       description:
-        value: >-
+        value: |-
           <h3>Power cell (range 105/420) Cell</h3>
-
-          <p>Weapons with this property are fueled by power cells, which must be
-          loaded in order to fire the weapon.</p>
-
+          <p>Weapons with this property are fueled by power cells, which must be loaded in order to fire the weapon.</p>
           <h3>Reload 12</h3>
-
-          <p>A number of shots equal to the reload number can be made with a
-          weapon with this property. A character must then reload it using an
-          action or a bonus action (their choice). You must have one free hand
-          to reload.</p>
-
+          <p>A number of shots equal to the reload number can be made with a weapon with this property. A character must then reload it using an action or a bonus action (their choice). You must have one free hand to reload.</p>
           <h3>Two-handed</h3>
-
           <p>A weapon with this property requires two hands to use.</p>
         chat: ''
         unidentified: ''
@@ -870,6 +664,7 @@ items:
         - range
         - two
         - powerCell
+        - rel
       proficient: true
       modifications:
         chassisType: none
@@ -915,30 +710,15 @@ items:
         sourceId: Compendium.sw5e-module.equipment.cmb8tlOI7j4wnfPi
     system:
       description:
-        value: >-
+        value: |-
           <h3>Finesse</h3>
-
-          <p>When making an attack with a weapon with this property, you use
-          your choice of your Strength or Dexterity modifier for the attack and
-          damage rolls. You must use the same modifier for both rolls.</p>
-
+          <p>When making an attack with a weapon with this property, you use your choice of your Strength or Dexterity modifier for the attack and damage rolls. You must use the same modifier for both rolls.</p>
           <h3>Fixed</h3>
-
-          <p>A weapon with this property does not fill the hand, but you can't
-          use the weapon while the hand is full. Additionally, you have a +10
-          bonus to ability checks and saving throws to avoid being disarmed of
-          this weapon.</p>
-
+          <p>A weapon with this property does not fill the hand, but you can't use the weapon while the hand is full. Additionally, you have a +10 bonus to ability checks and saving throws to avoid being disarmed of this weapon.</p>
           <h3>Hidden</h3>
-
-          <p>You have advantage on Dexterity (Sleight of Hand) checks made to
-          conceal a weapon with this property.</p>
-
+          <p>You have advantage on Dexterity (Sleight of Hand) checks made to conceal a weapon with this property.</p>
           <h3>Light</h3>
-
-          <p>A weapon with this property is small and easy to handle, making it
-          ideal for use when engaging in Double- or Two-Weapon Fighting. See the
-          rules for Double- and Two-Weapon Fighting in chapter 9.</p>
+          <p>A weapon with this property is small and easy to handle, making it ideal for use when engaging in Double- or Two-Weapon Fighting. See the rules for Double- and Two-Weapon Fighting in chapter 9.</p>
         chat: ''
         unidentified: ''
       requirements: ''
@@ -1069,20 +849,10 @@ items:
         sourceId: Compendium.sw5e-module.equipment.iKXaw0RyDFHqdZsV
     system:
       description:
-        value: >-
+        value: |-
           <section class="secret">
-
-          <p>The scout throws a grenade, choosing a point within 35 ft. Each
-          creature within 10 feet must make a DC 14 Constitution saving throw.
-          On a failed save, a creature is stunned until the end of their next
-          turn.</p>
-
-          <p>Additionally, on a failed save, a creature is unconscious for 1
-          minute, until it takes damage, or until someone uses an action to
-          shake or slap the creature awake. At the end of an affected
-          creature&rsquo;s turn, it can repeat this save, ending the effect on a
-          success.</p>
-
+          <p>The scout throws a grenade, choosing a point within 35 ft. Each creature within 10 feet must make a DC 14 Constitution saving throw. On a failed save, a creature is stunned until the end of their next turn.</p>
+          <p>Additionally, on a failed save, a creature is unconscious for 1 minute, until it takes damage, or until someone uses an action to shake or slap the creature awake. At the end of an affected creature&rsquo;s turn, it can repeat this save, ending the effect on a success.</p>
           </section>
         chat: ''
         unidentified: ''
@@ -1174,9 +944,7 @@ items:
         sourceId: Compendium.sw5e-module.equipment.oeJaLYngzLX0x6Yj
     system:
       description:
-        value: >-
-          <p>Weapons with this property are fueled by power cells, which must be
-          loaded in order to fire the weapon.</p>
+        value: <p>Weapons with this property are fueled by power cells, which must be loaded in order to fire the weapon.</p>
         chat: ''
         unidentified: ''
       requirements: ''
@@ -1295,91 +1063,6 @@ system:
       bonuses:
         check: ''
         save: ''
-  attributes:
-    ac:
-      flat: null
-      calc: default
-      formula: ''
-    hp:
-      value: 39
-      max: 39
-      temp: null
-      tempmax: null
-      formula: 7d8+6
-      min: 0
-    init:
-      ability: ''
-      bonus: 0
-      value: 0
-    movement:
-      burrow: 0
-      climb: 0
-      crawl: 0
-      fly: 0
-      roll: 0
-      space: 0
-      swim: 0
-      turn: 0
-      walk: 30
-      units: ft
-      hover: false
-    attunement:
-      max: 3
-    senses:
-      darkvision: 60
-      blindsight: 0
-      tremorsense: 0
-      truesight: 0
-      units: ft
-      special: ''
-    force:
-      points:
-        value: 0
-        bonuses:
-          level: ''
-          overall: ''
-        min: 0
-        max: 0
-        temp: 0
-        tempmax: 0
-      known:
-        value: 0
-        max: 0
-      level: 0
-    tech:
-      points:
-        value: 0
-        bonuses:
-          level: ''
-          overall: ''
-        min: 0
-        max: 0
-        temp: 0
-        tempmax: 0
-      known:
-        value: 0
-        max: 0
-      level: 0
-    super:
-      dice:
-        value: 0
-        bonuses:
-          level: ''
-          overall: ''
-        max: 0
-      known:
-        value: 0
-        max: 0
-      die: ''
-    deployed:
-      uuid: null
-      deployments: []
-    powercasting: full
-    death:
-      success: null
-      failure: null
-    exhaustion: null
-    inspiration: false
   details:
     biography:
       value: ''
@@ -1693,9 +1376,8 @@ prototypeToken:
 _stats:
   systemId: dnd5e
   systemVersion: 5.2.5
-  coreVersion: '10.303'
+  coreVersion: '12.331'
   createdTime: 1690305167815
   modifiedTime: 1690305168051
   lastModifiedBy: dnd5ebuilder0000
 _key: '!actors!xuFFIcAv1Ob3c8Ft'
-

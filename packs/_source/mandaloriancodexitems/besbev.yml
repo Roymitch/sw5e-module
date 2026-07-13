@@ -12,14 +12,9 @@ flags:
 _id: msu7aj5pV8y1y8j9
 system:
   description:
-    value: >-
-      <p>You gain a +1 bonus to attack and damage rolls with this enhanced
-      weapon. Additionally, this weapon can be used as a flute and grants
-      advantage to Charisma (Performance) checks made while using this
-      flute.</p>
-
-      <p><em>Forged from beskar iron, a bes'bev was a combination of a flute and
-      a sharp weapon.</em></p>
+    value: |-
+      <p>You gain a +1 bonus to attack and damage rolls with this enhanced weapon. Additionally, this weapon can be used as a flute and grants advantage to Charisma (Performance) checks made while using this flute.</p>
+      <p><em>Forged from beskar iron, a bes'bev was a combination of a flute and a sharp weapon.</em></p>
     chat: ''
     unidentified: ''
   requirements: ''
@@ -102,15 +97,16 @@ system:
       - powerCell
   properties:
     - lgt
+    - keen
+    - dexRq
   proficient: false
 ownership:
   default: 0
 _stats:
   systemId: dnd5e
   systemVersion: 5.2.5
-  coreVersion: '10.303'
+  coreVersion: '12.331'
   createdTime: 1690305170293
   modifiedTime: 1690305170293
   lastModifiedBy: dnd5ebuilder0000
 _key: '!items!msu7aj5pV8y1y8j9'
-

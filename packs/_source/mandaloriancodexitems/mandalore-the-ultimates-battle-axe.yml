@@ -12,21 +12,10 @@ flags:
 _id: pSpHL8x6ceWJGg4v
 system:
   description:
-    value: >-
-      <p>You gain a +3 bonus to attack and damage rolls made with this enhanced
-      weapon, and when you hit a creature with a weapon attack using this
-      weapon, the creature takes an extra 1d12 lightning damage. Additionally
-      its brutal number increases by 2 and it gains the reach property</p>
-
-      <p>You also have advantage on Charisma (Persuasion) checks made against
-      Mandalorians.</p>
-
-      <p><em>A powerful weapon created and wielded by an ancient Mandalorian
-      leader. Based on the traditional design of the mythosaur-bone axes crafted
-      on Mandalore, this modern variation is longer and forged from the hull of
-      a fallen capital ship and the fabled metal cortosis. It incorporates an
-      internal energy cell that imbues the axe with a potent electrical field,
-      doubling its lethality.</em></p>
+    value: |-
+      <p>You gain a +3 bonus to attack and damage rolls made with this enhanced weapon, and when you hit a creature with a weapon attack using this weapon, the creature takes an extra 1d12 lightning damage. Additionally its brutal number increases by 2 and it gains the reach property</p>
+      <p>You also have advantage on Charisma (Persuasion) checks made against Mandalorians.</p>
+      <p><em>A powerful weapon created and wielded by an ancient Mandalorian leader. Based on the traditional design of the mythosaur-bone axes crafted on Mandalore, this modern variation is longer and forged from the hull of a fallen capital ship and the fabled metal cortosis. It incorporates an internal energy cell that imbues the axe with a potent electrical field, doubling its lethality.</em></p>
     chat: ''
     unidentified: ''
   requirements: ''
@@ -111,15 +100,16 @@ system:
     - hvy
     - rch
     - two
+    - brutal
+    - dexRq
   proficient: false
 ownership:
   default: 0
 _stats:
   systemId: dnd5e
   systemVersion: 5.2.5
-  coreVersion: '10.303'
+  coreVersion: '12.331'
   createdTime: 1690305170294
   modifiedTime: 1690305170294
   lastModifiedBy: dnd5ebuilder0000
 _key: '!items!pSpHL8x6ceWJGg4v'
-
