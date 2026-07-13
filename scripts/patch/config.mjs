@@ -1,5 +1,5 @@
 import { applySw5eGalacticCreditsDefault } from "../currencies.mjs";
-import { getModulePath, normalizeCompendiumUuid } from "../module-support.mjs";
+import { getModuleId, getModulePath, normalizeCompendiumUuid } from "../module-support.mjs";
 import { applySw5eStarshipConditionConfig } from "../starship-conditions.mjs";
 import { EXPANDED_PROFICIENCY_TIERS } from "./proficiency.mjs";
 
@@ -2028,10 +2028,10 @@ export function patchConfig(config, strict = true) {
 		...config.weaponStarshipTypes
 	};
 	// Compendium Packs
-	config.sourcePacks.BACKGROUNDS = "sw5e.backgrounds";
-	config.sourcePacks.CLASSES = "sw5e.classes";
-	config.sourcePacks.ITEMS = "sw5e.items";
-	config.sourcePacks.RACES = "sw5e.species";
+	config.sourcePacks.BACKGROUNDS = `${getModuleId()}.backgrounds`;
+	config.sourcePacks.CLASSES = `${getModuleId()}.character-classes`;
+	config.sourcePacks.ITEMS = `${getModuleId()}.equipment`;
+	config.sourcePacks.RACES = `${getModuleId()}.species`;
 	// Proficiency — dnd5e-facing display keys must remain localization strings (see dnd5e preLocalize("proficiencyLevels")).
 	config.proficiencyLevels = {
 		...config.proficiencyLevels,

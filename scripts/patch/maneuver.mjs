@@ -208,21 +208,24 @@ function prepareSuperiority() {
 		const { attributes, superiority } = _this.system;
 		const base = 8 + (attributes.prof ?? 0);
 
-		// TODO: Add rules
-		// // Simplified forcecasting rule
-		if (game.settings.get(SETTINGS_NAMESPACE , "simplifiedForcecasting")) {
-			CONFIG.DND5E.superiority.types.physical.attr = CONFIG.DND5E.superiority.types.general.attr;
-			CONFIG.DND5E.superiority.types.mental.attr = CONFIG.DND5E.superiority.types.general.attr;
-		}
-
 		// Superiority DC for Actors and NPCs
+		// Simplified forcecasting: use general attrs locally (no CONFIG mutation).
+		let simplifiedForcecasting = false;
+		try {
+			simplifiedForcecasting = Boolean(game.settings.get(SETTINGS_NAMESPACE, "simplifiedForcecasting"));
+		} catch ( _err ) { /* settings not ready */ }
+		const generalSuperiorityAttr = CONFIG.DND5E.superiority?.types?.general?.attr;
+
 		const superConfig = CONFIG.DND5E.superiority;
 		const bonusAll = simplifyBonus(_this.system.bonuses?.superiority?.dc?.all, rollData);
 		for (const [type, typeConfig] of Object.entries(superConfig.types)) {
 			const typeData = superiority.types[type];
 			const bonus = simplifyBonus(_this.system.bonuses?.superiority?.dc?.[type], rollData) + bonusAll;
 			const sourceType = sourceTypes?.[type] ?? {};
-			const best = getBestAbility(_this, typeConfig.attr, 0);
+			const attrList = (simplifiedForcecasting && (type === "physical" || type === "mental") && generalSuperiorityAttr)
+				? generalSuperiorityAttr
+				: typeConfig.attr;
+			const best = getBestAbility(_this, attrList, 0);
 			const overrideAttr = sourceType.attr;
 			const resolvedAttr = (overrideAttr && _this.system.abilities?.[overrideAttr]) ? overrideAttr : best.id;
 			const resolvedMod = Number.isFinite(Number(_this.system.abilities?.[resolvedAttr]?.mod))

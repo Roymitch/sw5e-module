@@ -15,7 +15,7 @@ import {
 	getEffectivePowercastingAbility,
 	resolveSchoolPowerDc
 } from "../powercasting-overrides.mjs";
-import { patchPowerBonuses } from "./power-bonuses.mjs";
+import { getSchoolPowerAttackBonus, patchPowerBonuses } from "./power-bonuses.mjs";
 import { applySpecialTraitsTabLabel } from "./special-traits-sheet.mjs";
 import { applyStarshipTabsContext } from "./starship-sheet.mjs";
 
@@ -79,35 +79,56 @@ function getPreparedPowercastingCards(actor) {
 	const powercasting = actor?.system?.powercasting ?? {};
 	const superiority = actor?.system?.superiority ?? {};
 	const superiorityPool = formatSuperiorityPool(superiority);
+	const rollData = actor?.getRollData?.() ?? {};
 
+	const formatAttack = total => {
+		if ( !Number.isFinite(Number(total)) ) return "-";
+		const n = Number(total);
+		return n >= 0 ? `+${n}` : `${n}`;
+	};
+
+	/** Ability-only attack (superiority cards). */
 	const makeAbilityAttack = ability => {
 		const attack = abilities?.[ability]?.attack;
 		if ( !Number.isFinite(Number(attack)) ) return "-";
-		return attack >= 0 ? `+${attack}` : `${attack}`;
+		return formatAttack(attack);
 	};
+
+	/** Ability attack + force/tech school bonuses (Focus Generator, etc.). */
+	const makeSchoolAttack = (ability, castType, school) => {
+		const base = Number(abilities?.[ability]?.attack);
+		if ( !Number.isFinite(base) ) return "-";
+		const bonus = getSchoolPowerAttackBonus(actor, castType, school, rollData);
+		return formatAttack(base + bonus);
+	};
+
+	const techAttr = getEffectivePowercastingAbility(actor, { castType: "tech", school: "tec", purpose: "attack" }).id || "int";
 
 	return {
 		force: [
 			{
 				name: "Forcecasting (Light)",
 				attr: getEffectivePowercastingAbility(actor, { castType: "force", school: "lgt", purpose: "attack" }).id || "wis",
-				save: powercasting.force?.schools?.lgt?.dc ?? null
+				save: powercasting.force?.schools?.lgt?.dc ?? null,
+				school: "lgt"
 			},
 			{
 				name: "Forcecasting (Dark)",
 				attr: getEffectivePowercastingAbility(actor, { castType: "force", school: "drk", purpose: "attack" }).id || "cha",
-				save: powercasting.force?.schools?.drk?.dc ?? null
+				save: powercasting.force?.schools?.drk?.dc ?? null,
+				school: "drk"
 			},
 			{
 				name: "Forcecasting (Neutral)",
 				attr: getEffectivePowercastingAbility(actor, { castType: "force", school: "uni", purpose: "attack" }).id
 					|| getBestAbility(actor, ["wis", "cha"], 0)?.id
 					|| "wis",
-				save: powercasting.force?.schools?.uni?.dc ?? null
+				save: powercasting.force?.schools?.uni?.dc ?? null,
+				school: "uni"
 			}
-		].map(card => ({
+		].map(({ school, ...card }) => ({
 			...card,
-			attack: makeAbilityAttack(card.attr)
+			attack: makeSchoolAttack(card.attr, "force", school)
 		})),
 		superiority: [
 			{
@@ -134,11 +155,9 @@ function getPreparedPowercastingCards(actor) {
 		})),
 		tech: {
 			name: "Techcasting",
-			attr: getEffectivePowercastingAbility(actor, { castType: "tech", school: "tec", purpose: "attack" }).id || "int",
+			attr: techAttr,
 			save: powercasting.tech?.schools?.tec?.dc ?? null,
-			attack: makeAbilityAttack(
-				getEffectivePowercastingAbility(actor, { castType: "tech", school: "tec", purpose: "attack" }).id || "int"
-			)
+			attack: makeSchoolAttack(techAttr, "tech", "tec")
 		}
 	};
 }
@@ -506,15 +525,13 @@ function preparePowercasting() {
 				if ( !(level > 0) ) level = sourceLevel;
 
 				// Recovery path for already-imported NPCs whose legacy detail fields were pruned.
+				// Prepared-data only — do not updateSource during prepare (F-018).
 				if ( !(level > 0) ) {
 					const inferredLevel = inferNpcPowerLevelFromPowers(_this, castType, typeConfig);
 					if ( inferredLevel > 0 ) {
 						level = inferredLevel;
 						_this.system.details ??= {};
 						_this.system.details[levelKey] = inferredLevel;
-						if ( !(sourceLevel > 0) ) {
-							_this.updateSource?.({ [`system.details.${levelKey}`]: inferredLevel });
-						}
 					}
 				}
 
@@ -636,14 +653,8 @@ function preparePowercasting() {
 		const base = 8 + (attributes.prof ?? 0);
 		const lvl = Number(_this.system.details?.level ?? _this.system.details.cr ?? 0);
 
-		// TODO: Add rules
-		// // Simplified forcecasting rule
-		if (game.settings.get(SETTINGS_NAMESPACE, "simplifiedForcecasting")) {
-			CONFIG.DND5E.powerCasting.force.schools.lgt.attr = CONFIG.DND5E.powerCasting.force.schools.uni.attr;
-			CONFIG.DND5E.powerCasting.force.schools.drk.attr = CONFIG.DND5E.powerCasting.force.schools.uni.attr;
-		}
-
 		// Powercasting DC for Actors and NPCs
+		// Simplified forcecasting is resolved locally in getDefaultSchoolAbilityIds (no CONFIG mutation).
 		for (const [castType, typeConfig] of Object.entries(CONFIG.DND5E.powerCasting)) {
 			for (const [school, schoolConfig] of Object.entries(typeConfig.schools)) {
 				const schoolData = powercasting[castType].schools[school];

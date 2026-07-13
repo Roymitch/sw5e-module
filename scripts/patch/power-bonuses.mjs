@@ -112,6 +112,31 @@ export function getPowerAttackBonus(actor, item, rollData, { attackMode } = {}) 
 }
 
 /**
+ * Force/tech attack bonuses for school summary banners (no item, no mpak/rpak).
+ * @param {Actor5e} actor
+ * @param {"force"|"tech"} castType
+ * @param {string} school
+ * @param {object} [rollData]
+ * @returns {number}
+ */
+export function getSchoolPowerAttackBonus(actor, castType, school, rollData = {}) {
+	if ( !actor || !castType ) return 0;
+
+	const bonuses = actor.system?.bonuses ?? {};
+	let total = 0;
+
+	if ( castType === "force" ) {
+		total += readBonus(bonuses, "force.attack", rollData, actor);
+		const variant = FORCE_SCHOOL_VARIANTS[school];
+		if ( variant ) total += readBonus(bonuses, `force.${variant}.attack`, rollData, actor);
+	} else if ( castType === "tech" ) {
+		total += readBonus(bonuses, "tech.attack", rollData, actor);
+	}
+
+	return total;
+}
+
+/**
  * @param {string} [attackMode]
  * @returns {"mpak"|"rpak"|null}
  */
@@ -135,30 +160,30 @@ export function getPowerDcBonus(actor, castType, school, abilityId, rollData) {
 	let total = 0;
 
 	if ( castType === "force" ) {
-		total += readBonus(bonuses, "force.dc", rollData);
-		total += readBonus(bonuses, "power.dc", rollData);
-		total += readBonus(bonuses, "power.dc.all", rollData);
-		total += readBonus(bonuses, `power.dc.${school}`, rollData);
+		total += readBonus(bonuses, "force.dc", rollData, actor);
+		total += readBonus(bonuses, "power.dc", rollData, actor);
+		total += readBonus(bonuses, "power.dc.all", rollData, actor);
+		total += readBonus(bonuses, `power.dc.${school}`, rollData, actor);
 
-		if ( school === "lgt" ) total += readBonus(bonuses, "power.forceLightDC", rollData);
-		else if ( school === "drk" ) total += readBonus(bonuses, "power.forceDarkDC", rollData);
-		else if ( school === "uni" ) total += readBonus(bonuses, "power.forceUnivDC", rollData);
+		if ( school === "lgt" ) total += readBonus(bonuses, "power.forceLightDC", rollData, actor);
+		else if ( school === "drk" ) total += readBonus(bonuses, "power.forceDarkDC", rollData, actor);
+		else if ( school === "uni" ) total += readBonus(bonuses, "power.forceUnivDC", rollData, actor);
 
 		const variant = FORCE_SCHOOL_VARIANTS[school];
-		if ( variant ) total += readBonus(bonuses, `force.${variant}.dc`, rollData);
+		if ( variant ) total += readBonus(bonuses, `force.${variant}.dc`, rollData, actor);
 
 		if ( abilityId ) {
-			total += readBonus(bonuses, `force.${abilityId}.dc`, rollData);
-			if ( variant ) total += readBonus(bonuses, `force.${variant}.${abilityId}.dc`, rollData);
+			total += readBonus(bonuses, `force.${abilityId}.dc`, rollData, actor);
+			if ( variant ) total += readBonus(bonuses, `force.${variant}.${abilityId}.dc`, rollData, actor);
 		}
 	} else if ( castType === "tech" ) {
-		total += readBonus(bonuses, "tech.dc", rollData);
-		total += readBonus(bonuses, "power.dc", rollData);
-		total += readBonus(bonuses, "power.dc.all", rollData);
-		total += readBonus(bonuses, "power.dc.tec", rollData);
-		total += readBonus(bonuses, "power.techDC", rollData);
+		total += readBonus(bonuses, "tech.dc", rollData, actor);
+		total += readBonus(bonuses, "power.dc", rollData, actor);
+		total += readBonus(bonuses, "power.dc.all", rollData, actor);
+		total += readBonus(bonuses, "power.dc.tec", rollData, actor);
+		total += readBonus(bonuses, "power.techDC", rollData, actor);
 
-		if ( abilityId ) total += readBonus(bonuses, `tech.${abilityId}.dc`, rollData);
+		if ( abilityId ) total += readBonus(bonuses, `tech.${abilityId}.dc`, rollData, actor);
 	}
 
 	return total;

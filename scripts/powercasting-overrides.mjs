@@ -1,4 +1,5 @@
 import { getBestAbility } from "./utils.mjs";
+import { SETTINGS_NAMESPACE } from "./module-support.mjs";
 import { getPowerDcBonus } from "./patch/power-bonuses.mjs";
 
 /** @typedef {"attack" | "dc" | "points"} PowercastingAbilityPurpose */
@@ -41,7 +42,16 @@ export function getPowercastingOverrides(actor) {
  * @returns {string[]}
  */
 export function getDefaultSchoolAbilityIds(castType, school) {
-	const attrs = CONFIG.DND5E?.powerCasting?.[castType]?.schools?.[school]?.attr;
+	let resolvedSchool = school;
+	// Simplified forcecasting: use uni attrs for light/dark without mutating CONFIG.
+	if ( castType === "force" && (school === "lgt" || school === "drk") ) {
+		try {
+			if ( game?.settings?.get?.(SETTINGS_NAMESPACE, "simplifiedForcecasting") ) {
+				resolvedSchool = "uni";
+			}
+		} catch ( _err ) { /* settings not ready */ }
+	}
+	const attrs = CONFIG.DND5E?.powerCasting?.[castType]?.schools?.[resolvedSchool]?.attr;
 	if ( !attrs ) return [];
 	return Array.isArray(attrs) ? attrs : [attrs];
 }
