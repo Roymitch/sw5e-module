@@ -126,8 +126,9 @@ function issue(code, message, data) {
  */
 function augmentationValidationResult({ blocking, warnings, info, force = false }) {
 	const hasBlocking = blocking.length > 0;
-	const ok = !hasBlocking || force === true;
-	return { ok, blocking, warnings, info, force: force === true };
+	const forceAllowed = force === true && game.user?.isGM === true;
+	const ok = !hasBlocking || forceAllowed;
+	return { ok, blocking, warnings, info, force: forceAllowed };
 }
 
 // ——— Side effects (RAW thresholds) ———

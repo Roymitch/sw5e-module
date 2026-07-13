@@ -266,24 +266,21 @@ export const migrateWorld = async function() {
 		await migrateCompendium(p);
 	}
 
-	// Delete empty folders that existed prior to YAML migration
-	for (const folder of game.folders) {
-		if (
-			[
-				'Powers & Maneuvers',
-				'Tools',
-				'Weapons',
-				'Customization Options'
-			].includes(folder.name)
-		) {
-			// Check that they are empty
-			if (
-				folder.contents.length === 0 &&
-				folder.children.length === 0
-			) {
-				await folder.delete();
-			}
-		}
+	// Empty legacy folders (e.g. "Powers & Maneuvers", "Tools") are left in place.
+	// Auto-delete by English name alone was unsafe for GM-created folders with the same titles.
+	const legacyEmptyFolderNames = new Set([
+		"Powers & Maneuvers",
+		"Tools",
+		"Weapons",
+		"Customization Options"
+	]);
+	const leftover = [];
+	for ( const folder of game.folders ) {
+		if ( !legacyEmptyFolderNames.has(folder.name) ) continue;
+		if ( folder.contents.length === 0 && folder.children.length === 0 ) leftover.push(folder.name);
+	}
+	if ( leftover.length ) {
+		console.info(`SW5E | Migration left empty legacy-named folders for manual cleanup: ${leftover.join(", ")}`);
 	}
 
 	// Set the migration as complete
@@ -500,13 +497,13 @@ function setTokenActorDeltaUpdate(tokenData, update, deltaSource, actorFlags) {
  * Convert a legacy SW5E world payload and import it into the current world.
  * @param {object} payload                                     Parsed legacy world data payload.
  * @param {object} [options]
- * @param {boolean} [options.replaceExisting=true]             Replace matching _id documents instead of always creating.
+ * @param {boolean} [options.replaceExisting=false]            Replace matching _id documents instead of always creating.
  * @param {boolean} [options.includeCompendia=false]           Import world compendia present in payload.compendia.
  * @param {boolean} [options.dryRun=false]                     Run conversion analysis without creating/updating documents.
  * @returns {Promise<object>}                                  Conversion report.
  */
 export async function convertLegacyWorldPayload(payload, {
-	replaceExisting=true,
+	replaceExisting=false,
 	includeCompendia=false,
 	dryRun=false
 }={}) {

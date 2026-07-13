@@ -361,6 +361,12 @@ export function registerCharacterImporterHooks() {
 }
 
 export async function openCharacterImportDialog() {
+	if ( !game.user?.isGM ) {
+		throw new Error(localizeOrFallback(
+			"SW5E.CharacterImporter.GmOnly",
+			"Only a GM can import characters from SW5E exports."
+		));
+	}
 	const content = `
 		<form class="sw5e-character-import-form">
 			<p>${escapeHtml(localizeOrFallback("SW5E.CharacterImporter.Help", "Paste a legacy SW5E saved-character export or load a JSON file."))}</p>
@@ -457,6 +463,12 @@ export class CharacterImporter {
 	#sawFormulaFields = false;
 
 	async importRaw(rawCharacter) {
+		if ( !game.user?.isGM ) {
+			throw new Error(localizeOrFallback(
+				"SW5E.CharacterImporter.GmOnly",
+				"Only a GM can import characters from SW5E exports."
+			));
+		}
 		let payload;
 		try {
 			payload = JSON.parse(rawCharacter);
@@ -467,6 +479,12 @@ export class CharacterImporter {
 	}
 
 	async importPayload(payload) {
+		if ( !game.user?.isGM ) {
+			throw new Error(localizeOrFallback(
+				"SW5E.CharacterImporter.GmOnly",
+				"Only a GM can import characters from SW5E exports."
+			));
+		}
 		if ( !payload || (typeof payload !== "object") ) {
 			throw new Error(localizeOrFallback("SW5E.CharacterImporter.InvalidPayload", "Character exports must be JSON objects."));
 		}

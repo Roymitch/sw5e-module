@@ -195,19 +195,14 @@ export async function reloadBlasterWeapon(actor, weapon, options = {}) {
 	if ( needsUsesMaxWrite(weapon) ) weaponUpdates["system.uses.max"] = String(reloadMax);
 
 	try {
-		await ammo.update({ "system.quantity": ammoQuantity - 1 });
+		await actor.updateEmbeddedDocuments("Item", [
+			{ _id: ammo.id, "system.quantity": ammoQuantity - 1 },
+			{ _id: weapon.id, ...weaponUpdates }
+		]);
 	} catch (error) {
-		console.error("SW5E MODULE | Blaster reload ammo update failed.", error);
+		console.error("SW5E MODULE | Blaster reload update failed.", error);
 		await whisperToActorOwnersAndGM(actor, `Failed to reload ${weapon.name}.`);
-		return { ok: false, reason: "ammo-update-failed" };
-	}
-
-	try {
-		await weapon.update(weaponUpdates);
-	} catch (error) {
-		console.error("SW5E MODULE | Blaster reload weapon update failed.", error);
-		await whisperToActorOwnersAndGM(actor, `Failed to reload ${weapon.name}.`);
-		return { ok: false, reason: "weapon-update-failed" };
+		return { ok: false, reason: "reload-update-failed" };
 	}
 
 	await whisperToActorOwnersAndGM(actor, game.i18n.format("SW5E.BlasterReloaded", { name: weapon.name }));
