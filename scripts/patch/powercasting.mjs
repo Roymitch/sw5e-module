@@ -578,7 +578,9 @@ function preparePowercasting() {
 					obj.maxPowerLevel = progConfig.powerMaxLevel[obj.maxClassLevel];
 				} else {
 					// Don't allow multiclassing to achieve a higher max power level than a 20th level character of any of those classes
-					obj.maxPowerLevel = Math.min(obj.maxPowerLevel, typeConfig.progression.full[obj.casterLevel]);
+					const fullCap = typeConfig.progression?.full?.powerMaxLevel?.[obj.casterLevel];
+					const capped = Number.isFinite(fullCap) ? fullCap : obj.maxPowerLevel;
+					obj.maxPowerLevel = Math.min(obj.maxPowerLevel, capped);
 				}
 			}
 
