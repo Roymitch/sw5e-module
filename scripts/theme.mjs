@@ -404,7 +404,7 @@ export function isEphemeralDialogPromptApp(app, element) {
 	}
 
 	const ctorName = app?.constructor?.name ?? "";
-	if ( ctorName === "Dialog" || ctorName === "CheckboxSelectDialog" ) {
+	if ( ctorName === "Dialog" ) {
 		return element.classList.contains("dialog");
 	}
 	if ( ctorName === "DialogV2" ) return true;

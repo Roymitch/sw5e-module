@@ -390,16 +390,6 @@ function makeSuperiorityDiceConsumable() {
 	Hooks.once("setup", function() { CONFIG.DND5E.consumableResources.push(`superiority.dice.value`); });
 }
 
-function addSuperiorityScaleValues() {
-	Hooks.on("sw5e.ActorDataModel._prepareScaleValues", function (_this, result, config, ...args) {
-		const superiority = _this.system?.superiority;
-		if ( superiority?.level ) {
-			if ( _this.system.scale.superiority ) ui.notifications.warn( "SW5E.Superiority.Warn.Identifier" );
-			_this.system.scale.superiority = superiority;
-		}
-	});
-}
-
 function addCompendiumBrowserTab() {
 	const tabs = game.dnd5e?.applications?.CompendiumBrowser?.TABS;
 	if ( !tabs?.length || tabs.some(i => i.tab === "maneuvers") ) return;

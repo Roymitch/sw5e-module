@@ -865,7 +865,7 @@ export const migrateMacroData = function(macro, migrationData) {
 	}
 	if ( macro.flags ) {
 		const normalizedFlags = normalizeCompendiumReferences(foundry.utils.deepClone(macro.flags), { moduleId: getModuleId() });
-		if ( !foundry.utils.deepEqual(normalizedFlags, macro.flags) ) updateData.flags = normalizedFlags;
+		if ( !foundry.utils.objectsEqual(normalizedFlags, macro.flags) ) updateData.flags = normalizedFlags;
 	}
 	return updateData;
 };
@@ -1068,7 +1068,7 @@ function mergePersistedMigrationSource(source, updateData) {
 /*  Low level migration utilities
 /* -------------------------------------------- */
 
-const DROID_CLASS_SPECIES_EFFECT_IMG_REMAPS = Object.freeze({
+const SPECIES_PACK_IMG_REMAPS = Object.freeze({
 	"Droid%20Class%20I.webp": "Droid-ClassI.webp",
 	"Droid%20Class%20II.webp": "Droid-ClassIi.webp",
 	"Droid%20Class%20III.webp": "Droid-ClassIii.webp",
@@ -1078,12 +1078,23 @@ const DROID_CLASS_SPECIES_EFFECT_IMG_REMAPS = Object.freeze({
 	"Droid Class II.webp": "Droid-ClassIi.webp",
 	"Droid Class III.webp": "Droid-ClassIii.webp",
 	"Droid Class IV.webp": "Droid-ClassIv.webp",
-	"Droid Class V.webp": "Droid-ClassV.webp"
+	"Droid Class V.webp": "Droid-ClassV.webp",
+	"Flesh%20Raider.webp": "FleshRaider.webp",
+	"Flesh Raider.webp": "FleshRaider.webp",
+	"Kel%20Dor.webp": "KelDor.webp",
+	"Kel Dor.webp": "KelDor.webp",
+	"Mon%20Calamari.webp": "MonCalamari.webp",
+	"Mon Calamari.webp": "MonCalamari.webp"
 });
 
-function remapDroidClassSpeciesEffectImage(path) {
+/**
+ * Remap known broken Species pack filenames (spaces / %20) to on-disk names.
+ * @param {string} path
+ * @returns {string}
+ */
+function remapSpeciesPackImage(path) {
 	if ( typeof path !== "string" ) return path;
-	for ( const [badSuffix, goodSuffix] of Object.entries(DROID_CLASS_SPECIES_EFFECT_IMG_REMAPS) ) {
+	for ( const [badSuffix, goodSuffix] of Object.entries(SPECIES_PACK_IMG_REMAPS) ) {
 		if ( path.endsWith(badSuffix) ) return `${path.slice(0, -badSuffix.length)}${goodSuffix}`;
 	}
 	return path;
@@ -1132,7 +1143,7 @@ function _migrateImage(objectData, updateData) {
 			continue;
 		}
 
-		let newPath = remapDroidClassSpeciesEffectImage(normalizeModuleImagePath(path));
+		let newPath = remapSpeciesPackImage(normalizeModuleImagePath(path));
 		if ( prop === "prototypeToken.texture.src" ) {
 			const actorAvatar = normalizeModuleImagePath(foundry.utils.getProperty(objectData, "img"));
 			const canonicalMonsterToken = getMonsterTokenPathFromAvatar(actorAvatar);

@@ -62,7 +62,7 @@ export function patchConfig(config, strict = true) {
 	config.skills.pil = {
 		label: "SW5E.SkillPil",
 		ability: "int",
-		fullKey: "pilloting",
+		fullKey: "piloting",
 		icon: "icons/magic/movement/acceleration-speed-tech-blue.webp"
 	};
 	config.skills.tec = {
@@ -1504,7 +1504,7 @@ export function patchConfig(config, strict = true) {
 		constitution: {
 			label: "SW5E.Item.Property.Constitution",
 			full: "SW5E.Item.Property.ConstitutionFull",
-			dreferenceesc: "SW5E.Item.Property.ConstitutionDesc",
+			reference: "SW5E.Item.Property.ConstitutionDesc",
 			type: "Number",
 			isCasting: true
 		},

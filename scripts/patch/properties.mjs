@@ -1,7 +1,6 @@
 import { getFlag } from "../utils.mjs";
 
 import { patchKeen } from "./properties/keen.mjs";
-import { patchReload } from "./properties/reload.mjs";
 
 function addHelper() {
 	const ItemDataModel = dnd5e.dataModels.abstract?.ItemDataModel;
@@ -235,6 +234,5 @@ export function patchProperties() {
 	addHelper();
 	patchSheet();
 
-	// patchReload();
 	patchKeen();
 }
