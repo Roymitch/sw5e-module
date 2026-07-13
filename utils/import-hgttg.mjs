@@ -1117,9 +1117,9 @@ function buildWookieepediaArtAttribution(entry) {
 }
 
 function buildPdfArtAttribution(entry) {
+	// Omit absolute pdfPath from pack flags (privacy / redistribution).
 	return {
 		source: "HGTTG PDF",
-		pdfPath: entry.pdfPath ?? "",
 		pdfPage: entry.pdfPage ?? null,
 		sourceXref: entry.sourceXref ?? null,
 		extractedImage: entry.extractedImage ?? "",

@@ -639,9 +639,10 @@ function buildReport(manifest) {
 }
 
 function buildPdfArtFlags(entry) {
+	// Omit absolute pdfPath from pack flags (privacy / redistribution).
+	// Local extract manifests may still record pdfPath via buildManifest.
 	return {
 		source: "HGTTG PDF",
-		pdfPath: entry.pdfPath,
 		pdfPage: entry.pdfPage,
 		sourceType: entry.sourceType,
 		sourceXref: entry.sourceXref,
