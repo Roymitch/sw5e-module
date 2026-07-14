@@ -81,7 +81,7 @@
 {{#*inline "sw5e-starship-crew-management"}}
 <div class="sw5e-starship-crew-command">
   <div class="sw5e-starship-crew-status" aria-live="polite">
-    <span class="sw5e-starship-crew-status-label">Assigned crew</span>
+    <span class="sw5e-starship-crew-status-label">{{ localize "SW5E.StarshipCrewAssignedLabel" }}</span>
     <strong class="sw5e-starship-crew-status-value">{{crew.roster.length}}</strong>
   </div>
 </div>
@@ -96,10 +96,10 @@
             <div class="sw5e-starship-item-copy">
               <strong class="sw5e-starship-item-name">{{name}}</strong>
               <div class="sw5e-crew-badges">
-                {{#if isPilot}}<span class="sw5e-crew-badge sw5e-crew-badge-pilot">Pilot</span>{{/if}}
-                {{#if active}}<span class="sw5e-crew-badge sw5e-crew-badge-active">Active</span>{{/if}}
-                {{#unless isPilot}}{{#if isCrew}}<span class="sw5e-crew-badge">Crew</span>{{/if}}{{/unless}}
-                {{#if isPassenger}}<span class="sw5e-crew-badge">Passenger</span>{{/if}}
+                {{#if isPilot}}<span class="sw5e-crew-badge sw5e-crew-badge-pilot">{{ localize "SW5E.StarshipCrewBadgePilot" }}</span>{{/if}}
+                {{#if active}}<span class="sw5e-crew-badge sw5e-crew-badge-active">{{ localize "SW5E.StarshipCrewBadgeActive" }}</span>{{/if}}
+                {{#unless isPilot}}{{#if isCrew}}<span class="sw5e-crew-badge">{{ localize "SW5E.StarshipCrewBadgeCrew" }}</span>{{/if}}{{/unless}}
+                {{#if isPassenger}}<span class="sw5e-crew-badge">{{ localize "SW5E.StarshipCrewBadgePassenger" }}</span>{{/if}}
               </div>
             </div>
           </div>
@@ -156,7 +156,7 @@
       {{/each}}
     </div>
   {{else}}
-    <p class="sw5e-crew-empty">No crew assigned. Use "+ Add Crew Member" to assign crew.</p>
+    <p class="sw5e-crew-empty">{{ localize "SW5E.StarshipCrewEmpty" }}</p>
   {{/if}}
 </div>
 {{/inline}}
@@ -620,12 +620,12 @@
               {{#if crew}}
               <section
                 class="sw5e-starship-crew-panel{{#if systemsCore.coreCollapse.crew}} is-collapsed{{/if}}"
-                aria-label="Crew &amp; Passengers"
+                aria-label="{{ localize "SW5E.StarshipCrewPanelTitle" }}"
                 data-sw5e-core-panel="crew"
               >
                 <header class="sw5e-starship-core-crew-header sw5e-starship-core-collapsible-header">
                   <div class="sw5e-starship-core-crew-heading sw5e-starship-core-collapsible-heading">
-                    <span class="sw5e-starship-systems-field-heading">Crew &amp; Passengers</span>
+                    <span class="sw5e-starship-systems-field-heading">{{ localize "SW5E.StarshipCrewPanelTitle" }}</span>
                   </div>
                   <div class="sw5e-starship-core-collapsible-header-actions">
                     <button

@@ -1101,6 +1101,17 @@ function remapSpeciesPackImage(path) {
 }
 
 /**
+ * Remap legacy short companion icon folder to canonical packs path.
+ * Exact `icons/companions/` only (do not match `icons/packs/Companions/`).
+ * @param {string} path
+ * @returns {string}
+ */
+function remapLegacyCompanionIconPath(path) {
+	if ( typeof path !== "string" ) return path;
+	return path.replaceAll("icons/companions/", "icons/packs/Companions/");
+}
+
+/**
  * Migrate any module images from system or old module path to new one.
  * @param {object} objectData      Object data to migrate.
  * @param {object} updateData      Existing update to expand upon.
@@ -1143,7 +1154,7 @@ function _migrateImage(objectData, updateData) {
 			continue;
 		}
 
-		let newPath = remapSpeciesPackImage(normalizeModuleImagePath(path));
+		let newPath = remapLegacyCompanionIconPath(remapSpeciesPackImage(normalizeModuleImagePath(path)));
 		if ( prop === "prototypeToken.texture.src" ) {
 			const actorAvatar = normalizeModuleImagePath(foundry.utils.getProperty(objectData, "img"));
 			const canonicalMonsterToken = getMonsterTokenPathFromAvatar(actorAvatar);
