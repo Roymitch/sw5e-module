@@ -84,9 +84,17 @@ export function shouldShowStarshipPowerRouting(starship) {
 /**
  * Applies stored routing only when the Core panel is enabled (Mechanic Reroute Power or legacy override).
  * When gated off, mechanics treat routing as neutral while preserving the stored `power.routing` value.
+ *
+ * @param {object|null} starship
+ * @param {object|null} [legacySystem]
+ * @param {{ showPowerRouting?: boolean }} [options] When `showPowerRouting` is provided, skips re-evaluating
+ *   {@link shouldShowStarshipPowerRouting} (Core sheet path passes a single precomputed visibility boolean).
  */
-export function resolveStarshipPowerRoutingState(starship, legacySystem = null) {
-	if ( !shouldShowStarshipPowerRouting(starship) ) return NEUTRAL_POWER_ROUTING_STATE;
+export function resolveStarshipPowerRoutingState(starship, legacySystem = null, { showPowerRouting } = {}) {
+	const show = showPowerRouting !== undefined
+		? Boolean(showPowerRouting)
+		: shouldShowStarshipPowerRouting(starship);
+	if ( !show ) return NEUTRAL_POWER_ROUTING_STATE;
 	const system = legacySystem ?? getLegacyStarshipActorSystem(starship);
 	return getPowerRoutingState(system);
 }

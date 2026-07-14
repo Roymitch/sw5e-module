@@ -17,7 +17,15 @@ async function preloadHandlebarsTemplates() {
 		getModulePath("templates/apps/droid-customizations-manager.hbs"),
 		// Actor sheet meters (preload so equip-driven rerenders avoid template compile)
 		getModulePath("templates/powercasting-sheet-tracker.hbs"),
-		getModulePath("templates/superiority-sheet-tracker.hbs")
+		getModulePath("templates/superiority-sheet-tracker.hbs"),
+		// Starship sheet / sidebar (every starship open/remount; optional vital/repair apps stay on-demand)
+		getModulePath("templates/starship-sheet-layer.hbs"),
+		getModulePath("templates/starship-sidebar-vitals.hbs"),
+		getModulePath("templates/starship-sidebar-system-damage.hbs"),
+		getModulePath("templates/starship-sidebar-destruction-saves.hbs"),
+		getModulePath("templates/starship-sidebar-movement.hbs"),
+		getModulePath("templates/starship-sidebar-damage-reduction.hbs"),
+		getModulePath("templates/starship-warnings-dialog.hbs")
 	];
 
 	const paths = {};

@@ -86,7 +86,7 @@ If a change is visible on a sheet, item form, or custom dialog, you will usually
 - [`applications/checkbox-select.mjs`](../applications/checkbox-select.mjs) for the custom checkbox selection app
 - [`templates/checkbox-select.hbs`](../templates/checkbox-select.hbs) for that app's markup
 - [`templates/items/details/details-maneuver.hbs`](../templates/items/details/details-maneuver.hbs) and related maneuver templates for maneuver-specific item sheet UI
-- [`templates/starship-sheet-layer.hbs`](../templates/starship-sheet-layer.hbs), [`templates/starship-features-layer.hbs`](../templates/starship-features-layer.hbs), and [`templates/starship-sidebar-summary.hbs`](../templates/starship-sidebar-summary.hbs) for starship sheet extensions
+- [`templates/starship-sheet-layer.hbs`](../templates/starship-sheet-layer.hbs) and related `templates/starship-sidebar-*.hbs` / `templates/starship-warnings-dialog.hbs` for starship sheet extensions
 - [`templates/powercasting-sheet-tracker.hbs`](../templates/powercasting-sheet-tracker.hbs) for powercasting UI
 - [`styles/module.css`](../styles/module.css) for module styling
 

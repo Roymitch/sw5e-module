@@ -899,7 +899,7 @@ function suppressStockVehicleSidebarControlsForStarship(root, actor, app = null)
 	}
 }
 
-function customizeStarshipPortraitBadges(root, actor, app = null) {
+function customizeStarshipPortraitBadges(root, actor, app = null, { runtime } = {}) {
 	if ( !isSw5eStarshipActor(actor) ) return;
 	const shell = getStarshipSidebarShell(root, app);
 	const portrait = shell?.querySelector(".portrait");
@@ -954,7 +954,7 @@ function customizeStarshipPortraitBadges(root, actor, app = null) {
 	}
 
 	const tierLabel = localizeOrFallback("SW5E.StarshipTier", "Starship Tier");
-	const tierValue = buildSystemsCoreContext(actor).tierValue;
+	const tierValue = buildSystemsCoreContext(actor, { runtime }).tierValue;
 	const storedTier = getStoredStarshipTier(actor);
 	let tierBadge = portrait.querySelector(".sw5e-starship-tier-badge");
 	if ( !(tierBadge instanceof HTMLElement) ) {
@@ -1051,10 +1051,10 @@ function injectStarshipPortraitAcBadge(portrait, actor, app, playMode) {
 	}
 }
 
-function applyStarshipSidebarChrome(root, actor, app = null) {
+function applyStarshipSidebarChrome(root, actor, app = null, { runtime } = {}) {
 	if ( !isSw5eStarshipActor(actor) ) return;
 	suppressStockVehicleSidebarControlsForStarship(root, actor, app);
-	customizeStarshipPortraitBadges(root, actor, app);
+	customizeStarshipPortraitBadges(root, actor, app, { runtime });
 	suppressStockVehicleArmorClassForStarship(root, actor, app);
 	mountStarshipLegacyPowerRoutingSidebarToggle(root, actor, app);
 }
@@ -1192,9 +1192,17 @@ function bindStarshipSidebarMovementConfig(movementBlock, actor, app) {
 	});
 }
 
-/** Stock sheet may insert duplicates after paint — retry through the next frames + short delays. */
+/**
+ * Stock sheet may insert duplicates after paint — one sync neutralize plus one
+ * current-generation post-paint pass (double rAF). Prior generations cancel.
+ * @param {HTMLElement} root
+ * @param {object} app
+ * @param {Actor} actor
+ */
 function scheduleStarshipDuplicateSizeNeutralize(root, app, actor) {
 	if ( !isSw5eStarshipActor(actor) ) return;
+	if ( !app ) return;
+
 	const run = () => {
 		neutralizeDuplicateNativeTraitsSizeControls(root, app, actor);
 		neutralizeDuplicateNativeHpControls(root, app, actor);
@@ -1204,16 +1212,34 @@ function scheduleStarshipDuplicateSizeNeutralize(root, app, actor) {
 		suppressStockVehicleMovementSidebarForStarship(root, actor, app);
 		applyStarshipSidebarChrome(root, actor, app);
 		ensureStarshipMovementConfigBlocked(root, app, actor);
-		void renderStarshipSidebarMovement(root, actor, app);
 	};
+
+	const gen = (app._sw5eDupNeutralizeGen = (Number(app._sw5eDupNeutralizeGen) || 0) + 1);
+
+	if ( app._sw5eDupNeutralizeOuterRaf != null ) {
+		window.cancelAnimationFrame(app._sw5eDupNeutralizeOuterRaf);
+		app._sw5eDupNeutralizeOuterRaf = null;
+	}
+	if ( app._sw5eDupNeutralizeInnerRaf != null ) {
+		window.cancelAnimationFrame(app._sw5eDupNeutralizeInnerRaf);
+		app._sw5eDupNeutralizeInnerRaf = null;
+	}
+
 	run();
-	queueMicrotask(run);
-	window.setTimeout(run, 0);
-	window.requestAnimationFrame(() => {
-		window.requestAnimationFrame(() => {
+
+	app._sw5eDupNeutralizeOuterRaf = window.requestAnimationFrame(() => {
+		app._sw5eDupNeutralizeOuterRaf = null;
+		if ( app._sw5eDupNeutralizeGen !== gen ) return;
+
+		app._sw5eDupNeutralizeInnerRaf = window.requestAnimationFrame(() => {
+			app._sw5eDupNeutralizeInnerRaf = null;
+			if ( app._sw5eDupNeutralizeGen !== gen ) return;
+			if ( app.rendered === false ) return;
+			const shell = app.element;
+			if ( !(shell instanceof HTMLElement) ) return;
+			if ( root instanceof HTMLElement && root !== shell && !shell.contains(root) ) return;
+
 			run();
-			window.setTimeout(run, 48);
-			window.setTimeout(run, 160);
 		});
 	});
 }
@@ -2075,6 +2101,7 @@ function toggleStarshipDestructionTray(app, root, open) {
 			"aria-label",
 			localizeOrFallback(tooltipKey, shouldOpen ? "Hide Destruction Saves" : "Show Destruction Saves")
 		);
+		tab.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
 	}
 }
 
@@ -2758,8 +2785,8 @@ function suppressNativeStarshipStationsAbilityAndFeatures() {
 			const actor = this.actor;
 			if ( !isSw5eStarshipActor(actor) ) return context;
 			if ( partId === "inventory" ) {
-				injectStarshipInventorySections(this, context);
-				const hiddenIds = getStarshipInventoryExcludedItemIds(actor);
+				const categorized = injectStarshipInventorySections(this, context);
+				const hiddenIds = getStarshipInventoryExcludedItemIds(actor, categorized);
 				if ( hiddenIds.size ) filterStarshipCargoContext(context, hiddenIds);
 				return context;
 			}
@@ -2769,8 +2796,8 @@ function suppressNativeStarshipStationsAbilityAndFeatures() {
 					context.listControls = getStarshipFeaturesListControls();
 				}
 				context.showCurrency = false;
-				injectStarshipFeaturesSections(this, context);
-				const hiddenIds = getStarshipFeaturesExcludedFromFeaturesTab(actor);
+				const categorized = injectStarshipFeaturesSections(this, context);
+				const hiddenIds = getStarshipFeaturesExcludedFromFeaturesTab(actor, categorized);
 				if ( hiddenIds.size ) filterStarshipCargoContext(context, hiddenIds);
 				return context;
 			}
@@ -2977,22 +3004,22 @@ function resolveStarshipItemGroup(item) {
 	return null;
 }
 
-function getStarshipInventoryManagedItemIds(actor) {
-	const groups = categorizeStarshipItems(actor);
+function getStarshipInventoryManagedItemIds(actor, categorized = null) {
+	const groups = categorized ?? categorizeStarshipItems(actor);
 	return new Set(["weapons", "equipment", "modifications"].flatMap(key => groups[key]?.items?.map(item => item.id) ?? []));
 }
 
-function getStarshipFeaturesManagedItemIds(actor) {
-	const groups = categorizeStarshipItems(actor);
+function getStarshipFeaturesManagedItemIds(actor, categorized = null) {
+	const groups = categorized ?? categorizeStarshipItems(actor);
 	return new Set(["actions", "size", "features"].flatMap(key => groups[key]?.items?.map(item => item.id) ?? []));
 }
 
-function getStarshipInventoryExcludedItemIds(actor) {
-	return getStarshipFeaturesManagedItemIds(actor);
+function getStarshipInventoryExcludedItemIds(actor, categorized = null) {
+	return getStarshipFeaturesManagedItemIds(actor, categorized);
 }
 
-function getStarshipFeaturesExcludedFromFeaturesTab(actor) {
-	const groups = categorizeStarshipItems(actor);
+function getStarshipFeaturesExcludedFromFeaturesTab(actor, categorized = null) {
+	const groups = categorized ?? categorizeStarshipItems(actor);
 	return new Set(groups.roles?.items?.map(item => item.id) ?? []);
 }
 
@@ -3141,25 +3168,29 @@ function ensureStarshipModificationsSectionHeaderSync(root, app) {
 	scheduleStarshipModificationsSectionHeader(root, app?.actor);
 }
 
-function buildStarshipGroupedSections(sheet, context, sectionDefs, { managedItemIds, includeStockRemainder = true } = {}) {
+function buildStarshipGroupedSections(sheet, context, sectionDefs, {
+	managedItemIds,
+	includeStockRemainder = true,
+	categorized = null
+} = {}) {
 	const actor = sheet.actor;
 	const Inventory = customElements.get(sheet.options.elements.inventory);
 	if ( !Inventory?.prepareSections || !Inventory.mapColumns ) return false;
 
 	const isInventoryTab = sectionDefs === STARSHIP_INVENTORY_SECTION_DEFS;
 	const sectionIdSet = isInventoryTab ? STARSHIP_INVENTORY_MANAGED_SECTION_IDS : STARSHIP_FEATURES_MANAGED_SECTION_IDS;
+	const groups = categorized ?? categorizeStarshipItems(actor);
 	const managedIds = managedItemIds
-		?? (isInventoryTab ? getStarshipInventoryManagedItemIds(actor) : getStarshipFeaturesManagedItemIds(actor));
+		?? (isInventoryTab ? getStarshipInventoryManagedItemIds(actor, groups) : getStarshipFeaturesManagedItemIds(actor, groups));
 
-	const categorized = categorizeStarshipItems(actor);
 	const inventoryColumns = Inventory.mapColumns(STARSHIP_CARGO_INVENTORY_COLUMNS);
 	const featColumns = Inventory.mapColumns(STARSHIP_FEATURES_FEAT_COLUMNS);
 	const rawSections = [];
 
 	for ( const def of sectionDefs ) {
 		const sourceItems = def.key === "systems"
-			? [...categorized.size.items, ...categorized.features.items]
-			: (categorized[def.key]?.items ?? []);
+			? [...groups.size.items, ...groups.features.items]
+			: (groups[def.key]?.items ?? []);
 		if ( !sourceItems.length ) continue;
 
 		const sectionEntry = {
@@ -3192,17 +3223,23 @@ function buildStarshipGroupedSections(sheet, context, sectionDefs, { managedItem
 }
 
 function injectStarshipInventorySections(sheet, context) {
+	const categorized = categorizeStarshipItems(sheet.actor);
 	buildStarshipGroupedSections(sheet, context, STARSHIP_INVENTORY_SECTION_DEFS, {
-		managedItemIds: getStarshipInventoryManagedItemIds(sheet.actor),
-		includeStockRemainder: true
+		managedItemIds: getStarshipInventoryManagedItemIds(sheet.actor, categorized),
+		includeStockRemainder: true,
+		categorized
 	});
+	return categorized;
 }
 
 function injectStarshipFeaturesSections(sheet, context) {
+	const categorized = categorizeStarshipItems(sheet.actor);
 	buildStarshipGroupedSections(sheet, context, STARSHIP_FEATURES_SECTION_DEFS, {
-		managedItemIds: getStarshipFeaturesManagedItemIds(sheet.actor),
-		includeStockRemainder: false
+		managedItemIds: getStarshipFeaturesManagedItemIds(sheet.actor, categorized),
+		includeStockRemainder: false,
+		categorized
 	});
+	return categorized;
 }
 
 function registerStarshipCargoInventoryWrappers() {
@@ -3490,9 +3527,8 @@ function getStarshipLiveVehicleHp(actor) {
 	return actor?.system?.attributes?.hp ?? {};
 }
 
-function formatMovement(actor, legacySystem) {
-	const runtime = getDerivedStarshipRuntime(actor);
-	const derivedMovement = runtime.movement;
+function formatMovement(actor, legacySystem, runtime = null) {
+	const derivedMovement = (runtime ?? getDerivedStarshipRuntime(actor)).movement;
 	const units = derivedMovement.units || actor.system?.attributes?.movement?.units || "ft";
 	const space = Number.isFinite(Number(derivedMovement.space)) ? Number(derivedMovement.space) : null;
 	const turn = Number.isFinite(Number(derivedMovement.turn)) ? Number(derivedMovement.turn) : null;
@@ -3538,17 +3574,16 @@ function formatStarshipSidebarTravelPace(actor) {
 	return `${pace.toLocaleString()} ${units}`;
 }
 
-function formatTravel(actor) {
-	const runtime = getDerivedStarshipRuntime(actor);
+function formatTravel(actor, runtime = null) {
+	const travel = (runtime ?? getDerivedStarshipRuntime(actor)).travel;
 	return {
-		primary: localizeTravelPace(runtime.travel?.pace),
-		secondary: `Stealth ${localizeTravelPace(runtime.travel?.stealthPace)}`
+		primary: localizeTravelPace(travel?.pace),
+		secondary: `Stealth ${localizeTravelPace(travel?.stealthPace)}`
 	};
 }
 
-function formatHyperdrive(actor) {
-	const runtime = getDerivedStarshipRuntime(actor);
-	const hyperdriveClass = Number(runtime.travel?.hyperdriveClass ?? 0);
+function formatHyperdrive(actor, runtime = null) {
+	const hyperdriveClass = Number((runtime ?? getDerivedStarshipRuntime(actor)).travel?.hyperdriveClass ?? 0);
 	return hyperdriveClass > 0 ? `Class ${hyperdriveClass}` : localizeOrFallback("SW5E.None", "None");
 }
 
@@ -3579,16 +3614,16 @@ function getDeploymentCounts(legacySystem) {
 	};
 }
 
-function makeOverviewCards(actor) {
+function makeOverviewCards(actor, { runtime } = {}) {
 	const legacySystem = getLegacyStarshipActorSystem(actor);
-	const runtime = getDerivedStarshipRuntime(actor);
+	const resolvedRuntime = runtime ?? getDerivedStarshipRuntime(actor);
 	const pools = deriveStarshipPools(actor);
-	const movement = formatMovement(actor, legacySystem);
+	const movement = formatMovement(actor, legacySystem, resolvedRuntime);
 	const deployment = {
 		...getDeploymentCounts(legacySystem),
-		...runtime.crew
+		...resolvedRuntime.crew
 	};
-	const travel = formatTravel(actor);
+	const travel = formatTravel(actor, resolvedRuntime);
 	const fuel = legacySystem.attributes?.fuel ?? {};
 	const routing = legacySystem.attributes?.power?.routing ?? "none";
 	const effectiveRouting = getEffectivePowerRouting(routing);
@@ -3606,8 +3641,8 @@ function makeOverviewCards(actor) {
 		},
 		{
 			label: localizeOrFallback("SW5E.Hyperdrive", "Hyperdrive"),
-			value: formatHyperdrive(actor),
-			note: runtime.travel?.hyperdriveClass ? localizeOrFallback("SW5E.Hyperspace", "Hyperspace") : localizeOrFallback("SW5E.None", "Not Installed")
+			value: formatHyperdrive(actor, resolvedRuntime),
+			note: resolvedRuntime.travel?.hyperdriveClass ? localizeOrFallback("SW5E.Hyperspace", "Hyperspace") : localizeOrFallback("SW5E.None", "Not Installed")
 		},
 		{
 			label: localizeOrFallback("SW5E.VehicleCrew", "Crew"),
@@ -3660,11 +3695,11 @@ function makeStarshipSummaryStripVitals(actor) {
  * At-a-glance strip: sidebar summary rows plus the first four operational cards
  * (Movement, Travel Pace, Hyperdrive, Crew). Fuel and power routing live on Core only.
  */
-function makeStarshipSummaryStrip(actor) {
-	const operational = makeOverviewCards(actor);
+function makeStarshipSummaryStrip(actor, { runtime } = {}) {
+	const operational = makeOverviewCards(actor, { runtime });
 	return [
 		...makeStarshipSummaryStripVitals(actor),
-		...makeSidebarSummary(actor, { includeTier: false }),
+		...makeSidebarSummary(actor, { includeTier: false, runtime }),
 		...operational.slice(0, 4)
 	];
 }
@@ -3679,14 +3714,14 @@ function formatDicePool(current, max, die) {
  * Context for the Systems tab core configuration section: existing actor paths only, no invented values.
  * See getLegacyStarshipActorSystem / deriveStarshipPools / getDerivedStarshipRuntime in starship-data.mjs.
  */
-function buildSystemsCoreContext(actor) {
+function buildSystemsCoreContext(actor, { runtime } = {}) {
 	const legacySystem = getLegacyStarshipActorSystem(actor);
-	const runtime = getDerivedStarshipRuntime(actor);
+	const resolvedRuntime = runtime ?? getDerivedStarshipRuntime(actor);
 	const pools = deriveStarshipPools(actor);
 	const hp = getStarshipLiveVehicleHp(actor);
 	const fuel = legacySystem.attributes?.fuel ?? {};
 	const power = legacySystem.attributes?.power ?? {};
-	const movement = runtime.movement ?? {};
+	const movement = resolvedRuntime.movement ?? {};
 	const units = movement.units ?? actor.system?.attributes?.movement?.units ?? "ft";
 	const routing = power.routing ?? "none";
 	const effectiveRouting = getEffectivePowerRouting(routing);
@@ -3837,9 +3872,10 @@ function formatPowerZones(legacySystem, pools) {
 	}).join(" ");
 }
 
-function makeSidebarSummary(actor, { includeTier = false } = {}) {
+function makeSidebarSummary(actor, { includeTier = false, runtime } = {}) {
 	const legacySystem = getLegacyStarshipActorSystem(actor);
 	const pools = deriveStarshipPools(actor);
+	const resolvedRuntime = runtime ?? null;
 
 	const rows = [];
 	if ( includeTier ) {
@@ -3859,7 +3895,7 @@ function makeSidebarSummary(actor, { includeTier = false } = {}) {
 		{
 			label: localizeOrFallback("SW5E.Size", "Size"),
 			value: getSizeLabel(actor, legacySystem),
-			note: formatHyperdrive(actor),
+			note: formatHyperdrive(actor, resolvedRuntime),
 			sidebarTier: false,
 			sidebarSize: true,
 			sidebarShowValueOnly: false
@@ -3872,7 +3908,7 @@ function makeSidebarSummary(actor, { includeTier = false } = {}) {
 	}));
 }
 
-function getItemMeta(item, actor = null) {
+function getItemMeta(item, actor = null, runtime = null) {
 	if ( item.flags?.sw5e?.legacyStarshipSize || item.flags?.sw5e?.starshipCharacter?.role === "classification" ) {
 		return localizeOrFallback("SW5E.StarshipTier", "Size Profile");
 	}
@@ -3884,7 +3920,7 @@ function getItemMeta(item, actor = null) {
 	if ( item.system?.type?.subtype ) return game.i18n.localize(item.system.type.subtype);
 	const pack = getCompendiumPack(item);
 	if ( actor && item.type === "weapon" ) {
-		const routingMultiplier = getDerivedStarshipRuntime(actor).routing?.weaponsMultiplier ?? 1;
+		const routingMultiplier = (runtime ?? getDerivedStarshipRuntime(actor)).routing?.weaponsMultiplier ?? 1;
 		if ( routingMultiplier === 2 ) return localizeOrFallback("SW5E.PowerRoutingWeaponsPositive", "Weapons deal double damage");
 		if ( routingMultiplier === 0.5 ) return localizeOrFallback("SW5E.PowerRoutingWeaponsNegative", "Ship weapon damage is reduced by half");
 	}
@@ -4195,24 +4231,58 @@ function partitionStarshipGroups(actor) {
 	};
 }
 
-function getLegacyNotes(actor) {
+/**
+ * Collect vessel-attached crew-role items using the same predicates as
+ * {@link categorizeStarshipItems} `groups.roles`, without building other category arrays.
+ * @param {object} actor
+ * @returns {object[]}
+ */
+function collectStarshipCrewRoleItems(actor) {
+	const items = [];
+	for ( const item of actor.items ) {
+		const pack = getCompendiumPack(item);
+		const featType = item.system?.type?.value;
+		const role = item.flags?.sw5e?.starshipCharacter?.role;
+
+		if ( item.flags?.sw5e?.legacyStarshipSize || role === "classification" ) continue;
+		if ( item.flags?.sw5e?.legacyStarshipMod || role === "modification" || pack === "starshipmodifications" ) continue;
+		if ( featType === "starshipAction" || pack === "starshipactions" ) continue;
+		if ( featType === "deployment" || role === "deployment" || role === "venture" || pack === "deployments" || pack === "deploymentfeatures" || pack === "ventures" ) {
+			items.push(item);
+		}
+	}
+	return items;
+}
+
+/**
+ * Core-path crew-role groups: assigned roster + vessel role items only (no full categorize/partition).
+ * @param {object} actor
+ * @returns {Array<object>}
+ */
+function buildStarshipCrewRoleGroups(actor) {
+	return buildCrewRoleGroupsFromAssignedCrew(actor, {
+		roles: { items: collectStarshipCrewRoleItems(actor) }
+	});
+}
+
+function getLegacyNotes(actor, { runtime } = {}) {
 	const legacySystem = getLegacyStarshipActorSystem(actor);
-	const runtime = getDerivedStarshipRuntime(actor);
+	const resolvedRuntime = runtime ?? getDerivedStarshipRuntime(actor);
 	const notes = [];
 	if ( legacySystem.attributes?.power?.routing ) notes.push(`Routing: ${legacySystem.attributes.power.routing}`);
 	if ( legacySystem.attributes?.systemDamage ) notes.push(`System Damage ${legacySystem.attributes.systemDamage}`);
-	if ( runtime.travel?.hyperdriveClass ) notes.push(`Hyperdrive Class ${runtime.travel.hyperdriveClass}`);
-	if ( runtime.crew?.activeCrewName ) notes.push(`Active Crew: ${runtime.crew.activeCrewName}`);
-	if ( runtime.movement?.enginesMultiplier === 2 ) notes.push(localizeOrFallback("SW5E.PowerRoutingEnginesPositive", "The ship's flying speed is doubled"));
-	else if ( runtime.movement?.enginesMultiplier === 0.5 ) notes.push(localizeOrFallback("SW5E.PowerRoutingEnginesNegative", "The ship's flying speed is reduced by half"));
+	if ( resolvedRuntime.travel?.hyperdriveClass ) notes.push(`Hyperdrive Class ${resolvedRuntime.travel.hyperdriveClass}`);
+	if ( resolvedRuntime.crew?.activeCrewName ) notes.push(`Active Crew: ${resolvedRuntime.crew.activeCrewName}`);
+	if ( resolvedRuntime.movement?.enginesMultiplier === 2 ) notes.push(localizeOrFallback("SW5E.PowerRoutingEnginesPositive", "The ship's flying speed is doubled"));
+	else if ( resolvedRuntime.movement?.enginesMultiplier === 0.5 ) notes.push(localizeOrFallback("SW5E.PowerRoutingEnginesNegative", "The ship's flying speed is reduced by half"));
 	return notes;
 }
 
-function makeHeaderBadges(actor) {
-	const runtime = getDerivedStarshipRuntime(actor);
+function makeHeaderBadges(actor, { runtime } = {}) {
+	const resolvedRuntime = runtime ?? getDerivedStarshipRuntime(actor);
 	const deployment = {
 		...getDeploymentCounts(getLegacyStarshipActorSystem(actor)),
-		...runtime.crew
+		...resolvedRuntime.crew
 	};
 	return [
 		getSizeLabel(actor, getLegacyStarshipActorSystem(actor)),
@@ -4312,9 +4382,9 @@ function findStarshipSidebarPillsGroup(shell, labelText) {
 	return null;
 }
 
-function buildStarshipSidebarMovementContext(actor, app = null) {
-	const runtime = getDerivedStarshipRuntime(actor);
-	const movement = runtime.movement ?? {};
+function buildStarshipSidebarMovementContext(actor, app = null, { runtime } = {}) {
+	const resolvedRuntime = runtime ?? getDerivedStarshipRuntime(actor);
+	const movement = resolvedRuntime.movement ?? {};
 	const units = movement.units ?? actor.system?.attributes?.movement?.units ?? "ft";
 	const space = Number(movement.space);
 	const turn = Number(movement.turn);
@@ -4333,7 +4403,7 @@ function buildStarshipSidebarMovementContext(actor, app = null) {
 	};
 }
 
-async function renderStarshipSidebarMovement(root, actor, app = null) {
+async function renderStarshipSidebarMovement(root, actor, app = null, { runtime } = {}) {
 	const shell = getStarshipSidebarShell(root, app);
 	if ( !(shell instanceof HTMLElement) ) return;
 
@@ -4347,7 +4417,7 @@ async function renderStarshipSidebarMovement(root, actor, app = null) {
 	const insertParent = speedGroup?.parentElement ?? sizeGroup?.parentElement;
 	if ( !insertParent ) return;
 
-	const ctx = buildStarshipSidebarMovementContext(actor, app);
+	const ctx = buildStarshipSidebarMovementContext(actor, app, { runtime });
 	const rendered = await foundry.applications.handlebars.renderTemplate(
 		getModulePath("templates/starship-sidebar-movement.hbs"),
 		ctx
@@ -4601,9 +4671,11 @@ async function renderStarshipSidebarDestructionSaves(root, actor, app = null) {
 
 function focusSheetItem(root, app, itemId, tabId = STOCK_CARGO_TAB_ID) {
 	window.setTimeout(() => {
+		if ( itemId == null || itemId === "" ) return;
 		const item = app?.actor?.items?.get(itemId);
 		const resolvedTab = tabId || resolveStarshipItemPrimaryTab(item);
-		const candidates = root.querySelectorAll(`[data-item-id="${itemId}"]`);
+		const safeId = escapeTabSelectorValue(itemId);
+		const candidates = root.querySelectorAll(`[data-item-id="${safeId}"]`);
 		const stockTarget = Array.from(candidates).find(node => !node.closest(".sw5e-starship-tab"));
 		const target = stockTarget ?? Array.from(candidates).find(node => node.closest(".sw5e-starship-tab"));
 		if ( !target ) return;
@@ -5169,9 +5241,14 @@ async function renderStarshipLayer(app, html, data) {
 	await renderStarshipSidebarSystemDamage(root, actor, app);
 	await renderStarshipSidebarDestructionSaves(root, actor, app);
 	removeStarshipSidebarSummary(root);
-	await renderStarshipSidebarMovement(root, actor, app);
+
+	// Phase 3: one gate + one derived runtime for this Core render invocation (movement/chrome + template).
+	const showPowerRouting = shouldShowStarshipPowerRouting(actor);
+	const runtime = getDerivedStarshipRuntime(actor, { showPowerRouting });
+
+	await renderStarshipSidebarMovement(root, actor, app, { runtime });
 	await renderStarshipSidebarDamageReduction(root, actor, app);
-	applyStarshipSidebarChrome(root, actor, app);
+	applyStarshipSidebarChrome(root, actor, app, { runtime });
 	// Same task as sidebar mount: set scroll before the browser paints the new summary at 0 (async gap below would flash).
 	applyStarshipSheetScrollPositions(app, {
 		sidebarScrollTop: Number(scrollSnap.sidebarScrollTop) || 0,
@@ -5201,9 +5278,7 @@ async function renderStarshipLayer(app, html, data) {
 	const starshipViewState = captureStarshipSheetViewState(app, scrollSnap);
 	if ( migrateToFeaturesTab ) starshipViewState.stockPrimary = STARSHIP_FEATURES_TAB_ID;
 
-	const {
-		crewRoleGroups
-	} = partitionStarshipGroups(actor);
+	const crewRoleGroups = buildStarshipCrewRoleGroups(actor);
 	const skills = enrichStarshipSkillsForSheet(actor);
 
 	const withIntegrated = arr => arr.map(group => ({
@@ -5220,19 +5295,19 @@ async function renderStarshipLayer(app, html, data) {
 		actorImage: resolveStarshipSheetImageUrl(actor.img),
 		title: localizeOrFallback("TYPES.Actor.starshipPl", "Starship Systems"),
 		subtitle: localizeOrFallback("TYPES.Actor.vehicle", "Vehicle Actor"),
-		headerBadges: makeHeaderBadges(actor),
-		summaryStrip: makeStarshipSummaryStrip(actor),
-		legacyNotes: getLegacyNotes(actor),
+		headerBadges: makeHeaderBadges(actor, { runtime }),
+		summaryStrip: makeStarshipSummaryStrip(actor, { runtime }),
+		legacyNotes: getLegacyNotes(actor, { runtime }),
 		skills,
 		crew: enrichCrewContextForSheetSearch(buildVehicleStarshipCrewContext(actor)),
 		editable: actorEditable,
 		/** Systems subtab: setup fields (tier, hull, etc.) only in sheet EDIT mode; routing stays usable in PLAY when `actorEditable`. */
 		systemsSetupEditable: sheetEditMode && actorEditable,
 		systemsRoutingEditable: actorEditable,
-		showPowerRouting: shouldShowStarshipPowerRouting(actor),
+		showPowerRouting,
 		legacyPowerRoutingEnabled: isLegacyPowerRoutingOverrideEnabled(actor),
 		legacyPowerRoutingFlagPath: `flags.${SETTINGS_NAMESPACE}.${STARSHIP_LEGACY_POWER_ROUTING_FLAG}`,
-		systemsCore: buildSystemsCoreContext(actor),
+		systemsCore: buildSystemsCoreContext(actor, { runtime }),
 		crewRoleGroups: withIntegrated(crewRoleGroups),
 		crewRolesKicker: localizeOrFallback("SW5E.Feature.Deployment.Label", "Deployments"),
 		overviewLandingKicker: localizeOrFallback("SW5E.StarshipSheet.OverviewKicker", "Overview"),
