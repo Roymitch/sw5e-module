@@ -1,4 +1,4 @@
-import { applySw5eGalacticCreditsDefault } from "../currencies.mjs";
+import { applySw5eCreditsOnlyConfig } from "../currencies.mjs";
 import { getModuleId, getModulePath, normalizeCompendiumUuid } from "../module-support.mjs";
 import { applySw5eStarshipConditionConfig } from "../starship-conditions.mjs";
 import { EXPANDED_PROFICIENCY_TIERS } from "./proficiency.mjs";
@@ -1767,8 +1767,8 @@ export function patchConfig(config, strict = true) {
 			"mgc"
 		])
 	};
-	// Currencies — Galactic Credits default only; third-party modules may customize further.
-	applySw5eGalacticCreditsDefault(config);
+	// Currencies — Era 1 Credits-only: wipe stock PHB denominations when strict, publish gc only.
+	applySw5eCreditsOnlyConfig(config, strict);
 	// Damage
 	// config.damageTypes.force.reference = ""; // TODO
 	// config.damageTypes.thunder.reference = ""; // TODO

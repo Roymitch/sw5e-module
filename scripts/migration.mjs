@@ -19,6 +19,10 @@ import {
 } from "./starship-data.mjs";
 import { normalizeAdvancementGrants } from "./proficiency-utils.mjs";
 import { migrateBlasterWeaponData } from "./blaster-migration.mjs";
+import {
+	foldOrphanPhbCurrencyWallet,
+	normalizeSwPriceDenomination
+} from "./currencies.mjs";
 
 const MIGRATABLE_COMPENDIUM_DOCUMENTS = ["Actor", "Item", "Scene", "JournalEntry", "RollTable"];
 
@@ -101,6 +105,46 @@ function _migrateStaleSuperiorityDiceMax(actorData, updateData) {
 	const path = "system.superiority.dice.max";
 	foundry.utils.setProperty(updateData, path, null);
 	foundry.utils.setProperty(actorData, path, null);
+	return updateData;
+}
+
+/**
+ * Fold orphan PHB wallet keys (and credit aliases) into Galactic Credits.
+ * @param {object} actorData
+ * @param {object} updateData
+ * @returns {object}
+ * @private
+ */
+function _migrateOrphanCurrencyWallet(actorData, updateData) {
+	const currency = foundry.utils.getProperty(actorData, "system.currency");
+	if ( !currency || (typeof currency !== "object") || Array.isArray(currency) ) return updateData;
+
+	const folded = foldOrphanPhbCurrencyWallet(currency);
+	if ( JSON.stringify(folded) === JSON.stringify(currency) ) return updateData;
+
+	const path = "system.currency";
+	foundry.utils.setProperty(updateData, path, folded);
+	foundry.utils.setProperty(actorData, path, folded);
+	return updateData;
+}
+
+/**
+ * Remap stale PHB / alias price denominations to Galactic Credits.
+ * @param {object} itemData
+ * @param {object} updateData
+ * @returns {object}
+ * @private
+ */
+function _migratePriceDenomination(itemData, updateData) {
+	const path = "system.price.denomination";
+	const denomination = foundry.utils.getProperty(itemData, path);
+	if ( denomination == null || denomination === "" ) return updateData;
+
+	const normalized = normalizeSwPriceDenomination(denomination);
+	if ( normalized === denomination ) return updateData;
+
+	foundry.utils.setProperty(updateData, path, normalized);
+	foundry.utils.setProperty(itemData, path, normalized);
 	return updateData;
 }
 
@@ -728,6 +772,7 @@ export const migrateActorData = function(actor, migrationData, flags={}, { actor
 	_migrateObjectFlags(workingActor, updateData);
 	_migrateStalePowercastingKnownMax(workingActor, updateData);
 	_migrateStaleSuperiorityDiceMax(workingActor, updateData);
+	_migrateOrphanCurrencyWallet(workingActor, updateData);
 
 	// Migrate embedded effects
 	if ( workingActor.effects ) {
@@ -811,6 +856,7 @@ export function migrateItemData(item, migrationData, flags={}) {
 	_migrateAdvancements(workingItem, updateData);
 	_migrateWeaponData(workingItem, updateData);
 	_migrateBlasterAmmoData(workingItem, updateData);
+	_migratePriceDenomination(workingItem, updateData);
 
 	// Migrate embedded effects
 	if ( workingItem.effects ) {

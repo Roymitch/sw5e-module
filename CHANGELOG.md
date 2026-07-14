@@ -1,5 +1,44 @@
 ## Changelog
 
+### [1.4.0] 2026-07-14
+
+### Changed
+- **HGTTG species pack flags:** removed absolute local `pdfPath` values from HoloNet Guide to the Galaxy species source and stopped import tooling from writing those paths back into pack flags.
+- **Sabacc RollTables:** table face icons now use `modules/sw5e-module/` asset paths instead of legacy `modules/sw5e/` paths.
+- **NPC power provenance:** relinked embedded fistoscodex/monsters power `sourceId` / `compendiumSource` UUIDs to current Powers & Maneuvers document IDs where name+type matched uniquely.
+- **Mandalorian Codex packs (MVP):** normalized Codex items and NPCs toward dnd5e 5.2.5 shapes (system properties, Active Effect `name`/`img`, removed Better Rolls flags and starship-only armor pollution, placeholder images / coreVersion updates). Some armor AC modernization and final art remain deferred.
+- **Inventory sheet injectors:** Powers-tab stats inject through a single `renderActorSheetV2` path; powercasting meter templates are preloaded so hot-path inject stays synchronous when cached.
+- **Compendium browser packs:** character creation `sourcePacks` now resolve the live `sw5e-module` backgrounds, character-classes, equipment, and species packs.
+- **Customization Options UUIDs:** rewrote legacy `Compendium.sw5e.` / `sw5e-companions` references and broken self-origins to current `sw5e-module` documents where remappable; intentional `uuid: null` and orphan Active Effect provenance left alone.
+- **Companion archetypes:** companion subclass documents use unique `identifier` values (no longer collide with their parent archetypes).
+- **Background feat links:** background advancement feat UUIDs use the canonical `.Item.` form; empty `startingEquipment` lists are unchanged.
+- **Starship crew UI:** crew panel labels, badges, empty state, and “Crew & Passengers” heading use `SW5E.StarshipCrew*` locale keys.
+- **Release packaging:** release zip excludes `*.psd` icon templates.
+- **Currency (Credits-only):** character/NPC wallets and price denomination UIs again show **Galactic Credits only**. Strict `patchConfig` wipes stock dnd5e `pp`/`gp`/`ep`/`sp`/`cp` from `CONFIG.DND5E.currencies` and publishes `gc` (Era 1 behavior restored; optional Era 2 multi-denom settings UI remains removed).
+- **Repository hygiene:** HGTTG PDF art cache is gitignored and untracked; dormant legacy reload subsystem and CheckboxSelect app/template were removed.
+
+### Fixed
+- **Multiclass powercasting:** max power level is no longer `NaN` when combining Force and/or tech casting progressions.
+- **Power save DC / attack bonuses:** installed chassis-mod bonuses apply on the DC path; Focus Generator school Atk on the Powers tab matches per-power attack rows.
+- **Simplified forcecasting:** prepare no longer mutates global `CONFIG.DND5E` school attributes in place.
+- **NPC preparation:** NPC powercasting prepare no longer calls `updateSource` during data prep.
+- **NPC description text:** removed corrupted `\0` sequences from affected fistoscodex/monsters descriptions.
+- **Blaster reload:** reload updates apply as a single atomic embedded-item update.
+- **API permissions:** augmentation/droid `force` helpers and the character importer require a GM user.
+- **World migration safety:** migration no longer auto-deletes empty folders by English name alone; legacy world convert defaults to non-replace upserts.
+- **Config keys:** corrected `piloting` and `reference` typos in module config.
+- **Species effect icons:** world migration remaps legacy Species Active Effect image filenames (including Droid Class and related pack mismatches) to on-disk names.
+- **Macro migration:** Macro flag comparison uses Foundry `objectsEqual` instead of non-existent `deepEqual`, so remigration no longer throws on Macros.
+- **Companion trait icons:** world migration remaps legacy `icons/companions/` image paths to `icons/packs/Companions/`.
+- **Hidden PHB wallet amounts:** after Credits-only CONFIG, orphan `pp`/`gp`/`ep`/`sp`/`cp` values no longer sit invisible on actors — world migration folds them into `gc` (see Migration).
+
+### Migration
+- Bumped `needsMigrationVersion` to **1.3.2** (Species pack image remaps), **1.3.3** (legacy companion icon folder remap), and **1.3.4** (orphan PHB currency → Galactic Credits).
+- **1.3.4 currency fold (GM load):** converts actor `system.currency` orphans into `gc` using stock dnd5e coin-to-gp rates (`pp`÷0.1, `gp`÷1, `ep`÷2, `sp`÷10, `cp`÷100; credit aliases 1:1), then deletes those keys. Remaps world item `system.price.denomination` from stale PHB/alias keys to `gc`. Era 2 leftover keys (`wu`/`tr`/etc.) are left alone if present.
+- **Back up the world before the first GM load** on builds that include **1.3.4** — wallet merges are not reversible by reverting module code alone.
+- Pack `_source` updates in this release require `npm run build:db` with Foundry fully stopped, then a Foundry restart, before compendium browsers show new UUID/icon data.
+- Worlds below **1.3.3** remigrate matching image fields on the next GM load.
+
 ### [1.3.9] 2026-07-10
 
 ### Added
