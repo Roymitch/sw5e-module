@@ -1,0 +1,70 @@
+/* Starship crew search / grouping — Add Crew dialog + assigned Core roster.
+ * Narrowly scoped; does not restyle unrelated Foundry search fields. */
+
+/* —— Add Crew dialog —— */
+
+.sw5e-add-crew-dialog .sw5e-add-crew-search-wrap {
+  margin-bottom: 0.35rem;
+}
+
+.sw5e-add-crew-dialog .sw5e-add-crew-search {
+  width: 100%;
+}
+
+.sw5e-add-crew-dialog .sw5e-add-crew-group {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.sw5e-add-crew-dialog .sw5e-add-crew-group + .sw5e-add-crew-group {
+  margin-top: 0.55rem;
+}
+
+.sw5e-add-crew-dialog .sw5e-add-crew-group-heading {
+  margin: 0;
+  padding: 0.1rem 0;
+  font-size: var(--font-size-12, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text-dark-secondary, #4b4a44);
+}
+
+.sw5e-add-crew-dialog .sw5e-add-crew-entry.is-filtered-out,
+.sw5e-add-crew-dialog .sw5e-add-crew-group.is-filtered-out {
+  display: none;
+}
+
+.sw5e-add-crew-dialog .sw5e-add-crew-search-empty {
+  margin: 0.5rem 0 0;
+  font-size: var(--font-size-12, 0.75rem);
+  color: var(--color-text-dark-secondary, #4b4a44);
+}
+
+.sw5e-add-crew-dialog .sw5e-add-crew-search-empty.is-hidden {
+  display: none;
+}
+
+/* —— Assigned crew roster (Core tab) —— */
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-assigned-search-wrap {
+  margin: 0 0 0.4rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-assigned-search {
+  width: 100%;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-starship-crew-row.is-filtered-out {
+  display: none;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-assigned-search-empty {
+  margin: 0.45rem 0 0;
+  font-size: var(--font-size-12, 0.75rem);
+  color: var(--color-text-dark-secondary, #4b4a44);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-assigned-search-empty.is-hidden {
+  display: none;
+}

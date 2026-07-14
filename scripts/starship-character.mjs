@@ -175,6 +175,20 @@ function buildResolvedCrewRoster(deployment) {
 		.sort(compareCrewRecords);
 }
 
+function availableCrewTypeRank(type) {
+	if ( type === "character" ) return 0;
+	if ( type === "npc" ) return 1;
+	return 2;
+}
+
+function compareAvailableCrewChoices(left, right) {
+	const typeCmp = availableCrewTypeRank(left?.type) - availableCrewTypeRank(right?.type);
+	if ( typeCmp !== 0 ) return typeCmp;
+	const leftName = String(left?.name ?? "");
+	const rightName = String(right?.name ?? "");
+	return leftName.localeCompare(rightName);
+}
+
 export function buildAvailableStarshipCrewChoices(starship) {
 	if ( !globalThis.game?.actors ) return [];
 	return game.actors.contents
@@ -192,7 +206,7 @@ export function buildAvailableStarshipCrewChoices(starship) {
 				roles: Array.isArray(deploymentFlag?.roles) ? deploymentFlag.roles : []
 			};
 		})
-		.sort((left, right) => left.name.localeCompare(right.name));
+		.sort(compareAvailableCrewChoices);
 }
 
 export async function undeployStarshipCrew(starshipSubject, crewSubject, roles = STARSHIP_DEPLOYMENT_ROLES) {

@@ -88,9 +88,22 @@
 
 <div class="sw5e-starship-crew-operations">
   {{#if crew.roster.length}}
+    <div class="form-group sw5e-starship-crew-assigned-search-wrap">
+      <input
+        type="search"
+        class="sw5e-starship-crew-assigned-search"
+        name="sw5eAssignedCrewSearch"
+        placeholder="{{ localize "SW5E.StarshipCrewAssignedSearchPlaceholder" }}"
+        autocomplete="off"
+        aria-label="{{ localize "SW5E.StarshipCrewAssignedSearchPlaceholder" }}"
+      />
+    </div>
     <div class="sw5e-starship-item-list sw5e-starship-crew-roster">
       {{#each crew.roster}}
-        <article class="sw5e-starship-item-row sw5e-starship-crew-row{{#if active}} sw5e-crew-active{{/if}}">
+        <article
+          class="sw5e-starship-item-row sw5e-starship-crew-row{{#if active}} sw5e-crew-active{{/if}}"
+          data-search="{{searchText}}"
+        >
           <div class="sw5e-starship-item-main">
             <img class="sw5e-starship-item-image" src="{{img}}" alt="{{name}}" />
             <div class="sw5e-starship-item-copy">
@@ -155,6 +168,7 @@
         </article>
       {{/each}}
     </div>
+    <p class="sw5e-starship-crew-assigned-search-empty is-hidden" hidden>{{ localize "SW5E.StarshipCrewAssignedSearchEmpty" }}</p>
   {{else}}
     <p class="sw5e-crew-empty">{{ localize "SW5E.StarshipCrewEmpty" }}</p>
   {{/if}}

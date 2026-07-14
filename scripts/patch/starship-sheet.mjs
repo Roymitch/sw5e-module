@@ -4884,38 +4884,224 @@ function escapeHtml(str) {
 		.replace(/"/g, "&quot;");
 }
 
+/**
+ * Normalized search haystack for an assigned crew row (name + displayed badges only).
+ * @param {object} record
+ * @returns {string}
+ */
+function buildAssignedCrewSearchText(record) {
+	const parts = [String(record?.name ?? "")];
+	if ( record?.isPilot ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgePilot", "Pilot"));
+	if ( record?.active ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgeActive", "Active"));
+	if ( !record?.isPilot && record?.isCrew ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgeCrew", "Crew"));
+	if ( record?.isPassenger ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgePassenger", "Passenger"));
+	return parts.join(" ").trim().toLowerCase();
+}
+
+/**
+ * Enrich crew template context with precomputed search text. Does not reorder roster.
+ * @param {{ roster?: object[] }} crewContext
+ * @returns {{ roster: object[] }}
+ */
+function enrichCrewContextForSheetSearch(crewContext) {
+	const roster = Array.isArray(crewContext?.roster) ? crewContext.roster : [];
+	return {
+		...crewContext,
+		roster: roster.map(record => ({
+			...record,
+			searchText: buildAssignedCrewSearchText(record)
+		}))
+	};
+}
+
+/**
+ * Client-side filter for assigned roster rows. No document I/O.
+ * @param {HTMLElement} wrapper
+ * @param {string} query
+ */
+function applyStarshipAssignedCrewSearchFilter(wrapper, query) {
+	if ( !(wrapper instanceof HTMLElement) ) return;
+	const needle = String(query ?? "").trim().toLowerCase();
+	const rows = wrapper.querySelectorAll(".sw5e-starship-crew-roster .sw5e-starship-crew-row");
+	if ( !rows.length ) return;
+
+	let visible = 0;
+	for ( const row of rows ) {
+		const hay = row.getAttribute("data-search") ?? "";
+		const match = !needle || hay.includes(needle);
+		row.classList.toggle("is-filtered-out", !match);
+		if ( match ) visible += 1;
+	}
+
+	const empty = wrapper.querySelector(".sw5e-starship-crew-assigned-search-empty");
+	if ( !(empty instanceof HTMLElement) ) return;
+	const showEmpty = Boolean(needle) && visible === 0;
+	empty.classList.toggle("is-hidden", !showEmpty);
+	empty.hidden = !showEmpty;
+}
+
+/**
+ * Bind assigned-roster search once per Core tab wrapper; restore query after innerHTML updates.
+ * @param {HTMLElement} wrapper
+ * @param {object} app
+ */
+function ensureStarshipAssignedCrewSearch(wrapper, app) {
+	if ( !(wrapper instanceof HTMLElement) ) return;
+	const input = wrapper.querySelector("input.sw5e-starship-crew-assigned-search");
+	if ( !(input instanceof HTMLInputElement) ) return;
+
+	const stored = typeof app?._sw5eAssignedCrewSearchQuery === "string"
+		? app._sw5eAssignedCrewSearchQuery
+		: "";
+	if ( input.value !== stored ) input.value = stored;
+	applyStarshipAssignedCrewSearchFilter(wrapper, stored);
+
+	if ( wrapper.dataset.sw5eAssignedCrewSearchDelegate === "1" ) return;
+	wrapper.dataset.sw5eAssignedCrewSearchDelegate = "1";
+	wrapper.addEventListener("input", event => {
+		const target = event.target;
+		if ( !(target instanceof HTMLInputElement) ) return;
+		if ( !target.classList.contains("sw5e-starship-crew-assigned-search") ) return;
+		if ( app ) app._sw5eAssignedCrewSearchQuery = target.value;
+		applyStarshipAssignedCrewSearchFilter(wrapper, target.value);
+	});
+}
+
+/**
+ * Client-side filter for Add Crew dialog rows/groups. No document I/O.
+ * @param {HTMLElement} root
+ * @param {string} query
+ */
+function applyAddCrewDialogSearchFilter(root, query) {
+	if ( !(root instanceof HTMLElement) ) return;
+	const needle = String(query ?? "").trim().toLowerCase();
+	let visible = 0;
+
+	for ( const group of root.querySelectorAll(".sw5e-add-crew-group") ) {
+		let groupVisible = 0;
+		for ( const entry of group.querySelectorAll(".sw5e-add-crew-entry") ) {
+			const hay = entry.getAttribute("data-search") ?? "";
+			const match = !needle || hay.includes(needle);
+			entry.classList.toggle("is-filtered-out", !match);
+			if ( match ) groupVisible += 1;
+		}
+		group.classList.toggle("is-filtered-out", groupVisible === 0);
+		visible += groupVisible;
+	}
+
+	const empty = root.querySelector(".sw5e-add-crew-search-empty");
+	if ( !(empty instanceof HTMLElement) ) return;
+	const showEmpty = Boolean(needle) && visible === 0;
+	empty.classList.toggle("is-hidden", !showEmpty);
+	empty.hidden = !showEmpty;
+}
+
+/**
+ * @param {object} actorChoice
+ * @returns {string}
+ */
+function buildAddCrewEntryHtml(actorChoice) {
+	const name = String(actorChoice?.name ?? "");
+	const searchText = name.trim().toLowerCase();
+	const elsewhereClass = actorChoice?.assignedElsewhere ? " sw5e-add-crew-elsewhere" : "";
+	const aboardNote = actorChoice?.assignedElsewhere
+		? `<span class="sw5e-add-crew-note">${escapeHtml(localizeOrFallback("SW5E.StarshipCrewAboard", "Aboard: {name}").replaceAll("{name}", actorChoice.assignedShipName ?? ""))}</span>`
+		: "";
+	const pilotLabel = localizeOrFallback("SW5E.StarshipCrewBadgePilot", "Pilot");
+	const crewLabel = localizeOrFallback("SW5E.StarshipCrewBadgeCrew", "Crew");
+	const passengerLabel = localizeOrFallback("SW5E.StarshipCrewBadgePassenger", "Passenger");
+
+	return `
+		<div class="sw5e-add-crew-entry${elsewhereClass}" data-search="${escapeHtml(searchText)}">
+			<img src="${escapeHtml(actorChoice?.img || "icons/svg/mystery-man.svg")}" alt="${escapeHtml(name)}" />
+			<div class="sw5e-add-crew-copy">
+				<strong>${escapeHtml(name)}</strong>
+				${aboardNote}
+			</div>
+			<div class="sw5e-add-crew-roles">
+				<button type="button" data-actor-uuid="${escapeHtml(actorChoice.uuid)}" data-deploy-role="pilot">${escapeHtml(pilotLabel)}</button>
+				<button type="button" data-actor-uuid="${escapeHtml(actorChoice.uuid)}" data-deploy-role="crew">${escapeHtml(crewLabel)}</button>
+				<button type="button" data-actor-uuid="${escapeHtml(actorChoice.uuid)}" data-deploy-role="passenger">${escapeHtml(passengerLabel)}</button>
+			</div>
+		</div>
+	`;
+}
+
 async function openAddCrewDialog(actor) {
 	const available = buildVehicleAvailableActors(actor);
 
 	if ( !available.length ) {
-		ui?.notifications?.info("No actors available to add. Create character or NPC actors in the Actors tab first.");
+		ui?.notifications?.info(localizeOrFallback(
+			"SW5E.StarshipCrewNoneAvailable",
+			"No actors available to add. Create character or NPC actors in the Actors tab first."
+		));
 		return;
 	}
 
-	const rows = available.map(a => `
-		<div class="sw5e-add-crew-entry${a.assignedElsewhere ? " sw5e-add-crew-elsewhere" : ""}">
-			<img src="${escapeHtml(a.img || "icons/svg/mystery-man.svg")}" alt="${escapeHtml(a.name)}" />
-			<div class="sw5e-add-crew-copy">
-				<strong>${escapeHtml(a.name)}</strong>
-				${a.assignedElsewhere ? `<span class="sw5e-add-crew-note">Aboard: ${escapeHtml(a.assignedShipName)}</span>` : ""}
-			</div>
-			<div class="sw5e-add-crew-roles">
-				<button type="button" data-actor-uuid="${escapeHtml(a.uuid)}" data-deploy-role="pilot">Pilot</button>
-				<button type="button" data-actor-uuid="${escapeHtml(a.uuid)}" data-deploy-role="crew">Crew</button>
-				<button type="button" data-actor-uuid="${escapeHtml(a.uuid)}" data-deploy-role="passenger">Passenger</button>
-			</div>
-		</div>
-	`).join("");
+	const characters = available.filter(a => a.type === "character");
+	const npcs = available.filter(a => a.type === "npc");
+	const others = available.filter(a => a.type !== "character" && a.type !== "npc");
 
-	const content = `<div class="sw5e-add-crew-dialog"><div class="sw5e-add-crew-list">${rows}</div></div>`;
+	const charactersHeading = localizeOrFallback("SW5E.StarshipCrewGroupCharacters", "Player Characters");
+	const npcsHeading = localizeOrFallback("SW5E.StarshipCrewGroupNpcs", "NPCs");
+	const searchPlaceholder = localizeOrFallback("SW5E.StarshipCrewSearchPlaceholder", "Filter crew by name…");
+	const searchEmpty = localizeOrFallback("SW5E.StarshipCrewSearchEmpty", "No matching crew found.");
+
+	const groupsHtml = [
+		characters.length
+			? `<div class="sw5e-add-crew-group" data-crew-group="character">
+				<h3 class="sw5e-add-crew-group-heading">${escapeHtml(charactersHeading)}</h3>
+				${characters.map(buildAddCrewEntryHtml).join("")}
+			</div>`
+			: "",
+		npcs.length
+			? `<div class="sw5e-add-crew-group" data-crew-group="npc">
+				<h3 class="sw5e-add-crew-group-heading">${escapeHtml(npcsHeading)}</h3>
+				${npcs.map(buildAddCrewEntryHtml).join("")}
+			</div>`
+			: "",
+		others.length
+			? `<div class="sw5e-add-crew-group" data-crew-group="other">
+				${others.map(buildAddCrewEntryHtml).join("")}
+			</div>`
+			: ""
+	].join("");
+
+	const content = `
+		<div class="sw5e-add-crew-dialog">
+			<div class="form-group sw5e-add-crew-search-wrap">
+				<input
+					type="search"
+					class="sw5e-add-crew-search"
+					name="sw5eAddCrewSearch"
+					placeholder="${escapeHtml(searchPlaceholder)}"
+					autocomplete="off"
+					aria-label="${escapeHtml(searchPlaceholder)}"
+				/>
+			</div>
+			<div class="sw5e-add-crew-list">${groupsHtml}</div>
+			<p class="sw5e-add-crew-search-empty is-hidden" hidden>${escapeHtml(searchEmpty)}</p>
+		</div>
+	`;
 
 	await foundry.applications.api.DialogV2.wait({
-		window: { title: "Add Crew Member" },
+		window: { title: localizeOrFallback("SW5E.StarshipCrewAdd", "Add Crew Member") },
 		content,
-		buttons: [{ action: "cancel", label: "Cancel", icon: "fas fa-times" }],
+		buttons: [{
+			action: "cancel",
+			label: localizeOrFallback("Cancel", "Cancel"),
+			icon: "fas fa-times"
+		}],
 		rejectClose: false,
 		render: (_event, dialog) => {
-			dialog.element.querySelectorAll("[data-actor-uuid][data-deploy-role]").forEach(btn => {
+			const root = dialog.element.querySelector(".sw5e-add-crew-dialog") ?? dialog.element;
+			const searchInput = root.querySelector("input.sw5e-add-crew-search");
+			if ( searchInput instanceof HTMLInputElement ) {
+				searchInput.addEventListener("input", () => {
+					applyAddCrewDialogSearchFilter(root, searchInput.value);
+				});
+			}
+			root.querySelectorAll("[data-actor-uuid][data-deploy-role]").forEach(btn => {
 				btn.addEventListener("click", async () => {
 					btn.disabled = true;
 					try {
@@ -5038,7 +5224,7 @@ async function renderStarshipLayer(app, html, data) {
 		summaryStrip: makeStarshipSummaryStrip(actor),
 		legacyNotes: getLegacyNotes(actor),
 		skills,
-		crew: buildVehicleStarshipCrewContext(actor),
+		crew: enrichCrewContextForSheetSearch(buildVehicleStarshipCrewContext(actor)),
 		editable: actorEditable,
 		/** Systems subtab: setup fields (tier, hull, etc.) only in sheet EDIT mode; routing stays usable in PLAY when `actorEditable`. */
 		systemsSetupEditable: sheetEditMode && actorEditable,
@@ -5084,6 +5270,7 @@ async function renderStarshipLayer(app, html, data) {
 		syncSotgSheetPhaseClasses(app, existingWrapper.querySelector(".sw5e-starship-panel"));
 		ensureStarshipCorePanelCollapseDelegate(existingWrapper, app);
 		ensureStarshipSotgItemRowInteractions(existingWrapper, app);
+		ensureStarshipAssignedCrewSearch(existingWrapper, app);
 		scheduleStarshipAbilitySaveTabSync(root, app);
 		if ( !nav.querySelector(`[data-tab="${STARSHIP_TAB_ID}"]`) ) {
 			const tabButton = document.createElement("a");
@@ -5231,6 +5418,7 @@ async function renderStarshipLayer(app, html, data) {
 
 	ensureStarshipSotgItemRowInteractions(wrapper, app);
 	ensureStarshipCorePanelCollapseDelegate(wrapper, app);
+	ensureStarshipAssignedCrewSearch(wrapper, app);
 
 	wrapper.addEventListener("click", handleTabClick, { capture: true });
 
