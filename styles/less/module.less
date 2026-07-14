@@ -10,18 +10,18 @@
 /* —— Theme overrides (Light/Dark + Underworld split) —— */
 @import "theme-overrides.less";
 @import "underworld-overrides.less";
-@import "pause-overlay.less";
+@import "update/components/pause-overlay.less";
 
 /* —— Scoped dialog / app themes —— */
 @import "mixins/sw5e-dialog-shell-base.less";
-@import "cybernetics-dialog-theme.less";
-@import "rest-activity-dialog-theme.less";
-@import "advancement-manager-theme.less";
-@import "active-effect-config-theme.less";
-@import "module-app-theme.less";
-@import "dialog-prompt-theme.less";
-@import "activity-type-chooser-theme.less";
-@import "context-menu-theme.less";
+@import "update/dialogs/cybernetics.less";
+@import "update/dialogs/rest-activity.less";
+@import "update/dialogs/advancement-manager.less";
+@import "update/dialogs/active-effect-config.less";
+@import "update/dialogs/module-apps.less";
+@import "update/dialogs/prompts.less";
+@import "update/dialogs/activity-type-chooser.less";
+@import "update/components/context-menus.less";
 
 /* —— Starship-specific —— */
 @import "starship-sidebar-vitals.less";
@@ -31,21 +31,21 @@
 
 /* —— CSS-1 manual smoke fixes —— */
 @import "css-1b-manual-smoke-fixes.less";
-@import "css-1-npc-badges.less";
+@import "update/actors/npc-badges.less";
 @import "css-1c-manual-smoke-fixes.less";
 
 /* —— Item / manager surfaces —— */
 @import "chassis-panel-theme.less";
 @import "droid-customizations-theme.less";
-@import "blaster-reload.less";
+@import "update/chat/reload.less";
 
 /* —— Scoped Compendium Browser themes —— */
 @import "mixins/sw5e-compendium-browser-theme.less";
 @import "droid-customizations-browser-theme.less";
 @import "augmentations-browser-theme.less";
 
-/* —— CSS-3 chat polish (loads before css-2 so css-2 journal stack retains precedence) —— */
-@import "css-3-chat-cards-theme.less";
+/* —— Chat polish (loads before css-2 so css-2 journal stack retains precedence) —— */
+@import "update/chat/cards.less";
 @import "css-select-dropdown-groups.less";
 
 /* —— CSS-2 theme cleanup phases (ordered cascade: 2 → 2b → 2c → 2d → 2f → 2g) —— */
@@ -59,4 +59,4 @@
 @import "css-2g-journal-icon-rendering-and-scrollbar-fix.less";
 
 /* —— Feature misc —— */
-@import "proficiency-mastery-reroll.less";
+@import "update/chat/mastery-reroll.less";

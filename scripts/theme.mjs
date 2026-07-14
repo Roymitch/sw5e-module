@@ -145,6 +145,22 @@ function collectRenderableApplications() {
 }
 
 /**
+ * Foundry v13 Configure Settings (`foundry.applications.settings.SettingsConfig`).
+ * Theme onChange must not force-render this app: its search filter can run while the
+ * filter root is null and throw in SettingsConfig._onSearchFilter.
+ */
+function isFoundryConfigureSettingsApp(app) {
+	if ( !app ) return false;
+	const SettingsConfig = globalThis.foundry?.applications?.settings?.SettingsConfig;
+	if ( typeof SettingsConfig === "function" ) {
+		if ( app instanceof SettingsConfig ) return true;
+		// Same exported class identity without relying on display name / CSS alone.
+		if ( app.constructor === SettingsConfig ) return true;
+	}
+	return false;
+}
+
+/**
  * Re-apply the active SW5E theme to open scoped surfaces without a full rerender.
  * Needed because AppV2 sheets may not live in `ui.windows`.
  */
@@ -168,11 +184,9 @@ function resyncExistingThemeScopes(theme = getSw5eTheme()) {
 
 export function rerenderThemeableApplications() {
 	for ( const app of collectRenderableApplications() ) {
-		try {
-			app.render(true);
-		} catch ( err ) {
-			console.warn("SW5E | Theme rerender failed", err);
-		}
+		if ( typeof app?.render !== "function" ) continue;
+		if ( isFoundryConfigureSettingsApp(app) ) continue;
+		app.render(true);
 	}
 }
 
