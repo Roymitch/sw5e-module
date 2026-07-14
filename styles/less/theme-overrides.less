@@ -2686,11 +2686,11 @@ body[data-sw5e-theme="sw5e-dark"] .message-content damage-application .card-tray
 }
 
 body[data-sw5e-theme="sw5e-dark"] :is(.application, .window-app).dnd5e2.vertical-tabs:is(.sheet.actor, .sheet.item) nav.tabs.tabs-right > .item {
-  background: transparent !important;
+  background: var(--sw5e-dark-tab-inactive-fill) !important;
   color: var(--sw5e-secondary-button) !important;
   --icon-fill: var(--sw5e-secondary-button);
-  border-color: transparent !important;
-  box-shadow: none !important;
+  border-color: var(--sw5e-dark-muted-control-border) !important;
+  box-shadow: var(--sw5e-dark-tab-glow-soft) !important;
 }
 
 body[data-sw5e-theme="sw5e-dark"] :is(.application, .window-app).dnd5e2.vertical-tabs:is(.sheet.actor, .sheet.item) nav.tabs.tabs-right > .item::after {
@@ -2702,17 +2702,90 @@ body[data-sw5e-theme="sw5e-dark"] :is(.application, .window-app).dnd5e2.vertical
   --icon-fill: currentColor;
 }
 
-body[data-sw5e-theme="sw5e-dark"] :is(.application, .window-app).dnd5e2.vertical-tabs:is(.sheet.actor, .sheet.item) nav.tabs.tabs-right > .item:is(.active, :hover, :focus, :focus-visible) {
-  background: rgba(32, 161, 208, 0.12) !important;
-  background: color-mix(in srgb, var(--sw5e-secondary-button) 14%, transparent) !important;
+body[data-sw5e-theme="sw5e-dark"] :is(.application, .window-app).dnd5e2.vertical-tabs:is(.sheet.actor, .sheet.item) nav.tabs.tabs-right > .item:is(:hover, :focus, :focus-visible):not(.active) {
+  background: var(--sw5e-dark-hover-tint) !important;
+  color: var(--sw5e-line-color) !important;
+  --icon-fill: var(--sw5e-line-color);
+  border-color: color-mix(in srgb, var(--sw5e-line-color) 48%, transparent) !important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--sw5e-dark-active-control-border) 28%, transparent),
+    0 0 10px color-mix(in srgb, var(--sw5e-line-color) 22%, transparent) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] :is(.application, .window-app).dnd5e2.vertical-tabs:is(.sheet.actor, .sheet.item) nav.tabs.tabs-right > .item:is(:hover, :focus, :focus-visible):not(.active)::after {
+  border-color: color-mix(in srgb, var(--sw5e-line-color) 72%, transparent) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] :is(.application, .window-app).dnd5e2.vertical-tabs:is(.sheet.actor, .sheet.item) nav.tabs.tabs-right > .item.active {
+  background: var(--sw5e-dark-tab-active-fill) !important;
   color: var(--sw5e-line-color) !important;
   --icon-fill: var(--sw5e-line-color);
   border-color: color-mix(in srgb, var(--sw5e-line-color) 60%, transparent) !important;
-  box-shadow: 0 0 6px color-mix(in srgb, var(--sw5e-line-color) 40%, transparent) !important;
+  box-shadow: var(--sw5e-dark-tab-glow-strong), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
 }
 
-body[data-sw5e-theme="sw5e-dark"] :is(.application, .window-app).dnd5e2.vertical-tabs:is(.sheet.actor, .sheet.item) nav.tabs.tabs-right > .item:is(.active, :hover, :focus, :focus-visible)::after {
+body[data-sw5e-theme="sw5e-dark"] :is(.application, .window-app).dnd5e2.vertical-tabs:is(.sheet.actor, .sheet.item) nav.tabs.tabs-right > .item.active::after {
   border-color: color-mix(in srgb, var(--sw5e-line-color) 72%, transparent) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] :is(.application, .window-app).dnd5e2.vertical-tabs:is(.sheet.actor, .sheet.item) nav.tabs.tabs-right > .item.active:is(:hover, :focus, :focus-visible) {
+  border-color: color-mix(in srgb, var(--sw5e-line-color) 72%, transparent) !important;
+  box-shadow:
+    var(--sw5e-dark-tab-glow-strong),
+    0 0 14px color-mix(in srgb, var(--sw5e-line-color) 32%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* SW5E Dark — character/NPC vertical tabs (re-assert after icon-control rules) */
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item {
+  background: var(--sw5e-dark-tab-inactive-fill) !important;
+  color: var(--sw5e-secondary-button) !important;
+  --icon-fill: var(--sw5e-secondary-button);
+  border-color: var(--sw5e-dark-muted-control-border) !important;
+  box-shadow: var(--sw5e-dark-tab-glow-soft) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item::after {
+  border-color: color-mix(in srgb, var(--sw5e-secondary-button) 72%, transparent) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item :is(i, dnd5e-icon) {
+  color: inherit !important;
+  --icon-fill: currentColor;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item:is(:hover, :focus, :focus-visible):not(.active) {
+  background: var(--sw5e-dark-hover-tint) !important;
+  color: var(--sw5e-line-color) !important;
+  --icon-fill: var(--sw5e-line-color);
+  border-color: color-mix(in srgb, var(--sw5e-line-color) 48%, transparent) !important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--sw5e-dark-active-control-border) 28%, transparent),
+    0 0 10px color-mix(in srgb, var(--sw5e-line-color) 22%, transparent) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item:is(:hover, :focus, :focus-visible):not(.active)::after {
+  border-color: color-mix(in srgb, var(--sw5e-line-color) 72%, transparent) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item.active {
+  background: var(--sw5e-dark-tab-active-fill) !important;
+  color: var(--sw5e-line-color) !important;
+  --icon-fill: var(--sw5e-line-color);
+  border-color: color-mix(in srgb, var(--sw5e-line-color) 60%, transparent) !important;
+  box-shadow: var(--sw5e-dark-tab-glow-strong), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item.active::after {
+  border-color: color-mix(in srgb, var(--sw5e-line-color) 72%, transparent) !important;
+}
+
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.vertical-tabs.sheet.actor:is(.character, .npc) nav.tabs.tabs-right > .item.active:is(:hover, :focus, :focus-visible) {
+  border-color: color-mix(in srgb, var(--sw5e-line-color) 72%, transparent) !important;
+  box-shadow:
+    var(--sw5e-dark-tab-glow-strong),
+    0 0 14px color-mix(in srgb, var(--sw5e-line-color) 32%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
 }
 
 body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root .sheet-header > .right .inspiration {
