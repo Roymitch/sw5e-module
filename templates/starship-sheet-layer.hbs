@@ -125,6 +125,7 @@
                 data-actor-uuid="{{uuid}}"
                 title="{{ localize "SW5E.StarshipCrewClearPilot" }}"
                 aria-label="{{ localize "SW5E.StarshipCrewClearPilot" }}"
+                {{#unless canUndeployPilot}}disabled{{/unless}}
               >
                 <i class="fa-solid fa-user-slash" inert></i>
               </button>
@@ -136,6 +137,7 @@
                 data-actor-uuid="{{uuid}}"
                 title="{{ localize "SW5E.StarshipCrewSetPilot" }}"
                 aria-label="{{ localize "SW5E.StarshipCrewSetPilot" }}"
+                {{#unless canSetPilot}}disabled{{/unless}}
               >
                 <i class="fa-solid fa-user-check" inert></i>
               </button>
@@ -147,6 +149,7 @@
               data-actor-uuid="{{uuid}}"
               title="{{#if active}}{{ localize "SW5E.StarshipCrewDeactivate" }}{{else}}{{ localize "SW5E.StarshipCrewActivate" }}{{/if}}"
               aria-label="{{#if active}}{{ localize "SW5E.StarshipCrewDeactivate" }}{{else}}{{ localize "SW5E.StarshipCrewActivate" }}{{/if}}"
+              {{#unless canToggleActive}}disabled{{/unless}}
             >
               {{#if active}}
               <i class="fa-solid fa-power-off" inert></i>
@@ -161,6 +164,7 @@
               data-actor-uuid="{{uuid}}"
               title="{{ localize "SW5E.StarshipCrewRemove" }}"
               aria-label="{{ localize "SW5E.StarshipCrewRemove" }}"
+              {{#unless canRemove}}disabled{{/unless}}
             >
               <i class="fa-solid fa-user-xmark" inert></i>
             </button>
@@ -648,6 +652,7 @@
                       data-sw5e-crew-command="open-add-crew"
                       title="{{ localize "SW5E.StarshipCrewAdd" }}"
                       aria-label="{{ localize "SW5E.StarshipCrewAdd" }}"
+                      {{#unless crewManageEditable}}disabled{{/unless}}
                     >
                       <i class="fa-solid fa-user-plus" inert></i>
                     </button>

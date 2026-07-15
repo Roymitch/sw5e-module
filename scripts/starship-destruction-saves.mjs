@@ -5,6 +5,7 @@ import {
 } from "./starship-data.mjs";
 import { incrementStarshipSystemDamageLevel } from "./starship-system-damage.mjs";
 import { isSw5eStarshipActor } from "./patch/starship-movement.mjs";
+import { canCurrentUserUpdateStarshipActor } from "./starship-permissions.mjs";
 
 const DESTRUCTION_SAVE_TARGET = 10;
 const DESTRUCTION_SAVE_TRACK_MAX = 3;
@@ -227,6 +228,7 @@ async function applyDestructionSaveRollResult(actor, roll, rollMode) {
 
 export async function rollStarshipDestructionSave(actor) {
 	if ( !actor ) return null;
+	if ( !canCurrentUserUpdateStarshipActor(actor) ) return null;
 
 	const hullValue = getStarshipHullValue(actor);
 	const death = getStarshipDeathCounters(actor);
@@ -282,6 +284,7 @@ export async function rollStarshipDestructionSave(actor) {
 
 export async function resetStarshipDestructionSaves(actor) {
 	if ( !actor ) return false;
+	if ( !canCurrentUserUpdateStarshipActor(actor) ) return false;
 	await actor.update(buildStarshipLegacyAttributeBatchMirrorUpdate([
 		["system.attributes.death.success", 0],
 		["system.attributes.death.failure", 0]

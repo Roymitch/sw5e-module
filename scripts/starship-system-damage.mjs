@@ -11,6 +11,7 @@ import {
 	isStarshipFlagVehicle,
 	persistStarshipLegacyAttributePath
 } from "./starship-data.mjs";
+import { canCurrentUserUpdateStarshipActor } from "./starship-permissions.mjs";
 
 export const STARSHIP_SYSTEM_DAMAGE_PATH = "system.attributes.systemDamage";
 export const STARSHIP_USED_LEGACY_PATH = "flags.sw5e.legacyStarshipActor.system.attributes.used";
@@ -68,6 +69,7 @@ export async function ensureStarshipUsedLatched(actor) {
 }
 
 export async function setStarshipSystemDamageLevel(actor, level) {
+	if ( !canCurrentUserUpdateStarshipActor(actor) ) return getStarshipSystemDamageLevel(actor);
 	const value = clampStarshipSystemDamageLevel(level);
 	await persistStarshipLegacyAttributePath(actor, STARSHIP_SYSTEM_DAMAGE_PATH, value);
 	await ensureStarshipUsedLatched(actor);

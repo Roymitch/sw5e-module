@@ -2,6 +2,10 @@ import { getModulePath } from "./module-support.mjs";
 import { applySw5eThemeScope } from "./theme.mjs";
 import { deriveStarshipPools, persistStarshipLegacyAttributePath } from "./starship-data.mjs";
 import {
+	canCurrentUserUpdateStarshipActor,
+	warnStarshipActorUpdateDenied
+} from "./starship-permissions.mjs";
+import {
 	findStarshipSizeItem,
 	getSizeLegacyData,
 	getStarshipLiveHp,
@@ -141,24 +145,29 @@ export class StarshipHullPointsConfigApp extends HandlebarsApplicationMixin(Appl
 
 	async #onSubmit(event) {
 		event.preventDefault();
-		if ( !this.actor ) return;
+		const actor = this.actor;
+		if ( !actor ) return;
+		if ( !canCurrentUserUpdateStarshipActor(actor) ) {
+			warnStarshipActorUpdateDenied();
+			return;
+		}
 		const formData = new FormData(event.currentTarget);
 		const max = Math.max(0, parseNumberInput(formData.get("system.attributes.hp.max")));
-		let value = parseDeltaInput(formData.get("system.attributes.hp.value"), getStarshipLiveHp(this.actor).value);
+		let value = parseDeltaInput(formData.get("system.attributes.hp.value"), getStarshipLiveHp(actor).value);
 		if ( value === null ) value = Math.max(0, parseNumberInput(formData.get("system.attributes.hp.value")));
 		value = Math.max(0, Math.min(value, max > 0 ? max : value));
 		const update = {
 			"system.attributes.hp.value": value,
 			"system.attributes.hp.max": max
 		};
-		if ( hpSchemaHasField(this.actor, "dt") ) {
+		if ( hpSchemaHasField(actor, "dt") ) {
 			update["system.attributes.hp.dt"] = Math.max(0, parseNumberInput(formData.get("system.attributes.hp.dt")));
 		}
-		if ( hpSchemaHasField(this.actor, "mt") ) {
+		if ( hpSchemaHasField(actor, "mt") ) {
 			update["system.attributes.hp.mt"] = Math.max(0, parseNumberInput(formData.get("system.attributes.hp.mt")));
 		}
 		for ( const [path, val] of Object.entries(update) ) {
-			await persistStarshipLegacyAttributePath(this.actor, path, val);
+			await persistStarshipLegacyAttributePath(actor, path, val);
 		}
 		this.close();
 	}
@@ -213,16 +222,21 @@ export class StarshipShieldPointsConfigApp extends HandlebarsApplicationMixin(Ap
 
 	async #onSubmit(event) {
 		event.preventDefault();
-		if ( !this.actor ) return;
+		const actor = this.actor;
+		if ( !actor ) return;
+		if ( !canCurrentUserUpdateStarshipActor(actor) ) {
+			warnStarshipActorUpdateDenied();
+			return;
+		}
 		const formData = new FormData(event.currentTarget);
 		const tempmax = Math.max(0, parseNumberInput(formData.get("system.attributes.hp.tempmax")));
-		let temp = parseDeltaInput(formData.get("system.attributes.hp.temp"), getStarshipLiveHp(this.actor).temp);
+		let temp = parseDeltaInput(formData.get("system.attributes.hp.temp"), getStarshipLiveHp(actor).temp);
 		if ( temp === null ) temp = Math.max(0, parseNumberInput(formData.get("system.attributes.hp.temp")));
 		temp = Math.max(0, Math.min(temp, tempmax > 0 ? tempmax : temp));
-		await persistStarshipLegacyAttributePath(this.actor, "system.attributes.hp.tempmax", tempmax);
-		await persistStarshipLegacyAttributePath(this.actor, "system.attributes.hp.temp", temp);
+		await persistStarshipLegacyAttributePath(actor, "system.attributes.hp.tempmax", tempmax);
+		await persistStarshipLegacyAttributePath(actor, "system.attributes.hp.temp", temp);
 		if ( formData.has("flags.sw5e.starship.shieldDepleted") ) {
-			await setStarshipShieldDepleted(this.actor, formData.get("flags.sw5e.starship.shieldDepleted") === "on");
+			await setStarshipShieldDepleted(actor, formData.get("flags.sw5e.starship.shieldDepleted") === "on");
 		}
 		this.close();
 	}
@@ -282,10 +296,15 @@ class StarshipDicePoolConfigApp extends HandlebarsApplicationMixin(ApplicationV2
 
 	async #onSubmit(event) {
 		event.preventDefault();
-		if ( !this.actor ) return;
+		const actor = this.actor;
+		if ( !actor ) return;
+		if ( !canCurrentUserUpdateStarshipActor(actor) ) {
+			warnStarshipActorUpdateDenied();
+			return;
+		}
 		const formData = new FormData(event.currentTarget);
 		const current = Math.max(0, parseNumberInput(formData.get("current")));
-		await persistStarshipSizeDiceCurrent(this.actor, this.poolKey, current);
+		await persistStarshipSizeDiceCurrent(actor, this.poolKey, current);
 		this.close();
 	}
 }
@@ -299,6 +318,10 @@ const VITAL_CONFIG_OPENERS = {
 
 export function openStarshipVitalConfig(actor, configKey) {
 	if ( !actor ) return;
+	if ( !canCurrentUserUpdateStarshipActor(actor) ) {
+		warnStarshipActorUpdateDenied();
+		return;
+	}
 	const open = VITAL_CONFIG_OPENERS[configKey];
 	if ( typeof open === "function" ) open(actor);
 }

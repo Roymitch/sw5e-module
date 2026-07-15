@@ -1,4 +1,5 @@
 import { getLegacyStarshipActorSystem } from "./starship-data.mjs";
+import { canCurrentUserUpdateStarshipActor } from "./starship-permissions.mjs";
 
 export const STARSHIP_CREW_DEPLOYMENT_FLAG = "starshipDeployment";
 
@@ -145,9 +146,86 @@ async function updateCrewDeploymentFlag(actor, starship, roles) {
 	});
 }
 
-function buildResolvedCrewRecord(deployment, uuid) {
+/**
+ * Complete Actor write set for deploy/transfer/pilot-replace — resolve only, no writes.
+ * Fail closed (`ok: false`) if a required participant cannot be resolved.
+ * @returns {{ ok: boolean, actors: object[] }}
+ */
+function resolveDeployWriteSet(starship, crewActor, role) {
+	if ( !starship || !crewActor ) return { ok: false, actors: [] };
+	if ( !isLegacyVehicleStarship(starship) ) return { ok: false, actors: [] };
+	if ( !isDeployableCrewActor(crewActor) ) return { ok: false, actors: [] };
+	if ( !STARSHIP_DEPLOYMENT_ROLES.includes(role) ) return { ok: false, actors: [] };
+
+	/** @type {Map<string, object>} */
+	const byKey = new Map();
+	const add = actor => {
+		if ( !actor ) return;
+		const key = actor.uuid || actor.id;
+		if ( key ) byKey.set(key, actor);
+	};
+
+	add(starship);
+	add(crewActor);
+
+	const priorAssignment = getCrewDeploymentFlag(crewActor);
+	if ( priorAssignment?.starshipUuid && (priorAssignment.starshipUuid !== starship.uuid) ) {
+		const previousStarship = resolveActorDocument(priorAssignment.starshipUuid);
+		if ( !previousStarship ) return { ok: false, actors: [] };
+		add(previousStarship);
+	}
+
+	if ( role === "pilot" ) {
+		const deployment = cloneStarshipDeployment(starship);
+		const displacedUuid = (deployment.pilot.value && (deployment.pilot.value !== crewActor.uuid))
+			? deployment.pilot.value
+			: null;
+		if ( displacedUuid ) {
+			const displacedPilot = resolveActorDocument(displacedUuid);
+			if ( !displacedPilot ) return { ok: false, actors: [] };
+			add(displacedPilot);
+		}
+	}
+
+	return { ok: true, actors: Array.from(byKey.values()) };
+}
+
+function resolveUndeployWriteSet(starship, crewActor) {
+	if ( !starship || !crewActor ) return { ok: false, actors: [] };
+	if ( !isLegacyVehicleStarship(starship) ) return { ok: false, actors: [] };
+	if ( !isDeployableCrewActor(crewActor) ) return { ok: false, actors: [] };
+	return { ok: true, actors: [starship, crewActor] };
+}
+
+function canUpdateAllActors(actors) {
+	if ( !Array.isArray(actors) || !actors.length ) return false;
+	return actors.every(actor => canCurrentUserUpdateStarshipActor(actor));
+}
+
+/**
+ * Presentation + selection-time helper: true when the full deploy write set is authorized.
+ * Mutation helpers re-run the same resolve+permission preflight before any write.
+ * @param {object|string} starshipSubject
+ * @param {object|string} crewSubject
+ * @param {string} role
+ * @returns {boolean}
+ */
+export function canCurrentUserDeployStarshipCrewRole(starshipSubject, crewSubject, role) {
+	const starship = resolveActorDocument(starshipSubject);
+	const crewActor = resolveActorDocument(crewSubject);
+	const writeSet = resolveDeployWriteSet(starship, crewActor, role);
+	if ( !writeSet.ok ) return false;
+	return canUpdateAllActors(writeSet.actors);
+}
+
+function buildResolvedCrewRecord(deployment, uuid, starship, { sheetEditable = true } = {}) {
 	const actor = resolveActorDocument(uuid);
 	const roles = getDeploymentRolesForUuid(deployment, uuid);
+	const canShip = canCurrentUserUpdateStarshipActor(starship);
+	const canCrew = Boolean(actor) && canCurrentUserUpdateStarshipActor(actor);
+	const canMutateAssignment = sheetEditable && canShip && canCrew;
+	const canSetPilot = sheetEditable && Boolean(actor)
+		&& canCurrentUserDeployStarshipCrewRole(starship, actor, "pilot");
 	return {
 		uuid,
 		name: actor?.name ?? "Unknown Crew",
@@ -159,7 +237,11 @@ function buildResolvedCrewRecord(deployment, uuid) {
 		active: deployment.active.value === uuid,
 		roles,
 		proficiency: toNumber(actor?.system?.attributes?.prof, 0),
-		pilotSkill: toNumber(actor?.system?.skills?.pil?.value, 0)
+		pilotSkill: toNumber(actor?.system?.skills?.pil?.value, 0),
+		canToggleActive: sheetEditable && canShip,
+		canRemove: canMutateAssignment,
+		canUndeployPilot: canMutateAssignment && roles.includes("pilot"),
+		canSetPilot
 	};
 }
 
@@ -169,9 +251,9 @@ function compareCrewRecords(left, right) {
 	return left.name.localeCompare(right.name);
 }
 
-function buildResolvedCrewRoster(deployment) {
+function buildResolvedCrewRoster(deployment, starship, options = {}) {
 	return Array.from(collectDeploymentUuids(deployment))
-		.map(uuid => buildResolvedCrewRecord(deployment, uuid))
+		.map(uuid => buildResolvedCrewRecord(deployment, uuid, starship, options))
 		.sort(compareCrewRecords);
 }
 
@@ -191,11 +273,23 @@ function compareAvailableCrewChoices(left, right) {
 
 export function buildAvailableStarshipCrewChoices(starship) {
 	if ( !globalThis.game?.actors ) return [];
+	if ( !isLegacyVehicleStarship(starship) ) return [];
+
+	const isGM = globalThis.game?.user?.isGM === true;
+	if ( !isGM && !canCurrentUserUpdateStarshipActor(starship) ) return [];
+
 	return game.actors.contents
-		.filter(actor => isDeployableCrewActor(actor) && (actor.id !== starship.id))
+		.filter(actor => {
+			if ( !isDeployableCrewActor(actor) || (actor.id === starship.id) ) return false;
+			if ( isGM ) return true;
+			return canCurrentUserUpdateStarshipActor(actor);
+		})
 		.map(actor => {
 			const deploymentFlag = getCrewDeploymentFlag(actor);
 			const assignedShip = deploymentFlag?.starshipUuid ? resolveActorDocument(deploymentFlag.starshipUuid) : null;
+			const canDeployPilot = canCurrentUserDeployStarshipCrewRole(starship, actor, "pilot");
+			const canDeployCrew = canCurrentUserDeployStarshipCrewRole(starship, actor, "crew");
+			const canDeployPassenger = canCurrentUserDeployStarshipCrewRole(starship, actor, "passenger");
 			return {
 				uuid: actor.uuid,
 				name: actor.name,
@@ -203,17 +297,21 @@ export function buildAvailableStarshipCrewChoices(starship) {
 				type: actor.type,
 				assignedElsewhere: Boolean(deploymentFlag?.starshipUuid && (deploymentFlag.starshipUuid !== starship.uuid)),
 				assignedShipName: assignedShip?.name ?? deploymentFlag?.starshipName ?? "",
-				roles: Array.isArray(deploymentFlag?.roles) ? deploymentFlag.roles : []
+				roles: Array.isArray(deploymentFlag?.roles) ? deploymentFlag.roles : [],
+				canDeployPilot,
+				canDeployCrew,
+				canDeployPassenger
 			};
 		})
+		.filter(choice => choice.canDeployPilot || choice.canDeployCrew || choice.canDeployPassenger)
 		.sort(compareAvailableCrewChoices);
 }
 
 export async function undeployStarshipCrew(starshipSubject, crewSubject, roles = STARSHIP_DEPLOYMENT_ROLES) {
 	const starship = resolveActorDocument(starshipSubject);
 	const crewActor = resolveActorDocument(crewSubject);
-	if ( !isLegacyVehicleStarship(starship) ) return false;
-	if ( !isDeployableCrewActor(crewActor) ) return false;
+	const writeSet = resolveUndeployWriteSet(starship, crewActor);
+	if ( !writeSet.ok || !canUpdateAllActors(writeSet.actors) ) return false;
 
 	const roleSet = new Set(Array.isArray(roles) ? roles : [roles]);
 	const deployment = cloneStarshipDeployment(starship);
@@ -233,15 +331,17 @@ export async function undeployStarshipCrew(starshipSubject, crewSubject, roles =
 export async function deployStarshipCrew(starshipSubject, crewSubject, role) {
 	const starship = resolveActorDocument(starshipSubject);
 	const crewActor = resolveActorDocument(crewSubject);
-	if ( !isLegacyVehicleStarship(starship) ) return false;
-	if ( !isDeployableCrewActor(crewActor) ) return false;
 	if ( !STARSHIP_DEPLOYMENT_ROLES.includes(role) ) throw new Error(`Unsupported crew deployment role: ${role}`);
+
+	const writeSet = resolveDeployWriteSet(starship, crewActor, role);
+	if ( !writeSet.ok || !canUpdateAllActors(writeSet.actors) ) return false;
 
 	const priorAssignment = getCrewDeploymentFlag(crewActor);
 	if ( priorAssignment?.starshipUuid && (priorAssignment.starshipUuid !== starship.uuid) ) {
 		const previousStarship = resolveActorDocument(priorAssignment.starshipUuid);
-		if ( previousStarship ) await undeployStarshipCrew(previousStarship, crewActor);
-		else await updateCrewDeploymentFlag(crewActor, starship, []);
+		if ( !previousStarship ) return false;
+		const transferred = await undeployStarshipCrew(previousStarship, crewActor);
+		if ( transferred !== true ) return false;
 	}
 
 	const deployment = cloneStarshipDeployment(starship);
@@ -269,6 +369,7 @@ export async function deployStarshipCrew(starshipSubject, crewSubject, role) {
 export async function toggleStarshipActiveCrew(starshipSubject, crewSubject = null) {
 	const starship = resolveActorDocument(starshipSubject);
 	if ( !isLegacyVehicleStarship(starship) ) return false;
+	if ( !canCurrentUserUpdateStarshipActor(starship) ) return false;
 
 	const deployment = cloneStarshipDeployment(starship);
 	const crewActor = resolveActorDocument(crewSubject);
@@ -281,12 +382,12 @@ export async function toggleStarshipActiveCrew(starshipSubject, crewSubject = nu
 	return true;
 }
 
-export function buildVehicleStarshipCrewContext(actor) {
+export function buildVehicleStarshipCrewContext(actor, { sheetEditable = true } = {}) {
 	const legacySystem = getLegacyStarshipActorSystem(actor) ?? {};
 	const deployment = getDeploymentState(legacySystem.attributes?.deployment);
 	syncDeploymentActiveFlags(deployment);
 	return {
-		roster: buildResolvedCrewRoster(deployment)
+		roster: buildResolvedCrewRoster(deployment, actor, { sheetEditable })
 	};
 }
 

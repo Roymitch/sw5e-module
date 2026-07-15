@@ -41,7 +41,14 @@ import {
 	resolveStarshipSystemDamagePipToggle,
 	setStarshipSystemDamageLevel
 } from "../starship-system-damage.mjs";
-import { buildVehicleStarshipCrewContext, buildVehicleAvailableActors, deployStarshipCrew, undeployStarshipCrew, toggleStarshipActiveCrew } from "../starship-character.mjs";
+import {
+	buildVehicleStarshipCrewContext,
+	buildVehicleAvailableActors,
+	canCurrentUserDeployStarshipCrewRole,
+	deployStarshipCrew,
+	undeployStarshipCrew,
+	toggleStarshipActiveCrew
+} from "../starship-character.mjs";
 import {
 	groupCharacterDeploymentFeaturesByParent,
 	normalizeDeploymentGroupingKey
@@ -49,6 +56,10 @@ import {
 import { getExpandedProficiencyHoverLabel } from "./proficiency.mjs";
 import { openStarshipMovementConfig } from "../starship-movement-config.mjs";
 import { openStarshipVitalConfig } from "../starship-vital-config.mjs";
+import {
+	canCurrentUserUpdateStarshipActor,
+	warnStarshipActorUpdateDenied
+} from "../starship-permissions.mjs";
 import {
 	getStarshipEquipmentFlatDamageReduction,
 	getStarshipFlatDamageReduction,
@@ -1633,6 +1644,10 @@ function ensureStarshipVitalsDelegate(root, app) {
 		const act = app?.actor;
 		if ( !act || app?.isEditable === false ) return;
 		if ( !isStarshipSheetEditMode(app) ) return;
+		if ( !canCurrentUserUpdateStarshipActor(act) ) {
+			warnStarshipActorUpdateDenied();
+			return;
+		}
 		event.preventDefault();
 		event.stopPropagation();
 		openStarshipVitalConfig(act, configBtn.dataset.sw5eVitalConfig);
@@ -2027,6 +2042,10 @@ function ensureStarshipSystemDamageDelegate(root, app) {
 		if ( !pip || pip.disabled ) return;
 		const act = app?.actor;
 		if ( !act || app?.isEditable === false ) return;
+		if ( !canCurrentUserUpdateStarshipActor(act) ) {
+			warnStarshipActorUpdateDenied();
+			return;
+		}
 		event.preventDefault();
 		event.stopPropagation();
 		const pipN = Number(pip.dataset.n);
@@ -2057,6 +2076,10 @@ function ensureStarshipDestructionSaveDelegate(root, app) {
 		if ( rollBtn && !rollBtn.disabled ) {
 			const act = app?.actor;
 			if ( !act || app?.isEditable === false ) return;
+			if ( !canCurrentUserUpdateStarshipActor(act) ) {
+				warnStarshipActorUpdateDenied();
+				return;
+			}
 			try {
 				await rollStarshipDestructionSave(act);
 				await renderStarshipSidebarDestructionSaves(root, act, app);
@@ -2072,6 +2095,10 @@ function ensureStarshipDestructionSaveDelegate(root, app) {
 		if ( resetBtn && !resetBtn.disabled ) {
 			const act = app?.actor;
 			if ( !act || !isStarshipSheetEditMode(app) || app?.isEditable === false ) return;
+			if ( !canCurrentUserUpdateStarshipActor(act) ) {
+				warnStarshipActorUpdateDenied();
+				return;
+			}
 			try {
 				await resetStarshipDestructionSaves(act);
 				await renderStarshipSidebarDestructionSaves(root, act, app);
@@ -4602,7 +4629,7 @@ async function renderStarshipSidebarSystemDamage(root, actor, app = null) {
 	if ( !mountPoint?.reference ) return;
 
 	const ctx = buildSystemDamageSidebarContext(actor, {
-		editable: app?.isEditable !== false
+		editable: app?.isEditable !== false && canCurrentUserUpdateStarshipActor(actor)
 	});
 	const rendered = await foundry.applications.handlebars.renderTemplate(
 		getModulePath("templates/starship-sidebar-system-damage.hbs"),
@@ -4652,7 +4679,7 @@ async function renderStarshipSidebarDestructionSaves(root, actor, app = null) {
 	const ctx = buildDestructionSaveSidebarContext(actor, {
 		open: app?._sw5eDestructionTrayOpen === true,
 		editMode,
-		editable: app?.isEditable !== false
+		editable: app?.isEditable !== false && canCurrentUserUpdateStarshipActor(actor)
 	});
 
 	const rendered = await foundry.applications.handlebars.renderTemplate(
@@ -5082,6 +5109,9 @@ function buildAddCrewEntryHtml(actorChoice) {
 	const pilotLabel = localizeOrFallback("SW5E.StarshipCrewBadgePilot", "Pilot");
 	const crewLabel = localizeOrFallback("SW5E.StarshipCrewBadgeCrew", "Crew");
 	const passengerLabel = localizeOrFallback("SW5E.StarshipCrewBadgePassenger", "Passenger");
+	const pilotDisabled = actorChoice?.canDeployPilot ? "" : " disabled";
+	const crewDisabled = actorChoice?.canDeployCrew ? "" : " disabled";
+	const passengerDisabled = actorChoice?.canDeployPassenger ? "" : " disabled";
 
 	return `
 		<div class="sw5e-add-crew-entry${elsewhereClass}" data-search="${escapeHtml(searchText)}">
@@ -5091,15 +5121,19 @@ function buildAddCrewEntryHtml(actorChoice) {
 				${aboardNote}
 			</div>
 			<div class="sw5e-add-crew-roles">
-				<button type="button" data-actor-uuid="${escapeHtml(actorChoice.uuid)}" data-deploy-role="pilot">${escapeHtml(pilotLabel)}</button>
-				<button type="button" data-actor-uuid="${escapeHtml(actorChoice.uuid)}" data-deploy-role="crew">${escapeHtml(crewLabel)}</button>
-				<button type="button" data-actor-uuid="${escapeHtml(actorChoice.uuid)}" data-deploy-role="passenger">${escapeHtml(passengerLabel)}</button>
+				<button type="button" data-actor-uuid="${escapeHtml(actorChoice.uuid)}" data-deploy-role="pilot"${pilotDisabled}>${escapeHtml(pilotLabel)}</button>
+				<button type="button" data-actor-uuid="${escapeHtml(actorChoice.uuid)}" data-deploy-role="crew"${crewDisabled}>${escapeHtml(crewLabel)}</button>
+				<button type="button" data-actor-uuid="${escapeHtml(actorChoice.uuid)}" data-deploy-role="passenger"${passengerDisabled}>${escapeHtml(passengerLabel)}</button>
 			</div>
 		</div>
 	`;
 }
 
 async function openAddCrewDialog(actor) {
+	if ( !canCurrentUserUpdateStarshipActor(actor) ) {
+		warnStarshipActorUpdateDenied();
+		return;
+	}
 	const available = buildVehicleAvailableActors(actor);
 
 	if ( !available.length ) {
@@ -5175,13 +5209,25 @@ async function openAddCrewDialog(actor) {
 			}
 			root.querySelectorAll("[data-actor-uuid][data-deploy-role]").forEach(btn => {
 				btn.addEventListener("click", async () => {
+					const role = btn.dataset.deployRole;
+					const crewUuid = btn.dataset.actorUuid;
+					if ( !canCurrentUserDeployStarshipCrewRole(actor, crewUuid, role) ) {
+						warnStarshipActorUpdateDenied();
+						return;
+					}
 					btn.disabled = true;
 					try {
-						await deployStarshipCrew(actor, btn.dataset.actorUuid, btn.dataset.deployRole);
+						const ok = await deployStarshipCrew(actor, crewUuid, role);
+						if ( ok !== true ) {
+							warnStarshipActorUpdateDenied();
+							return;
+						}
+						await dialog.close();
 					} catch ( err ) {
 						console.error("SW5E MODULE | Failed to add crew member.", err);
+					} finally {
+						if ( btn.isConnected ) btn.disabled = false;
 					}
-					await dialog.close();
 				});
 			});
 		}
@@ -5290,6 +5336,8 @@ async function renderStarshipLayer(app, html, data) {
 
 	const sheetEditMode = isStarshipSheetEditMode(app);
 	const actorEditable = app.isEditable !== false;
+	const canUpdateActor = canCurrentUserUpdateStarshipActor(actor);
+	const crewManageEditable = canUpdateActor && actorEditable;
 	const rendered = await foundry.applications.handlebars.renderTemplate(getModulePath("templates/starship-sheet-layer.hbs"), {
 		actorName: actor.name,
 		actorImage: resolveStarshipSheetImageUrl(actor.img),
@@ -5299,8 +5347,11 @@ async function renderStarshipLayer(app, html, data) {
 		summaryStrip: makeStarshipSummaryStrip(actor, { runtime }),
 		legacyNotes: getLegacyNotes(actor, { runtime }),
 		skills,
-		crew: enrichCrewContextForSheetSearch(buildVehicleStarshipCrewContext(actor)),
+		crew: enrichCrewContextForSheetSearch(buildVehicleStarshipCrewContext(actor, {
+			sheetEditable: crewManageEditable
+		})),
 		editable: actorEditable,
+		crewManageEditable,
 		/** Systems subtab: setup fields (tier, hull, etc.) only in sheet EDIT mode; routing stays usable in PLAY when `actorEditable`. */
 		systemsSetupEditable: sheetEditMode && actorEditable,
 		systemsRoutingEditable: actorEditable,
@@ -5511,16 +5562,28 @@ async function renderStarshipLayer(app, html, data) {
 		if ( !btn ) return;
 		event.preventDefault();
 		if ( btn.disabled ) return;
+		if ( app?.isEditable === false ) {
+			warnStarshipActorUpdateDenied();
+			return;
+		}
 		btn.disabled = true;
 		try {
 			const command = btn.dataset.sw5eCrewCommand;
 			const uuid = btn.dataset.actorUuid;
-			if ( command === "open-add-crew" ) { await openAddCrewDialog(actor); return; }
-			else if ( command === "deploy" ) await deployStarshipCrew(actor, uuid, btn.dataset.deployRole);
-			else if ( command === "remove" ) await undeployStarshipCrew(actor, uuid);
-			else if ( command === "toggle-active" ) await toggleStarshipActiveCrew(actor, uuid);
-			else if ( command === "set-pilot" ) await deployStarshipCrew(actor, uuid, "pilot");
-			else if ( command === "undeploy-pilot" ) await undeployStarshipCrew(actor, uuid, ["pilot"]);
+			if ( command === "open-add-crew" ) {
+				await openAddCrewDialog(actor);
+				return;
+			}
+
+			let ok = false;
+			if ( command === "deploy" ) ok = await deployStarshipCrew(actor, uuid, btn.dataset.deployRole);
+			else if ( command === "remove" ) ok = await undeployStarshipCrew(actor, uuid);
+			else if ( command === "toggle-active" ) ok = await toggleStarshipActiveCrew(actor, uuid);
+			else if ( command === "set-pilot" ) ok = await deployStarshipCrew(actor, uuid, "pilot");
+			else if ( command === "undeploy-pilot" ) ok = await undeployStarshipCrew(actor, uuid, ["pilot"]);
+			else return;
+
+			if ( ok !== true ) warnStarshipActorUpdateDenied();
 		} catch ( err ) {
 			console.error("SW5E MODULE | Crew command failed.", err);
 		} finally {
