@@ -1,0 +1,733 @@
+/**
+ * Phase 5 (SS-0001) — app-local section signatures, render-generation, and
+ * validation-first partial update framework. Partial updates are the standard
+ * path; full rebuild remains the automatic recovery path.
+ */
+
+/** Independently owned plan surfaces. */
+export const STARSHIP_SECTION = Object.freeze({
+	SIDEBAR_VITALS: "sidebarVitals",
+	SIDEBAR_SYSTEM_DAMAGE: "sidebarSystemDamage",
+	SIDEBAR_DESTRUCTION: "sidebarDestruction",
+	SIDEBAR_MOVEMENT: "sidebarMovement",
+	SIDEBAR_DAMAGE_REDUCTION: "sidebarDamageReduction",
+	CORE_SUMMARY: "coreSummary",
+	CORE_SYSTEMS_ROUTING: "coreSystemsRouting",
+	CORE_CREW: "coreCrew",
+	CORE_SKILLS: "coreSkills",
+	CORE_ABILITIES: "coreAbilities",
+	CORE_STRUCTURAL_MODE: "coreStructuralMode"
+});
+
+/** Ownership marker attribute on stable mounts / Core section roots. */
+export const STARSHIP_SECTION_ATTR = "data-sw5e-section";
+
+/**
+ * @param {object} app
+ * @param {{ preserveRenderGeneration?: boolean }} [options]
+ */
+export function clearStarshipSheetPartialState(app, options = {}) {
+	if ( !app ) return;
+	delete app._sw5eStarshipSectionSigs;
+	delete app._sw5eStarshipPartialFailed;
+	delete app._sw5eStarshipActorId;
+	if ( options.preserveRenderGeneration !== true ) delete app._sw5eStarshipRenderGeneration;
+}
+
+/**
+ * Bump and return the render generation for this sheet invocation.
+ * @param {object} app
+ * @returns {number}
+ */
+export function beginStarshipSheetRender(app) {
+	const next = (Number(app?._sw5eStarshipRenderGeneration) || 0) + 1;
+	if ( app ) app._sw5eStarshipRenderGeneration = next;
+	return next;
+}
+
+/**
+ * @param {object} app
+ * @param {number} renderGen
+ * @returns {boolean}
+ */
+export function isStarshipSheetRenderCurrent(app, renderGen) {
+	return app != null && Number(app._sw5eStarshipRenderGeneration) === Number(renderGen);
+}
+
+/**
+ * @param {object} app
+ * @returns {Record<string, string>}
+ */
+export function getStarshipSectionSignatures(app) {
+	if ( !app._sw5eStarshipSectionSigs || typeof app._sw5eStarshipSectionSigs !== "object" ) {
+		app._sw5eStarshipSectionSigs = Object.create(null);
+	}
+	return app._sw5eStarshipSectionSigs;
+}
+
+/**
+ * @param {object} app
+ * @param {string} sectionId
+ * @param {string} signature
+ */
+export function setStarshipSectionSignature(app, sectionId, signature) {
+	getStarshipSectionSignatures(app)[sectionId] = signature;
+}
+
+/**
+ * @param {object} app
+ * @param {string} sectionId
+ * @returns {string|undefined}
+ */
+export function getStarshipSectionSignature(app, sectionId) {
+	return getStarshipSectionSignatures(app)[sectionId];
+}
+
+/**
+ * Stable JSON for section signatures (sorted keys; JSON-safe primitives/arrays/objects only).
+ * @param {*} value
+ * @returns {string}
+ */
+export function stableSignature(value) {
+	return JSON.stringify(sortKeysDeep(value));
+}
+
+/**
+ * @param {*} value
+ * @returns {*}
+ */
+function sortKeysDeep(value) {
+	if ( value === null || typeof value !== "object" ) return value;
+	if ( Array.isArray(value) ) return value.map(sortKeysDeep);
+	const out = {};
+	for ( const key of Object.keys(value).sort() ) out[key] = sortKeysDeep(value[key]);
+	return out;
+}
+
+/**
+ * @param {string|undefined} prior
+ * @param {string} next
+ * @returns {boolean}
+ */
+export function sectionSignatureUnchanged(prior, next) {
+	return prior != null && prior === next;
+}
+
+/**
+ * Conservative Actor-identity full-rebuild signal (not part of per-section signatures).
+ * @param {object} app
+ * @param {Actor} actor
+ * @returns {boolean}
+ */
+export function consumeStarshipActorIdentityChange(app, actor) {
+	const id = actor?.id ?? actor?.uuid ?? null;
+	const prior = app?._sw5eStarshipActorId ?? null;
+	if ( app ) app._sw5eStarshipActorId = id;
+	if ( prior == null ) return false;
+	return prior !== id;
+}
+
+/**
+ * @param {object} app
+ * @param {Actor} actor
+ */
+export function rememberStarshipActorIdentity(app, actor) {
+	if ( app ) app._sw5eStarshipActorId = actor?.id ?? actor?.uuid ?? null;
+}
+
+/**
+ * @param {object} app
+ * @param {boolean} failed
+ */
+export function setStarshipPartialFailed(app, failed) {
+	if ( app ) app._sw5eStarshipPartialFailed = failed === true;
+}
+
+/**
+ * @param {object} app
+ * @returns {boolean}
+ */
+export function isStarshipPartialFailed(app) {
+	return app?._sw5eStarshipPartialFailed === true;
+}
+
+/**
+ * Mark a stable mount with ownership id.
+ * @param {HTMLElement} el
+ * @param {string} sectionId
+ */
+export function markStarshipSectionElement(el, sectionId) {
+	if ( !(el instanceof HTMLElement) ) return;
+	el.setAttribute(STARSHIP_SECTION_ATTR, sectionId);
+}
+
+/**
+ * @param {Iterable<HTMLElement>} els
+ * @param {string} sectionId
+ */
+export function markStarshipSectionElements(els, sectionId) {
+	for ( const el of els ?? [] ) markStarshipSectionElement(el, sectionId);
+}
+
+/**
+ * @param {ParentNode} root
+ * @param {string} sectionId
+ * @param {string|null} [fallbackSelector]
+ * @returns {HTMLElement[]}
+ */
+export function queryStarshipSectionElements(root, sectionId, fallbackSelector = null) {
+	if ( !(root instanceof Element) && !(root instanceof DocumentFragment) ) return [];
+	const marked = Array.from(root.querySelectorAll(`[${STARSHIP_SECTION_ATTR}="${CSS.escape(sectionId)}"]`))
+		.filter(node => node instanceof HTMLElement);
+	if ( marked.length ) {
+		if ( !fallbackSelector ) return marked;
+		const filtered = marked.filter(node => node.matches(fallbackSelector));
+		if ( filtered.length ) return filtered;
+	}
+	if ( !fallbackSelector ) return [];
+	return Array.from(root.querySelectorAll(fallbackSelector)).filter(node => node instanceof HTMLElement);
+}
+
+/**
+ * Validate one section target set before partial apply.
+ * @param {{ root: ParentNode, sectionId: string, fallbackSelector?: string|null, expectedCount?: number, allowUnmarkedFallback?: boolean }} spec
+ * @returns {{ ok: boolean, reason?: string, elements: HTMLElement[] }}
+ */
+export function validateStarshipSectionTarget(spec) {
+	const expected = spec.expectedCount ?? 1;
+	const elements = queryStarshipSectionElements(spec.root, spec.sectionId, spec.fallbackSelector ?? null);
+	if ( expected === 0 ) {
+		return elements.length === 0
+			? { ok: true, elements }
+			: { ok: false, reason: "unexpected-presence", elements };
+	}
+	if ( elements.length === 0 ) return { ok: false, reason: "missing", elements };
+	if ( elements.length !== expected ) return { ok: false, reason: "duplicated", elements };
+	if ( spec.allowUnmarkedFallback === true ) return { ok: true, elements };
+	const hasOwnership = elements.every(el => el.getAttribute(STARSHIP_SECTION_ATTR) === spec.sectionId);
+	return hasOwnership
+		? { ok: true, elements }
+		: { ok: false, reason: "ownership", elements };
+}
+
+/**
+ * @param {object} app
+ * @param {Actor} actor
+ * @param {{ hasCoreWrapper: boolean, structuralModeChanged?: boolean, summaryChanged?: boolean }} opts
+ * @returns {{ allowPartial: boolean, reason: string }}
+ */
+export function evaluateStarshipPartialGate(app, actor, opts = {}) {
+	if ( isStarshipPartialFailed(app) ) {
+		return { allowPartial: false, reason: "prior-partial-failure" };
+	}
+	if ( consumeStarshipActorIdentityChange(app, actor) ) {
+		clearStarshipSheetPartialState(app, { preserveRenderGeneration: true });
+		rememberStarshipActorIdentity(app, actor);
+		return { allowPartial: false, reason: "actor-identity-changed" };
+	}
+	if ( !opts.hasCoreWrapper ) {
+		return { allowPartial: false, reason: "first-mount" };
+	}
+	if ( opts.structuralModeChanged ) {
+		return { allowPartial: false, reason: "structural-mode-changed" };
+	}
+	if ( opts.summaryChanged ) {
+		return { allowPartial: false, reason: "summary-changed" };
+	}
+	return { allowPartial: true, reason: "ok" };
+}
+
+/**
+ * @param {object} app
+ * @param {string} sectionId
+ * @param {*} signaturePayload
+ * @returns {{ dirty: boolean, signature: string }}
+ */
+export function compareStarshipSectionSignature(app, sectionId, signaturePayload) {
+	const signature = stableSignature(signaturePayload);
+	const prior = getStarshipSectionSignature(app, sectionId);
+	return {
+		dirty: !sectionSignatureUnchanged(prior, signature),
+		signature
+	};
+}
+
+/**
+ * Subtree replacement inside a stable mount (honest: not an in-place element update).
+ * @param {HTMLElement} mount
+ * @param {string} html
+ */
+export function replaceStarshipSectionSubtree(mount, html) {
+	mount.innerHTML = html;
+}
+
+/**
+ * Replace a Core section root with a newly rendered element (preserves siblings).
+ * @param {HTMLElement} existing
+ * @param {HTMLElement} next
+ * @param {string} sectionId
+ */
+export function replaceStarshipSectionRoot(existing, next, sectionId) {
+	markStarshipSectionElement(next, sectionId);
+	existing.replaceWith(next);
+}
+
+/**
+ * Signature payloads (documented in the Phase 5 session note and plan).
+ */
+export function signaturePayloadSidebarVitals(ctx) {
+	return {
+		sheetEditMode: Boolean(ctx?.sheetEditMode),
+		labels: {
+			hullPoints: ctx?.labels?.hullPoints ?? "",
+			shieldPoints: ctx?.labels?.shieldPoints ?? "",
+			hullDice: ctx?.labels?.hullDice ?? "",
+			shieldDice: ctx?.labels?.shieldDice ?? "",
+			configureHullPoints: ctx?.labels?.configureHullPoints ?? "",
+			configureShieldPoints: ctx?.labels?.configureShieldPoints ?? "",
+			configureHullDice: ctx?.labels?.configureHullDice ?? "",
+			configureShieldDice: ctx?.labels?.configureShieldDice ?? ""
+		},
+		vitals: {
+			hull: {
+				value: ctx?.vitals?.hull?.value ?? null,
+				max: ctx?.vitals?.hull?.max ?? null,
+				pct: ctx?.vitals?.hull?.pct ?? null
+			},
+			shield: {
+				value: ctx?.vitals?.shield?.value ?? null,
+				max: ctx?.vitals?.shield?.max ?? null,
+				pct: ctx?.vitals?.shield?.pct ?? null
+			},
+			hullDice: {
+				current: ctx?.vitals?.hullDice?.current ?? null,
+				max: ctx?.vitals?.hullDice?.max ?? null,
+				die: ctx?.vitals?.hullDice?.die ?? "",
+				pct: ctx?.vitals?.hullDice?.pct ?? null
+			},
+			shieldDice: {
+				current: ctx?.vitals?.shieldDice?.current ?? null,
+				max: ctx?.vitals?.shieldDice?.max ?? null,
+				die: ctx?.vitals?.shieldDice?.die ?? "",
+				pct: ctx?.vitals?.shieldDice?.pct ?? null
+			}
+		}
+	};
+}
+
+export function signaturePayloadSidebarSystemDamage(ctx) {
+	return {
+		editable: Boolean(ctx?.editable),
+		panelAria: ctx?.panelAria ?? "",
+		catastrophic: Boolean(ctx?.catastrophic),
+		pips: (ctx?.pips ?? []).map(pip => ({
+			n: pip?.n ?? null,
+			filled: Boolean(pip?.filled),
+			classes: pip?.classes ?? "",
+			tooltip: pip?.tooltip ?? "",
+			label: pip?.label ?? ""
+		}))
+	};
+}
+
+export function signaturePayloadSidebarDestruction(ctx) {
+	return {
+		open: Boolean(ctx?.open),
+		editMode: Boolean(ctx?.editMode),
+		editable: Boolean(ctx?.editable),
+		canRoll: Boolean(ctx?.canRoll),
+		panelAria: ctx?.panelAria ?? "",
+		successTrayPips: (ctx?.successTrayPips ?? []).map(pip => ({ filled: Boolean(pip?.filled) })),
+		failureTrayPips: (ctx?.failureTrayPips ?? []).map(pip => ({ filled: Boolean(pip?.filled) })),
+		rollLabel: ctx?.rollLabel ?? "",
+		rollTooltip: ctx?.rollTooltip ?? "",
+		rollUnavailableTooltip: ctx?.rollUnavailableTooltip ?? "",
+		resetLabel: ctx?.resetLabel ?? "",
+		resetTooltip: ctx?.resetTooltip ?? "",
+		toggleTooltipKey: ctx?.toggleTooltipKey ?? "",
+		toggleTooltip: ctx?.toggleTooltip ?? ""
+	};
+}
+
+export function signaturePayloadSidebarMovement(ctx) {
+	return {
+		movementAriaLabel: ctx?.movementAriaLabel ?? "",
+		spaceSpeedLabel: ctx?.spaceSpeedLabel ?? "",
+		spaceSpeedDisplay: ctx?.spaceSpeedDisplay ?? "",
+		turningSpeedLabel: ctx?.turningSpeedLabel ?? "",
+		turningSpeedDisplay: ctx?.turningSpeedDisplay ?? "",
+		travelSpeedLabel: ctx?.travelSpeedLabel ?? "",
+		travelSpeedDisplay: ctx?.travelSpeedDisplay ?? "",
+		travelPaceLabel: ctx?.travelPaceLabel ?? "",
+		travelPaceDisplay: ctx?.travelPaceDisplay ?? "",
+		showMovementConfig: Boolean(ctx?.showMovementConfig),
+		movementConfigLabel: ctx?.movementConfigLabel ?? ""
+	};
+}
+
+export function signaturePayloadSidebarDamageReduction(ctx) {
+	return {
+		sheetEditMode: Boolean(ctx?.sheetEditMode),
+		editable: Boolean(ctx?.editable),
+		showInPlay: Boolean(ctx?.showInPlay),
+		label: ctx?.label ?? "",
+		playDisplay: ctx?.playDisplay ?? "",
+		inputValue: ctx?.inputValue ?? "",
+		placeholder: ctx?.placeholder ?? ""
+	};
+}
+
+export function signaturePayloadCoreSummary(meta = {}) {
+	return {
+		actorName: meta.actorName ?? "",
+		actorImage: meta.actorImage ?? "",
+		title: meta.title ?? "",
+		subtitle: meta.subtitle ?? "",
+		headerBadges: meta.headerBadges ?? null,
+		summaryStrip: meta.summaryStrip ?? null,
+		legacyNotes: meta.legacyNotes ?? null,
+		overviewLandingKicker: meta.overviewLandingKicker ?? "",
+		overviewLandingTitle: meta.overviewLandingTitle ?? "",
+		overviewLandingLede: meta.overviewLandingLede ?? ""
+	};
+}
+
+export function signaturePayloadCoreSystemsRouting(meta = {}) {
+	const systemsCore = meta.systemsCore ?? {};
+	const advancedPower = systemsCore.advancedPower ?? {};
+	return {
+		showPowerRouting: Boolean(meta.showPowerRouting),
+		systemsSetupEditable: Boolean(meta.systemsSetupEditable),
+		systemsRoutingEditable: Boolean(meta.systemsRoutingEditable),
+		systemsCore: {
+			labels: {
+				powerRouting: systemsCore.labels?.powerRouting ?? "",
+				fuel: systemsCore.labels?.fuel ?? "",
+				fuelCapacity: systemsCore.labels?.fuelCapacity ?? "",
+				burnFuel: systemsCore.labels?.burnFuel ?? "",
+				burnFuelTooltip: systemsCore.labels?.burnFuelTooltip ?? "",
+				refuel: systemsCore.labels?.refuel ?? "",
+				refuelTooltip: systemsCore.labels?.refuelTooltip ?? "",
+				fuelCurrent: systemsCore.labels?.fuelCurrent ?? "",
+				fuelCap: systemsCore.labels?.fuelCap ?? "",
+				fuelCost: systemsCore.labels?.fuelCost ?? ""
+			},
+			powerRoutingLegacyBadge: systemsCore.powerRoutingLegacyBadge ?? "",
+			powerRoutingHint: systemsCore.powerRoutingHint ?? "",
+			routingOptions: (systemsCore.routingOptions ?? []).map(option => ({
+				value: option?.value ?? "",
+				label: option?.label ?? "",
+				tooltip: option?.tooltip ?? "",
+				selected: Boolean(option?.selected)
+			})),
+			coreCollapse: {
+				fuel: Boolean(systemsCore.coreCollapse?.fuel)
+			},
+			coreCollapseLabels: {
+				fuel: {
+					expand: systemsCore.coreCollapseLabels?.fuel?.expand ?? "",
+					collapse: systemsCore.coreCollapseLabels?.fuel?.collapse ?? ""
+				}
+			},
+			fuelPct: systemsCore.fuelPct ?? null,
+			fuelBarLabel: systemsCore.fuelBarLabel ?? "",
+			fuelValue: systemsCore.fuelValue ?? null,
+			fuelCap: systemsCore.fuelCap ?? null,
+			fuelCost: systemsCore.fuelCost ?? null,
+			advancedPower: {
+				collapsed: Boolean(advancedPower.collapsed),
+				panelAria: advancedPower.panelAria ?? "",
+				title: advancedPower.title ?? "",
+				expandTooltip: advancedPower.expandTooltip ?? "",
+				collapseTooltip: advancedPower.collapseTooltip ?? "",
+				dieLabel: advancedPower.dieLabel ?? "",
+				dieOptions: (advancedPower.dieOptions ?? []).map(option => ({
+					value: option?.value ?? "",
+					selected: Boolean(option?.selected)
+				})),
+				dieDisplay: advancedPower.dieDisplay ?? "",
+				canRecover: Boolean(advancedPower.canRecover),
+				recoverLabel: advancedPower.recoverLabel ?? "",
+				recoverTooltip: advancedPower.recoverTooltip ?? "",
+				currentLabel: advancedPower.currentLabel ?? "",
+				maxLabel: advancedPower.maxLabel ?? "",
+				spendLabel: advancedPower.spendLabel ?? "",
+				spendTooltip: advancedPower.spendTooltip ?? "",
+				slots: (advancedPower.slots ?? []).map(slot => ({
+					key: slot?.key ?? "",
+					label: slot?.label ?? "",
+					isCentral: Boolean(slot?.isCentral),
+					value: slot?.value ?? null,
+					storedMax: slot?.storedMax ?? null,
+					maxDisplayDiffers: Boolean(slot?.maxDisplayDiffers),
+					maxDisplayHint: slot?.maxDisplayHint ?? "",
+					displayValue: slot?.displayValue ?? null,
+					displayMax: slot?.displayMax ?? null,
+					canSpend: Boolean(slot?.canSpend)
+				}))
+			}
+		}
+	};
+}
+
+export function signaturePayloadCoreCrew(meta = {}) {
+	return {
+		crewManageEditable: Boolean(meta.crewManageEditable),
+		crewRolesKicker: meta.crewRolesKicker ?? "",
+		sotgSheetEditMode: Boolean(meta.sotgSheetEditMode),
+		systemsCore: {
+			coreCollapse: {
+				crew: Boolean(meta.systemsCore?.coreCollapse?.crew)
+			},
+			coreCollapseLabels: {
+				crew: {
+					expand: meta.systemsCore?.coreCollapseLabels?.crew?.expand ?? "",
+					collapse: meta.systemsCore?.coreCollapseLabels?.crew?.collapse ?? ""
+				}
+			}
+		},
+		crew: {
+			roster: (meta.crew?.roster ?? []).map(entry => ({
+				uuid: entry?.uuid ?? "",
+				name: entry?.name ?? "",
+				img: entry?.img ?? "",
+				searchText: entry?.searchText ?? "",
+				active: Boolean(entry?.active),
+				isPilot: Boolean(entry?.isPilot),
+				isCrew: Boolean(entry?.isCrew),
+				isPassenger: Boolean(entry?.isPassenger),
+				canUndeployPilot: Boolean(entry?.canUndeployPilot),
+				canSetPilot: Boolean(entry?.canSetPilot),
+				canToggleActive: Boolean(entry?.canToggleActive),
+				canRemove: Boolean(entry?.canRemove)
+			}))
+		},
+		crewRoleGroups: (meta.crewRoleGroups ?? []).map(group => ({
+			groupKey: group?.groupKey ?? "",
+			label: group?.label ?? "",
+			count: group?.count ?? null,
+			supportsSheetNavigation: Boolean(group?.supportsSheetNavigation),
+			firstItemId: group?.firstItemId ?? "",
+			manageLabel: group?.manageLabel ?? "",
+			collapsed: Boolean(group?.collapsed),
+			expandLabel: group?.expandLabel ?? "",
+			collapseLabel: group?.collapseLabel ?? "",
+			items: (group?.items ?? []).map(item => ({
+				id: item?.id ?? "",
+				name: item?.name ?? "",
+				img: item?.img ?? "",
+				meta: item?.meta ?? "",
+				priceLabel: item?.priceLabel ?? "",
+				weightLabel: item?.weightLabel ?? "",
+				defaultTab: item?.defaultTab ?? "",
+				allowDelete: Boolean(item?.allowDelete),
+				sourceActorUuid: item?.sourceActorUuid ?? "",
+				sotgPanel: item?.sotgPanel ?? ""
+			}))
+		}))
+	};
+}
+
+export function signaturePayloadCoreSkills(meta = {}) {
+	return {
+		editable: Boolean(meta.editable),
+		overviewSkillsAriaLabel: meta.overviewSkillsAriaLabel ?? "",
+		overviewSkillsKicker: meta.overviewSkillsKicker ?? "",
+		overviewSkillConfigureTitle: meta.overviewSkillConfigureTitle ?? "",
+		skills: (meta.skills ?? []).map(skill => ({
+			id: skill?.id ?? "",
+			label: skill?.label ?? "",
+			abilityAbbr: skill?.abilityAbbr ?? "",
+			icon: skill?.icon ?? "",
+			modDisplay: skill?.modDisplay ?? "",
+			passiveDisplay: skill?.passiveDisplay ?? "",
+			proficiencyClass: skill?.proficiencyClass ?? ""
+		}))
+	};
+}
+
+export function signaturePayloadCoreAbilities(meta = {}) {
+	return {
+		sotgSheetEditMode: Boolean(meta.sotgSheetEditMode),
+		overviewAbilitiesAriaLabel: meta.overviewAbilitiesAriaLabel ?? "",
+		overviewAbilities: (meta.overviewAbilities ?? []).map(ability => ({
+			key: ability?.key ?? "",
+			label: ability?.label ?? "",
+			abilityIcon: ability?.abilityIcon ?? "",
+			abbrLower: ability?.abbrLower ?? "",
+			configureLabel: ability?.configureLabel ?? "",
+			inputName: ability?.inputName ?? "",
+			sourceValue: ability?.sourceValue ?? null,
+			value: ability?.value ?? null,
+			modSign: ability?.modSign ?? "",
+			modAbs: ability?.modAbs ?? null,
+			save: ability?.save ?? null,
+			hover: ability?.hover ?? "",
+			proficient: ability?.proficient ?? null,
+			proficientName: ability?.proficientName ?? "",
+			saveRollTooltip: ability?.saveRollTooltip ?? ""
+		}))
+	};
+}
+
+export function signaturePayloadCoreStructuralMode(meta = {}) {
+	return {
+		sotgSheetEditMode: Boolean(meta.sotgSheetEditMode),
+		editable: meta.actorEditable !== false,
+		showPowerRouting: Boolean(meta.showPowerRouting),
+		overviewAbilitiesPresent: Boolean(meta.overviewAbilitiesPresent),
+		crewPanelPresent: Boolean(meta.crewPanelPresent)
+	};
+}
+
+/**
+ * Record baseline signatures after the full Core path wins.
+ * @param {object} app
+ * @param {Actor} actor
+ * @param {object} meta
+ */
+export function recordStarshipCoreBaseline(app, actor, meta) {
+	setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_SUMMARY, stableSignature(signaturePayloadCoreSummary(meta)));
+	setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_SYSTEMS_ROUTING, stableSignature(signaturePayloadCoreSystemsRouting(meta)));
+	setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_CREW, stableSignature(signaturePayloadCoreCrew(meta)));
+	setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_SKILLS, stableSignature(signaturePayloadCoreSkills(meta)));
+	setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_ABILITIES, stableSignature(signaturePayloadCoreAbilities(meta)));
+	setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_STRUCTURAL_MODE, stableSignature(signaturePayloadCoreStructuralMode(meta)));
+	rememberStarshipActorIdentity(app, actor);
+}
+
+/**
+ * Apply Core subsection replacements from a freshly rendered layer HTML string.
+ * The full wrapper identity is preserved; invalid or unsupported plans fall back.
+ *
+ * @param {HTMLElement} existingWrapper  `.sw5e-starship-tab` Core wrapper
+ * @param {string} renderedHtml
+ * @param {object} app
+ * @param {number} renderGen
+ * @param {object} meta
+ * @returns {Promise<"applied"|"skipped"|"fallback">}
+ */
+export async function tryApplyStarshipCorePartialUpdates(existingWrapper, renderedHtml, app, renderGen, meta) {
+	if ( !(existingWrapper instanceof HTMLElement) ) return "fallback";
+	if ( !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+
+	const temp = document.createElement("div");
+	temp.innerHTML = renderedHtml;
+	const nextPanel = temp.querySelector(".sw5e-starship-panel");
+	if ( !(nextPanel instanceof HTMLElement) ) return "fallback";
+
+	const structural = compareStarshipSectionSignature(app, STARSHIP_SECTION.CORE_STRUCTURAL_MODE, signaturePayloadCoreStructuralMode(meta));
+	if ( structural.dirty ) return "fallback";
+
+	const summary = compareStarshipSectionSignature(app, STARSHIP_SECTION.CORE_SUMMARY, signaturePayloadCoreSummary(meta));
+	if ( summary.dirty ) return "fallback";
+
+	const abilitiesSig = compareStarshipSectionSignature(app, STARSHIP_SECTION.CORE_ABILITIES, signaturePayloadCoreAbilities(meta));
+	const skillsSig = compareStarshipSectionSignature(app, STARSHIP_SECTION.CORE_SKILLS, signaturePayloadCoreSkills(meta));
+	const crewSig = compareStarshipSectionSignature(app, STARSHIP_SECTION.CORE_CREW, signaturePayloadCoreCrew(meta));
+	const systemsSig = compareStarshipSectionSignature(app, STARSHIP_SECTION.CORE_SYSTEMS_ROUTING, signaturePayloadCoreSystemsRouting(meta));
+
+	const hasAbilities = Boolean(meta.overviewAbilitiesPresent);
+	const hasSkills = Array.isArray(meta.skills) && meta.skills.length > 0;
+	const hasCrew = Boolean(meta.crewPanelPresent);
+	const wantsRouting = Boolean(meta.showPowerRouting);
+
+	const sectionRoots = [
+		{
+			id: STARSHIP_SECTION.CORE_ABILITIES,
+			signature: abilitiesSig.signature,
+			dirty: abilitiesSig.dirty,
+			selector: ".sw5e-starship-overview-abilities-row",
+			expectedCount: hasAbilities ? 1 : 0
+		},
+		{
+			id: STARSHIP_SECTION.CORE_SKILLS,
+			signature: skillsSig.signature,
+			dirty: skillsSig.dirty,
+			selector: "section.sw5e-starship-overview-skills",
+			expectedCount: hasSkills ? 1 : 0
+		},
+		{
+			id: STARSHIP_SECTION.CORE_CREW,
+			signature: crewSig.signature,
+			dirty: crewSig.dirty,
+			selector: 'section.sw5e-starship-crew-panel[data-sw5e-core-panel="crew"]',
+			expectedCount: hasCrew ? 1 : 0
+		},
+		{
+			id: STARSHIP_SECTION.CORE_SYSTEMS_ROUTING,
+			signature: systemsSig.signature,
+			dirty: systemsSig.dirty,
+			selector: "section.sw5e-starship-core-repair-panel",
+			expectedCount: 1
+		},
+		{
+			id: STARSHIP_SECTION.CORE_SYSTEMS_ROUTING,
+			signature: systemsSig.signature,
+			dirty: systemsSig.dirty,
+			selector: "section.sw5e-starship-core-routing-panel",
+			expectedCount: wantsRouting ? 1 : 0
+		},
+		{
+			id: STARSHIP_SECTION.CORE_SYSTEMS_ROUTING,
+			signature: systemsSig.signature,
+			dirty: systemsSig.dirty,
+			selector: 'section.sw5e-starship-core-advanced-power-panel[data-sw5e-core-panel="advancedPower"]',
+			expectedCount: 1
+		},
+		{
+			id: STARSHIP_SECTION.CORE_SYSTEMS_ROUTING,
+			signature: systemsSig.signature,
+			dirty: systemsSig.dirty,
+			selector: 'section.sw5e-starship-core-fuel-panel[data-sw5e-core-panel="fuel"]',
+			expectedCount: 1
+		}
+	];
+
+	/** @type {{ id: string, signature: string, existing: HTMLElement, next: HTMLElement }[]} */
+	const plan = [];
+
+	for ( const spec of sectionRoots ) {
+		const existingCheck = validateStarshipSectionTarget({
+			root: existingWrapper,
+			sectionId: spec.id,
+			fallbackSelector: spec.selector,
+			expectedCount: spec.expectedCount
+		});
+		const nextNodes = Array.from(temp.querySelectorAll(spec.selector)).filter(node => node instanceof HTMLElement);
+		if ( spec.expectedCount === 0 ) {
+			if ( !existingCheck.ok ) return "fallback";
+			if ( nextNodes.length !== 0 ) return "fallback";
+			continue;
+		}
+		if ( nextNodes.length !== spec.expectedCount ) return "fallback";
+		if ( !existingCheck.ok ) return "fallback";
+		if ( !spec.dirty ) continue;
+		for ( let i = 0; i < spec.expectedCount; i += 1 ) {
+			plan.push({
+				id: spec.id,
+				signature: spec.signature,
+				existing: existingCheck.elements[i],
+				next: nextNodes[i]
+			});
+		}
+	}
+
+	if ( !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+
+	try {
+		for ( const item of plan ) replaceStarshipSectionRoot(item.existing, item.next, item.id);
+		setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_SUMMARY, summary.signature);
+		setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_SYSTEMS_ROUTING, systemsSig.signature);
+		setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_CREW, crewSig.signature);
+		setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_SKILLS, skillsSig.signature);
+		setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_ABILITIES, abilitiesSig.signature);
+		setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_STRUCTURAL_MODE, structural.signature);
+		setStarshipPartialFailed(app, false);
+		return "applied";
+	} catch ( err ) {
+		console.error("SW5E MODULE | Starship Core partial update failed.", err);
+		setStarshipPartialFailed(app, true);
+		return "fallback";
+	}
+}

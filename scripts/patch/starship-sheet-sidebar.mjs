@@ -35,6 +35,23 @@ import {
 	stashStarshipPendingSidebarScroll
 } from "./starship-sheet-scroll.mjs";
 import {
+	STARSHIP_SECTION,
+	STARSHIP_SECTION_ATTR,
+	compareStarshipSectionSignature,
+	isStarshipPartialFailed,
+	isStarshipSheetRenderCurrent,
+	markStarshipSectionElement,
+	replaceStarshipSectionSubtree,
+	setStarshipPartialFailed,
+	setStarshipSectionSignature,
+	signaturePayloadSidebarDamageReduction,
+	signaturePayloadSidebarDestruction,
+	signaturePayloadSidebarMovement,
+	signaturePayloadSidebarSystemDamage,
+	signaturePayloadSidebarVitals,
+	validateStarshipSectionTarget
+} from "./starship-sheet-partial.mjs";
+import {
 	coerceStarshipIntegerHpField,
 	STARSHIP_INTEGER_HP_PATHS
 } from "../starship-sheet-preupdate.mjs";
@@ -127,35 +144,398 @@ export function buildStarshipSidebarMovementContext(actor, app = null, { runtime
 	};
 }
 
-export async function renderStarshipSidebarMovement(root, actor, app = null, { runtime } = {}) {
+const STARSHIP_SIDEBAR_SURFACE_ORDER = Object.freeze([
+	STARSHIP_SECTION.SIDEBAR_VITALS,
+	STARSHIP_SECTION.SIDEBAR_SYSTEM_DAMAGE,
+	STARSHIP_SECTION.SIDEBAR_DESTRUCTION,
+	STARSHIP_SECTION.SIDEBAR_MOVEMENT,
+	STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION
+]);
+
+function normalizeSidebarSurfaceIds(surfaces) {
+	if ( !Array.isArray(surfaces) || surfaces.length === 0 ) return [...STARSHIP_SIDEBAR_SURFACE_ORDER];
+	return STARSHIP_SIDEBAR_SURFACE_ORDER.filter(id => surfaces.includes(id));
+}
+
+function syncStableSectionAttributes(existing, next, sectionId) {
+	if ( !(existing instanceof HTMLElement) || !(next instanceof HTMLElement) ) return;
+	for ( const attr of Array.from(existing.attributes) ) {
+		if ( attr.name === STARSHIP_SECTION_ATTR ) continue;
+		existing.removeAttribute(attr.name);
+	}
+	for ( const attr of Array.from(next.attributes) ) existing.setAttribute(attr.name, attr.value);
+	markStarshipSectionElement(existing, sectionId);
+}
+
+function getSidebarSurfaceSelector(sectionId) {
+	switch ( sectionId ) {
+		case STARSHIP_SECTION.SIDEBAR_VITALS: return ".sw5e-starship-sidebar-vitals";
+		case STARSHIP_SECTION.SIDEBAR_SYSTEM_DAMAGE: return ".sw5e-starship-sidebar-system-damage";
+		case STARSHIP_SECTION.SIDEBAR_DESTRUCTION: return ".sw5e-starship-destruction-tray";
+		case STARSHIP_SECTION.SIDEBAR_MOVEMENT: return ".sw5e-starship-sidebar-movement";
+		case STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION: return ".sw5e-starship-sidebar-damage-reduction";
+		default: return null;
+	}
+}
+
+function getSidebarSurfaceExisting(root, sectionId) {
+	const selector = getSidebarSurfaceSelector(sectionId);
+	return validateStarshipSectionTarget({
+		root,
+		sectionId,
+		fallbackSelector: selector,
+		expectedCount: 1
+	});
+}
+
+function syncVitalPlayMeter(meter, data, labelText) {
+	if ( !(meter instanceof HTMLElement) ) return false;
+	const label = meter.querySelector(":scope > .label");
+	if ( !(label instanceof HTMLElement) ) return false;
+	const valueNode = label.querySelector(".value");
+	const maxNode = label.querySelector(".max");
+	if ( !(valueNode instanceof HTMLElement) || !(maxNode instanceof HTMLElement) ) return false;
+	valueNode.textContent = String(data.value ?? 0);
+	maxNode.textContent = String(data.max ?? 0);
+	meter.setAttribute("aria-valuenow", String(data.value ?? 0));
+	meter.setAttribute("aria-valuemax", String(data.max ?? 0));
+	meter.style.setProperty("--bar-percentage", `${data.pct ?? 0}%`);
+	const input = meter.querySelector(":scope > input[data-sw5e-vital-path]");
+	if ( input instanceof HTMLInputElement ) {
+		input.setAttribute("aria-label", labelText);
+		if ( document.activeElement !== input ) {
+			input.value = String(data.value ?? 0);
+			input.defaultValue = String(data.value ?? 0);
+		}
+	}
+	return true;
+}
+
+function syncVitalDiceMeter(meter, data) {
+	if ( !(meter instanceof HTMLElement) ) return false;
+	const label = meter.querySelector(":scope > .label");
+	if ( !(label instanceof HTMLElement) ) return false;
+	const valueNode = label.querySelector(".value");
+	const maxNode = label.querySelector(".max");
+	const dieNode = label.querySelector(".die");
+	if ( !(valueNode instanceof HTMLElement) || !(maxNode instanceof HTMLElement) ) return false;
+	valueNode.textContent = String(data.current ?? 0);
+	maxNode.textContent = String(data.max ?? 0);
+	meter.setAttribute("aria-valuenow", String(data.current ?? 0));
+	meter.setAttribute("aria-valuemax", String(data.max ?? 0));
+	meter.style.setProperty("--bar-percentage", `${data.pct ?? 0}%`);
+	if ( data.die ) {
+		if ( dieNode instanceof HTMLElement ) dieNode.textContent = String(data.die);
+		else return false;
+	} else if ( dieNode instanceof HTMLElement ) {
+		dieNode.remove();
+	}
+	return true;
+}
+
+function tryApplySidebarVitalsPatch(vitals, ctx) {
+	if ( !(vitals instanceof HTMLElement) ) return false;
+	const currentEditMode = vitals.querySelector("[data-sw5e-vital-config]") != null;
+	if ( currentEditMode !== Boolean(ctx?.sheetEditMode) ) return false;
+
+	const hullGroup = vitals.querySelector(".sw5e-starship-vital-meter--primary");
+	const shieldGroup = vitals.querySelector(".sw5e-starship-shield-meter")?.closest(".sw5e-starship-vital-meter");
+	const hullDiceGroup = vitals.querySelector(".sw5e-starship-hull-dice-meter")?.closest(".sw5e-starship-vital-meter");
+	const shieldDiceGroup = vitals.querySelector(".sw5e-starship-shield-dice-meter")?.closest(".sw5e-starship-vital-meter");
+	if ( !(hullGroup instanceof HTMLElement) || !(shieldGroup instanceof HTMLElement) || !(hullDiceGroup instanceof HTMLElement) || !(shieldDiceGroup instanceof HTMLElement) ) return false;
+
+	const hullLabel = hullGroup.querySelector(".label.roboto-condensed-upper > span");
+	const shieldLabel = shieldGroup.querySelector(".label.roboto-condensed-upper > span");
+	const hullDiceLabel = hullDiceGroup.querySelector(".label.roboto-condensed-upper > span");
+	const shieldDiceLabel = shieldDiceGroup.querySelector(".label.roboto-condensed-upper > span");
+	if ( !(hullLabel instanceof HTMLElement) || !(shieldLabel instanceof HTMLElement) || !(hullDiceLabel instanceof HTMLElement) || !(shieldDiceLabel instanceof HTMLElement) ) return false;
+
+	hullLabel.textContent = ctx.labels.hullPoints;
+	shieldLabel.textContent = ctx.labels.shieldPoints;
+	hullDiceLabel.textContent = ctx.labels.hullDice;
+	shieldDiceLabel.textContent = ctx.labels.shieldDice;
+
+	for ( const [selector, aria] of [
+		["[data-sw5e-vital-config='hullPoints']", ctx.labels.configureHullPoints],
+		["[data-sw5e-vital-config='shieldPoints']", ctx.labels.configureShieldPoints],
+		["[data-sw5e-vital-config='hullDice']", ctx.labels.configureHullDice],
+		["[data-sw5e-vital-config='shieldDice']", ctx.labels.configureShieldDice]
+	] ) {
+		const button = vitals.querySelector(selector);
+		if ( button instanceof HTMLButtonElement ) button.setAttribute("aria-label", aria);
+	}
+
+	const hullMeter = vitals.querySelector(".sw5e-starship-hull-meter .sw5e-starship-vital-play-meter");
+	const shieldMeter = vitals.querySelector(".sw5e-starship-shield-meter .sw5e-starship-vital-play-meter");
+	const hullDiceMeter = vitals.querySelector(".sw5e-starship-hull-dice-meter");
+	const shieldDiceMeter = vitals.querySelector(".sw5e-starship-shield-dice-meter");
+	return syncVitalPlayMeter(hullMeter, ctx.vitals.hull, ctx.labels.hullPoints)
+		&& syncVitalPlayMeter(shieldMeter, ctx.vitals.shield, ctx.labels.shieldPoints)
+		&& syncVitalDiceMeter(hullDiceMeter, ctx.vitals.hullDice)
+		&& syncVitalDiceMeter(shieldDiceMeter, ctx.vitals.shieldDice);
+}
+
+function tryApplySidebarSystemDamagePatch(wrapper, ctx) {
+	if ( !(wrapper instanceof HTMLElement) ) return false;
+	const inner = wrapper.querySelector(".sw5e-starship-system-damage-inner");
+	const buttons = Array.from(wrapper.querySelectorAll("[data-sw5e-system-damage-action='toggle-pip']"))
+		.filter(node => node instanceof HTMLButtonElement);
+	if ( !(inner instanceof HTMLElement) || buttons.length !== (ctx?.pips?.length ?? 0) ) return false;
+	inner.setAttribute("aria-label", ctx.panelAria ?? "");
+	wrapper.classList.toggle("sw5e-starship-sidebar-system-damage--catastrophic", Boolean(ctx.catastrophic));
+	for ( let i = 0; i < buttons.length; i += 1 ) {
+		const button = buttons[i];
+		const pip = ctx.pips[i];
+		button.className = `${pip.classes ?? ""} unbutton`.trim();
+		button.dataset.n = String(pip.n ?? i + 1);
+		button.dataset.tooltip = pip.tooltip ?? "";
+		button.setAttribute("aria-label", pip.label ?? "");
+		button.setAttribute("aria-pressed", pip.filled ? "true" : "false");
+		button.disabled = !ctx.editable;
+		if ( ctx.editable ) button.removeAttribute("tabindex");
+		else button.setAttribute("tabindex", "-1");
+	}
+	return true;
+}
+
+function applyStableSidebarSubtree(existing, next, sectionId) {
+	if ( !(existing instanceof HTMLElement) || !(next instanceof HTMLElement) ) return;
+	syncStableSectionAttributes(existing, next, sectionId);
+	replaceStarshipSectionSubtree(existing, next.innerHTML);
+}
+
+export async function renderStarshipSidebarSections(root, actor, app = null, { runtime, renderGen = null, surfaces = null, allowPartial = null } = {}) {
+	const shell = getStarshipSidebarShell(root, app);
+	if ( !(shell instanceof HTMLElement) ) return "skipped";
+
+	const requested = normalizeSidebarSurfaceIds(surfaces);
+	const entries = [];
+
+	if ( requested.includes(STARSHIP_SECTION.SIDEBAR_VITALS) ) {
+		const ctx = await buildStarshipSidebarVitalsRenderContext(actor, app);
+		const compare = compareStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_VITALS, signaturePayloadSidebarVitals(ctx));
+		entries.push({ id: STARSHIP_SECTION.SIDEBAR_VITALS, ctx, dirty: compare.dirty, signature: compare.signature });
+	}
+	if ( requested.includes(STARSHIP_SECTION.SIDEBAR_SYSTEM_DAMAGE) ) {
+		const ctx = buildSystemDamageSidebarContext(actor, {
+			editable: app?.isEditable !== false && canCurrentUserUpdateStarshipActor(actor)
+		});
+		const compare = compareStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_SYSTEM_DAMAGE, signaturePayloadSidebarSystemDamage(ctx));
+		entries.push({ id: STARSHIP_SECTION.SIDEBAR_SYSTEM_DAMAGE, ctx, dirty: compare.dirty, signature: compare.signature });
+	}
+	if ( requested.includes(STARSHIP_SECTION.SIDEBAR_DESTRUCTION) ) {
+		const ctx = buildDestructionSaveSidebarContext(actor, {
+			open: app?._sw5eDestructionTrayOpen === true,
+			editMode: Boolean(isStarshipSheetEditMode(app) && app?.isEditable !== false),
+			editable: app?.isEditable !== false && canCurrentUserUpdateStarshipActor(actor)
+		});
+		const compare = compareStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_DESTRUCTION, signaturePayloadSidebarDestruction(ctx));
+		entries.push({ id: STARSHIP_SECTION.SIDEBAR_DESTRUCTION, ctx, dirty: compare.dirty, signature: compare.signature });
+	}
+	if ( requested.includes(STARSHIP_SECTION.SIDEBAR_MOVEMENT) ) {
+		const ctx = buildStarshipSidebarMovementContext(actor, app, { runtime });
+		const compare = compareStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_MOVEMENT, signaturePayloadSidebarMovement(ctx));
+		entries.push({ id: STARSHIP_SECTION.SIDEBAR_MOVEMENT, ctx, dirty: compare.dirty, signature: compare.signature });
+	}
+	if ( requested.includes(STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION) ) {
+		const ctx = buildStarshipSidebarDamageReductionContext(actor, app);
+		const compare = compareStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION, signaturePayloadSidebarDamageReduction(ctx));
+		entries.push({ id: STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION, ctx, dirty: compare.dirty, signature: compare.signature });
+	}
+
+	if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+
+	const partialEnabled = allowPartial === true
+		|| (allowPartial == null && !isStarshipPartialFailed(app));
+
+	if ( requested.includes(STARSHIP_SECTION.SIDEBAR_MOVEMENT) ) {
+		suppressStockVehicleMovementSidebarForStarship(root, actor, app);
+		ensureStarshipMovementConfigBlocked(root, app, actor);
+	}
+
+	let canPartial = partialEnabled;
+	if ( canPartial ) {
+		for ( const entry of entries ) {
+			if ( entry.id === STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION ) {
+				const shouldExist = entry.ctx.sheetEditMode || entry.ctx.showInPlay;
+				const check = validateStarshipSectionTarget({
+					root: shell,
+					sectionId: entry.id,
+					fallbackSelector: getSidebarSurfaceSelector(entry.id),
+					expectedCount: shouldExist ? 1 : 0
+				});
+				if ( !check.ok ) {
+					canPartial = false;
+					break;
+				}
+				continue;
+			}
+			const check = getSidebarSurfaceExisting(shell, entry.id);
+			if ( !check.ok ) {
+				canPartial = false;
+				break;
+			}
+		}
+	}
+
+	const runFullFallback = async () => {
+		for ( const entry of entries ) {
+			if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+			switch ( entry.id ) {
+				case STARSHIP_SECTION.SIDEBAR_VITALS:
+					await renderStarshipSidebarVitalsFull(root, actor, app, entry.ctx, entry.signature, renderGen);
+					break;
+				case STARSHIP_SECTION.SIDEBAR_SYSTEM_DAMAGE:
+					await renderStarshipSidebarSystemDamageFull(root, actor, app, entry.ctx, entry.signature, renderGen);
+					break;
+				case STARSHIP_SECTION.SIDEBAR_DESTRUCTION:
+					await renderStarshipSidebarDestructionSavesFull(root, actor, app, entry.ctx, entry.signature, renderGen);
+					break;
+				case STARSHIP_SECTION.SIDEBAR_MOVEMENT:
+					await renderStarshipSidebarMovementFull(root, actor, app, entry.ctx, entry.signature, renderGen, runtime);
+					break;
+				case STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION:
+					await renderStarshipSidebarDamageReductionFull(root, actor, app, entry.ctx, entry.signature, renderGen);
+					break;
+			}
+		}
+		return "full";
+	};
+
+	if ( !canPartial ) {
+		const outcome = await runFullFallback();
+		if ( outcome !== "skipped" && !isStarshipPartialFailed(app) ) setStarshipPartialFailed(app, false);
+		return outcome;
+	}
+
+	try {
+		for ( const entry of entries ) {
+			if ( !entry.dirty ) continue;
+			if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+
+			if ( entry.id === STARSHIP_SECTION.SIDEBAR_VITALS ) {
+				const existing = getSidebarSurfaceExisting(shell, entry.id).elements[0];
+				if ( !tryApplySidebarVitalsPatch(existing, entry.ctx) ) {
+					const rendered = await foundry.applications.handlebars.renderTemplate(
+						getModulePath("templates/starship-sidebar-vitals.hbs"),
+						entry.ctx
+					);
+					if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+					const mount = document.createElement("section");
+					mount.className = "sw5e-starship-sidebar-vitals";
+					mount.innerHTML = rendered;
+					applyStableSidebarSubtree(existing, mount, entry.id);
+					bindStarshipVitalsMeterControls(root, actor, app);
+				}
+			} else if ( entry.id === STARSHIP_SECTION.SIDEBAR_SYSTEM_DAMAGE ) {
+				const existing = getSidebarSurfaceExisting(shell, entry.id).elements[0];
+				if ( !tryApplySidebarSystemDamagePatch(existing, entry.ctx) ) {
+					const rendered = await foundry.applications.handlebars.renderTemplate(
+						getModulePath("templates/starship-sidebar-system-damage.hbs"),
+						entry.ctx
+					);
+					if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+					const mount = document.createElement("section");
+					mount.className = "sw5e-starship-sidebar-system-damage";
+					if ( entry.ctx.catastrophic ) mount.classList.add("sw5e-starship-sidebar-system-damage--catastrophic");
+					mount.innerHTML = rendered;
+					applyStableSidebarSubtree(existing, mount, entry.id);
+				}
+			} else if ( entry.id === STARSHIP_SECTION.SIDEBAR_DESTRUCTION ) {
+				const existing = getSidebarSurfaceExisting(shell, entry.id).elements[0];
+				const rendered = await foundry.applications.handlebars.renderTemplate(
+					getModulePath("templates/starship-sidebar-destruction-saves.hbs"),
+					entry.ctx
+				);
+				if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+				const mount = document.createElement("div");
+				mount.innerHTML = rendered.trim();
+				const tray = mount.firstElementChild;
+				if ( !(tray instanceof HTMLElement) ) throw new Error("Invalid destruction tray render.");
+				applyStableSidebarSubtree(existing, tray, entry.id);
+				syncDestructionTrayControlState(app, root);
+			} else if ( entry.id === STARSHIP_SECTION.SIDEBAR_MOVEMENT ) {
+				const existing = getSidebarSurfaceExisting(shell, entry.id).elements[0];
+				const rendered = await foundry.applications.handlebars.renderTemplate(
+					getModulePath("templates/starship-sidebar-movement.hbs"),
+					entry.ctx
+				);
+				if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+				const mount = document.createElement("div");
+				mount.innerHTML = rendered.trim();
+				const movementBlock = mount.firstElementChild;
+				if ( !(movementBlock instanceof HTMLElement) ) throw new Error("Invalid movement sidebar render.");
+				applyStableSidebarSubtree(existing, movementBlock, entry.id);
+				bindStarshipSidebarMovementConfig(existing, actor, app);
+			} else if ( entry.id === STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION ) {
+				if ( !entry.ctx.sheetEditMode && !entry.ctx.showInPlay ) continue;
+				const existing = getSidebarSurfaceExisting(shell, entry.id).elements[0];
+				const rendered = await foundry.applications.handlebars.renderTemplate(
+					getModulePath("templates/starship-sidebar-damage-reduction.hbs"),
+					entry.ctx
+				);
+				if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+				const mount = document.createElement("div");
+				mount.innerHTML = rendered.trim();
+				const block = mount.firstElementChild;
+				if ( !(block instanceof HTMLElement) ) throw new Error("Invalid damage reduction render.");
+				applyStableSidebarSubtree(existing, block, entry.id);
+				bindStarshipSidebarDamageReduction(existing, actor, app);
+			}
+		}
+
+		for ( const entry of entries ) setStarshipSectionSignature(app, entry.id, entry.signature);
+		setStarshipPartialFailed(app, false);
+		return "partial";
+	} catch ( err ) {
+		console.error("SW5E MODULE | Starship sidebar partial update failed.", err);
+		setStarshipPartialFailed(app, true);
+		if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+		return runFullFallback();
+	}
+}
+
+async function renderStarshipSidebarMovementFull(root, actor, app = null, ctx = null, signature = null, renderGen = null, runtime = null) {
 	const shell = getStarshipSidebarShell(root, app);
 	if ( !(shell instanceof HTMLElement) ) return;
 
 	suppressStockVehicleMovementSidebarForStarship(root, actor, app);
 	ensureStarshipMovementConfigBlocked(root, app, actor);
 
-	shell.querySelectorAll(".sw5e-starship-sidebar-movement").forEach(node => node.remove());
-
 	const speedGroup = findStarshipSidebarPillsGroup(shell, "Speed");
 	const sizeGroup = findStarshipSidebarPillsGroup(shell, "Size");
 	const insertParent = speedGroup?.parentElement ?? sizeGroup?.parentElement;
 	if ( !insertParent ) return;
 
-	const ctx = buildStarshipSidebarMovementContext(actor, app, { runtime });
+	const resolvedCtx = ctx ?? buildStarshipSidebarMovementContext(actor, app, { runtime });
 	const rendered = await foundry.applications.handlebars.renderTemplate(
 		getModulePath("templates/starship-sidebar-movement.hbs"),
-		ctx
+		resolvedCtx
 	);
+	if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return;
+
+	shell.querySelectorAll(".sw5e-starship-sidebar-movement").forEach(node => node.remove());
 	const mount = document.createElement("div");
 	mount.innerHTML = rendered.trim();
 	const movementBlock = mount.firstElementChild;
 	if ( !(movementBlock instanceof HTMLElement) ) return;
+	markStarshipSectionElement(movementBlock, STARSHIP_SECTION.SIDEBAR_MOVEMENT);
 
 	if ( sizeGroup?.parentElement === insertParent ) insertParent.insertBefore(movementBlock, sizeGroup);
 	else if ( speedGroup?.parentElement === insertParent ) insertParent.insertBefore(movementBlock, speedGroup);
 	else insertParent.prepend(movementBlock);
 
 	bindStarshipSidebarMovementConfig(movementBlock, actor, app);
+	if ( signature ) setStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_MOVEMENT, signature);
+}
+
+export async function renderStarshipSidebarMovement(root, actor, app = null, { runtime, renderGen, allowPartial } = {}) {
+	return renderStarshipSidebarSections(root, actor, app, {
+		runtime,
+		renderGen,
+		surfaces: [STARSHIP_SECTION.SIDEBAR_MOVEMENT],
+		allowPartial
+	});
 }
 
 export function buildStarshipSidebarDamageReductionContext(actor, app = null) {
@@ -205,14 +585,16 @@ export function bindStarshipSidebarDamageReduction(block, actor, app) {
 	});
 }
 
-export async function renderStarshipSidebarDamageReduction(root, actor, app = null) {
+async function renderStarshipSidebarDamageReductionFull(root, actor, app = null, ctx = null, signature = null, renderGen = null) {
 	const shell = getStarshipSidebarShell(root, app);
 	if ( !(shell instanceof HTMLElement) ) return;
 
-	shell.querySelectorAll(".sw5e-starship-sidebar-damage-reduction").forEach(node => node.remove());
-
-	const ctx = buildStarshipSidebarDamageReductionContext(actor, app);
-	if ( !ctx.sheetEditMode && !ctx.showInPlay ) return;
+	const resolvedCtx = ctx ?? buildStarshipSidebarDamageReductionContext(actor, app);
+	if ( !resolvedCtx.sheetEditMode && !resolvedCtx.showInPlay ) {
+		shell.querySelectorAll(".sw5e-starship-sidebar-damage-reduction").forEach(node => node.remove());
+		if ( signature ) setStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION, signature);
+		return;
+	}
 
 	const resistancesLabel = (() => {
 		try {
@@ -241,17 +623,29 @@ export async function renderStarshipSidebarDamageReduction(root, actor, app = nu
 
 	const rendered = await foundry.applications.handlebars.renderTemplate(
 		getModulePath("templates/starship-sidebar-damage-reduction.hbs"),
-		ctx
+		resolvedCtx
 	);
+	if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return;
+	shell.querySelectorAll(".sw5e-starship-sidebar-damage-reduction").forEach(node => node.remove());
 	const mount = document.createElement("div");
 	mount.innerHTML = rendered.trim();
 	const drBlock = mount.firstElementChild;
 	if ( !(drBlock instanceof HTMLElement) ) return;
+	markStarshipSectionElement(drBlock, STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION);
 
 	if ( insertBefore?.parentElement === insertParent ) insertParent.insertBefore(drBlock, insertBefore);
 	else insertParent.append(drBlock);
 
 	bindStarshipSidebarDamageReduction(drBlock, actor, app);
+	if ( signature ) setStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION, signature);
+}
+
+export async function renderStarshipSidebarDamageReduction(root, actor, app = null, { renderGen, allowPartial } = {}) {
+	return renderStarshipSidebarSections(root, actor, app, {
+		renderGen,
+		surfaces: [STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION],
+		allowPartial
+	});
 }
 
 
@@ -290,25 +684,35 @@ export async function buildStarshipSidebarVitalsRenderContext(actor, app = null)
 	};
 }
 
-export async function renderStarshipSidebarVitals(root, actor, app = null) {
+async function renderStarshipSidebarVitalsFull(root, actor, app = null, ctx = null, signature = null, renderGen = null) {
 	const shell = getStarshipSidebarShell(root, app);
-	shell?.querySelectorAll(".sw5e-starship-sidebar-vitals").forEach(node => node.remove());
-
 	const mountPoint = getStarshipSidebarVitalsMountPoint(root, app);
 	if ( !mountPoint?.reference ) return;
 
-	const ctx = await buildStarshipSidebarVitalsRenderContext(actor, app);
+	const resolvedCtx = ctx ?? await buildStarshipSidebarVitalsRenderContext(actor, app);
 	const rendered = await foundry.applications.handlebars.renderTemplate(
 		getModulePath("templates/starship-sidebar-vitals.hbs"),
-		ctx
+		resolvedCtx
 	);
+	if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return;
+	shell?.querySelectorAll(".sw5e-starship-sidebar-vitals").forEach(node => node.remove());
 
 	const wrapper = document.createElement("section");
 	wrapper.className = "sw5e-starship-sidebar-vitals";
 	wrapper.innerHTML = rendered;
+	markStarshipSectionElement(wrapper, STARSHIP_SECTION.SIDEBAR_VITALS);
 
 	mountPoint.reference.insertAdjacentElement("afterend", wrapper);
 	bindStarshipVitalsMeterControls(root, actor, app);
+	if ( signature ) setStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_VITALS, signature);
+}
+
+export async function renderStarshipSidebarVitals(root, actor, app = null, { renderGen, allowPartial } = {}) {
+	return renderStarshipSidebarSections(root, actor, app, {
+		renderGen,
+		surfaces: [STARSHIP_SECTION.SIDEBAR_VITALS],
+		allowPartial
+	});
 }
 
 export function getStarshipSystemDamageMountPoint(root, app = null) {
@@ -325,27 +729,37 @@ export function getStarshipSystemDamageMountPoint(root, app = null) {
 	};
 }
 
-export async function renderStarshipSidebarSystemDamage(root, actor, app = null) {
+async function renderStarshipSidebarSystemDamageFull(root, actor, app = null, ctx = null, signature = null, renderGen = null) {
 	const shell = getStarshipSidebarShell(root, app);
-	shell?.querySelectorAll(".sw5e-starship-sidebar-system-damage").forEach(node => node.remove());
-
 	const mountPoint = getStarshipSystemDamageMountPoint(root, app);
 	if ( !mountPoint?.reference ) return;
 
-	const ctx = buildSystemDamageSidebarContext(actor, {
+	const resolvedCtx = ctx ?? buildSystemDamageSidebarContext(actor, {
 		editable: app?.isEditable !== false && canCurrentUserUpdateStarshipActor(actor)
 	});
 	const rendered = await foundry.applications.handlebars.renderTemplate(
 		getModulePath("templates/starship-sidebar-system-damage.hbs"),
-		ctx
+		resolvedCtx
 	);
+	if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return;
+	shell?.querySelectorAll(".sw5e-starship-sidebar-system-damage").forEach(node => node.remove());
 
 	const wrapper = document.createElement("section");
 	wrapper.className = "sw5e-starship-sidebar-system-damage";
-	if ( ctx.catastrophic ) wrapper.classList.add("sw5e-starship-sidebar-system-damage--catastrophic");
+	if ( resolvedCtx.catastrophic ) wrapper.classList.add("sw5e-starship-sidebar-system-damage--catastrophic");
 	wrapper.innerHTML = rendered;
+	markStarshipSectionElement(wrapper, STARSHIP_SECTION.SIDEBAR_SYSTEM_DAMAGE);
 
 	mountPoint.reference.insertAdjacentElement("afterend", wrapper);
+	if ( signature ) setStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_SYSTEM_DAMAGE, signature);
+}
+
+export async function renderStarshipSidebarSystemDamage(root, actor, app = null, { renderGen, allowPartial } = {}) {
+	return renderStarshipSidebarSections(root, actor, app, {
+		renderGen,
+		surfaces: [STARSHIP_SECTION.SIDEBAR_SYSTEM_DAMAGE],
+		allowPartial
+	});
 }
 
 export function removeStarshipSidebarSummary(root) {
@@ -370,34 +784,43 @@ export function getStarshipDestructionTrayMountPoint(root, app = null) {
 	};
 }
 
-export async function renderStarshipSidebarDestructionSaves(root, actor, app = null) {
+async function renderStarshipSidebarDestructionSavesFull(root, actor, app = null, ctx = null, signature = null, renderGen = null) {
 	const shell = getStarshipSidebarShell(root, app);
 	if ( !(shell instanceof HTMLElement) ) return;
-
-	shell.querySelectorAll(".sw5e-starship-destruction-tray").forEach(node => node.remove());
 
 	const mountPoint = getStarshipDestructionTrayMountPoint(root, app);
 	if ( !mountPoint?.parent || !(mountPoint.reference instanceof HTMLElement) ) return;
 
-	const editMode = Boolean(isStarshipSheetEditMode(app) && app?.isEditable !== false);
-	const ctx = buildDestructionSaveSidebarContext(actor, {
+	const resolvedCtx = ctx ?? buildDestructionSaveSidebarContext(actor, {
 		open: app?._sw5eDestructionTrayOpen === true,
-		editMode,
+		editMode: Boolean(isStarshipSheetEditMode(app) && app?.isEditable !== false),
 		editable: app?.isEditable !== false && canCurrentUserUpdateStarshipActor(actor)
 	});
 
 	const rendered = await foundry.applications.handlebars.renderTemplate(
 		getModulePath("templates/starship-sidebar-destruction-saves.hbs"),
-		ctx
+		resolvedCtx
 	);
+	if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return;
+	shell.querySelectorAll(".sw5e-starship-destruction-tray").forEach(node => node.remove());
 	const mount = document.createElement("div");
 	mount.innerHTML = rendered.trim();
 	const tray = mount.firstElementChild;
 	if ( !(tray instanceof HTMLElement) ) return;
+	markStarshipSectionElement(tray, STARSHIP_SECTION.SIDEBAR_DESTRUCTION);
 
 	mountPoint.reference.insertAdjacentElement(mountPoint.insertAfter ? "afterend" : "beforebegin", tray);
 
 	syncDestructionTrayControlState(app, root);
+	if ( signature ) setStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_DESTRUCTION, signature);
+}
+
+export async function renderStarshipSidebarDestructionSaves(root, actor, app = null, { renderGen, allowPartial } = {}) {
+	return renderStarshipSidebarSections(root, actor, app, {
+		renderGen,
+		surfaces: [STARSHIP_SECTION.SIDEBAR_DESTRUCTION],
+		allowPartial
+	});
 }
 
 export function getStarshipSidebarShell(root, app = null) {

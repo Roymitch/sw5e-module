@@ -39,10 +39,12 @@ import {
 	getStarshipSidebarShell,
 	isStarshipSheetEditMode,
 	persistStarshipFuelPowerSystemPath,
-	renderStarshipSidebarDestructionSaves,
-	renderStarshipSidebarSystemDamage,
-	renderStarshipSidebarVitals
+	renderStarshipSidebarSections
 } from "./starship-sheet-sidebar.mjs";
+import {
+	beginStarshipSheetRender,
+	STARSHIP_SECTION
+} from "./starship-sheet-partial.mjs";
 
 function getSheetForm(root, app) {
 	return app?.form
@@ -460,8 +462,12 @@ export function ensureStarshipSystemDamageDelegate(root, app) {
 		const current = getStarshipSystemDamageLevel(act);
 		const next = resolveStarshipSystemDamagePipToggle(current, pipN);
 		try {
+			const renderGen = beginStarshipSheetRender(app);
 			await setStarshipSystemDamageLevel(act, next);
-			await renderStarshipSidebarSystemDamage(root, act, app);
+			await renderStarshipSidebarSections(root, act, app, {
+				renderGen,
+				surfaces: [STARSHIP_SECTION.SIDEBAR_SYSTEM_DAMAGE]
+			});
 		} catch ( err ) {
 			console.error("SW5E MODULE | Starship system damage update failed.", err);
 		}
@@ -488,10 +494,16 @@ export function ensureStarshipDestructionSaveDelegate(root, app) {
 				return;
 			}
 			try {
+				const renderGen = beginStarshipSheetRender(app);
 				await rollStarshipDestructionSave(act);
-				await renderStarshipSidebarDestructionSaves(root, act, app);
-				await renderStarshipSidebarSystemDamage(root, act, app);
-				await renderStarshipSidebarVitals(root, act, app);
+				await renderStarshipSidebarSections(root, act, app, {
+					renderGen,
+					surfaces: [
+						STARSHIP_SECTION.SIDEBAR_DESTRUCTION,
+						STARSHIP_SECTION.SIDEBAR_SYSTEM_DAMAGE,
+						STARSHIP_SECTION.SIDEBAR_VITALS
+					]
+				});
 			} catch ( err ) {
 				console.error("SW5E MODULE | Starship destruction save roll failed.", err);
 			}
@@ -507,8 +519,12 @@ export function ensureStarshipDestructionSaveDelegate(root, app) {
 				return;
 			}
 			try {
+				const renderGen = beginStarshipSheetRender(app);
 				await resetStarshipDestructionSaves(act);
-				await renderStarshipSidebarDestructionSaves(root, act, app);
+				await renderStarshipSidebarSections(root, act, app, {
+					renderGen,
+					surfaces: [STARSHIP_SECTION.SIDEBAR_DESTRUCTION]
+				});
 			} catch ( err ) {
 				console.error("SW5E MODULE | Starship destruction save reset failed.", err);
 			}
