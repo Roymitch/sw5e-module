@@ -12,6 +12,7 @@ import {
 import { shouldShowStarshipPowerRouting, isLegacyPowerRoutingOverrideEnabled, STARSHIP_LEGACY_POWER_ROUTING_FLAG } from "../starship-routing-gate.mjs";
 import {
 	buildVehicleStarshipCrewContext,
+	canCurrentUserDeployStarshipCrewRole,
 	deployStarshipCrew,
 	undeployStarshipCrew,
 	toggleStarshipActiveCrew
@@ -157,6 +158,7 @@ const SW5E_STARSHIP_CORE_PART_PREFIX = "SW5E MODULE | StarshipCorePart";
 
 let starshipCorePartRenderOptionsWrapped = false;
 let starshipVehiclePartContextWrapped = false;
+let starshipCrewDropWrapped = false;
 
 function warnStarshipCorePart(message, details = undefined) {
 	if ( details === undefined ) console.warn(SW5E_STARSHIP_CORE_PART_PREFIX, message);
@@ -1147,6 +1149,37 @@ function registerStarshipVehiclePartContextWrapper() {
 	}
 }
 
+/**
+ * Phase 1A Bug 1: SW5E starship Actor drops deploy via deployStarshipCrew (role crew).
+ * Consumes the Actor already resolved by Foundry ActorSheet._onDrop → fromDropData.
+ * Registered as MIXED because SW5E starships intentionally short-circuit stock (no wrapped call);
+ * non-starship vehicles still chain via wrapped(...). WRAPPER is invalid for that pattern.
+ * Alt→hidden membership is deferred to Phase 1A′ / Bug 6 (no runtime Alt handling here).
+ */
+function registerStarshipCrewDropWrapper() {
+	if ( starshipCrewDropWrapped ) return;
+	starshipCrewDropWrapped = true;
+	try {
+		libWrapper.register(getModuleId(), "dnd5e.applications.actor.VehicleActorSheet.prototype._onDropActor", async function(wrapped, event, actor, ...rest) {
+			const starship = this.actor ?? this.document ?? null;
+			if ( !isSw5eStarshipActor(starship) ) return wrapped(event, actor, ...rest);
+
+			// Short-circuit stock _onAdjustCrew for SW5E starships (unsupported types stay silent).
+			if ( !actor || (actor.type !== "character" && actor.type !== "npc") ) return;
+
+			if ( !canCurrentUserDeployStarshipCrewRole(starship, actor, "crew") ) {
+				warnStarshipActorUpdateDenied();
+				return;
+			}
+
+			const ok = await deployStarshipCrew(starship, actor, "crew");
+			if ( ok !== true ) warnStarshipActorUpdateDenied();
+		}, "MIXED");
+	} catch ( err ) {
+		console.warn("SW5E MODULE | Could not wrap VehicleActorSheet._onDropActor for starship crew deploy.", err);
+	}
+}
+
 async function renderStarshipLayer(app, html, data, options) {
 	const actor = data.actor ?? app.actor;
 	if ( !isSw5eStarshipActor(actor) ) return;
@@ -1359,6 +1392,7 @@ export function patchStarshipSheet() {
 	registerStarshipFeaturesTabPart();
 	registerStarshipCorePartRenderOptionsWrapper();
 	registerStarshipVehiclePartContextWrapper();
+	registerStarshipCrewDropWrapper();
 	registerStarshipVehicleSheetShowAbilitiesDefault();
 	registerStarshipCargoInventoryWrappers();
 	registerStarshipCargoItemCategoryHook();

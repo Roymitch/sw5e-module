@@ -18,6 +18,7 @@
 - **Repository hygiene:** HGTTG PDF art cache is gitignored and untracked; dormant legacy reload subsystem and CheckboxSelect app/template were removed.
 
 ### Fixed
+- **Starship Actor drop → crew:** dragging a PC or NPC onto a SW5E starship sheet deploys them into the SW5E Crew & Passengers roster as crew (via existing deployment flags), instead of doing nothing or only writing stock vehicle `system.crew` / `system.passengers`. Non-starship vehicles keep stock dnd5e drop behavior. Alt-drop hidden/stowaway membership is not included yet.
 - **Maneuver Heal `@mod`:** Heal Activities on Maneuver items with blank Activity ability now resolve `@mod` from the Maneuver ability contract (`item.abilityMod` key), instead of always using `0`.
 - **Maneuver heal formulas (pack):** Powers & Maneuvers heal/temp-HP formulas that used `1d@superiority.die + max(...)` now use `1d@superiority.die + @mod`.
 - **Existing Maneuver heal formulas:** world-owned Maneuver healing and temporary-hit-point formulas that still used obsolete ability-modifier expressions are corrected to `1d@superiority.die + @mod` without overwriting homebrew formulas.
