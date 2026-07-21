@@ -18,6 +18,7 @@ import {
 import { getSchoolPowerAttackBonus, patchPowerBonuses } from "./power-bonuses.mjs";
 import { applySpecialTraitsTabLabel } from "./special-traits-sheet.mjs";
 import { applyStarshipTabsContext } from "./starship-sheet.mjs";
+import { hasSuperiorityStyleGrant } from "../superiority-style.mjs";
 
 const PRECALCULATED_SPELLCASTING_KEY = "sw5e-preCalculatedSpellcastingClasses";
 let baseActorTabsContextWrapped = false;
@@ -426,6 +427,7 @@ function shouldShowSuperioritySidebarMeter(actor) {
 	const sup = actor?.system?.superiority;
 	if ( (getNumericValue(sup?.dice?.max) ?? 0) > 0 ) return true;
 	if ( (getNumericValue(sup?.level) ?? 0) > 0 ) return true;
+	if ( hasSuperiorityStyleGrant(actor) ) return true;
 	const classes = actor.itemTypes?.class ?? [];
 	if ( classes.some(clss => {
 		const prog = clss.system?.spellcasting?.superiorityProgression;
@@ -829,6 +831,8 @@ function injectPowersTabPowercastingSummary(root, actor, { isEditable = false } 
 		actorClasses.some(clss => clss.system?.spellcasting?.superiorityProgression && (clss.system.spellcasting.superiorityProgression !== "none"))
 		|| actorManeuvers.length > 0
 		|| (superiorityData?.level > 0)
+		|| ((getNumericValue(superiorityData?.dice?.max) ?? 0) > 0)
+		|| hasSuperiorityStyleGrant(actor)
 	);
 	const hasForcecasting = (
 		actorClasses.some(clss => ["consular", "guardian", "sentinel"].includes(clss.system.identifier))

@@ -18,6 +18,11 @@
 - **Repository hygiene:** HGTTG PDF art cache is gitignored and untracked; dormant legacy reload subsystem and CheckboxSelect app/template were removed.
 
 ### Fixed
+- **Maneuver Heal `@mod`:** Heal Activities on Maneuver items with blank Activity ability now resolve `@mod` from the Maneuver ability contract (`item.abilityMod` key), instead of always using `0`.
+- **Maneuver heal formulas (pack):** Powers & Maneuvers heal/temp-HP formulas that used `1d@superiority.die + max(...)` now use `1d@superiority.die + @mod`.
+- **Existing Maneuver heal formulas:** world-owned Maneuver healing and temporary-hit-point formulas that still used obsolete ability-modifier expressions are corrected to `1d@superiority.die + @mod` without overwriting homebrew formulas.
+- **Superiority Style:** Superiority Style grants one Superiority die and the character-level die denomination (`d4`→`d12`) without requiring a class superiority progression.
+- **Superiority dice maximum:** class Superiority dice pools no longer collapse to `0` when Active Effect ADD changes interact with prepared `dice.max` (explicit overrides and ADD effects still apply).
 - **Multiclass powercasting:** max power level is no longer `NaN` when combining Force and/or tech casting progressions.
 - **Power save DC / attack bonuses:** installed chassis-mod bonuses apply on the DC path; Focus Generator school Atk on the Powers tab matches per-power attack rows.
 - **Simplified forcecasting:** prepare no longer mutates global `CONFIG.DND5E` school attributes in place.
@@ -37,9 +42,10 @@
 - **Maneuver Description summary:** Maneuver Description tabs show a compact Activation Time / Range / Target / Duration summary from prepared Item labels (empty rows omitted; Power-only fields excluded).
 
 ### Migration
-- Bumped `needsMigrationVersion` to **1.3.2** (Species pack image remaps), **1.3.3** (legacy companion icon folder remap), and **1.3.4** (orphan PHB currency → Galactic Credits).
+- Bumped `needsMigrationVersion` to **1.3.2** (Species pack image remaps), **1.3.3** (legacy companion icon folder remap), **1.3.4** (orphan PHB currency → Galactic Credits), and **1.3.5** (obsolete embedded Maneuver heal/temphp formulas → `1d@superiority.die + @mod`).
 - **1.3.4 currency fold (GM load):** converts actor `system.currency` orphans into `gc` using stock dnd5e coin-to-gp rates (`pp`÷0.1, `gp`÷1, `ep`÷2, `sp`÷10, `cp`÷100; credit aliases 1:1), then deletes those keys. Remaps world item `system.price.denomination` from stale PHB/alias keys to `gc`. Era 2 leftover keys (`wu`/`tr`/etc.) are left alone if present.
-- **Back up the world before the first GM load** on builds that include **1.3.4** — wallet merges are not reversible by reverting module code alone.
+- **1.3.5 Maneuver formulas (GM load):** for canonical Administer Aid / Vanity / Water of Life / Inner Strength / Parry / You Call This Archaeology copies only, rewrites recognized obsolete `max(...)` and die-less `@mod` heal/temphp formulas to `1d@superiority.die + @mod`. Homebrew and unknown formulas are left unchanged.
+- **Back up the world before the first GM load** on builds that include **1.3.4** or **1.3.5** — wallet merges and formula rewrites are not reversible by reverting module code alone.
 - Pack `_source` updates in this release require `npm run build:db` with Foundry fully stopped, then a Foundry restart, before compendium browsers show new UUID/icon data.
 - Worlds below **1.3.3** remigrate matching image fields on the next GM load.
 

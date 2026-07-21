@@ -23,6 +23,7 @@ import {
 	foldOrphanPhbCurrencyWallet,
 	normalizeSwPriceDenomination
 } from "./currencies.mjs";
+import { applyManeuverFormulaMigration } from "./maneuver-formula-migration.mjs";
 
 const MIGRATABLE_COMPENDIUM_DOCUMENTS = ["Actor", "Item", "Scene", "JournalEntry", "RollTable"];
 
@@ -146,6 +147,17 @@ function _migratePriceDenomination(itemData, updateData) {
 	foundry.utils.setProperty(updateData, path, normalized);
 	foundry.utils.setProperty(itemData, path, normalized);
 	return updateData;
+}
+
+/**
+ * Bug 27C: repair known obsolete Maneuver heal/temphp formulas on canonical carriers.
+ * @param {object} itemData
+ * @param {object} updateData
+ * @returns {object}
+ * @private
+ */
+function _migrateManeuverHealFormulas(itemData, updateData) {
+	return applyManeuverFormulaMigration(itemData, updateData);
 }
 
 /**
@@ -857,6 +869,7 @@ export function migrateItemData(item, migrationData, flags={}) {
 	_migrateWeaponData(workingItem, updateData);
 	_migrateBlasterAmmoData(workingItem, updateData);
 	_migratePriceDenomination(workingItem, updateData);
+	_migrateManeuverHealFormulas(workingItem, updateData);
 
 	// Migrate embedded effects
 	if ( workingItem.effects ) {

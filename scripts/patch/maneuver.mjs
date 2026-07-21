@@ -13,11 +13,27 @@ import {
 	enrichManeuverListRowContext,
 	resolveManeuverSpellbookColumns
 } from "../maneuver-powers-list-context.mjs";
+import {
+	getSuperiorityStylePoolGrant,
+	hasSuperiorityStyleGrant,
+	mergeSuperiorityDieDenomination,
+	resolveSuperiorityStyleDie,
+	shouldRecoverSuperiorityDice
+} from "../superiority-style.mjs";
 
 const PRECALCULATED_SPELLCASTING_KEY = "sw5e-preCalculatedSpellcastingClasses";
 const MANEUVER_TYPE = getModuleType("maneuver");
 const SUPERIORITY_SYNC_KEY = "sw5eSuperioritySync";
 const SUPERIORITY_SYNC_PROMISE_KEY = "sw5eSuperioritySyncPromise";
+
+/** Canonical Active Effect key for Superiority dice maximum (Bug 19A). */
+export const SUPERIORITY_DICE_MAX_EFFECT_KEY = "system.superiority.dice.max";
+
+/**
+ * Foundry ACTIVE_EFFECT_MODES.ADD. Other modes targeting this key are deferred in Bug 19A
+ * (no repository evidence for MULTIPLY/OVERRIDE/UPGRADE/DOWNGRADE/CUSTOM on this path).
+ */
+export const SUPERIORITY_DICE_MAX_ADD_MODE = 2;
 
 function getActorManeuvers(actor) {
 	return getModuleTypeCandidates("maneuver").flatMap(type => actor.itemTypes?.[type] ?? []);
@@ -31,6 +47,68 @@ function clampResourceValue(value, max) {
 	const numericValue = Number.isFinite(Number(value)) ? Number(value) : 0;
 	const numericMax = Math.max(0, Number.isFinite(Number(max)) ? Number(max) : 0);
 	return Math.min(Math.max(numericValue, 0), numericMax);
+}
+
+/**
+ * Resolve the effective Superiority dice maximum from progression, explicit override, and ADD effects.
+ * Does not read prepared `dice.max` and does not mutate Actor source.
+ *
+ * @param {object} options
+ * @param {unknown} options.sourceMax Explicit persisted override (`null`/`undefined` = none; `0` is explicit).
+ * @param {number} options.calculatedMax Class progression + supported bonuses (already non-negative preferred).
+ * @param {number} [options.effectAdditions=0] Sum of applicable ADD changes for the canonical key.
+ * @returns {number}
+ */
+export function resolveSuperiorityDiceMax({ sourceMax, calculatedMax, effectAdditions = 0 } = {}) {
+	if ( sourceMax != null ) {
+		const override = Number(sourceMax);
+		if ( Number.isFinite(override) ) return Math.max(0, override);
+	}
+	const calculated = Number(calculatedMax);
+	const additions = Number(effectAdditions);
+	const base = Number.isFinite(calculated) ? calculated : 0;
+	const delta = Number.isFinite(additions) ? additions : 0;
+	return Math.max(0, base + delta);
+}
+
+/**
+ * Sum finite numeric ADD changes targeting `system.superiority.dice.max` from an applicable-effects collection.
+ * Each matching change is counted once. Disabled effects are skipped when `disabled === true`.
+ * Unsupported modes and invalid values are ignored (deferred / safe no-op).
+ *
+ * @param {Iterable<object>|object[]|null|undefined} effects
+ * @returns {number}
+ */
+export function sumSuperiorityDiceMaxAdditions(effects) {
+	if ( !effects ) return 0;
+
+	let total = 0;
+	for ( const effect of effects ) {
+		if ( !effect || effect.disabled === true ) continue;
+		const changes = effect.changes;
+		if ( !Array.isArray(changes) ) continue;
+		for ( const change of changes ) {
+			if ( !change || change.key !== SUPERIORITY_DICE_MAX_EFFECT_KEY ) continue;
+			const mode = Number(change.mode);
+			if ( mode !== SUPERIORITY_DICE_MAX_ADD_MODE ) continue;
+			const raw = change.value;
+			if ( raw === "" || raw == null ) continue;
+			const value = Number(raw);
+			if ( !Number.isFinite(value) ) continue;
+			total += value;
+		}
+	}
+	return total;
+}
+
+/**
+ * Collect Actor applicable effects for Superiority dice-max ADD summation.
+ * @param {object} actor
+ * @returns {Iterable<object>|object[]}
+ */
+function getApplicableSuperiorityEffects(actor) {
+	if ( typeof actor?.allApplicableEffects === "function" ) return actor.allApplicableEffects();
+	return actor?.effects ?? [];
 }
 
 function queueSuperioritySync(actor, updateData) {
@@ -163,28 +241,32 @@ function prepareSuperiority() {
 			const sourceDice = sourceSuperiority.dice ?? {};
 			const preparedDice = target.dice ?? {};
 			const baseDiceMax = obj.diceCount;
-			const activeEffectAdjustedMax = sourceDice.max == null ? Number(preparedDice.max) : NaN;
 			const effectiveKnownMax = sourceKnown.max ?? obj.maneuversKnownMax;
-			let effectiveDiceMax = sourceDice.max ?? baseDiceMax;
-			const effectiveDie = sourceSuperiority.die ?? obj.diceSize;
+			const hasStyleGrant = hasSuperiorityStyleGrant(_this);
+			const stylePoolGrant = getSuperiorityStylePoolGrant(_this);
+			const styleDie = resolveSuperiorityStyleDie(_this, hasStyleGrant);
+			const classDie = obj.diceSize;
+			const effectiveDie = mergeSuperiorityDieDenomination({
+				sourceDie: sourceSuperiority.die,
+				classDie,
+				styleDie,
+				hasStyleGrant
+			});
 			const effectiveLevel = sourceSuperiority.level ?? obj.casterLevel;
 			const bonuses = preparedDice.bonuses ?? sourceDice.bonuses ?? {};
 			const levelBonus = simplifyBonus(bonuses.level ?? 0, rollData) * effectiveLevel;
 			const overallBonus = simplifyBonus(bonuses.overall ?? 0, rollData);
-			let calculatedDiceMax = Math.max(0, baseDiceMax + levelBonus + overallBonus);
+			const calculatedDiceMax = Math.max(0, baseDiceMax + levelBonus + overallBonus + stylePoolGrant);
+			const effectAdditions = sumSuperiorityDiceMaxAdditions(getApplicableSuperiorityEffects(_this));
+			const effectiveDiceMax = resolveSuperiorityDiceMax({
+				sourceMax: sourceDice.max,
+				calculatedMax: calculatedDiceMax,
+				effectAdditions
+			});
 			const sourceCurrentValue = Number.isFinite(Number(sourceDice.value)) ? Number(sourceDice.value) : null;
 			const previousMax = Number.isFinite(Number(superiorityFlags.diceMax)) ? Number(superiorityFlags.diceMax) : null;
 			const missingProgressData = [sourceDice.max, sourceSuperiority.die, sourceSuperiority.level].every(value => value == null);
 			let effectiveCurrentValue = sourceCurrentValue;
-
-			if ( sourceDice.max == null && effectiveDiceMax > 0 ) {
-				if ( Number.isFinite(activeEffectAdjustedMax) && activeEffectAdjustedMax !== obj.diceCount ) {
-					const aeDelta = activeEffectAdjustedMax - obj.diceCount;
-					effectiveDiceMax = Math.max(0, calculatedDiceMax + aeDelta);
-				} else {
-					effectiveDiceMax = calculatedDiceMax;
-				}
-			}
 
 			if ( effectiveDiceMax <= 0 ) effectiveCurrentValue = 0;
 			else if ( sourceCurrentValue == null ) effectiveCurrentValue = effectiveDiceMax;
@@ -212,7 +294,9 @@ function prepareSuperiority() {
 
 			_this._sw5eSuperiorityRuntime = {
 				calculatedMax: calculatedDiceMax,
-				calculatedDie: obj.diceSize,
+				calculatedDie: classDie,
+				styleGrant: stylePoolGrant,
+				styleDie,
 				effectiveMax: effectiveDiceMax,
 				effectiveDie
 			};
@@ -411,8 +495,14 @@ function patchPowerbooks() {
 }
 
 function recoverSuperiorityDice() {
-	Hooks.on("dnd5e.shortRest", (actor, config) => { if (actor.system.superiority.level) actor.update({ "system.superiority.dice.value": actor.system.superiority.dice.max }); });
-	Hooks.on("dnd5e.longRest", (actor, config) => { if (actor.system.superiority.level) actor.update({ "system.superiority.dice.value": actor.system.superiority.dice.max }); });
+	Hooks.on("dnd5e.shortRest", (actor, config) => {
+		if ( !shouldRecoverSuperiorityDice(actor) ) return;
+		actor.update({ "system.superiority.dice.value": actor.system.superiority.dice.max });
+	});
+	Hooks.on("dnd5e.longRest", (actor, config) => {
+		if ( !shouldRecoverSuperiorityDice(actor) ) return;
+		actor.update({ "system.superiority.dice.value": actor.system.superiority.dice.max });
+	});
 }
 
 function makeSuperiorityDiceConsumable() {
@@ -464,12 +554,88 @@ function patchManeuverPowersListRowContext() {
 	}
 }
 
+/**
+ * Resolve the Heal Activity ability **key** for Maneuver `@mod` (Bug 27B).
+ * Returns an ability identifier such as `"int"` / `"cha"`, never a numeric modifier.
+ * Invalid / missing fallback keys preserve stock behavior (`null` when base is absent).
+ *
+ * @param {object} options
+ * @param {unknown} options.baseAbility Stock `HealActivity.ability` value.
+ * @param {boolean} options.itemIsManeuver Whether the parent Item is a Maneuver.
+ * @param {unknown} options.itemAbilityMod Item `abilityMod` — must be an ability key string.
+ * @param {object|null|undefined} options.actorAbilities `actor.system.abilities`.
+ * @returns {string|null|*} Ability key, stock base when non-string stock value, or `null`.
+ */
+export function resolveManeuverHealActivityAbility({
+	baseAbility,
+	itemIsManeuver,
+	itemAbilityMod,
+	actorAbilities
+} = {}) {
+	if ( typeof baseAbility === "string" ) {
+		const trimmed = baseAbility.trim();
+		if ( trimmed ) return trimmed;
+	} else if ( baseAbility != null ) {
+		return baseAbility;
+	}
+
+	if ( !itemIsManeuver ) return null;
+
+	if ( typeof itemAbilityMod !== "string" ) return null;
+	const key = itemAbilityMod.trim();
+	if ( !key ) return null;
+	if ( !actorAbilities || !(key in actorAbilities) ) return null;
+	return key;
+}
+
+/**
+ * Bug 27B Path A: wrap HealActivity.ability so Maneuver Heals fall back to item.abilityMod
+ * (ability key). Proven in Foundry v13 / dnd5e 5.2.5 — libWrapper intercepts the inherited
+ * BaseActivityData getter via HealActivity.prototype.ability. No descriptor monkey-patch.
+ */
+function patchHealActivityAbility() {
+	const target = "dnd5e.documents.activity.HealActivity.prototype.ability";
+	try {
+		libWrapper.register(getModuleId(), target, function(wrapped) {
+			const baseAbility = wrapped();
+			const item = this.item;
+			const itemIsManeuver = isModuleType(item?.type, "maneuver");
+			const itemAbilityMod = item?.abilityMod;
+			const actorAbilities = this.actor?.system?.abilities;
+			const resolved = resolveManeuverHealActivityAbility({
+				baseAbility,
+				itemIsManeuver,
+				itemAbilityMod,
+				actorAbilities
+			});
+
+			const baseAbsent = !(typeof baseAbility === "string" && baseAbility.trim())
+				&& (baseAbility == null || baseAbility === "");
+			if ( itemIsManeuver && baseAbsent && resolved == null && itemAbilityMod != null && itemAbilityMod !== "" ) {
+				console.debug("SW5E | Maneuver Heal ability fallback rejected; preserving stock ability.", {
+					itemId: item?.id,
+					itemName: item?.name,
+					itemAbilityMod,
+					itemAbilityModType: typeof itemAbilityMod,
+					hasActorAbility: typeof itemAbilityMod === "string"
+						&& !!(actorAbilities && itemAbilityMod.trim() in actorAbilities)
+				});
+			}
+
+			return resolved;
+		}, "WRAPPER");
+	} catch ( err ) {
+		console.warn("SW5E | Could not wrap HealActivity.prototype.ability for Maneuver @mod (Bug 27B).", err);
+	}
+}
+
 export function patchManeuver() {
 	adjustItemSpellcastingGetter();
 	patchItemSheet();
 	patchPowerAbilityScore();
 	patchPowerbooks();
 	patchManeuverPowersListRowContext();
+	patchHealActivityAbility();
 	prepareSuperiority();
 	recoverSuperiorityDice();
 	showPowercastingStats();

@@ -112,7 +112,7 @@ system:
       healing:
         custom:
           enabled: true
-          formula: 1d@superiority.die + max(@abilities.wis.mod, @abilities.cha.mod)
+          formula: 1d@superiority.die + @mod
         denomination: null
         number: null
         scaling:

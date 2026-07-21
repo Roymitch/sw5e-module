@@ -66,10 +66,7 @@ system:
     damage: ''
   damage:
     parts:
-      - - >-
-          1d@superiority.die + max(@abilities.str.mod, @abilities.dex.mod,
-          @abilities.con.mod, @abilities.int.mod, @abilities.wis.mod,
-          @abilities.cha.mod)
+      - - 1d@superiority.die + @mod
         - temphp
     versatile: ''
   formula: ''
@@ -113,10 +110,7 @@ system:
       healing:
         custom:
           enabled: true
-          formula: >-
-            1d@superiority.die + max(@abilities.str.mod, @abilities.dex.mod,
-            @abilities.con.mod, @abilities.int.mod, @abilities.wis.mod,
-            @abilities.cha.mod)
+          formula: 1d@superiority.die + @mod
         denomination: null
         number: null
         scaling:
