@@ -1,5 +1,6 @@
 import { getBestAbility } from "./../utils.mjs";
 import { getModuleType, getModuleTypeCandidates, isModuleType, localizeOrFallback, normalizeModuleType, SETTINGS_NAMESPACE} from "../module-support.mjs";
+import { parseExplicitNullableNumber } from "../nullable-number.mjs";
 
 const PRECALCULATED_SPELLCASTING_KEY = "sw5e-preCalculatedSpellcastingClasses";
 const MANEUVER_TYPE = getModuleType("maneuver");
@@ -231,11 +232,26 @@ function prepareSuperiority() {
 			const resolvedMod = Number.isFinite(Number(_this.system.abilities?.[resolvedAttr]?.mod))
 				? Number(_this.system.abilities[resolvedAttr].mod)
 				: best.mod;
-			const overrideDc = Number.isFinite(Number(sourceType.dc)) ? Number(sourceType.dc) : null;
 			typeData.attr = resolvedAttr;
-			typeData.dc = overrideDc ?? (base + resolvedMod + bonus);
+			typeData.dc = resolveSuperiorityTypeDc(sourceType.dc, base, resolvedMod, bonus);
 		}
 	});
+}
+
+/**
+ * Resolve a superiority type DC from a raw source override value.
+ * Absent sources (null/undefined/"" / whitespace) use the calculated formula.
+ * Explicit numeric zero is preserved.
+ * @param {unknown} sourceDc
+ * @param {number} base
+ * @param {number} resolvedMod
+ * @param {number} bonus
+ * @returns {number}
+ */
+export function resolveSuperiorityTypeDc(sourceDc, base, resolvedMod, bonus) {
+	const overrideDc = parseExplicitNullableNumber(sourceDc);
+	if ( overrideDc !== null ) return overrideDc;
+	return base + resolvedMod + bonus;
 }
 
 function makeProgOption(config) {

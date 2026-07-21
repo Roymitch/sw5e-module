@@ -1,5 +1,7 @@
 import { getModuleId } from "../module-support.mjs";
 import { getInstalledModBonus } from "../installed-mod-effects.mjs";
+import { parseExplicitNullableNumber } from "../nullable-number.mjs";
+import { resolveSchoolPowerDc } from "../powercasting-overrides.mjs";
 
 const { SchemaField } = foundry.data.fields;
 const ABILITY_KEYS = Object.freeze(["str", "dex", "con", "int", "wis", "cha"]);
@@ -44,6 +46,8 @@ export function isPowerCastingItem(item) {
 }
 
 /**
+ * Read a prepared school DC without treating `null` as numeric zero.
+ * Explicit prepared `0` is preserved; absent values return `null`.
  * @param {Actor5e} actor
  * @param {Item5e|object} item
  * @returns {number|null}
@@ -53,11 +57,13 @@ export function getPreparedPowerDc(actor, item) {
 	const castType = getPowerCastType(item);
 	const school = item.system.school;
 	const dc = actor.system?.powercasting?.[castType]?.schools?.[school]?.dc;
-	return Number.isFinite(Number(dc)) ? Number(dc) : null;
+	return parseExplicitNullableNumber(dc);
 }
 
 /**
  * Resolve save DC for a power item, honoring per-item powercasting ability overrides.
+ * When prepared school DC is still absent (item prep before actor powercasting), falls back
+ * to {@link resolveSchoolPowerDc} instead of consuming `Number(null) === 0`.
  * @param {Actor5e} actor
  * @param {Item5e|object} item
  * @param {object} [rollData]
@@ -69,15 +75,18 @@ export function resolvePowerItemDc(actor, item, rollData = {}) {
 	const castType = getPowerCastType(item);
 	const school = item.system.school;
 	const itemAbility = String(item.system?.ability ?? "").trim();
+	const base = 8 + (Number(actor.system?.attributes?.prof) || 0);
 
 	if ( itemAbility && ABILITY_KEYS.includes(itemAbility) ) {
-		const base = 8 + (Number(actor.system?.attributes?.prof) || 0);
 		const mod = Number(actor.system?.abilities?.[itemAbility]?.mod) || 0;
 		const bonus = getPowerDcBonus(actor, castType, school, itemAbility, rollData);
 		return base + mod + bonus;
 	}
 
-	return getPreparedPowerDc(actor, item);
+	const prepared = getPreparedPowerDc(actor, item);
+	if ( prepared !== null ) return prepared;
+
+	return resolveSchoolPowerDc(actor, castType, school, base, rollData);
 }
 
 /**
@@ -364,7 +373,7 @@ function patchPowerSaveDc() {
 		this.save.dc.value = preparedDc + saveTargetBonus;
 
 		const ability = this.ability;
-		if ( this.save.dc.value ) {
+		if ( Number.isFinite(this.save.dc.value) ) {
 			this.labels.save = game.i18n.format("DND5E.SaveDC", {
 				dc: this.save.dc.value,
 				ability: CONFIG.DND5E.abilities[ability]?.label ?? ""

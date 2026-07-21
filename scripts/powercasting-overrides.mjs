@@ -1,5 +1,6 @@
 import { getBestAbility } from "./utils.mjs";
 import { SETTINGS_NAMESPACE } from "./module-support.mjs";
+import { parseExplicitNullableNumber } from "./nullable-number.mjs";
 import { getPowerDcBonus } from "./patch/power-bonuses.mjs";
 
 /** @typedef {"attack" | "dc" | "points"} PowercastingAbilityPurpose */
@@ -131,8 +132,8 @@ export function getBestPointsAbilityForCastType(actor, castType) {
  */
 export function resolveSchoolPowerDc(actor, castType, school, base, rollData) {
 	const sourceSchool = actor?._source?.system?.powercasting?.[castType]?.schools?.[school];
-	const dcOverride = sourceSchool?.dc;
-	if ( dcOverride != null && dcOverride !== "" ) return Number(dcOverride);
+	const dcOverride = parseExplicitNullableNumber(sourceSchool?.dc);
+	if ( dcOverride !== null ) return dcOverride;
 
 	const ability = getEffectivePowercastingAbility(actor, { castType, school, purpose: "dc" });
 	const bonus = getPowerDcBonus(actor, castType, school, ability.id, rollData);
