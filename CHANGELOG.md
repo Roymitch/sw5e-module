@@ -31,6 +31,7 @@
 - **Macro migration:** Macro flag comparison uses Foundry `objectsEqual` instead of non-existent `deepEqual`, so remigration no longer throws on Macros.
 - **Companion trait icons:** world migration remaps legacy `icons/companions/` image paths to `icons/packs/Companions/`.
 - **Hidden PHB wallet amounts:** after Credits-only CONFIG, orphan `pp`/`gp`/`ep`/`sp`/`cp` values no longer sit invisible on actors — world migration folds them into `gc` (see Migration).
+- **Superiority Powers tab:** Maneuver list rows now show Time and Range with the same stock inventory column context as Force/Tech powers; superiority-only characters still get the full Powers column set.
 
 ### Migration
 - Bumped `needsMigrationVersion` to **1.3.2** (Species pack image remaps), **1.3.3** (legacy companion icon folder remap), and **1.3.4** (orphan PHB currency → Galactic Credits).

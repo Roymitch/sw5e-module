@@ -1,6 +1,18 @@
 import { getBestAbility } from "./../utils.mjs";
-import { getModuleType, getModuleTypeCandidates, isModuleType, localizeOrFallback, normalizeModuleType, SETTINGS_NAMESPACE} from "../module-support.mjs";
+import {
+	getModuleId,
+	getModuleType,
+	getModuleTypeCandidates,
+	isModuleType,
+	localizeOrFallback,
+	normalizeModuleType,
+	SETTINGS_NAMESPACE
+} from "../module-support.mjs";
 import { parseExplicitNullableNumber } from "../nullable-number.mjs";
+import {
+	enrichManeuverListRowContext,
+	resolveManeuverSpellbookColumns
+} from "../maneuver-powers-list-context.mjs";
 
 const PRECALCULATED_SPELLCASTING_KEY = "sw5e-preCalculatedSpellcastingClasses";
 const MANEUVER_TYPE = getModuleType("maneuver");
@@ -345,7 +357,8 @@ function patchPowerbooks() {
 	Hooks.on('sw5e.ActorSheet5e._prepareSpellbook', function (_this, powerbook, config, ...args) {
 		const [context] = args;
 		const spellbook = config.result ?? powerbook ?? {};
-		const columns = Object.values(spellbook)[0]?.columns ?? [];
+		const existingColumns = Object.values(spellbook)[0]?.columns ?? [];
+		const columns = resolveManeuverSpellbookColumns(existingColumns, _this);
 
 		// Register a maneuver section using the modern dnd5e spellbook shape.
 		const registerSection = (key, order, label, dataset) => {
@@ -435,11 +448,28 @@ function excludeManeuversFromFeatures() {
 	});
 }
 
+/**
+ * After stock feature list-row prep, add Force/Tech-shaped Time/Range ctx for Maneuvers (Bug 25).
+ */
+function patchManeuverPowersListRowContext() {
+	const target = "dnd5e.applications.actor.BaseActorSheet.prototype._prepareItemFeature";
+	try {
+		libWrapper.register(getModuleId(), target, async function(wrapped, item, ctx) {
+			const result = await wrapped(item, ctx);
+			if ( isModuleType(item?.type, "maneuver") ) enrichManeuverListRowContext(item, ctx);
+			return result;
+		}, "WRAPPER");
+	} catch ( err ) {
+		console.warn("SW5E | Could not wrap BaseActorSheet._prepareItemFeature for Maneuver Powers-tab columns.", err);
+	}
+}
+
 export function patchManeuver() {
 	adjustItemSpellcastingGetter();
 	patchItemSheet();
 	patchPowerAbilityScore();
 	patchPowerbooks();
+	patchManeuverPowersListRowContext();
 	prepareSuperiority();
 	recoverSuperiorityDice();
 	showPowercastingStats();
