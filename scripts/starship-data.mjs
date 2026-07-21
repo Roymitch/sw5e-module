@@ -82,6 +82,22 @@ function toFiniteNumber(value, fallback = null) {
 	return Number.isFinite(number) ? number : fallback;
 }
 
+/**
+ * Starship ability check/save rolls do not use d20 min/max die bounds.
+ * No current SW5E Starship feature configures these ranges; stored 0/0 and
+ * Foundry-cleaned 1/1 are poison from the prior null→0→1 chain (Bug 3).
+ * Always emit null/null for min/max; preserve mode only.
+ * @param {object} [roll]
+ * @returns {{ min: null, max: null, mode: number }}
+ */
+export function makeAbilityRoll(roll = {}) {
+	return {
+		min: null,
+		max: null,
+		mode: toFiniteNumber(roll?.mode, 0) ?? 0
+	};
+}
+
 function localizeWithFallback(key, fallback) {
 	const localized = game?.i18n?.localize?.(key);
 	return localized && localized !== key ? localized : fallback;
@@ -327,14 +343,6 @@ function hasPreparedAbilityShape(ability) {
 function canPersistVehicleAbilities(abilities = {}) {
 	if ( !hasOwnKeys(abilities) ) return false;
 	return Object.values(abilities).every(hasPreparedAbilityShape);
-}
-
-function makeAbilityRoll(roll = {}) {
-	return {
-		min: toFiniteNumber(roll?.min),
-		max: toFiniteNumber(roll?.max),
-		mode: toFiniteNumber(roll?.mode, 0) ?? 0
-	};
 }
 
 function makeAbilityStage(stage = {}, fallbackStage = {}) {
