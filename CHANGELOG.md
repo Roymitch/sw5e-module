@@ -32,6 +32,9 @@
 - **Companion trait icons:** world migration remaps legacy `icons/companions/` image paths to `icons/packs/Companions/`.
 - **Hidden PHB wallet amounts:** after Credits-only CONFIG, orphan `pp`/`gp`/`ep`/`sp`/`cp` values no longer sit invisible on actors — world migration folds them into `gc` (see Migration).
 - **Superiority Powers tab:** Maneuver list rows now show Time and Range with the same stock inventory column context as Force/Tech powers; superiority-only characters still get the full Powers column set.
+- **Maneuver Item Details:** Source Class uses identifier/label options (no `[object Object]`); activation, range, and duration selects use localized option arrays matching Power sheet shapes.
+- **Maneuver Item Effects:** Maneuver Item sheets expose the stock Effects tab (`metadata.hasEffects`), reusing the dnd5e Effects PART without custom editors or pack changes.
+- **Maneuver Description summary:** Maneuver Description tabs show a compact Activation Time / Range / Target / Duration summary from prepared Item labels (empty rows omitted; Power-only fields excluded).
 
 ### Migration
 - Bumped `needsMigrationVersion` to **1.3.2** (Species pack image remaps), **1.3.3** (legacy companion icon folder remap), and **1.3.4** (orphan PHB currency → Galactic Credits).

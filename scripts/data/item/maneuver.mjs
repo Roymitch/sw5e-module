@@ -1,4 +1,11 @@
 import { getBestAbility } from "./../../utils.mjs";
+import {
+	buildManeuverActivationTypes,
+	buildManeuverDescriptionSummary,
+	buildManeuverDurationUnits,
+	buildManeuverRangeTypes,
+	buildManeuverSourceClassOptions
+} from "../../maneuver-item-sheet-context.mjs";
 
 /**
  * Resolve maneuver save activities for preparation without assuming dnd5e's ActivitiesCollection API.
@@ -62,6 +69,17 @@ export default class ManeuverData extends ItemDataModel.mixin(ItemDescriptionTem
 	static LOCALIZATION_PREFIXES = [
 		"DND5E.ACTIVATION", "DND5E.DURATION", "DND5E.RANGE", "DND5E.SOURCE", "DND5E.TARGET"
 	];
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Advertise stock Item-sheet Effects PART/tab (dnd5e `ItemSheet5e.itemHasEffects`).
+	 * Does not change Active Effect embedding, transfer rules, or pack data.
+	 * @inheritDoc
+	 */
+	static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
+		hasEffects: true
+	}, { inplace: false }));
 
 	/* -------------------------------------------- */
 
@@ -272,7 +290,17 @@ export default class ManeuverData extends ItemDataModel.mixin(ItemDescriptionTem
 			]?.label?.toLowerCase();
 			if (ability) context.defaultAbility = game.i18n.format("DND5E.DefaultSpecific", { default: ability });
 			else context.defaultAbility = game.i18n.localize("DND5E.Default");
+			context.spellcastingClasses = buildManeuverSourceClassOptions(this.parent.actor.spellcastingClasses);
 		}
+
+		// Casting field-partial option shapes (public CONFIG; Spell sheet contract).
+		context.activationTypes = buildManeuverActivationTypes();
+		context.durationUnits = buildManeuverDurationUnits();
+		context.rangeTypes = buildManeuverRangeTypes();
+
+		// Description-tab summary rows (prepared Item labels; read-only).
+		context.maneuverSummary = buildManeuverDescriptionSummary(this.parent);
+
 		context.subtitles = [
 			{ label: context.labels.type }
 		];
