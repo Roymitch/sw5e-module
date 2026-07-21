@@ -8,6 +8,7 @@ import { STARSHIP_LEGACY_POWER_ROUTING_FLAG } from "../starship-routing-gate.mjs
 import { SETTINGS_NAMESPACE } from "../module-support.mjs";
 import { localizeOrFallback } from "../starship-sheet-html.mjs";
 import { isSw5eStarshipActor, STARSHIP_TIER_OPTIONS } from "../starship-sheet-ids.mjs";
+import { formatStarshipInitiativeTotal } from "../starship-initiative-display.mjs";
 import { getStarshipSidebarNameBlock } from "./starship-sheet-scroll.mjs";
 import { buildSystemsCoreContext } from "./starship-sheet-core-context.mjs";
 import {
@@ -18,6 +19,8 @@ import {
 	isStarshipSheetEditMode,
 	suppressStockVehicleMovementSidebarForStarship
 } from "./starship-sheet-sidebar.mjs";
+
+export { formatStarshipInitiativeTotal, getStarshipInitiativeDisplayTotal } from "../starship-initiative-display.mjs";
 
 function getSheetForm(root, app) {
 	return app?.form
@@ -183,14 +186,6 @@ export function suppressStockVehicleArmorClassForStarship(root, actor, app = nul
 		group.setAttribute("hidden", "");
 		group.setAttribute("aria-hidden", "true");
 	}
-}
-
-export function formatStarshipInitiativeTotal(actor) {
-	const total = Number(actor?.system?.attributes?.init?.total) || 0;
-	if ( typeof foundry?.utils?.formatNumber === "function" ) {
-		return foundry.utils.formatNumber(total, { signDisplay: "always" });
-	}
-	return total >= 0 ? `+${total}` : `${total}`;
 }
 
 export function getStoredStarshipTier(actor) {
