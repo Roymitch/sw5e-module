@@ -8,7 +8,8 @@ import {
 	buildVehicleAvailableActors,
 	buildVehicleStarshipCrewContext,
 	canCurrentUserDeployStarshipCrewRole,
-	deployStarshipCrew
+	deployStarshipCrew,
+	deployStarshipCrewBatch
 } from "./starship-character.mjs";
 import {
 	groupCharacterDeploymentFeaturesByParent,
@@ -351,21 +352,64 @@ export function buildAddCrewEntryHtml(actorChoice) {
 	const pilotDisabled = actorChoice?.canDeployPilot ? "" : " disabled";
 	const crewDisabled = actorChoice?.canDeployCrew ? "" : " disabled";
 	const passengerDisabled = actorChoice?.canDeployPassenger ? "" : " disabled";
+	const uuid = escapeHtml(actorChoice.uuid);
+	const safeName = escapeHtml(name);
 
 	return `
-		<div class="sw5e-add-crew-entry${elsewhereClass}" data-search="${escapeHtml(searchText)}">
-			<img src="${escapeHtml(actorChoice?.img || "icons/svg/mystery-man.svg")}" alt="${escapeHtml(name)}" />
+		<div class="sw5e-add-crew-entry${elsewhereClass}" data-search="${escapeHtml(searchText)}" data-actor-uuid="${uuid}">
+			<input
+				type="checkbox"
+				class="sw5e-add-crew-select"
+				data-actor-uuid="${uuid}"
+				aria-label="${safeName}"
+			/>
+			<img src="${escapeHtml(actorChoice?.img || "icons/svg/mystery-man.svg")}" alt="${safeName}" />
 			<div class="sw5e-add-crew-copy">
-				<strong>${escapeHtml(name)}</strong>
+				<strong>${safeName}</strong>
 				${aboardNote}
 			</div>
 			<div class="sw5e-add-crew-roles">
-				<button type="button" data-actor-uuid="${escapeHtml(actorChoice.uuid)}" data-deploy-role="pilot"${pilotDisabled}>${escapeHtml(pilotLabel)}</button>
-				<button type="button" data-actor-uuid="${escapeHtml(actorChoice.uuid)}" data-deploy-role="crew"${crewDisabled}>${escapeHtml(crewLabel)}</button>
-				<button type="button" data-actor-uuid="${escapeHtml(actorChoice.uuid)}" data-deploy-role="passenger"${passengerDisabled}>${escapeHtml(passengerLabel)}</button>
+				<button type="button" data-actor-uuid="${uuid}" data-deploy-role="pilot"${pilotDisabled}>${escapeHtml(pilotLabel)}</button>
+				<button type="button" data-actor-uuid="${uuid}" data-deploy-role="crew"${crewDisabled}>${escapeHtml(crewLabel)}</button>
+				<button type="button" data-actor-uuid="${uuid}" data-deploy-role="passenger"${passengerDisabled}>${escapeHtml(passengerLabel)}</button>
 			</div>
 		</div>
 	`;
+}
+
+/**
+ * Distinct checked Actor UUIDs from the Add Crew dialog (selection Set).
+ * @param {HTMLElement} root
+ * @returns {string[]}
+ */
+export function collectAddCrewSelectedUuids(root) {
+	if ( !(root instanceof HTMLElement) ) return [];
+	const uuids = [];
+	const seen = new Set();
+	for ( const input of root.querySelectorAll("input.sw5e-add-crew-select:checked") ) {
+		if ( !(input instanceof HTMLInputElement) ) continue;
+		const uuid = input.dataset.actorUuid;
+		if ( !uuid || seen.has(uuid) ) continue;
+		seen.add(uuid);
+		uuids.push(uuid);
+	}
+	return uuids;
+}
+
+/**
+ * Enable/disable batch role buttons from current selection size.
+ * Pilot enabled only when exactly one Actor is selected.
+ * @param {HTMLElement} root
+ */
+export function syncAddCrewBatchActionState(root) {
+	if ( !(root instanceof HTMLElement) ) return;
+	const count = collectAddCrewSelectedUuids(root).length;
+	const pilotBtn = root.querySelector("[data-sw5e-batch-role=\"pilot\"]");
+	const crewBtn = root.querySelector("[data-sw5e-batch-role=\"crew\"]");
+	const passengerBtn = root.querySelector("[data-sw5e-batch-role=\"passenger\"]");
+	if ( pilotBtn instanceof HTMLButtonElement ) pilotBtn.disabled = count !== 1;
+	if ( crewBtn instanceof HTMLButtonElement ) crewBtn.disabled = count < 1;
+	if ( passengerBtn instanceof HTMLButtonElement ) passengerBtn.disabled = count < 1;
 }
 
 export async function openAddCrewDialog(actor) {
@@ -391,6 +435,9 @@ export async function openAddCrewDialog(actor) {
 	const npcsHeading = localizeOrFallback("SW5E.StarshipCrewGroupNpcs", "NPCs");
 	const searchPlaceholder = localizeOrFallback("SW5E.StarshipCrewSearchPlaceholder", "Filter crew by name…");
 	const searchEmpty = localizeOrFallback("SW5E.StarshipCrewSearchEmpty", "No matching crew found.");
+	const pilotLabel = localizeOrFallback("SW5E.StarshipCrewBadgePilot", "Pilot");
+	const crewLabel = localizeOrFallback("SW5E.StarshipCrewBadgeCrew", "Crew");
+	const passengerLabel = localizeOrFallback("SW5E.StarshipCrewBadgePassenger", "Passenger");
 
 	const groupsHtml = [
 		characters.length
@@ -426,6 +473,11 @@ export async function openAddCrewDialog(actor) {
 			</div>
 			<div class="sw5e-add-crew-list">${groupsHtml}</div>
 			<p class="sw5e-add-crew-search-empty is-hidden" hidden>${escapeHtml(searchEmpty)}</p>
+			<div class="sw5e-add-crew-batch-actions">
+				<button type="button" class="sw5e-add-crew-batch-role" data-sw5e-batch-role="pilot" disabled>${escapeHtml(pilotLabel)}</button>
+				<button type="button" class="sw5e-add-crew-batch-role" data-sw5e-batch-role="crew" disabled>${escapeHtml(crewLabel)}</button>
+				<button type="button" class="sw5e-add-crew-batch-role" data-sw5e-batch-role="passenger" disabled>${escapeHtml(passengerLabel)}</button>
+			</div>
 		</div>
 	`;
 
@@ -446,6 +498,39 @@ export async function openAddCrewDialog(actor) {
 					applyAddCrewDialogSearchFilter(root, searchInput.value);
 				});
 			}
+
+			const onSelectionChange = () => syncAddCrewBatchActionState(root);
+			root.querySelectorAll("input.sw5e-add-crew-select").forEach(input => {
+				input.addEventListener("change", onSelectionChange);
+			});
+			syncAddCrewBatchActionState(root);
+
+			root.querySelectorAll("[data-sw5e-batch-role]").forEach(btn => {
+				btn.addEventListener("click", async () => {
+					if ( !(btn instanceof HTMLButtonElement) || btn.disabled ) return;
+					const role = btn.dataset.sw5eBatchRole;
+					const selectedUuids = collectAddCrewSelectedUuids(root);
+					if ( !role || !selectedUuids.length ) return;
+					if ( role === "pilot" && selectedUuids.length !== 1 ) return;
+
+					root.querySelectorAll("[data-sw5e-batch-role]").forEach(b => {
+						if ( b instanceof HTMLButtonElement ) b.disabled = true;
+					});
+					try {
+						const result = await deployStarshipCrewBatch(actor, selectedUuids, role);
+						if ( result.ok !== true ) {
+							warnStarshipActorUpdateDenied();
+							syncAddCrewBatchActionState(root);
+							return;
+						}
+						await dialog.close();
+					} catch ( err ) {
+						console.error("SW5E MODULE | Failed to batch-add crew members.", err);
+						syncAddCrewBatchActionState(root);
+					}
+				});
+			});
+
 			root.querySelectorAll("[data-actor-uuid][data-deploy-role]").forEach(btn => {
 				btn.addEventListener("click", async () => {
 					const role = btn.dataset.deployRole;

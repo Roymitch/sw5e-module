@@ -45,6 +45,31 @@
   display: none;
 }
 
+.sw5e-add-crew-dialog .sw5e-add-crew-entry {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.sw5e-add-crew-dialog .sw5e-add-crew-select {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.sw5e-add-crew-dialog .sw5e-add-crew-batch-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.65rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--color-border-light-primary, #782e22);
+}
+
+.sw5e-add-crew-dialog .sw5e-add-crew-batch-role {
+  flex: 0 0 auto;
+}
+
 /* —— Assigned crew roster (Core tab) —— */
 
 .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-assigned-search-wrap {

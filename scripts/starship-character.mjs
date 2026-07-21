@@ -218,6 +218,90 @@ export function canCurrentUserDeployStarshipCrewRole(starshipSubject, crewSubjec
 	return canUpdateAllActors(writeSet.actors);
 }
 
+/**
+ * Resolve subjects once to distinct deployable crew Actors (ordered by first appearance).
+ * Fail closed if any non-empty subject cannot be resolved to a deployable character/npc.
+ * @param {Array<object|string>} subjects
+ * @returns {{ ok: boolean, crewActors: object[] }}
+ */
+export function resolveDistinctCrewActors(subjects) {
+	const list = Array.isArray(subjects) ? subjects : [];
+	/** @type {Map<string, object>} */
+	const byUuid = new Map();
+	for ( const subject of list ) {
+		if ( subject == null || subject === "" ) continue;
+		const actor = resolveActorDocument(subject);
+		if ( !actor || !isDeployableCrewActor(actor) ) return { ok: false, crewActors: [] };
+		const key = actor.uuid || actor.id;
+		if ( !key ) return { ok: false, crewActors: [] };
+		if ( !byUuid.has(key) ) byUuid.set(key, actor);
+	}
+	const crewActors = Array.from(byUuid.values());
+	if ( !crewActors.length ) return { ok: false, crewActors: [] };
+	return { ok: true, crewActors };
+}
+
+/**
+ * Combined write set for a batch deploy — resolve only, no writes.
+ * Unions per-Actor write sets (transfers, pilot displacement, shared ships).
+ * Pilot role requires exactly one crew Actor.
+ * @param {object} starship already-resolved starship Actor
+ * @param {object[]} crewActors already-resolved distinct crew Actors
+ * @param {string} role
+ * @returns {{ ok: boolean, actors: object[], crewActors: object[] }}
+ */
+export function resolveDeployWriteSetBatch(starship, crewActors, role) {
+	if ( !starship || !isLegacyVehicleStarship(starship) ) return { ok: false, actors: [], crewActors: [] };
+	if ( !Array.isArray(crewActors) || !crewActors.length ) return { ok: false, actors: [], crewActors: [] };
+	if ( !STARSHIP_DEPLOYMENT_ROLES.includes(role) ) return { ok: false, actors: [], crewActors: [] };
+	if ( role === "pilot" && crewActors.length !== 1 ) return { ok: false, actors: [], crewActors: [] };
+
+	/** @type {Map<string, object>} */
+	const byKey = new Map();
+	const add = actor => {
+		if ( !actor ) return;
+		const key = actor.uuid || actor.id;
+		if ( key ) byKey.set(key, actor);
+	};
+
+	for ( const crewActor of crewActors ) {
+		const writeSet = resolveDeployWriteSet(starship, crewActor, role);
+		if ( !writeSet.ok ) return { ok: false, actors: [], crewActors: [] };
+		for ( const actor of writeSet.actors ) add(actor);
+	}
+
+	return { ok: true, actors: Array.from(byKey.values()), crewActors };
+}
+
+/**
+ * Combined write-set preflight for batch deploy. No writes.
+ * @param {object|string} starshipSubject
+ * @param {Array<object|string>} subjects
+ * @param {string} role
+ * @returns {{ ok: boolean, starship: object|null, crewActors: object[], actors: object[], phase: string }}
+ */
+export function preflightDeployStarshipCrewBatch(starshipSubject, subjects, role) {
+	const starship = resolveActorDocument(starshipSubject);
+	if ( !starship || !isLegacyVehicleStarship(starship) ) {
+		return { ok: false, starship: null, crewActors: [], actors: [], phase: "preflight" };
+	}
+	const resolved = resolveDistinctCrewActors(subjects);
+	if ( !resolved.ok ) {
+		return { ok: false, starship, crewActors: [], actors: [], phase: "preflight" };
+	}
+	const writeSet = resolveDeployWriteSetBatch(starship, resolved.crewActors, role);
+	if ( !writeSet.ok || !canUpdateAllActors(writeSet.actors) ) {
+		return { ok: false, starship, crewActors: resolved.crewActors, actors: writeSet.actors ?? [], phase: "preflight" };
+	}
+	return {
+		ok: true,
+		starship,
+		crewActors: writeSet.crewActors,
+		actors: writeSet.actors,
+		phase: "preflight"
+	};
+}
+
 function buildResolvedCrewRecord(deployment, uuid, starship, { sheetEditable = true } = {}) {
 	const actor = resolveActorDocument(uuid);
 	const roles = getDeploymentRolesForUuid(deployment, uuid);
@@ -365,6 +449,46 @@ export async function deployStarshipCrew(starshipSubject, crewSubject, role) {
 		}
 	}
 	return true;
+}
+
+/**
+ * Deploy distinct crew Actors after combined write-set preflight.
+ * Not atomic: a mid-write failure can leave partial completion (disclosed; remaining stopped).
+ * Uses the same resolved Actor documents from preflight — does not re-resolve between steps.
+ * @param {object|string} starshipSubject
+ * @param {Array<object|string>} subjects
+ * @param {string} role
+ * @returns {Promise<{ ok: boolean, phase: string, completed: object[], failed: object|null, crewActors: object[] }>}
+ */
+export async function deployStarshipCrewBatch(starshipSubject, subjects, role) {
+	const preflight = preflightDeployStarshipCrewBatch(starshipSubject, subjects, role);
+	if ( !preflight.ok ) {
+		return {
+			ok: false,
+			phase: "preflight",
+			completed: [],
+			failed: null,
+			crewActors: preflight.crewActors
+		};
+	}
+
+	const { starship, crewActors } = preflight;
+	const completed = [];
+	for ( const crewActor of crewActors ) {
+		const ok = await deployStarshipCrew(starship, crewActor, role);
+		if ( ok !== true ) {
+			return {
+				ok: false,
+				phase: "write",
+				completed,
+				failed: crewActor,
+				crewActors
+			};
+		}
+		completed.push(crewActor);
+	}
+
+	return { ok: true, phase: "write", completed, failed: null, crewActors };
 }
 
 export async function toggleStarshipActiveCrew(starshipSubject, crewSubject = null) {

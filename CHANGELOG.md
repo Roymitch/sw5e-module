@@ -2,6 +2,9 @@
 
 ### [1.4.0] 2026-07-14
 
+### Added
+- **Starship Add Crew multi-select:** deploy multiple distinct Actors from the Add Crew dialog in one Crew or Passenger action (Pilot requires exactly one selection). Aggregate NPC quantity is not included.
+
 ### Changed
 - **HGTTG species pack flags:** removed absolute local `pdfPath` values from HoloNet Guide to the Galaxy species source and stopped import tooling from writing those paths back into pack flags.
 - **Sabacc RollTables:** table face icons now use `modules/sw5e-module/` asset paths instead of legacy `modules/sw5e/` paths.
