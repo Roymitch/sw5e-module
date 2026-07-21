@@ -3,7 +3,7 @@
  * Move-only from scripts/patch/starship-sheet.mjs — bodies preserved.
  */
 
-import { getModuleId } from "../module-support.mjs";
+import { getModulePath } from "../module-support.mjs";
 import { localizeOrFallback } from "../starship-sheet-html.mjs";
 import {
 	CUSTOM_STARSHIP_TAB_IDS,
@@ -16,6 +16,51 @@ import {
 	STOCK_STARSHIP_TAB_ORDER
 } from "../starship-sheet-ids.mjs";
 import { scheduleStarshipModificationsSectionHeader } from "./starship-sheet-inventory.mjs";
+
+function makeStarshipCoreTabDescriptor() {
+	return {
+		tab: STARSHIP_TAB_ID,
+		label: "SW5E.StarshipSheet.CoreTab",
+		condition: actor => isSw5eStarshipActor(actor)
+	};
+}
+
+function makeStarshipFeaturesTabDescriptor() {
+	return {
+		tab: STARSHIP_FEATURES_TAB_ID,
+		label: "DND5E.Features",
+		condition: actor => isSw5eStarshipActor(actor)
+	};
+}
+
+function dedupeTabs(tabs = []) {
+	const seen = new Set();
+	return tabs.filter(tab => {
+		const id = tab?.tab;
+		if ( !id || seen.has(id) ) return false;
+		seen.add(id);
+		return true;
+	});
+}
+
+function ensureStarshipPrimaryTabOrder(tabs, { includeCore = false } = {}) {
+	const map = new Map(dedupeTabs(tabs).map(tab => [tab.tab, tab]));
+	const ordered = [];
+	const push = tabId => {
+		const tab = map.get(tabId);
+		if ( !tab ) return;
+		ordered.push(tab);
+		map.delete(tabId);
+	};
+
+	if ( includeCore ) push(STARSHIP_TAB_ID);
+	push(STOCK_CARGO_TAB_ID);
+	push(STARSHIP_FEATURES_TAB_ID);
+	push("effects");
+	push("description");
+	for ( const tab of map.values() ) ordered.push(tab);
+	return ordered;
+}
 
 export function getPrimaryTabNav(root) {
 	return root.querySelector(".sheet-navigation[data-group='primary']")
@@ -38,16 +83,6 @@ export function getPrimaryTabPanelParent(root) {
 
 export function getTabButton(root, tabId) {
 	return getPrimaryTabNav(root)?.querySelector(`[data-tab="${tabId}"]`) ?? null;
-}
-
-export function getStarshipActiveTab(app) {
-	if ( app?._sw5eStarshipActiveTab === true ) return STARSHIP_TAB_ID;
-	if ( app?._sw5eStarshipActiveTab === false ) return null;
-	return typeof app?._sw5eStarshipActiveTab === "string" ? app._sw5eStarshipActiveTab : null;
-}
-
-export function setStarshipActiveTab(app, tabId = null) {
-	app._sw5eStarshipActiveTab = tabId;
 }
 
 export function getTabButtons(nav) {
@@ -118,11 +153,7 @@ export function registerStarshipFeaturesTabPart() {
 	if ( !Array.isArray(VAS.TABS) ) VAS.TABS = [];
 	if ( !VAS.TABS.some(tab => tab.tab === STARSHIP_FEATURES_TAB_ID) ) {
 		const inventoryIdx = VAS.TABS.findIndex(tab => tab.tab === STOCK_CARGO_TAB_ID);
-		const featuresTab = {
-			tab: STARSHIP_FEATURES_TAB_ID,
-			label: "DND5E.Features",
-			condition: actor => isSw5eStarshipActor(actor)
-		};
+		const featuresTab = makeStarshipFeaturesTabDescriptor();
 		if ( inventoryIdx >= 0 ) VAS.TABS.splice(inventoryIdx + 1, 0, featuresTab);
 		else VAS.TABS.push(featuresTab);
 	}
@@ -130,26 +161,60 @@ export function registerStarshipFeaturesTabPart() {
 	VAS._sw5eStarshipFeaturesTabRegistered = true;
 }
 
+export function registerStarshipCoreTabPart() {
+	const VAS = globalThis.dnd5e?.applications?.actor?.VehicleActorSheet;
+	if ( !VAS?.PARTS || VAS._sw5eStarshipCoreTabRegistered ) return;
+
+	if ( !VAS.PARTS[STARSHIP_TAB_ID] ) {
+		VAS.PARTS[STARSHIP_TAB_ID] = {
+			container: { classes: ["tab-body"], id: "tabs" },
+			template: getModulePath("templates/starship-core-part.hbs"),
+			scrollable: [""]
+		};
+	}
+
+	if ( !Array.isArray(VAS.TABS) ) VAS.TABS = [];
+	if ( !VAS.TABS.some(tab => tab.tab === STARSHIP_TAB_ID) ) {
+		const inventoryIdx = VAS.TABS.findIndex(tab => tab.tab === STOCK_CARGO_TAB_ID);
+		const coreTab = makeStarshipCoreTabDescriptor();
+		if ( inventoryIdx >= 0 ) VAS.TABS.splice(inventoryIdx, 0, coreTab);
+		else VAS.TABS.unshift(coreTab);
+	}
+
+	VAS._sw5eStarshipCoreTabRegistered = true;
+}
+
 export function applyStarshipTabsContext(context, sheet) {
 	const VAS = globalThis.dnd5e?.applications?.actor?.VehicleActorSheet;
 	if ( !VAS || !(sheet instanceof VAS) || !isSw5eStarshipActor(sheet.actor) ) return context;
 	if ( !Array.isArray(context?.tabs) ) return context;
 
-	const inventoryTab = context.tabs.find(tab => tab.tab === STOCK_CARGO_TAB_ID);
+	const includeCore = true;
+	context.tabs = dedupeTabs(context.tabs.filter(tab => tab?.tab !== "crew"));
+
+	const inventoryTab = context.tabs.find(tab => tab?.tab === STOCK_CARGO_TAB_ID);
 	if ( inventoryTab ) inventoryTab.label = "DND5E.Inventory";
 
-	context.tabs = context.tabs.filter(tab => tab.tab !== "crew");
+	if ( includeCore && !context.tabs.some(tab => tab.tab === STARSHIP_TAB_ID) ) {
+		const inventoryIdx = context.tabs.findIndex(tab => tab.tab === STOCK_CARGO_TAB_ID);
+		const coreTab = makeStarshipCoreTabDescriptor();
+		delete coreTab.condition;
+		if ( inventoryIdx >= 0 ) context.tabs.splice(inventoryIdx, 0, coreTab);
+		else context.tabs.unshift(coreTab);
+	}
 
 	if ( !context.tabs.some(tab => tab.tab === STARSHIP_FEATURES_TAB_ID) ) {
 		const inventoryIdx = context.tabs.findIndex(tab => tab.tab === STOCK_CARGO_TAB_ID);
-		const featuresTab = {
-			tab: STARSHIP_FEATURES_TAB_ID,
-			label: "DND5E.Features"
-		};
+		const featuresTab = makeStarshipFeaturesTabDescriptor();
+		delete featuresTab.condition;
 		if ( inventoryIdx >= 0 ) context.tabs.splice(inventoryIdx + 1, 0, featuresTab);
 		else context.tabs.push(featuresTab);
 	}
 
+	context.tabs = ensureStarshipPrimaryTabOrder(context.tabs, { includeCore });
+	const activeTabId = typeof sheet?.tabGroups?.primary === "string" ? sheet.tabGroups.primary : STARSHIP_TAB_ID;
+	const desiredTabId = context.tabs.some(tab => tab.tab === activeTabId) ? activeTabId : STARSHIP_TAB_ID;
+	for ( const tab of context.tabs ) tab.active = tab.tab === desiredTabId;
 	return context;
 }
 
@@ -206,10 +271,12 @@ export function activatePrimaryTab(root, tabId) {
 	root.querySelectorAll(".tab[data-group='primary']").forEach(panel => {
 		const isActive = panel.dataset.tab === tabId;
 		panel.classList.toggle("active", isActive);
+		const isCustomPanel = panel.classList.contains("sw5e-starship-tab")
+			&& panel.dataset.sw5eCoreOwner !== "part";
 		// Only manage `hidden` on our own custom tabs.
 		// Stock dnd5e panels use CSS classes for visibility; setting `hidden` on them
 		// prevents dnd5e from showing them again when the user clicks back to cargo/description.
-		if ( panel.classList.contains("sw5e-starship-tab") ) {
+		if ( isCustomPanel ) {
 			panel.hidden = !isActive;
 		} else {
 			panel.hidden = false;
@@ -218,15 +285,10 @@ export function activatePrimaryTab(root, tabId) {
 }
 
 export function activateSheetTab(root, app, tabId) {
-	if ( CUSTOM_STARSHIP_TAB_IDS.has(tabId) ) {
-		setStarshipActiveTab(app, tabId);
-		activatePrimaryTab(root, tabId);
-		desyncStaleStockTabGroupWhileSotgVisible(app);
-		return;
-	}
-
-	setStarshipActiveTab(app, null);
-	root.querySelectorAll(".sw5e-starship-tab").forEach(panel => { panel.classList.remove("active"); panel.hidden = true; });
+	root.querySelectorAll(".sw5e-starship-tab[data-sw5e-core-owner='custom']").forEach(panel => {
+		panel.classList.remove("active");
+		panel.hidden = true;
+	});
 	if ( typeof app?.changeTab === "function" ) {
 		try {
 			app.changeTab(tabId, "primary", { force: true, updatePosition: false });
@@ -241,85 +303,13 @@ export function activateSheetTab(root, app, tabId) {
 	}
 }
 
-/**
- * While SotG is the visible custom primary tab, dnd5e often still has `tabGroups.primary === "inventory"`
- * (last stock tab). After EDIT/PLAY rerender that can mark the Cargo nav as `.active` even though SotG
- * is showing — stock click handlers then no-op. Nudge tabGroups off the default so `changeTab("inventory")`
- * reliably runs on the next Cargo click.
- * @param {object} app
- */
-export function desyncStaleStockTabGroupWhileSotgVisible(app) {
-	if ( !app?.tabGroups || typeof app.tabGroups !== "object" ) return;
-	if ( app.tabGroups.primary !== STOCK_CARGO_TAB_ID && app.tabGroups.primary !== STARSHIP_FEATURES_TAB_ID ) return;
-	app.tabGroups.primary = "effects";
-}
-
-/**
- * Single capture-phase bridge for stock primary tabs on integrated vehicle sheets.
- * Re-bound each render so it survives nav replacement after EDIT/PLAY toggles.
- * @param {object} app
- * @param {HTMLElement} root
- * @param {HTMLElement|null} nav
- */
-export function attachIntegratedStockPrimaryTabBridge(app, root, nav) {
-	if ( !nav ) return;
-	if ( app._sw5eStockTabBridgeAbort ) app._sw5eStockTabBridgeAbort.abort();
-	const ac = new AbortController();
-	app._sw5eStockTabBridgeAbort = ac;
-
-	nav.addEventListener("click", event => {
-		const item = event.target.closest("[data-tab]");
-		if ( !item || !nav.contains(item) ) return;
-		const tabId = item.dataset.tab;
-		if ( !tabId || CUSTOM_STARSHIP_TAB_IDS.has(tabId) ) return;
-
-		const sotgIsEffectivePrimary = Boolean(getStarshipActiveTab(app));
-
-		// After mode-toggle rerender, Cargo can be `.active` while SotG is still the effective tab — do not no-op.
-		if ( !sotgIsEffectivePrimary && item.classList.contains("active") ) {
-			event.preventDefault();
-			return;
-		}
-
-		event.preventDefault();
-		event.stopImmediatePropagation();
-
-		setStarshipActiveTab(app, null);
-		root.querySelectorAll(".sw5e-starship-tab").forEach(panel => {
-			panel.classList.remove("active");
-			panel.hidden = true;
-		});
-		if ( typeof app?.changeTab === "function" ) {
-			try {
-				app.changeTab(tabId, "primary", { force: true, updatePosition: false });
-			} catch ( e ) {
-				activatePrimaryTab(root, tabId);
-			}
-		} else activatePrimaryTab(root, tabId);
-	}, { capture: true, signal: ac.signal });
-}
-
 export function ensureStarshipTabTargets(root) {
 	const nav = getPrimaryTabNav(root);
 	const panelParent = getPrimaryTabPanelParent(root);
-	if ( nav && panelParent ) return { nav, panelParent, integrated: true };
-
-	const mountPoint = root.querySelector(".window-content") ?? root;
-	let host = mountPoint.querySelector(".sw5e-starship-tab-host");
-	if ( !host ) {
-		host = document.createElement("section");
-		host.className = "sw5e-starship-tab-host";
-		host.innerHTML = `
-			<nav class="sheet-navigation tabs sw5e-starship-fallback-nav" data-group="primary"></nav>
-			<section class="sw5e-starship-tab-panels"></section>
-		`;
-		mountPoint.prepend(host);
-	}
-
 	return {
-		nav: host.querySelector(".sw5e-starship-fallback-nav"),
-		panelParent: host.querySelector(".sw5e-starship-tab-panels"),
-		integrated: false
+		nav,
+		panelParent,
+		integrated: Boolean(nav && panelParent)
 	};
 }
 

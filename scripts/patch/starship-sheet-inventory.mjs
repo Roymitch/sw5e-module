@@ -22,7 +22,6 @@ import { localizeOrFallback } from "../starship-sheet-html.mjs";
 import { isSw5eStarshipActor, STARSHIP_FEATURES_TAB_ID } from "../starship-sheet-ids.mjs";
 
 let vehicleSheetPrepareContextWrapped = false;
-let vehicleSheetPrepareStationsContextWrapped = false;
 let vehicleSheetStarshipCargoInventoryWrapped = false;
 
 /**
@@ -64,44 +63,35 @@ export function registerStarshipVehicleSheetShowAbilitiesDefault() {
 	}
 }
 
-export function suppressNativeStarshipStationsAbilityAndFeatures() {
-	if ( vehicleSheetPrepareStationsContextWrapped ) return;
-	vehicleSheetPrepareStationsContextWrapped = true;
-	try {
-		libWrapper.register(getModuleId(), "dnd5e.applications.actor.VehicleActorSheet.prototype._preparePartContext", async function(wrapped, partId, context, options) {
-			context = await wrapped(partId, context, options);
-			const actor = this.actor;
-			if ( !isSw5eStarshipActor(actor) ) return context;
-			if ( partId === "inventory" ) {
-				const categorized = injectStarshipInventorySections(this, context);
-				const hiddenIds = getStarshipInventoryExcludedItemIds(actor, categorized);
-				if ( hiddenIds.size ) filterStarshipCargoContext(context, hiddenIds);
-				return context;
-			}
-			if ( partId === STARSHIP_FEATURES_TAB_ID ) {
-				const Inventory = customElements.get(this.options.elements.inventory);
-				if ( Inventory?.mapColumns ) {
-					context.listControls = getStarshipFeaturesListControls();
-				}
-				context.showCurrency = false;
-				const categorized = injectStarshipFeaturesSections(this, context);
-				const hiddenIds = getStarshipFeaturesExcludedFromFeaturesTab(actor, categorized);
-				if ( hiddenIds.size ) filterStarshipCargoContext(context, hiddenIds);
-				return context;
-			}
-			if ( partId === "stations" ) {
-				const hiddenIds = getStarshipFeaturesManagedItemIds(actor);
-				if ( hiddenIds.size ) filterStarshipCargoContext(context, hiddenIds);
-				context.options ??= {};
-				context.options.showAbilities = false;
-				context.features = null;
-				return context;
-			}
-			return context;
-		}, "WRAPPER");
-	} catch ( err ) {
-		console.warn("SW5E MODULE | Could not wrap VehicleActorSheet _preparePartContext for starship stations suppression.", err);
+export function suppressNativeStarshipStationsAbilityAndFeatures(sheet, partId, context) {
+	const actor = sheet?.actor;
+	if ( !isSw5eStarshipActor(actor) ) return context;
+	if ( partId === "inventory" ) {
+		const categorized = injectStarshipInventorySections(sheet, context);
+		const hiddenIds = getStarshipInventoryExcludedItemIds(actor, categorized);
+		if ( hiddenIds.size ) filterStarshipCargoContext(context, hiddenIds);
+		return context;
 	}
+	if ( partId === STARSHIP_FEATURES_TAB_ID ) {
+		const Inventory = customElements.get(sheet.options.elements.inventory);
+		if ( Inventory?.mapColumns ) {
+			context.listControls = getStarshipFeaturesListControls();
+		}
+		context.showCurrency = false;
+		const categorized = injectStarshipFeaturesSections(sheet, context);
+		const hiddenIds = getStarshipFeaturesExcludedFromFeaturesTab(actor, categorized);
+		if ( hiddenIds.size ) filterStarshipCargoContext(context, hiddenIds);
+		return context;
+	}
+	if ( partId === "stations" ) {
+		const hiddenIds = getStarshipFeaturesManagedItemIds(actor);
+		if ( hiddenIds.size ) filterStarshipCargoContext(context, hiddenIds);
+		context.options ??= {};
+		context.options.showAbilities = false;
+		context.features = null;
+		return context;
+	}
+	return context;
 }
 
 export function getPreparedInventoryItemId(entry) {
@@ -398,9 +388,28 @@ export function scheduleStarshipModificationsSectionHeader(root, actor) {
 	requestAnimationFrame(() => requestAnimationFrame(run));
 }
 
+/**
+ * Bind (or rebind) the modifications-header MutationObserver to the current Inventory PART root.
+ * Phase 10A proved Inventory PART replacement leaves a stale observer when the sheet root survives;
+ * rebind when the watched node identity changes. Does not invent close-time teardown: after sheet
+ * close the app element (and thus the observer reference) is dropped with no functional callbacks.
+ * @param {HTMLElement} root
+ * @param {object} app
+ */
 export function ensureStarshipModificationsSectionHeaderSync(root, app) {
-	if ( !(root instanceof HTMLElement) || root.dataset.sw5eModHeaderSync === "1" ) return;
-	root.dataset.sw5eModHeaderSync = "1";
+	if ( !(root instanceof HTMLElement) ) return;
+
+	const inventoryRoot = getStarshipInventorySearchRoot(root) ?? root;
+	const existing = root._sw5eModHeaderObserver;
+	const observedRoot = root._sw5eModHeaderObservedRoot;
+	if ( existing && observedRoot === inventoryRoot ) {
+		scheduleStarshipModificationsSectionHeader(root, app?.actor);
+		return;
+	}
+
+	if ( existing && typeof existing.disconnect === "function" ) {
+		try { existing.disconnect(); } catch { /* ignore */ }
+	}
 
 	let timer = null;
 	const sync = () => {
@@ -413,10 +422,11 @@ export function ensureStarshipModificationsSectionHeaderSync(root, app) {
 		timer = setTimeout(sync, 0);
 	};
 
-	const inventoryRoot = getStarshipInventorySearchRoot(root) ?? root;
 	const observer = new MutationObserver(debouncedSync);
 	observer.observe(inventoryRoot, { childList: true, subtree: true });
 	root._sw5eModHeaderObserver = observer;
+	root._sw5eModHeaderObservedRoot = inventoryRoot;
+	root.dataset.sw5eModHeaderSync = "1";
 
 	scheduleStarshipModificationsSectionHeader(root, app?.actor);
 }

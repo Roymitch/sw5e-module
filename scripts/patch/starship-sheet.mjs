@@ -1,4 +1,5 @@
 import {
+	getModuleId,
 	getModulePath,
 	SETTINGS_NAMESPACE
 } from "../module-support.mjs";
@@ -32,7 +33,6 @@ import {
 	isSpaceStationSizeBelowLarge
 } from "../space-station.mjs";
 import {
-	CUSTOM_STARSHIP_TAB_IDS,
 	isSw5eStarshipActor,
 	STARSHIP_ABILITY_KEYS,
 	STARSHIP_FEATURES_TAB_ID,
@@ -53,6 +53,7 @@ import {
 	ensureStarshipCargoInventoryInteractions,
 	ensureStarshipDefaultShowVehicleAbilities,
 	ensureStarshipFeaturesInventoryInteractions,
+	ensureStarshipModificationsSectionHeaderSync,
 	registerStarshipCargoInventoryWrappers,
 	registerStarshipCargoItemCategoryHook,
 	registerStarshipVehicleSheetShowAbilitiesDefault,
@@ -70,14 +71,11 @@ import {
 import {
 	activateSheetTab,
 	applyStarshipTabsContext,
-	attachIntegratedStockPrimaryTabBridge,
 	configureStarshipPrimaryTabLabels,
 	ensureStarshipFeaturesTabNav,
 	ensureStarshipTabTargets,
-	getStarshipActiveTab,
-	insertCustomTabButtons,
+	registerStarshipCoreTabPart,
 	registerStarshipFeaturesTabPart,
-	setStarshipActiveTab,
 	activateSotgSubTab
 } from "./starship-sheet-tabs.mjs";
 export { applyStarshipTabsContext };
@@ -96,13 +94,20 @@ import {
 } from "./starship-sheet-sidebar.mjs";
 import {
 	beginStarshipSheetRender,
+	clearStarshipRenderDecision,
+	cloneStarshipRequestedParts,
 	compareStarshipSectionSignature,
+	createStarshipRenderDecision,
+	evaluateStarshipCorePreRenderEligibility,
 	evaluateStarshipPartialGate,
+	getStarshipRenderDecision,
+	hasStarshipCoreBaseline,
 	isStarshipSheetRenderCurrent,
 	markStarshipSectionElement,
 	recordStarshipCoreBaseline,
 	signaturePayloadCoreStructuralMode,
 	signaturePayloadCoreSummary,
+	STARSHIP_CORE_RENDER_DECISION,
 	STARSHIP_SECTION,
 	tryApplyStarshipCorePartialUpdates
 } from "./starship-sheet-partial.mjs";
@@ -148,6 +153,277 @@ import {
 /** Set `true` to enable verbose submit/mode diagnostics for starship vehicle sheets. */
 const SW5E_STARSHIP_SHEET_DIAG_ENABLED = false;
 const SW5E_STARSHIP_SHEET_DIAG_PREFIX = "SW5E MODULE | StarshipSheetDiag";
+const SW5E_STARSHIP_CORE_PART_PREFIX = "SW5E MODULE | StarshipCorePart";
+
+let starshipCorePartRenderOptionsWrapped = false;
+let starshipVehiclePartContextWrapped = false;
+
+function warnStarshipCorePart(message, details = undefined) {
+	if ( details === undefined ) console.warn(SW5E_STARSHIP_CORE_PART_PREFIX, message);
+	else console.warn(SW5E_STARSHIP_CORE_PART_PREFIX, message, details);
+}
+
+function logStarshipCorePartDiagnostic(message, details = undefined) {
+	if ( !SW5E_STARSHIP_SHEET_DIAG_ENABLED ) return;
+	if ( details === undefined ) console.info(SW5E_STARSHIP_CORE_PART_PREFIX, message);
+	else console.info(SW5E_STARSHIP_CORE_PART_PREFIX, message, details);
+}
+
+function buildStarshipCoreRenderData(app, actor, runtime, { integrated = true, showPowerRouting = shouldShowStarshipPowerRouting(actor) } = {}) {
+	const crewRoleGroups = buildStarshipCrewRoleGroups(actor);
+	const skills = enrichStarshipSkillsForSheet(actor);
+	const withIntegrated = arr => arr.map(group => ({
+		...group,
+		supportsSheetNavigation: group.supportsSheetNavigation === false
+			? false
+			: (integrated && group.defaultTab !== null)
+	}));
+
+	const sheetEditMode = isStarshipSheetEditMode(app);
+	const actorEditable = app.isEditable !== false;
+	const canUpdateActor = canCurrentUserUpdateStarshipActor(actor);
+	const crewManageEditable = canUpdateActor && actorEditable;
+	const crew = enrichCrewContextForSheetSearch(buildVehicleStarshipCrewContext(actor, {
+		sheetEditable: crewManageEditable
+	}));
+	const systemsCore = buildSystemsCoreContext(actor, { runtime });
+	const overviewAbilities = buildOverviewAbilitiesContext(actor, actorEditable);
+
+	const coreRenderData = {
+		actorName: actor.name,
+		actorImage: resolveStarshipSheetImageUrl(actor.img),
+		title: localizeOrFallback("TYPES.Actor.starshipPl", "Starship Systems"),
+		subtitle: localizeOrFallback("TYPES.Actor.vehicle", "Vehicle Actor"),
+		headerBadges: makeHeaderBadges(actor, { runtime }),
+		summaryStrip: makeStarshipSummaryStrip(actor, { runtime }),
+		legacyNotes: getLegacyNotes(actor, { runtime }),
+		skills,
+		crew,
+		editable: actorEditable,
+		crewManageEditable,
+		systemsSetupEditable: sheetEditMode && actorEditable,
+		systemsRoutingEditable: actorEditable,
+		showPowerRouting,
+		legacyPowerRoutingEnabled: isLegacyPowerRoutingOverrideEnabled(actor),
+		legacyPowerRoutingFlagPath: `flags.${SETTINGS_NAMESPACE}.${STARSHIP_LEGACY_POWER_ROUTING_FLAG}`,
+		systemsCore,
+		crewRoleGroups: withIntegrated(crewRoleGroups),
+		crewRolesKicker: localizeOrFallback("SW5E.Feature.Deployment.Label", "Deployments"),
+		overviewLandingKicker: localizeOrFallback("SW5E.StarshipSheet.OverviewKicker", "Overview"),
+		overviewLandingTitle: localizeOrFallback("SW5E.StarshipSheet.OverviewTitle", "Starship at a glance"),
+		overviewLandingLede: localizeOrFallback(
+			"SW5E.StarshipSheet.OverviewLede",
+			"Use this overview for starship skills and the tabs for crew, operations, equipment, modifications, and systems configuration. Live statistics remain in the sidebar."
+		),
+		overviewSkillsAriaLabel: localizeOrFallback("SW5E.StarshipSheet.OverviewSkillsAria", "Starship skills"),
+		overviewSkillsKicker: localizeOrFallback("SW5E.StarshipSheet.OverviewSkillsKicker", "Skills"),
+		overviewSkillsLede: localizeOrFallback(
+			"SW5E.StarshipSheet.OverviewSkillsLede",
+			"Roll a skill from the row. In edit mode, use the cog to adjust proficiency, ability, and check bonus (starship skills use a compact editor compatible with vehicle actors)."
+		),
+		overviewAbilitiesAriaLabel: localizeOrFallback("SW5E.StarshipSheet.OverviewAbilitiesAria", "Starship abilities"),
+		overviewAbilitiesKicker: localizeOrFallback("SW5E.StarshipSheet.OverviewAbilitiesKicker", "Abilities"),
+		overviewAbilitiesTitle: localizeOrFallback("SW5E.StarshipSheet.OverviewAbilitiesTitle", "Core ability scores"),
+		overviewAbilitiesLede: localizeOrFallback(
+			"SW5E.StarshipSheet.OverviewAbilitiesLede",
+			"Core ship abilities shown in a compact score-card layout. In edit mode, adjust the base score directly here."
+		),
+		overviewAbilities,
+		overviewAbilitySaveLabel: localizeOrFallback("SW5E.StarshipSheet.AbilitySaveLabel", "Save"),
+		overviewPassiveHint: localizeOrFallback("DND5E.PassiveScore", "Passive score"),
+		overviewSkillConfigureTitle: localizeOrFallback("SW5E.SkillConfigure", "Configure skill"),
+		sotgSheetEditMode: sheetEditMode,
+		sotgFindInSheetAria: localizeOrFallback("SW5E.StarshipSheet.FindInSheet", "Find on sheet"),
+		sotgContextMenuAria: game.i18n.localize("DND5E.AdditionalControls")
+	};
+
+	const coreMeta = {
+		...coreRenderData,
+		actorEditable,
+		overviewAbilitiesPresent: Array.isArray(overviewAbilities) && overviewAbilities.length > 0,
+		crewPanelPresent: Boolean(crew)
+	};
+
+	return { coreRenderData, coreMeta };
+}
+
+async function renderStarshipCoreInnerHtml(coreRenderData) {
+	return foundry.applications.handlebars.renderTemplate(
+		getModulePath("templates/starship-sheet-layer.hbs"),
+		coreRenderData
+	);
+}
+
+function getStarshipCoreWrapperState(nav, panelParent) {
+	const navEntries = Array.from(nav?.querySelectorAll?.(`[data-tab="${STARSHIP_TAB_ID}"]`) ?? [])
+		.filter(node => node instanceof HTMLElement);
+	const roots = Array.from(panelParent?.querySelectorAll?.(`.sw5e-starship-tab[data-tab="${STARSHIP_TAB_ID}"]`) ?? [])
+		.filter(node => node instanceof HTMLElement);
+	const partRoots = roots.filter(node => node.dataset.sw5eCoreOwner === "part");
+	const customRoots = roots.filter(node => node.dataset.sw5eCoreOwner !== "part");
+	const customNavEntries = navEntries.filter(node => node.classList.contains("sw5e-starship-tab-button"));
+	const stockNavEntries = navEntries.filter(node => !node.classList.contains("sw5e-starship-tab-button"));
+	return { navEntries, roots, partRoots, customRoots, customNavEntries, stockNavEntries };
+}
+
+function removeStarshipCoreOwnershipDom(nav, panelParent) {
+	for ( const button of nav?.querySelectorAll?.(`[data-tab="${STARSHIP_TAB_ID}"]`) ?? [] ) button.remove();
+	for ( const panel of panelParent?.querySelectorAll?.(`.sw5e-starship-tab[data-tab="${STARSHIP_TAB_ID}"]`) ?? [] ) panel.remove();
+}
+
+function ensureStarshipCoreInteractions(wrapper, app, actor) {
+	if ( !(wrapper instanceof HTMLElement) ) return;
+	if ( wrapper.dataset.sw5eCoreInteractionsBound === "1" ) {
+		ensureStarshipSotgItemRowInteractions(wrapper, app);
+		ensureStarshipCorePanelCollapseDelegate(wrapper, app);
+		ensureStarshipAssignedCrewSearch(wrapper, app);
+		return;
+	}
+
+	wrapper.dataset.sw5eCoreInteractionsBound = "1";
+	ensureStarshipSotgItemRowInteractions(wrapper, app);
+	ensureStarshipCorePanelCollapseDelegate(wrapper, app);
+	ensureStarshipAssignedCrewSearch(wrapper, app);
+
+	const handleTabClick = async event => {
+		const target = getEventTargetElement(event);
+		const sheetActor = app.actor ?? actor;
+		const abilityStrip = target?.closest(".sw5e-starship-ability-strip");
+
+		if ( abilityStrip ) {
+			const abilityCog = target?.closest("[data-action=\"showConfiguration\"][data-config=\"ability\"]");
+			if ( abilityCog ) {
+				event.preventDefault();
+				event.stopPropagation();
+				const abilityKey = abilityCog.closest(".ability-score")?.dataset?.ability;
+				await openStarshipAbilityConfiguration(sheetActor, abilityKey);
+				return;
+			}
+
+			if ( target?.closest("proficiency-cycle") ) return;
+
+			const abilitySave = target?.closest(".save-tab.saving-throw.rollable[data-action=\"roll\"][data-type=\"ability\"]");
+			if ( abilitySave ) {
+				event.preventDefault();
+				event.stopPropagation();
+				const abilityKey = abilitySave.closest(".ability-score")?.dataset?.ability;
+				await rollStarshipAbilitySave(sheetActor, abilityKey, event);
+				return;
+			}
+
+			const abilityRoll = target?.closest(".label.ability-check[data-action=\"roll\"][data-type=\"ability\"]");
+			if ( abilityRoll ) {
+				event.preventDefault();
+				event.stopPropagation();
+				const abilityKey = abilityRoll.closest(".ability-score")?.dataset?.ability
+					?? abilityRoll.dataset.ability;
+				await rollStarshipAbilityCheck(sheetActor, abilityKey, event);
+				return;
+			}
+		}
+
+		const actionNode = target?.closest("[data-sw5e-action]");
+		if ( !actionNode ) return;
+
+		event.preventDefault();
+		event.stopPropagation();
+		const action = actionNode.dataset.sw5eAction
+			?? actionNode.getAttribute("data-sw5e-action");
+		const actionRow = actionNode.closest(".sw5e-starship-item-row--sotg[data-item-id]") ?? actionNode;
+		const { item } = resolveSotgRowItem(app, actionRow);
+
+		if ( action === "edit-item" ) {
+			const ItemSheet5e = getDnd5eItemSheet5e();
+			if ( ItemSheet5e ) await item?.sheet?.render(true, { mode: ItemSheet5e.MODES.EDIT });
+			else await item?.sheet?.render(true);
+			return;
+		}
+
+		if ( action === "delete-item" ) {
+			if ( !item || actionRow?.dataset?.sourceActorUuid ) return;
+			if ( typeof item.deleteDialog === "function" ) await item.deleteDialog();
+			return;
+		}
+
+		if ( action === "focus-item" ) {
+			if ( actionRow?.dataset?.sourceActorUuid ) return;
+			const focusItem = actionNode.dataset.itemId ? sheetActor?.items?.get(actionNode.dataset.itemId) : null;
+			const focusTab = actionNode.dataset.tab || resolveStarshipItemPrimaryTab(focusItem);
+			focusSheetItem(wrapper.closest(".sw5e-starship-sheet") ?? wrapper, app, actionNode.dataset.itemId, focusTab);
+			return;
+		}
+
+		if ( action === "open-tab" ) {
+			const firstItemId = actionNode.dataset.firstItemId;
+			if ( firstItemId ) focusSheetItem(wrapper.closest(".sw5e-starship-sheet") ?? wrapper, app, firstItemId);
+			return;
+		}
+
+		if ( action === "roll-skill" ) {
+			await rollStarshipSkill(sheetActor, actionNode.dataset.skillId, event, game.user);
+			return;
+		}
+
+		if ( action === "roll-ability" ) {
+			await rollStarshipAbilityCheck(sheetActor, actionNode.dataset.ability, event);
+			return;
+		}
+
+		if ( action === "roll-save" ) {
+			await rollStarshipAbilitySave(sheetActor, actionNode.dataset.ability, event);
+			return;
+		}
+
+		if ( action === "configure-skill" ) {
+			await openStarshipSkillConfiguration(sheetActor, actionNode.dataset.skillId);
+		}
+	};
+
+	wrapper.addEventListener("click", handleTabClick, { capture: true });
+
+	wrapper.addEventListener("click", event => {
+		const ctl = event.target.closest("[data-sw5e-sotg-tab], [data-sw5e-sotg-goto]");
+		if ( !ctl ) return;
+		event.preventDefault();
+		const id = ctl.getAttribute("data-sw5e-sotg-tab") || ctl.getAttribute("data-sw5e-sotg-goto");
+		if ( !id ) return;
+		activateSotgSubTab(wrapper, app, id);
+	});
+
+	wrapper.addEventListener("click", async event => {
+		const btn = event.target.closest("[data-sw5e-crew-command]");
+		if ( !btn ) return;
+		event.preventDefault();
+		if ( btn.disabled ) return;
+		if ( app?.isEditable === false ) {
+			warnStarshipActorUpdateDenied();
+			return;
+		}
+		btn.disabled = true;
+		try {
+			const command = btn.dataset.sw5eCrewCommand;
+			const uuid = btn.dataset.actorUuid;
+			if ( command === "open-add-crew" ) {
+				await openAddCrewDialog(actor);
+				return;
+			}
+
+			let ok = false;
+			if ( command === "deploy" ) ok = await deployStarshipCrew(actor, uuid, btn.dataset.deployRole);
+			else if ( command === "remove" ) ok = await undeployStarshipCrew(actor, uuid);
+			else if ( command === "toggle-active" ) ok = await toggleStarshipActiveCrew(actor, uuid);
+			else if ( command === "set-pilot" ) ok = await deployStarshipCrew(actor, uuid, "pilot");
+			else if ( command === "undeploy-pilot" ) ok = await undeployStarshipCrew(actor, uuid, ["pilot"]);
+			else return;
+
+			if ( ok !== true ) warnStarshipActorUpdateDenied();
+		} catch ( err ) {
+			console.error("SW5E MODULE | Crew command failed.", err);
+		} finally {
+			btn.disabled = false;
+		}
+	});
+}
 
 
 
@@ -703,17 +979,198 @@ function markStarshipCoreSectionOwnership(root, { showPowerRouting }) {
 	}
 }
 
-async function renderStarshipLayer(app, html, data) {
+function inspectLiveStarshipCoreRenderState(app) {
+	const root = getHtmlRoot(app?.element);
+	if ( !(root instanceof HTMLElement) ) {
+		return {
+			root: null,
+			nav: null,
+			panelParent: null,
+			integrated: false,
+			coreState: {
+				navEntries: [],
+				roots: [],
+				partRoots: [],
+				customRoots: [],
+				customNavEntries: [],
+				stockNavEntries: []
+			},
+			malformedReasons: ["missing-render-root"],
+			existingWrapper: null
+		};
+	}
+	const { nav, panelParent, integrated } = ensureStarshipTabTargets(root);
+	const coreState = getStarshipCoreWrapperState(nav, panelParent);
+	const malformedReasons = [];
+	if ( coreState.stockNavEntries.length !== 1 ) malformedReasons.push("duplicate-core-nav");
+	if ( coreState.partRoots.length !== 1 ) malformedReasons.push("duplicate-core-root");
+	if ( coreState.partRoots[0]?.dataset?.group !== "primary" ) malformedReasons.push("malformed-wrapper-contract");
+	return {
+		root,
+		nav,
+		panelParent,
+		integrated,
+		coreState,
+		malformedReasons,
+		existingWrapper: coreState.partRoots[0] ?? null
+	};
+}
+
+function registerStarshipCorePartRenderOptionsWrapper() {
+	if ( starshipCorePartRenderOptionsWrapped ) return;
+	starshipCorePartRenderOptionsWrapped = true;
+	try {
+		libWrapper.register(getModuleId(), "dnd5e.applications.actor.VehicleActorSheet.prototype._configureRenderOptions", function(wrapped, options) {
+			const actor = this.actor ?? this.document ?? null;
+			const originalPartRequest = cloneStarshipRequestedParts(options?.parts);
+			const result = wrapped(options);
+			if ( isSw5eStarshipActor(actor) ) {
+				this.tabGroups ??= {};
+				if ( options?.isFirstRender ) {
+					this.tabGroups.primary = STARSHIP_TAB_ID;
+				} else if ( !this.tabGroups.primary ) {
+					this.tabGroups.primary = STARSHIP_TAB_ID;
+				}
+
+				const normalizedPartRequest = Array.isArray(options?.parts) ? [...options.parts] : [];
+				const coreRequested = normalizedPartRequest.includes(STARSHIP_TAB_ID);
+				if ( !coreRequested ) {
+					createStarshipRenderDecision(this, options, {
+						actorId: actor?.id ?? actor?.uuid ?? null,
+						originalPartRequest,
+						normalizedPartRequest,
+						effectivePartRequest: [...normalizedPartRequest],
+						coreDecision: STARSHIP_CORE_RENDER_DECISION.NOT_REQUESTED,
+						reason: "not-requested",
+						structuralMode: null,
+						hasPriorBaseline: hasStarshipCoreBaseline(this),
+						expectedCoreRoot: null
+					});
+					return result;
+				}
+
+				const showPowerRouting = shouldShowStarshipPowerRouting(actor);
+				const runtime = getDerivedStarshipRuntime(actor, { showPowerRouting });
+				const { coreMeta } = buildStarshipCoreRenderData(this, actor, runtime, {
+					integrated: true,
+					showPowerRouting
+				});
+				const liveState = inspectLiveStarshipCoreRenderState(this);
+				const structuralMode = signaturePayloadCoreStructuralMode(coreMeta);
+				const structuralCompare = compareStarshipSectionSignature(
+					this,
+					STARSHIP_SECTION.CORE_STRUCTURAL_MODE,
+					structuralMode
+				);
+				const summaryCompare = compareStarshipSectionSignature(
+					this,
+					STARSHIP_SECTION.CORE_SUMMARY,
+					signaturePayloadCoreSummary(coreMeta)
+				);
+				const hasPriorBaseline = hasStarshipCoreBaseline(this);
+				const coreDecision = evaluateStarshipCorePreRenderEligibility(this, actor, {
+					coreRequested,
+					isFirstRender: Boolean(options?.isFirstRender),
+					hasCoreWrapper: liveState.existingWrapper instanceof HTMLElement,
+					malformedCoreRoot: liveState.malformedReasons.length > 0,
+					hasPriorBaseline,
+					structuralModeChanged: structuralCompare.dirty,
+					summaryChanged: summaryCompare.dirty
+				});
+				let effectivePartRequest = coreDecision.coreDecision === STARSHIP_CORE_RENDER_DECISION.PARTIAL_PRESERVE
+					? normalizedPartRequest.filter(partId => partId !== STARSHIP_TAB_ID)
+					: [...normalizedPartRequest];
+				let resolvedCoreDecision = coreDecision;
+				if ( resolvedCoreDecision.coreDecision === STARSHIP_CORE_RENDER_DECISION.PARTIAL_PRESERVE && effectivePartRequest.length === 0 ) {
+					resolvedCoreDecision = {
+						coreDecision: STARSHIP_CORE_RENDER_DECISION.STOCK_REPLACE,
+						reason: "core-only-request"
+					};
+					effectivePartRequest = [...normalizedPartRequest];
+				}
+				if ( resolvedCoreDecision.coreDecision === STARSHIP_CORE_RENDER_DECISION.PARTIAL_PRESERVE ) {
+					options.parts = effectivePartRequest;
+				}
+				createStarshipRenderDecision(this, options, {
+					actorId: actor?.id ?? actor?.uuid ?? null,
+					originalPartRequest,
+					normalizedPartRequest,
+					effectivePartRequest,
+					coreDecision: resolvedCoreDecision.coreDecision,
+					reason: resolvedCoreDecision.reason,
+					structuralMode,
+					hasPriorBaseline: resolvedCoreDecision.reason === "actor-identity-changed" ? false : hasPriorBaseline,
+					expectedCoreRoot: liveState.existingWrapper ?? null,
+					expectedCoreOwner: liveState.existingWrapper?.dataset?.sw5eCoreOwner ?? null,
+					coreRequested,
+					structuralModeChanged: structuralCompare.dirty,
+					summaryChanged: summaryCompare.dirty
+				});
+				logStarshipCorePartDiagnostic("Render-options decision prepared.", {
+					coreDecision: resolvedCoreDecision.coreDecision,
+					reason: resolvedCoreDecision.reason,
+					originalPartRequest,
+					normalizedPartRequest,
+					effectivePartRequest
+				});
+			}
+			return result;
+		}, "WRAPPER");
+	} catch ( err ) {
+		console.warn("SW5E MODULE | Could not wrap VehicleActorSheet._configureRenderOptions for permanent starship Core PART ownership.", err);
+	}
+}
+
+function registerStarshipVehiclePartContextWrapper() {
+	if ( starshipVehiclePartContextWrapped ) return;
+	starshipVehiclePartContextWrapped = true;
+	try {
+		libWrapper.register(getModuleId(), "dnd5e.applications.actor.VehicleActorSheet.prototype._preparePartContext", async function(wrapped, partId, context, options) {
+			context = await wrapped(partId, context, options);
+			const actor = this.actor ?? this.document ?? null;
+			context = suppressNativeStarshipStationsAbilityAndFeatures(this, partId, context);
+			if ( partId !== STARSHIP_TAB_ID || !isSw5eStarshipActor(actor) ) return context;
+			const renderDecision = getStarshipRenderDecision(this, options);
+			if ( renderDecision?.coreDecision === STARSHIP_CORE_RENDER_DECISION.PARTIAL_PRESERVE ) return context;
+
+			const showPowerRouting = shouldShowStarshipPowerRouting(actor);
+			const runtime = getDerivedStarshipRuntime(actor, { showPowerRouting });
+			const { coreRenderData } = buildStarshipCoreRenderData(this, actor, runtime, {
+				integrated: true,
+				showPowerRouting
+			});
+			context.sw5eCoreHtml = await renderStarshipCoreInnerHtml(coreRenderData);
+			return context;
+		}, "WRAPPER");
+	} catch ( err ) {
+		console.warn("SW5E MODULE | Could not wrap VehicleActorSheet._preparePartContext for starship sheet part shaping.", err);
+	}
+}
+
+async function renderStarshipLayer(app, html, data, options) {
 	const actor = data.actor ?? app.actor;
 	if ( !isSw5eStarshipActor(actor) ) return;
 	const renderGen = beginStarshipSheetRender(app);
+	const renderDecision = getStarshipRenderDecision(app, options);
+	const coreDecision = renderDecision?.coreDecision
+		?? (Array.isArray(options?.parts) && options.parts.includes(STARSHIP_TAB_ID)
+			? STARSHIP_CORE_RENDER_DECISION.STOCK_REPLACE
+			: STARSHIP_CORE_RENDER_DECISION.NOT_REQUESTED);
+	const coreDecisionReason = renderDecision?.reason
+		?? (coreDecision === STARSHIP_CORE_RENDER_DECISION.NOT_REQUESTED ? "not-requested" : "decision-missing");
 
 	await ensureStarshipDefaultShowVehicleAbilities(actor);
-	if ( !isStarshipSheetRenderCurrent(app, renderGen) ) return;
+	if ( !isStarshipSheetRenderCurrent(app, renderGen) ) {
+		clearStarshipRenderDecision(app, options);
+		return;
+	}
 	maybeWarnSpaceStationUndersized(actor);
 
 	const root = getHtmlRoot(html);
-	if ( !root ) return;
+	if ( !root ) {
+		clearStarshipRenderDecision(app, options);
+		return;
+	}
 	try {
 		const scrollSnap = readStarshipSheetScrollSnapshot(app);
 		const pendingSidebarScroll = consumeStarshipPendingSidebarScroll(app);
@@ -743,119 +1200,71 @@ async function renderStarshipLayer(app, html, data) {
 		const runtime = getDerivedStarshipRuntime(actor, { showPowerRouting });
 
 		const { nav, panelParent, integrated } = ensureStarshipTabTargets(root);
-		if ( !nav || !panelParent ) return;
+		if ( !nav || !panelParent ) {
+			warnStarshipCorePart("Could not resolve stock primary tab targets for permanent Core PART ownership.");
+			return;
+		}
 
 		const migrateToFeaturesTab = app._sw5eSotgSubTab === "features"
 			|| app._sw5eStarshipActiveTab === STARSHIP_FEATURES_TAB_ID;
 		if ( app._sw5eSotgSubTab === "features" ) app._sw5eSotgSubTab = "overview";
-		if ( app._sw5eStarshipActiveTab === STARSHIP_FEATURES_TAB_ID ) setStarshipActiveTab(app, null);
-
-		if ( app._sw5eStarshipActiveTab === undefined ) {
-			setStarshipActiveTab(app, STARSHIP_TAB_ID);
-
-			nav.querySelectorAll("[data-tab]").forEach(item => {
-				if ( !CUSTOM_STARSHIP_TAB_IDS.has(item.dataset.tab) ) item.classList.remove("active");
-			});
-		}
+		delete app._sw5eStarshipActiveTab;
 
 		const starshipViewState = captureStarshipSheetViewState(app, scrollSnap);
 		if ( migrateToFeaturesTab ) starshipViewState.stockPrimary = STARSHIP_FEATURES_TAB_ID;
 
-		const crewRoleGroups = buildStarshipCrewRoleGroups(actor);
-		const skills = enrichStarshipSkillsForSheet(actor);
-		const withIntegrated = arr => arr.map(group => ({
-			...group,
-			supportsSheetNavigation: group.supportsSheetNavigation === false
-				? false
-				: (integrated && group.defaultTab !== null)
-		}));
+		let coreState = getStarshipCoreWrapperState(nav, panelParent);
+		if ( coreState.customRoots.length || coreState.customNavEntries.length ) {
+			warnStarshipCorePart("Removing stale custom Core ownership from permanent PART path.", {
+				customRoots: coreState.customRoots.length,
+				customNavEntries: coreState.customNavEntries.length
+			});
+			for ( const node of coreState.customRoots ) node.remove();
+			for ( const node of coreState.customNavEntries ) node.remove();
+			coreState = getStarshipCoreWrapperState(nav, panelParent);
+		}
 
-		const sheetEditMode = isStarshipSheetEditMode(app);
-		const actorEditable = app.isEditable !== false;
-		const canUpdateActor = canCurrentUserUpdateStarshipActor(actor);
-		const crewManageEditable = canUpdateActor && actorEditable;
-		const crew = enrichCrewContextForSheetSearch(buildVehicleStarshipCrewContext(actor, {
-			sheetEditable: crewManageEditable
-		}));
-		const systemsCore = buildSystemsCoreContext(actor, { runtime });
-		const overviewAbilities = buildOverviewAbilitiesContext(actor, actorEditable);
+		const malformedReasons = [];
+		if ( coreState.stockNavEntries.length !== 1 ) malformedReasons.push("duplicate-core-nav");
+		if ( coreState.partRoots.length !== 1 ) malformedReasons.push("duplicate-core-root");
+		if ( coreState.partRoots[0]?.dataset?.group !== "primary" ) malformedReasons.push("malformed-wrapper-contract");
+		if ( malformedReasons.length ) {
+			warnStarshipCorePart("Permanent Core PART root is missing or malformed; aborting starship Core update.", {
+				reasons: malformedReasons,
+				navEntries: coreState.navEntries.length,
+				partRoots: coreState.partRoots.length,
+				customRoots: coreState.customRoots.length
+			});
+			return;
+		}
 
-		const coreRenderData = {
-			actorName: actor.name,
-			actorImage: resolveStarshipSheetImageUrl(actor.img),
-			title: localizeOrFallback("TYPES.Actor.starshipPl", "Starship Systems"),
-			subtitle: localizeOrFallback("TYPES.Actor.vehicle", "Vehicle Actor"),
-			headerBadges: makeHeaderBadges(actor, { runtime }),
-			summaryStrip: makeStarshipSummaryStrip(actor, { runtime }),
-			legacyNotes: getLegacyNotes(actor, { runtime }),
-			skills,
-			crew,
-			editable: actorEditable,
-			crewManageEditable,
-			systemsSetupEditable: sheetEditMode && actorEditable,
-			systemsRoutingEditable: actorEditable,
-			showPowerRouting,
-			legacyPowerRoutingEnabled: isLegacyPowerRoutingOverrideEnabled(actor),
-			legacyPowerRoutingFlagPath: `flags.${SETTINGS_NAMESPACE}.${STARSHIP_LEGACY_POWER_ROUTING_FLAG}`,
-			systemsCore,
-			crewRoleGroups: withIntegrated(crewRoleGroups),
-			crewRolesKicker: localizeOrFallback("SW5E.Feature.Deployment.Label", "Deployments"),
-			overviewLandingKicker: localizeOrFallback("SW5E.StarshipSheet.OverviewKicker", "Overview"),
-			overviewLandingTitle: localizeOrFallback("SW5E.StarshipSheet.OverviewTitle", "Starship at a glance"),
-			overviewLandingLede: localizeOrFallback(
-				"SW5E.StarshipSheet.OverviewLede",
-				"Use this overview for starship skills and the tabs for crew, operations, equipment, modifications, and systems configuration. Live statistics remain in the sidebar."
-			),
-			overviewSkillsAriaLabel: localizeOrFallback("SW5E.StarshipSheet.OverviewSkillsAria", "Starship skills"),
-			overviewSkillsKicker: localizeOrFallback("SW5E.StarshipSheet.OverviewSkillsKicker", "Skills"),
-			overviewSkillsLede: localizeOrFallback(
-				"SW5E.StarshipSheet.OverviewSkillsLede",
-				"Roll a skill from the row. In edit mode, use the cog to adjust proficiency, ability, and check bonus (starship skills use a compact editor compatible with vehicle actors)."
-			),
-			overviewAbilitiesAriaLabel: localizeOrFallback("SW5E.StarshipSheet.OverviewAbilitiesAria", "Starship abilities"),
-			overviewAbilitiesKicker: localizeOrFallback("SW5E.StarshipSheet.OverviewAbilitiesKicker", "Abilities"),
-			overviewAbilitiesTitle: localizeOrFallback("SW5E.StarshipSheet.OverviewAbilitiesTitle", "Core ability scores"),
-			overviewAbilitiesLede: localizeOrFallback(
-				"SW5E.StarshipSheet.OverviewAbilitiesLede",
-				"Core ship abilities shown in a compact score-card layout. In edit mode, adjust the base score directly here."
-			),
-			overviewAbilities,
-			overviewAbilitySaveLabel: localizeOrFallback("SW5E.StarshipSheet.AbilitySaveLabel", "Save"),
-			overviewPassiveHint: localizeOrFallback("DND5E.PassiveScore", "Passive score"),
-			overviewSkillConfigureTitle: localizeOrFallback("SW5E.SkillConfigure", "Configure skill"),
-			sotgSheetEditMode: sheetEditMode,
-			sotgFindInSheetAria: localizeOrFallback("SW5E.StarshipSheet.FindInSheet", "Find on sheet"),
-			sotgContextMenuAria: game.i18n.localize("DND5E.AdditionalControls")
+		const existingWrapper = coreState.partRoots[0];
+		app._sw5eLastCorePartialUpdate = {
+			decision: {
+				coreDecision,
+				reason: coreDecisionReason,
+				originalPartRequest: renderDecision?.originalPartRequest ?? null,
+				normalizedPartRequest: renderDecision?.normalizedPartRequest ?? null,
+				effectivePartRequest: renderDecision?.effectivePartRequest ?? cloneStarshipRequestedParts(options?.parts) ?? []
+			},
+			gate: {
+				allowPartial: coreDecision === STARSHIP_CORE_RENDER_DECISION.PARTIAL_PRESERVE,
+				reason: coreDecisionReason
+			},
+			result: coreDecision === STARSHIP_CORE_RENDER_DECISION.NOT_REQUESTED
+				? { status: "not-requested", reason: coreDecisionReason }
+				: coreDecision === STARSHIP_CORE_RENDER_DECISION.STOCK_REPLACE
+					? { status: "stock-replace", reason: coreDecisionReason }
+					: null,
+			fallbackApplied: false,
+			owner: existingWrapper?.dataset?.sw5eCoreOwner ?? "unknown",
+			renderGeneration: renderGen
 		};
-
-		const coreMeta = {
-			...coreRenderData,
-			actorEditable,
-			overviewAbilitiesPresent: Array.isArray(overviewAbilities) && overviewAbilities.length > 0,
-			crewPanelPresent: Boolean(crew)
-		};
-
-		const existingWrapper = panelParent.querySelector(`.sw5e-starship-tab[data-tab="${STARSHIP_TAB_ID}"]`);
-		const structuralCompare = compareStarshipSectionSignature(
-			app,
-			STARSHIP_SECTION.CORE_STRUCTURAL_MODE,
-			signaturePayloadCoreStructuralMode(coreMeta)
-		);
-		const summaryCompare = compareStarshipSectionSignature(
-			app,
-			STARSHIP_SECTION.CORE_SUMMARY,
-			signaturePayloadCoreSummary(coreMeta)
-		);
-		const partialGate = evaluateStarshipPartialGate(app, actor, {
-			hasCoreWrapper: existingWrapper instanceof HTMLElement,
-			structuralModeChanged: structuralCompare.dirty,
-			summaryChanged: summaryCompare.dirty
-		});
 
 		const sidebarOutcome = await renderStarshipSidebarSections(root, actor, app, {
 			runtime,
 			renderGen,
-			allowPartial: partialGate.allowPartial
+			allowPartial: coreDecision === STARSHIP_CORE_RENDER_DECISION.PARTIAL_PRESERVE
 		});
 		if ( sidebarOutcome === "skipped" || !isStarshipSheetRenderCurrent(app, renderGen) ) return;
 
@@ -868,234 +1277,74 @@ async function renderStarshipLayer(app, html, data) {
 		});
 		suppressStockVehicleHpMeterForStarship(root, actor, app);
 
-		const rendered = await foundry.applications.handlebars.renderTemplate(
-			getModulePath("templates/starship-sheet-layer.hbs"),
-			coreRenderData
-		);
-		if ( !isStarshipSheetRenderCurrent(app, renderGen) ) return;
-
-		if ( existingWrapper ) {
-			let usedPartialCore = false;
-			if ( partialGate.allowPartial ) {
-				const partialCoreResult = await tryApplyStarshipCorePartialUpdates(existingWrapper, rendered, app, renderGen, coreMeta);
-				if ( partialCoreResult === "skipped" ) return;
-				usedPartialCore = partialCoreResult === "applied";
-			}
-			if ( !usedPartialCore ) {
-				if ( !isStarshipSheetRenderCurrent(app, renderGen) ) return;
-				existingWrapper.innerHTML = rendered;
+		if ( coreDecision !== STARSHIP_CORE_RENDER_DECISION.NOT_REQUESTED ) {
+			const { coreRenderData, coreMeta } = buildStarshipCoreRenderData(app, actor, runtime, {
+				integrated,
+				showPowerRouting
+			});
+			if ( coreDecision === STARSHIP_CORE_RENDER_DECISION.STOCK_REPLACE ) {
 				markStarshipCoreSectionOwnership(existingWrapper, { showPowerRouting });
 				recordStarshipCoreBaseline(app, actor, coreMeta);
+				logStarshipCorePartDiagnostic("Accepted stock Core PART render.", {
+					reason: coreDecisionReason
+				});
+			} else {
+				const structuralCompare = compareStarshipSectionSignature(
+					app,
+					STARSHIP_SECTION.CORE_STRUCTURAL_MODE,
+					signaturePayloadCoreStructuralMode(coreMeta)
+				);
+				const summaryCompare = compareStarshipSectionSignature(
+					app,
+					STARSHIP_SECTION.CORE_SUMMARY,
+					signaturePayloadCoreSummary(coreMeta)
+				);
+				const partialGate = evaluateStarshipPartialGate(app, actor, {
+					hasCoreWrapper: existingWrapper instanceof HTMLElement && (!renderDecision?.expectedCoreRoot || existingWrapper === renderDecision.expectedCoreRoot),
+					structuralModeChanged: structuralCompare.dirty,
+					summaryChanged: summaryCompare.dirty
+				});
+				app._sw5eLastCorePartialUpdate.gate = partialGate;
+				const rendered = await renderStarshipCoreInnerHtml(coreRenderData);
+				if ( !isStarshipSheetRenderCurrent(app, renderGen) ) return;
+
+				let partialCoreResult = partialGate.allowPartial
+					? await tryApplyStarshipCorePartialUpdates(existingWrapper, rendered, app, renderGen, coreMeta, {
+						expectedCoreRoot: renderDecision?.expectedCoreRoot ?? null
+					})
+					: { status: "fallback", reason: partialGate.reason, details: { phase: "gate" } };
+				app._sw5eLastCorePartialUpdate.result = partialCoreResult;
+				if ( partialCoreResult.status === "skipped" ) return;
+				if ( partialCoreResult.status !== "applied" ) {
+					if ( !isStarshipSheetRenderCurrent(app, renderGen) ) return;
+					existingWrapper.innerHTML = rendered;
+					markStarshipCoreSectionOwnership(existingWrapper, { showPowerRouting });
+					recordStarshipCoreBaseline(app, actor, coreMeta);
+					if ( app._sw5eLastCorePartialUpdate ) app._sw5eLastCorePartialUpdate.fallbackApplied = true;
+					logStarshipCorePartDiagnostic("Controlled Core inner fallback applied.", {
+						reason: partialCoreResult.reason,
+						details: partialCoreResult.details ?? null
+					});
+				}
 			}
-			syncSotgSheetPhaseClasses(app, existingWrapper.querySelector(".sw5e-starship-panel"));
-			ensureStarshipCorePanelCollapseDelegate(existingWrapper, app);
-			ensureStarshipSotgItemRowInteractions(existingWrapper, app);
-			ensureStarshipAssignedCrewSearch(existingWrapper, app);
-			scheduleStarshipAbilitySaveTabSync(root, app);
-			if ( !nav.querySelector(`[data-tab="${STARSHIP_TAB_ID}"]`) ) {
-				const tabButton = document.createElement("a");
-				tabButton.className = "sw5e-starship-tab-button";
-				tabButton.dataset.group = "primary";
-				tabButton.dataset.tab = STARSHIP_TAB_ID;
-				tabButton.innerHTML = `<span>${localizeOrFallback("SW5E.StarshipSheet.CoreTab", "Core")}</span>`;
-				tabButton.addEventListener("click", event => { event.preventDefault(); activateSheetTab(root, app, STARSHIP_TAB_ID); });
-				insertCustomTabButtons(nav, [tabButton]);
-			}
-			configureStarshipPrimaryTabLabels(nav);
-			ensureStarshipFeaturesTabNav(root, app, nav);
-			restoreStarshipSheetViewState(app, starshipViewState, root);
-			if ( integrated ) attachIntegratedStockPrimaryTabBridge(app, root, nav);
-			ensureStarshipCargoInventoryInteractions(root, app);
-			ensureStarshipFeaturesInventoryInteractions(root, app);
-			scheduleStarshipModificationsSectionHeader(root, actor);
-			scheduleStarshipDuplicateSizeNeutralize(root, app, actor);
-			scheduleStarshipAbilitySaveTabSync(root, app);
-			queueMicrotask(() => runStarshipSheetDiagnostics(root, app, actor, "render:updateSotgLayer"));
-			return;
 		}
-
-		if ( !isStarshipSheetRenderCurrent(app, renderGen) ) return;
-
-		root.querySelectorAll(".sw5e-starship-tab, .sw5e-starship-tab-button, .sw5e-starship-tab-host").forEach(node => node.remove());
-
-		const tabButton = document.createElement("a");
-		tabButton.className = "sw5e-starship-tab-button";
-		tabButton.dataset.group = "primary";
-		tabButton.dataset.tab = STARSHIP_TAB_ID;
-		tabButton.innerHTML = `<span>${localizeOrFallback("SW5E.StarshipSheet.CoreTab", "Core")}</span>`;
-
-		const wrapper = document.createElement("section");
-		wrapper.className = "tab sw5e-starship-tab";
-		wrapper.dataset.group = "primary";
-		wrapper.dataset.tab = STARSHIP_TAB_ID;
-		wrapper.innerHTML = rendered;
-		markStarshipCoreSectionOwnership(wrapper, { showPowerRouting });
-		recordStarshipCoreBaseline(app, actor, coreMeta);
-		syncSotgSheetPhaseClasses(app, wrapper.querySelector(".sw5e-starship-panel"));
-		wrapper.hidden = getStarshipActiveTab(app) !== STARSHIP_TAB_ID;
-		if ( getStarshipActiveTab(app) === STARSHIP_TAB_ID ) wrapper.classList.add("active");
-
+		if ( existingWrapper instanceof HTMLElement ) {
+			syncSotgSheetPhaseClasses(app, existingWrapper.querySelector(".sw5e-starship-panel"));
+			ensureStarshipCoreInteractions(existingWrapper, app, actor);
+		}
 		configureStarshipPrimaryTabLabels(nav);
 		ensureStarshipFeaturesTabNav(root, app, nav);
-		insertCustomTabButtons(nav, [tabButton]);
-		panelParent.append(wrapper);
-
-		tabButton.addEventListener("click", event => {
-			event.preventDefault();
-			activateSheetTab(root, app, STARSHIP_TAB_ID);
-		});
-
-	const handleTabClick = async event => {
-		const target = getEventTargetElement(event);
-		const sheetActor = app.actor ?? actor;
-		const abilityStrip = target?.closest(".sw5e-starship-ability-strip");
-
-		if ( abilityStrip ) {
-			const abilityCog = target?.closest("[data-action=\"showConfiguration\"][data-config=\"ability\"]");
-			if ( abilityCog ) {
-				event.preventDefault();
-				event.stopPropagation();
-				const abilityKey = abilityCog.closest(".ability-score")?.dataset?.ability;
-				await openStarshipAbilityConfiguration(sheetActor, abilityKey);
-				return;
-			}
-
-			if ( target?.closest("proficiency-cycle") ) return;
-
-			const abilitySave = target?.closest(".save-tab.saving-throw.rollable[data-action=\"roll\"][data-type=\"ability\"]");
-			if ( abilitySave ) {
-				event.preventDefault();
-				event.stopPropagation();
-				const abilityKey = abilitySave.closest(".ability-score")?.dataset?.ability;
-				await rollStarshipAbilitySave(sheetActor, abilityKey, event);
-				return;
-			}
-
-			const abilityRoll = target?.closest(".label.ability-check[data-action=\"roll\"][data-type=\"ability\"]");
-			if ( abilityRoll ) {
-				event.preventDefault();
-				event.stopPropagation();
-				const abilityKey = abilityRoll.closest(".ability-score")?.dataset?.ability
-					?? abilityRoll.dataset.ability;
-				await rollStarshipAbilityCheck(sheetActor, abilityKey, event);
-				return;
-			}
-		}
-
-		const actionNode = target?.closest("[data-sw5e-action]");
-		if ( !actionNode ) return;
-
-		event.preventDefault();
-		event.stopPropagation();
-		const action = actionNode.dataset.sw5eAction
-			?? actionNode.getAttribute("data-sw5e-action");
-		const actionRow = actionNode.closest(".sw5e-starship-item-row--sotg[data-item-id]") ?? actionNode;
-		const { item } = resolveSotgRowItem(app, actionRow);
-
-		if ( action === "edit-item" ) {
-			const ItemSheet5e = getDnd5eItemSheet5e();
-			if ( ItemSheet5e ) await item?.sheet?.render(true, { mode: ItemSheet5e.MODES.EDIT });
-			else await item?.sheet?.render(true);
-			return;
-		}
-
-		if ( action === "delete-item" ) {
-			if ( !item || actionRow?.dataset?.sourceActorUuid ) return;
-			if ( typeof item.deleteDialog === "function" ) await item.deleteDialog();
-			return;
-		}
-
-		if ( action === "focus-item" ) {
-			if ( actionRow?.dataset?.sourceActorUuid ) return;
-			const focusItem = actionNode.dataset.itemId ? sheetActor?.items?.get(actionNode.dataset.itemId) : null;
-			const focusTab = actionNode.dataset.tab || resolveStarshipItemPrimaryTab(focusItem);
-			focusSheetItem(root, app, actionNode.dataset.itemId, focusTab);
-			return;
-		}
-
-		if ( action === "open-tab" ) {
-			const firstItemId = actionNode.dataset.firstItemId;
-			if ( firstItemId ) focusSheetItem(root, app, firstItemId);
-			return;
-		}
-
-		if ( action === "roll-skill" ) {
-			await rollStarshipSkill(sheetActor, actionNode.dataset.skillId, event, game.user);
-			return;
-		}
-
-		if ( action === "roll-ability" ) {
-			await rollStarshipAbilityCheck(sheetActor, actionNode.dataset.ability, event);
-			return;
-		}
-
-		if ( action === "roll-save" ) {
-			await rollStarshipAbilitySave(sheetActor, actionNode.dataset.ability, event);
-			return;
-		}
-
-		if ( action === "configure-skill" ) {
-			await openStarshipSkillConfiguration(sheetActor, actionNode.dataset.skillId);
-		}
-	};
-
-	ensureStarshipSotgItemRowInteractions(wrapper, app);
-	ensureStarshipCorePanelCollapseDelegate(wrapper, app);
-	ensureStarshipAssignedCrewSearch(wrapper, app);
-
-	wrapper.addEventListener("click", handleTabClick, { capture: true });
-
-	wrapper.addEventListener("click", event => {
-		const ctl = event.target.closest("[data-sw5e-sotg-tab], [data-sw5e-sotg-goto]");
-		if ( !ctl ) return;
-		event.preventDefault();
-		const id = ctl.getAttribute("data-sw5e-sotg-tab") || ctl.getAttribute("data-sw5e-sotg-goto");
-		if ( !id ) return;
-		activateSotgSubTab(wrapper, app, id);
-	});
-
-	wrapper.addEventListener("click", async event => {
-		const btn = event.target.closest("[data-sw5e-crew-command]");
-		if ( !btn ) return;
-		event.preventDefault();
-		if ( btn.disabled ) return;
-		if ( app?.isEditable === false ) {
-			warnStarshipActorUpdateDenied();
-			return;
-		}
-		btn.disabled = true;
-		try {
-			const command = btn.dataset.sw5eCrewCommand;
-			const uuid = btn.dataset.actorUuid;
-			if ( command === "open-add-crew" ) {
-				await openAddCrewDialog(actor);
-				return;
-			}
-
-			let ok = false;
-			if ( command === "deploy" ) ok = await deployStarshipCrew(actor, uuid, btn.dataset.deployRole);
-			else if ( command === "remove" ) ok = await undeployStarshipCrew(actor, uuid);
-			else if ( command === "toggle-active" ) ok = await toggleStarshipActiveCrew(actor, uuid);
-			else if ( command === "set-pilot" ) ok = await deployStarshipCrew(actor, uuid, "pilot");
-			else if ( command === "undeploy-pilot" ) ok = await undeployStarshipCrew(actor, uuid, ["pilot"]);
-			else return;
-
-			if ( ok !== true ) warnStarshipActorUpdateDenied();
-		} catch ( err ) {
-			console.error("SW5E MODULE | Crew command failed.", err);
-		} finally {
-			btn.disabled = false;
-		}
-	});
-
-	restoreStarshipSheetViewState(app, starshipViewState, root);
-	if ( integrated ) attachIntegratedStockPrimaryTabBridge(app, root, nav);
-	ensureStarshipCargoInventoryInteractions(root, app);
-	ensureStarshipFeaturesInventoryInteractions(root, app);
-	scheduleStarshipDuplicateSizeNeutralize(root, app, actor);
-	scheduleStarshipAbilitySaveTabSync(root, app);
-	queueMicrotask(() => runStarshipSheetDiagnostics(root, app, actor, "render:firstMountSotgLayer"));
+		restoreStarshipSheetViewState(app, starshipViewState, root);
+		ensureStarshipCargoInventoryInteractions(root, app);
+		ensureStarshipFeaturesInventoryInteractions(root, app);
+		// Rebind modifications-header observer when Inventory PART identity changes (Phase 10A).
+		ensureStarshipModificationsSectionHeaderSync(root, app);
+		scheduleStarshipModificationsSectionHeader(root, actor);
+		scheduleStarshipDuplicateSizeNeutralize(root, app, actor);
+		scheduleStarshipAbilitySaveTabSync(root, app);
+		queueMicrotask(() => runStarshipSheetDiagnostics(root, app, actor, "render:updateSotgLayer"));
 	} finally {
+		clearStarshipRenderDecision(app, options);
 		bindStarshipSheetImageFallbacks(root);
 	}
 }
@@ -1106,9 +1355,11 @@ export function patchStarshipSheet() {
 	registerStarshipEffectsContextWrapper();
 	registerStarshipEffectsConditionPresentation();
 	registerStarshipEffectsSlowedToggleGuard();
+	registerStarshipCoreTabPart();
 	registerStarshipFeaturesTabPart();
+	registerStarshipCorePartRenderOptionsWrapper();
+	registerStarshipVehiclePartContextWrapper();
 	registerStarshipVehicleSheetShowAbilitiesDefault();
-	suppressNativeStarshipStationsAbilityAndFeatures();
 	registerStarshipCargoInventoryWrappers();
 	registerStarshipCargoItemCategoryHook();
 	Hooks.on("renderActorSheetV2", renderStarshipLayer);

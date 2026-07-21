@@ -609,7 +609,7 @@
                     data-skill-id="{{id}}"
                     aria-label="{{ localize "DND5E.Roll" }} {{label}}"
                   >
-                    <span class="sw5e-starship-skill-prof" aria-hidden="true">{{{icon}}}</span>
+                    <span class="sw5e-starship-skill-prof" aria-hidden="true">{{#if iconFa}}<i class="{{iconFa}}"></i>{{else if iconCustom}}<span class="sw5e-starship-skill-prof-custom">{{iconCustom}}</span>{{/if}}</span>
                     <span class="sw5e-starship-skill-ability-abbr">{{abilityAbbr}}</span>
                     <span class="sw5e-starship-skill-label">{{label}}</span>
                     <span class="sw5e-starship-skill-mod">{{modDisplay}}</span>

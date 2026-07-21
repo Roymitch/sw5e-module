@@ -77,55 +77,59 @@ else                                   → stations (features section)  ← feat
 
 This matters for "Find in Sheet" navigation: `focusSheetItem` determines the correct tab from the DOM (`.tab[data-group='primary']`). For feat-type items it finds them in `stations` (panel = null → no tab switch, just scroll). For physical items it finds them in the `inventory` panel → switches to the cargo tab then scrolls.
 
-## SW5E Custom Tab Injection
+## SW5E Registered Starship Tabs
 
-Starship vehicle sheets use a **hybrid** tab model:
+Starship vehicle sheets now use a **stock PART/TAB** primary-tab model for both Core and Features:
 
 | Tab ID | How it is registered | Panel |
 |--------|----------------------|--------|
-| `sw5e-starship` (Core) | Custom injection from `renderStarshipLayer` (`starship-sheet.mjs`) | Custom `.tab.sw5e-starship-tab` panel appended to the primary tab body |
-| `sw5e-starship-features` (Features) | Registered `VehicleActorSheet` **PART** + **TAB** via `registerStarshipFeaturesTabPart` | Stock dnd5e `systems/dnd5e/templates/actors/tabs/actor-features.hbs` (not a second custom `.sw5e-starship-tab` panel; not `starship-features-layer.hbs`) |
+| `sw5e-starship` (Core) | Registered `VehicleActorSheet` **PART** + **TAB** via `registerStarshipCoreTabPart` | `templates/starship-core-part.hbs` with the stock `.tab` / `data-tab` / `data-group` contract |
+| `sw5e-starship-features` (Features) | Registered `VehicleActorSheet` **PART** + **TAB** via `registerStarshipFeaturesTabPart` | Stock dnd5e `systems/dnd5e/templates/actors/tabs/actor-features.hbs` |
 
-`CUSTOM_STARSHIP_TAB_IDS` contains **only** Core (`sw5e-starship`). Features is a real AppV2/dnd5e part and participates in stock `changeTab` like Inventory.
+`CUSTOM_STARSHIP_TAB_IDS` is now empty because Core no longer has a custom primary-tab owner.
 
-### Custom Core tab visibility
+### Primary tab ownership
 
-The Core custom panel uses **both** `.active` (Foundry CSS) **and** the `hidden` attribute when activating or deactivating. CSS alone is sufficient for stock panels; `hidden` is belt-and-suspenders for the custom Core panel when it is detached/re-attached.
+Primary tab state for starship sheets is owned by stock `app.tabGroups.primary`.
 
-### `_sw5eStarshipActiveTab`
+- Core active: `tabGroups.primary === "sw5e-starship"`
+- Features active: `tabGroups.primary === "sw5e-starship-features"`
+- Inventory active: `tabGroups.primary === "inventory"`
 
-Tracked on `app._sw5eStarshipActiveTab` for the **custom Core** tab:
+The old hybrid `_sw5eStarshipActiveTab` owner is retired and should not be used for new primary-tab logic.
 
-- `"sw5e-starship"` — Core custom tab is active
-- `null` — a stock primary tab is active (including Features PART, Inventory, Effects, Description); custom Core panel hidden
-- `undefined` — initial state before first render (treated as Core)
+### Core render ownership
 
-Features activation is stock PART navigation (`tabGroups.primary === "sw5e-starship-features"`), not a second value of `_sw5eStarshipActiveTab` meaning a custom Features panel.
+Permanent Core ownership now uses a **pre-render owner decision**:
+
+- If the current starship update is a patchable Core case, SW5E excludes `sw5e-starship` from the requested PART set before Foundry renders parts.
+- Foundry renders the other requested PARTS normally.
+- The existing marked live Core PART root stays mounted.
+- After the other PARTS render, SW5E generates one updated Core inner HTML payload, applies strict validated section patches to the preserved Core root, and keeps the stock PART root identity intact.
+
+If the current update is not patchable, SW5E allows normal stock Core PART rendering and replacement, then restamps Core section ownership and records the new baseline. This means:
+
+- ordinary patchable cases should not trigger a stock Core PART replacement
+- expected full-render cases should not trigger a second redundant late full Core assignment
+- `sw5eCoreHtml` is still the source for stock Core PART rendering and is not retired in this phase
 
 ## Rules for Tab Navigation Code
 
-### Activating the custom Core tab (`activateSheetTab` in `starship-sheet.mjs`)
+### Activating any primary stock tab (`activateSheetTab` in `starship-sheet-tabs.mjs`)
 
-Call `activatePrimaryTab(root, tabId)` which:
-1. Toggles `.active` on nav buttons
-2. Toggles `.active` on panels
-3. Sets `hidden = true` on inactive **custom Core** panels, `hidden = false` on stock panels (stock panels are controlled by CSS, but `hidden` is cleared in case it was set by a previous interaction)
+Call `app.changeTab(tabId, "primary", { force: true, updatePosition: false })`.
 
-Do **not** call `app.changeTab` for the **custom Core** tab ID — it is not a stock dnd5e PART registration path and can throw or mis-sync. Features (`sw5e-starship-features`) **is** a registered PART/TAB and **should** use stock `changeTab` like Inventory.
+`activatePrimaryTab(root, tabId)` remains only as a narrow fallback if `changeTab` throws or is unavailable.
 
-### Activating a stock tab (`activateSheetTab` in `starship-sheet.mjs`)
+### Why `force: true` still matters
 
-1. Set `_sw5eStarshipActiveTab = null`
-2. Remove `.active` and set `hidden = true` on custom Core panels
-3. Call `app.changeTab(tabId, "primary", { force: true, updatePosition: false })`
+Even with permanent stock ownership, callers can still attempt to re-activate the already-recorded tab after custom navigation or rerender work. Passing `{ force: true }` guarantees Foundry re-applies `.active` classes and avoids no-op edge cases that can leave the visible panel desynced.
 
-**Why `force: true`:** Custom Core tab activation does not update `app.tabGroups`, so `tabGroups.primary` may already equal the target tab. Without `force`, `changeTab` exits early and never restores `.active` on the target panel. The panel stays `display: none` via CSS and the sheet appears blank.
-
-Wrap in try/catch: if `tabId` is not a registered nav tab (e.g., `"stations"`), `changeTab` will throw. The catch block should fall back to `activatePrimaryTab(root, tabId)` or do nothing.
+Wrap in try/catch: if `tabId` is not a registered nav tab (for example `"stations"`), `changeTab` will throw. The catch block should fall back to `activatePrimaryTab(root, tabId)` or do nothing.
 
 ### "Find in Sheet" navigation
 
-When navigating from a custom tab to show an item in the stock sheet:
+When navigating from Core content to show an item in the stock sheet:
 
 1. Search for `[data-item-id="${itemId}"]` elements **outside** `.sw5e-starship-tab` panels
 2. Check if the found element is inside a `.tab[data-group='primary']` panel
@@ -141,11 +145,11 @@ if ( panel?.dataset.tab ) activateSheetTab(root, app, panel.dataset.tab);
 target.scrollIntoView({ behavior: "smooth", block: "center" });
 ```
 
-### Click events in custom panels
+### Click events in Core panels
 
-Custom panel click handlers (delegated on the panel element) should use `event.preventDefault()` for action buttons. Do **not** add `event.stopPropagation()` unless you have a specific reason — stopping propagation can interfere with navigation actions that depend on the event reaching ancestor handlers.
+Core panel click handlers (delegated on the panel element) should use `event.preventDefault()` for action buttons. Do **not** add `event.stopPropagation()` unless you have a specific reason — stopping propagation can interfere with navigation actions that depend on the event reaching ancestor handlers.
 
-### Tab buttons in custom panels
+### Tab buttons inside Core content
 
 Do not put `data-action="tab"` on non-nav elements (e.g., action buttons) even if they have a `data-tab` attribute. Foundry's `_onClickTab` handler reads `data-action="tab"` to detect tab switches. A button with only `data-tab` (no `data-action`) will not trigger Foundry's tab system.
 
@@ -155,6 +159,6 @@ Do not put `data-action="tab"` on non-nav elements (e.g., action buttons) even i
 |---------|-------|-----|
 | Sheet goes blank after tab switch | `changeTab` called without `force: true`; `tabGroups` already matches target tab, so it exits early and never restores `.active` on the target panel | Pass `{ force: true }` |
 | Features tab blanks out after "Find in Sheet" | `data-application-part` fallback resolves to `"stations"` (not a nav tab); `changeTab` throws; catch falls to `activatePrimaryTab` which deactivates all panels | Only resolve tab ID from `.tab[data-group='primary']`, not `data-application-part` |
-| Custom tab button stays highlighted after navigating away | Custom button `.active` not removed; `app.changeTab` handles this automatically when `force: true` is used | Ensure stock-tab path calls `app.changeTab` with `force: true` |
+| Core nav state desyncs after a rerender | tab state was manipulated outside `app.changeTab`, so `.active` classes and `tabGroups.primary` drifted apart | Route primary-tab activation through `app.changeTab` |
 | Stock tab button click dispatched as a synthetic event | `changeTab` exits early (same reasons above); using `dispatchEvent` bypasses the `force` option | Use `app.changeTab` directly instead of synthesizing click events |
 | `scrollIntoView` on a tab panel item does nothing | Panel was `display:none` when `scrollIntoView` was called; browser has not yet painted the `display:block` change | Wrap `scrollIntoView` in `window.requestAnimationFrame(...)` after `activateSheetTab` |

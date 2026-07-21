@@ -8,11 +8,9 @@ import {
 	activateSotgSubTab,
 	escapeTabSelectorValue,
 	getPrimaryTabNav,
-	getSotgSubTab,
-	getStarshipActiveTab
+	getSotgSubTab
 } from "./starship-sheet-tabs.mjs";
 import {
-	CUSTOM_STARSHIP_TAB_IDS,
 	SOTG_SUB_TAB_IDS,
 	STARSHIP_FEATURES_TAB_ID,
 	STARSHIP_TAB_ID
@@ -123,19 +121,19 @@ export function readStarshipSheetScrollSnapshot(app) {
 /**
  * Capture starship sheet view state for restore after `renderActorSheetV2` refreshes the DOM.
  * Pass scroll positions from {@link readStarshipSheetScrollSnapshot} taken at render start (before sidebar re-mount).
- * Call after default-tab init so `sw5ePrimary` / `stockPrimary` reflect the post-init app tab state.
+ * Call after default-tab init so `stockPrimary` reflects the post-init app tab state.
  * @param {object} app
  * @param {{ sidebarScrollTop?: number, mainScrollTop?: number, sotgPanelScrollTop?: number }} [scrollSnapshot]
  * @returns {StarshipSheetViewState}
  */
 export function captureStarshipSheetViewState(app, scrollSnapshot) {
 	const scroll = scrollSnapshot ?? readStarshipSheetScrollSnapshot(app);
+	const stockPrimary = typeof app?.tabGroups?.primary === "string" ? app.tabGroups.primary : STARSHIP_TAB_ID;
 	return {
 		sidebarScrollTop: Number(scroll.sidebarScrollTop) || 0,
 		mainScrollTop: Number(scroll.mainScrollTop) || 0,
 		sotgPanelScrollTop: Number(scroll.sotgPanelScrollTop) || 0,
-		sw5ePrimary: getStarshipActiveTab(app),
-		stockPrimary: typeof app?.tabGroups?.primary === "string" ? app.tabGroups.primary : null,
+		stockPrimary,
 		sotgSub: getSotgSubTab(app)
 	};
 }
@@ -175,10 +173,8 @@ export function applyStarshipSheetScrollPositions(app, state) {
 export function restoreStarshipSheetViewState(app, state, root) {
 	if ( !state || !app || !root ) return;
 	try {
-		const onCoreTab = state.sw5ePrimary === STARSHIP_TAB_ID || state.sw5ePrimary === true;
-		const wantsFeatures = !onCoreTab
-			&& (state.sotgSub === "features" || state.stockPrimary === STARSHIP_FEATURES_TAB_ID);
-		if ( wantsFeatures ) {
+		const desiredPrimary = typeof state.stockPrimary === "string" ? state.stockPrimary : STARSHIP_TAB_ID;
+		if ( desiredPrimary === STARSHIP_FEATURES_TAB_ID ) {
 			activateSheetTab(root, app, STARSHIP_FEATURES_TAB_ID);
 			applyStarshipSheetScrollPositions(app, {
 				sidebarScrollTop: Number(state.sidebarScrollTop) || 0,
@@ -188,18 +184,17 @@ export function restoreStarshipSheetViewState(app, state, root) {
 			return;
 		}
 
-		const wantsSotg = state.sw5ePrimary === STARSHIP_TAB_ID || state.sw5ePrimary === true;
-		if ( wantsSotg ) {
+		if ( desiredPrimary === STARSHIP_TAB_ID ) {
 			activateSheetTab(root, app, STARSHIP_TAB_ID);
 			const wrapper = root.querySelector(`.sw5e-starship-tab[data-tab="${STARSHIP_TAB_ID}"]`);
 			const sub = SOTG_SUB_TAB_IDS.has(state.sotgSub) ? state.sotgSub : "overview";
 			if ( wrapper ) activateSotgSubTab(wrapper, app, sub);
 		}
-		else if ( state.stockPrimary && typeof state.stockPrimary === "string" && !CUSTOM_STARSHIP_TAB_IDS.has(state.stockPrimary) ) {
+		else if ( desiredPrimary ) {
 			const nav = getPrimaryTabNav(root);
-			const safe = escapeTabSelectorValue(state.stockPrimary);
+			const safe = escapeTabSelectorValue(desiredPrimary);
 			const tabBtn = nav?.querySelector(`[data-tab="${safe}"]`);
-			if ( tabBtn ) activateSheetTab(root, app, state.stockPrimary);
+			if ( tabBtn ) activateSheetTab(root, app, desiredPrimary);
 			else {
 				activateSheetTab(root, app, STARSHIP_TAB_ID);
 				const wrapper = root.querySelector(`.sw5e-starship-tab[data-tab="${STARSHIP_TAB_ID}"]`);

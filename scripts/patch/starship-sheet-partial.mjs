@@ -21,6 +21,63 @@ export const STARSHIP_SECTION = Object.freeze({
 
 /** Ownership marker attribute on stable mounts / Core section roots. */
 export const STARSHIP_SECTION_ATTR = "data-sw5e-section";
+export const STARSHIP_CORE_RENDER_DECISION = Object.freeze({
+	PARTIAL_PRESERVE: "partial-preserve",
+	STOCK_REPLACE: "stock-replace",
+	NOT_REQUESTED: "not-requested"
+});
+
+const STARSHIP_CORE_BASELINE_SECTIONS = Object.freeze([
+	STARSHIP_SECTION.CORE_SUMMARY,
+	STARSHIP_SECTION.CORE_SYSTEMS_ROUTING,
+	STARSHIP_SECTION.CORE_CREW,
+	STARSHIP_SECTION.CORE_SKILLS,
+	STARSHIP_SECTION.CORE_ABILITIES,
+	STARSHIP_SECTION.CORE_STRUCTURAL_MODE
+]);
+
+function getStarshipRenderDecisionStore(app, { create = false } = {}) {
+	if ( app?._sw5eStarshipRenderDecisions instanceof Map ) return app._sw5eStarshipRenderDecisions;
+	if ( !create || !app ) return null;
+	app._sw5eStarshipRenderDecisions = new Map();
+	return app._sw5eStarshipRenderDecisions;
+}
+
+function nextStarshipRenderDecisionId(app) {
+	const next = (Number(app?._sw5eStarshipRenderDecisionSeq) || 0) + 1;
+	if ( app ) app._sw5eStarshipRenderDecisionSeq = next;
+	return `${app?.id ?? "starship-sheet"}:${next}`;
+}
+
+export function cloneStarshipRequestedParts(parts) {
+	if ( Array.isArray(parts) ) return [...parts];
+	return parts ?? null;
+}
+
+export function createStarshipRenderDecision(app, options, decision) {
+	if ( !app || !options || !decision || typeof decision !== "object" ) return null;
+	const store = getStarshipRenderDecisionStore(app, { create: true });
+	const decisionId = nextStarshipRenderDecisionId(app);
+	const entry = { ...decision, decisionId };
+	store.set(decisionId, entry);
+	options._sw5eStarshipRenderDecisionId = decisionId;
+	return entry;
+}
+
+export function getStarshipRenderDecision(app, options = null) {
+	const decisionId = options?._sw5eStarshipRenderDecisionId ?? null;
+	if ( !decisionId ) return null;
+	return getStarshipRenderDecisionStore(app)?.get(decisionId) ?? null;
+}
+
+export function clearStarshipRenderDecision(app, options = null) {
+	const decisionId = options?._sw5eStarshipRenderDecisionId ?? null;
+	if ( !decisionId ) return;
+	const store = getStarshipRenderDecisionStore(app);
+	store?.delete(decisionId);
+	if ( store?.size === 0 && app ) delete app._sw5eStarshipRenderDecisions;
+	if ( options && "_sw5eStarshipRenderDecisionId" in options ) delete options._sw5eStarshipRenderDecisionId;
+}
 
 /**
  * @param {object} app
@@ -151,6 +208,10 @@ export function isStarshipPartialFailed(app) {
 	return app?._sw5eStarshipPartialFailed === true;
 }
 
+export function hasStarshipCoreBaseline(app) {
+	return STARSHIP_CORE_BASELINE_SECTIONS.every(sectionId => getStarshipSectionSignature(app, sectionId) != null);
+}
+
 /**
  * Mark a stable mount with ownership id.
  * @param {HTMLElement} el
@@ -235,6 +296,39 @@ export function evaluateStarshipPartialGate(app, actor, opts = {}) {
 		return { allowPartial: false, reason: "summary-changed" };
 	}
 	return { allowPartial: true, reason: "ok" };
+}
+
+export function evaluateStarshipCorePreRenderEligibility(app, actor, opts = {}) {
+	if ( !opts.coreRequested ) {
+		return { coreDecision: STARSHIP_CORE_RENDER_DECISION.NOT_REQUESTED, reason: "not-requested" };
+	}
+	if ( opts.isFirstRender ) {
+		return { coreDecision: STARSHIP_CORE_RENDER_DECISION.STOCK_REPLACE, reason: "first-mount" };
+	}
+	if ( !opts.hasCoreWrapper ) {
+		return { coreDecision: STARSHIP_CORE_RENDER_DECISION.STOCK_REPLACE, reason: "missing-or-malformed-core-root" };
+	}
+	if ( opts.malformedCoreRoot ) {
+		return { coreDecision: STARSHIP_CORE_RENDER_DECISION.STOCK_REPLACE, reason: "missing-or-malformed-core-root" };
+	}
+	if ( !opts.hasPriorBaseline ) {
+		return { coreDecision: STARSHIP_CORE_RENDER_DECISION.STOCK_REPLACE, reason: "no-usable-prior-baseline" };
+	}
+	if ( isStarshipPartialFailed(app) ) {
+		return { coreDecision: STARSHIP_CORE_RENDER_DECISION.STOCK_REPLACE, reason: "prior-partial-failure" };
+	}
+	if ( consumeStarshipActorIdentityChange(app, actor) ) {
+		clearStarshipSheetPartialState(app, { preserveRenderGeneration: true });
+		rememberStarshipActorIdentity(app, actor);
+		return { coreDecision: STARSHIP_CORE_RENDER_DECISION.STOCK_REPLACE, reason: "actor-identity-changed" };
+	}
+	if ( opts.structuralModeChanged ) {
+		return { coreDecision: STARSHIP_CORE_RENDER_DECISION.STOCK_REPLACE, reason: "structural-mode-changed" };
+	}
+	if ( opts.summaryChanged ) {
+		return { coreDecision: STARSHIP_CORE_RENDER_DECISION.STOCK_REPLACE, reason: "summary-changed" };
+	}
+	return { coreDecision: STARSHIP_CORE_RENDER_DECISION.PARTIAL_PRESERVE, reason: "eligible" };
 }
 
 /**
@@ -596,6 +690,12 @@ export function recordStarshipCoreBaseline(app, actor, meta) {
 	rememberStarshipActorIdentity(app, actor);
 }
 
+function buildStarshipCorePartialAttempt(status, reason, details = undefined) {
+	const attempt = { status, reason };
+	if ( details && Object.keys(details).length ) attempt.details = details;
+	return attempt;
+}
+
 /**
  * Apply Core subsection replacements from a freshly rendered layer HTML string.
  * The full wrapper identity is preserved; invalid or unsupported plans fall back.
@@ -607,20 +707,43 @@ export function recordStarshipCoreBaseline(app, actor, meta) {
  * @param {object} meta
  * @returns {Promise<"applied"|"skipped"|"fallback">}
  */
-export async function tryApplyStarshipCorePartialUpdates(existingWrapper, renderedHtml, app, renderGen, meta) {
-	if ( !(existingWrapper instanceof HTMLElement) ) return "fallback";
-	if ( !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+export async function tryApplyStarshipCorePartialUpdates(existingWrapper, renderedHtml, app, renderGen, meta, options = {}) {
+	if ( !(existingWrapper instanceof HTMLElement) ) {
+		return buildStarshipCorePartialAttempt("fallback", "missing-target", {
+			target: "existingWrapper"
+		});
+	}
+	if ( options.expectedCoreRoot && existingWrapper !== options.expectedCoreRoot ) {
+		return buildStarshipCorePartialAttempt("fallback", "root-identity-mismatch", {
+			target: "existingWrapper"
+		});
+	}
+	if ( !isStarshipSheetRenderCurrent(app, renderGen) ) {
+		return buildStarshipCorePartialAttempt("skipped", "stale-generation");
+	}
 
 	const temp = document.createElement("div");
 	temp.innerHTML = renderedHtml;
 	const nextPanel = temp.querySelector(".sw5e-starship-panel");
-	if ( !(nextPanel instanceof HTMLElement) ) return "fallback";
+	if ( !(nextPanel instanceof HTMLElement) ) {
+		return buildStarshipCorePartialAttempt("fallback", "no-patchable-section", {
+			target: ".sw5e-starship-panel"
+		});
+	}
 
 	const structural = compareStarshipSectionSignature(app, STARSHIP_SECTION.CORE_STRUCTURAL_MODE, signaturePayloadCoreStructuralMode(meta));
-	if ( structural.dirty ) return "fallback";
+	if ( structural.dirty ) {
+		return buildStarshipCorePartialAttempt("fallback", "structural-mismatch", {
+			section: STARSHIP_SECTION.CORE_STRUCTURAL_MODE
+		});
+	}
 
 	const summary = compareStarshipSectionSignature(app, STARSHIP_SECTION.CORE_SUMMARY, signaturePayloadCoreSummary(meta));
-	if ( summary.dirty ) return "fallback";
+	if ( summary.dirty ) {
+		return buildStarshipCorePartialAttempt("fallback", "unsupported-dirty-section", {
+			section: STARSHIP_SECTION.CORE_SUMMARY
+		});
+	}
 
 	const abilitiesSig = compareStarshipSectionSignature(app, STARSHIP_SECTION.CORE_ABILITIES, signaturePayloadCoreAbilities(meta));
 	const skillsSig = compareStarshipSectionSignature(app, STARSHIP_SECTION.CORE_SKILLS, signaturePayloadCoreSkills(meta));
@@ -696,12 +819,57 @@ export async function tryApplyStarshipCorePartialUpdates(existingWrapper, render
 		});
 		const nextNodes = Array.from(temp.querySelectorAll(spec.selector)).filter(node => node instanceof HTMLElement);
 		if ( spec.expectedCount === 0 ) {
-			if ( !existingCheck.ok ) return "fallback";
-			if ( nextNodes.length !== 0 ) return "fallback";
+			if ( !existingCheck.ok ) {
+				return buildStarshipCorePartialAttempt("fallback", "validation-failure", {
+					section: spec.id,
+					selector: spec.selector,
+					expectedCount: spec.expectedCount,
+					actualCount: existingCheck.elements.length,
+					validationReason: existingCheck.reason ?? "unknown"
+				});
+			}
+			if ( nextNodes.length !== 0 ) {
+				return buildStarshipCorePartialAttempt("fallback", "unexpected-presence", {
+					section: spec.id,
+					selector: spec.selector,
+					expectedCount: spec.expectedCount,
+					actualCount: nextNodes.length
+				});
+			}
 			continue;
 		}
-		if ( nextNodes.length !== spec.expectedCount ) return "fallback";
-		if ( !existingCheck.ok ) return "fallback";
+		if ( nextNodes.length !== spec.expectedCount ) {
+			return buildStarshipCorePartialAttempt(
+				"fallback",
+				nextNodes.length === 0 ? "missing-target" : "duplicate-target",
+				{
+					target: "next",
+					section: spec.id,
+					selector: spec.selector,
+					expectedCount: spec.expectedCount,
+					actualCount: nextNodes.length
+				}
+			);
+		}
+		if ( !existingCheck.ok ) {
+			const validationReason = existingCheck.reason ?? "unknown";
+			return buildStarshipCorePartialAttempt(
+				"fallback",
+				validationReason === "missing"
+					? "missing-target"
+					: validationReason === "duplicated"
+						? "duplicate-target"
+						: "validation-failure",
+				{
+					target: "existing",
+					section: spec.id,
+					selector: spec.selector,
+					expectedCount: spec.expectedCount,
+					actualCount: existingCheck.elements.length,
+					validationReason
+				}
+			);
+		}
 		if ( !spec.dirty ) continue;
 		for ( let i = 0; i < spec.expectedCount; i += 1 ) {
 			plan.push({
@@ -713,7 +881,9 @@ export async function tryApplyStarshipCorePartialUpdates(existingWrapper, render
 		}
 	}
 
-	if ( !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+	if ( !isStarshipSheetRenderCurrent(app, renderGen) ) {
+		return buildStarshipCorePartialAttempt("skipped", "stale-generation");
+	}
 
 	try {
 		for ( const item of plan ) replaceStarshipSectionRoot(item.existing, item.next, item.id);
@@ -723,11 +893,16 @@ export async function tryApplyStarshipCorePartialUpdates(existingWrapper, render
 		setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_SKILLS, skillsSig.signature);
 		setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_ABILITIES, abilitiesSig.signature);
 		setStarshipSectionSignature(app, STARSHIP_SECTION.CORE_STRUCTURAL_MODE, structural.signature);
+		rememberStarshipActorIdentity(app, app?.actor ?? null);
 		setStarshipPartialFailed(app, false);
-		return "applied";
+		return buildStarshipCorePartialAttempt("applied", plan.length ? "patched" : "no-dirty-sections", {
+			dirtySections: [...new Set(plan.map(item => item.id))]
+		});
 	} catch ( err ) {
 		console.error("SW5E MODULE | Starship Core partial update failed.", err);
 		setStarshipPartialFailed(app, true);
-		return "fallback";
+		return buildStarshipCorePartialAttempt("fallback", "exception-during-patch", {
+			message: err?.message ?? String(err ?? "Unknown error")
+		});
 	}
 }

@@ -255,11 +255,24 @@ export function formatSignedSkillMod(value) {
 }
 
 export function getStarshipProficiencyIcon(level) {
+	const meta = getStarshipProficiencyIconMeta(level);
+	if ( meta.iconFa ) return `<i class="${meta.iconFa}"></i>`;
+	if ( meta.iconCustom ) return `<span class="sw5e-starship-skill-prof-custom">${meta.iconCustom}</span>`;
+	return "";
+}
+
+/**
+ * Escaped / class-based proficiency glyph for templates (Phase 10C).
+ * Prefer this over {@link getStarshipProficiencyIcon} HTML strings.
+ * @param {number|string} level
+ * @returns {{ iconFa: string, iconCustom: string }}
+ */
+export function getStarshipProficiencyIconMeta(level) {
 	const n = Number(level);
-	if ( !Number.isFinite(n) || n <= 0 ) return "";
-	if ( n === 1 ) return `<i class="fas fa-check"></i>`;
-	if ( n === 2 ) return `<i class="fas fa-check-double"></i>`;
-	return `<span class="sw5e-starship-skill-prof-custom">${n}</span>`;
+	if ( !Number.isFinite(n) || n <= 0 ) return { iconFa: "", iconCustom: "" };
+	if ( n === 1 ) return { iconFa: "fas fa-check", iconCustom: "" };
+	if ( n === 2 ) return { iconFa: "fas fa-check-double", iconCustom: "" };
+	return { iconFa: "", iconCustom: String(n) };
 }
 
 export function getStarshipSkillProficiencyClass(level) {
@@ -298,7 +311,7 @@ export function enrichStarshipSkillsForSheet(actor) {
 			...entry,
 			value: entry.proficiencyMode,
 			baseValue: entry.proficiencyMode,
-			icon: getStarshipProficiencyIcon(entry.proficiencyMode),
+			...getStarshipProficiencyIconMeta(entry.proficiencyMode),
 			proficiencyClass: getStarshipSkillProficiencyClass(entry.proficiencyMode),
 			abilityAbbr,
 			abbreviation: abilityAbbr,
@@ -592,6 +605,15 @@ export function sanitizeImagePath(value) {
 	const lower = normalized.toLowerCase();
 	// Placeholder / invalid only — do not block specific hosts; rely on `error` fallback for broken loads.
 	if ( ["undefined", "null", "nan"].includes(lower) ) return "";
+
+	// Display-only allowlist: relative Foundry paths, http(s), and data:image/*.
+	const schemeMatch = /^([a-z][a-z0-9+.-]*):/i.exec(normalized);
+	if ( schemeMatch ) {
+		const scheme = schemeMatch[1].toLowerCase();
+		if ( scheme === "http" || scheme === "https" ) return normalized;
+		if ( scheme === "data" && /^data:image\//i.test(normalized) ) return normalized;
+		return "";
+	}
 	return normalized;
 }
 
@@ -972,7 +994,7 @@ export function buildOverviewAbilitiesContext(actor, editable = false) {
 			save: saveValue,
 			sourceValue,
 			proficient,
-			icon: getStarshipProficiencyIcon(proficient),
+			...getStarshipProficiencyIconMeta(proficient),
 			abilityIcon: typeof cfg.icon === "string" ? cfg.icon : `systems/dnd5e/icons/svg/abilities/${key}.svg`,
 			configureLabel: configureLabel && configureLabel !== "DND5E.AbilityConfigure"
 				? configureLabel

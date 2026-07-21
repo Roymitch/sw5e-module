@@ -10,6 +10,10 @@ const MOVEMENT_OVERRIDE_FLAG_BASE = "flags.sw5e.legacyStarshipActor.system.attri
 const TRAVEL_SPEED_PATH = "system.attributes.travel.speeds.air";
 const TRAVEL_PACE_PATH = "system.attributes.travel.paces.air";
 const STARSHIP_MOVEMENT_TYPE_SET = new Set(STARSHIP_MOVEMENT_TYPE_KEYS);
+const STARSHIP_BRIDGED_MOVEMENT_KEYS = Object.freeze(["space", "turn", "walk", "fly", "units"]);
+const STARSHIP_FIXED_ZERO_MOVEMENT_KEYS = Object.freeze(["walk", "fly"]);
+const STARSHIP_BRIDGED_MOVEMENT_KEY_SET = new Set(STARSHIP_BRIDGED_MOVEMENT_KEYS);
+const STARSHIP_PENDING_MOVEMENT_EDITS = new Map();
 const USE_DERIVED_ACTION = "sw5e-reset-derived";
 
 const { MovementSensesConfig } = dnd5e.applications.shared;
@@ -50,19 +54,65 @@ function resolveMovementTypeKey(entry, index, orderedKeys, fields) {
 	return keyFromOrder ?? null;
 }
 
+function ensureStarshipMovementEntryName(entry, key) {
+	if ( !entry || !key ) return;
+	const path = `system.attributes.movement.${key}`;
+	if ( !entry.name ) entry.name = path;
+	if ( entry.field && !entry.field.name ) entry.field.name = path;
+}
+
+function getTrackedStarshipMovementKey(target) {
+	const path = target?.name;
+	if ( typeof path !== "string" ) return null;
+	const key = path.startsWith("system.attributes.movement.")
+		? path.slice("system.attributes.movement.".length)
+		: null;
+	return key && STARSHIP_BRIDGED_MOVEMENT_KEY_SET.has(key) ? key : null;
+}
+
+function resetPendingStarshipMovementEdits(actor) {
+	if ( actor?.id ) STARSHIP_PENDING_MOVEMENT_EDITS.set(actor.id, new Set());
+}
+
+function trackPendingStarshipMovementEdit(actor, key) {
+	if ( !actor?.id || !key ) return;
+	const pending = STARSHIP_PENDING_MOVEMENT_EDITS.get(actor.id) ?? new Set();
+	pending.add(key);
+	STARSHIP_PENDING_MOVEMENT_EDITS.set(actor.id, pending);
+}
+
+function consumePendingStarshipMovementEdits(actor) {
+	if ( !actor?.id ) return null;
+	const pending = STARSHIP_PENDING_MOVEMENT_EDITS.get(actor.id) ?? null;
+	STARSHIP_PENDING_MOVEMENT_EDITS.delete(actor.id);
+	return pending;
+}
+
 /**
  * Prepared starship movement lives on `actor.system`; stock MovementSensesConfig reads `_source`.
- * Sync only `space` / `turn` display values without altering the stock field list or layout.
+ * Sync starship-only display values without altering the stock field list or layout.
  */
+function getStarshipBridgedMovementValue(actor, key) {
+	const movement = actor.system?.attributes?.movement ?? {};
+	if ( key === "walk" || key === "fly" ) return 0;
+	if ( key === "units" ) return movement.units ?? "ft";
+	return movement[key];
+}
+
 function applyStarshipMovementDisplayValues(actor, context, orderedKeys) {
 	if ( !Array.isArray(context.types) ) return context;
-	const movement = actor.system?.attributes?.movement ?? {};
 	for ( let index = 0; index < context.types.length; index++ ) {
 		const entry = context.types[index];
 		const key = resolveMovementTypeKey(entry, index, orderedKeys, context.fields);
-		if ( !key || !STARSHIP_MOVEMENT_TYPE_SET.has(key) ) continue;
-		const live = movement[key];
+		if ( !key ) continue;
+		if ( STARSHIP_MOVEMENT_TYPE_SET.has(key) ) ensureStarshipMovementEntryName(entry, key);
+		if ( !STARSHIP_BRIDGED_MOVEMENT_KEY_SET.has(key) ) continue;
+		const live = getStarshipBridgedMovementValue(actor, key);
 		if ( live !== undefined && live !== null && live !== "" ) entry.value = live;
+	}
+	if ( context.data && (typeof context.data === "object") ) {
+		const units = getStarshipBridgedMovementValue(actor, "units");
+		if ( units !== undefined && units !== null && units !== "" ) context.data.units = units;
 	}
 	return context;
 }
@@ -78,6 +128,15 @@ function filterNonStarshipMovementContext(context, orderedKeys) {
 
 function stripStarshipOverrideMovementWrites(movement = {}) {
 	for ( const key of STARSHIP_MOVEMENT_TYPE_KEYS ) {
+		delete movement[key];
+	}
+	return movement;
+}
+
+function stripUntouchedStarshipBridgeMovementWrites(movement = {}, pendingKeys = null) {
+	if ( !(movement && typeof movement === "object") ) return movement;
+	for ( const key of STARSHIP_BRIDGED_MOVEMENT_KEYS ) {
+		if ( pendingKeys?.has(key) ) continue;
 		delete movement[key];
 	}
 	return movement;
@@ -132,14 +191,35 @@ function bindStarshipUseDerivedButton(app, html) {
 
 function scheduleBindStarshipUseDerivedButton(app, html) {
 	if ( app?.constructor !== MovementSensesConfig ) return;
-	const run = () => bindStarshipUseDerivedButton(app, html);
+	const run = () => {
+		bindStarshipUseDerivedButton(app, html);
+		bindStarshipMovementFieldTracking(app, html);
+	};
 	queueMicrotask(run);
 	requestAnimationFrame(run);
+}
+
+function bindStarshipMovementFieldTracking(app, html) {
+	if ( !isSw5eStarshipActor(app?.document) || app?.options?.type !== "movement" ) return;
+
+	const root = getMovementConfigRoot(app, html);
+	if ( !(root instanceof HTMLElement) ) return;
+	if ( root.dataset.sw5eMovementTracked === "true" ) return;
+	root.dataset.sw5eMovementTracked = "true";
+	resetPendingStarshipMovementEdits(app.document);
+
+	const remember = event => {
+		const key = getTrackedStarshipMovementKey(event.target);
+		if ( key ) trackPendingStarshipMovementEdit(app.document, key);
+	};
+	root.addEventListener("input", remember, true);
+	root.addEventListener("change", remember, true);
 }
 
 async function resetStarshipMovementDerived(app) {
 	const actor = app?.document;
 	if ( !actor?.isOwner ) return;
+	consumePendingStarshipMovementEdits(actor);
 
 	await actor.update({
 		[`${MOVEMENT_OVERRIDE_FLAG_BASE}.-=space`]: null,
@@ -157,6 +237,14 @@ function onStarshipMovementConfigPreUpdate(doc, changed) {
 
 	const movement = foundry.utils.getProperty(changed, "system.attributes.movement");
 	if ( movement && typeof movement === "object" ) {
+		const hasTrackedSession = !!doc?.id && STARSHIP_PENDING_MOVEMENT_EDITS.has(doc.id);
+		const pendingKeys = hasTrackedSession ? (consumePendingStarshipMovementEdits(doc) ?? new Set()) : null;
+		if ( pendingKeys ) {
+			stripUntouchedStarshipBridgeMovementWrites(movement, pendingKeys);
+		}
+		for ( const key of STARSHIP_FIXED_ZERO_MOVEMENT_KEYS ) {
+			if ( key in movement ) delete movement[key];
+		}
 		const base = getStarshipBaseDerivedMovement(doc);
 		const overrideUpdate = {};
 		let hasOverrideChange = false;

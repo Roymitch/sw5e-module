@@ -278,33 +278,34 @@ export function buildAvailableStarshipCrewChoices(starship) {
 	const isGM = globalThis.game?.user?.isGM === true;
 	if ( !isGM && !canCurrentUserUpdateStarshipActor(starship) ) return [];
 
-	return game.actors.contents
-		.filter(actor => {
-			if ( !isDeployableCrewActor(actor) || (actor.id === starship.id) ) return false;
-			if ( isGM ) return true;
-			return canCurrentUserUpdateStarshipActor(actor);
-		})
-		.map(actor => {
-			const deploymentFlag = getCrewDeploymentFlag(actor);
-			const assignedShip = deploymentFlag?.starshipUuid ? resolveActorDocument(deploymentFlag.starshipUuid) : null;
-			const canDeployPilot = canCurrentUserDeployStarshipCrewRole(starship, actor, "pilot");
-			const canDeployCrew = canCurrentUserDeployStarshipCrewRole(starship, actor, "crew");
-			const canDeployPassenger = canCurrentUserDeployStarshipCrewRole(starship, actor, "passenger");
-			return {
-				uuid: actor.uuid,
-				name: actor.name,
-				img: actor.img,
-				type: actor.type,
-				assignedElsewhere: Boolean(deploymentFlag?.starshipUuid && (deploymentFlag.starshipUuid !== starship.uuid)),
-				assignedShipName: assignedShip?.name ?? deploymentFlag?.starshipName ?? "",
-				roles: Array.isArray(deploymentFlag?.roles) ? deploymentFlag.roles : [],
-				canDeployPilot,
-				canDeployCrew,
-				canDeployPassenger
-			};
-		})
-		.filter(choice => choice.canDeployPilot || choice.canDeployCrew || choice.canDeployPassenger)
-		.sort(compareAvailableCrewChoices);
+	// Narrow before expensive deployment/permission work: characters and NPCs only.
+	const choices = [];
+	for ( const actor of game.actors ) {
+		if ( actor.id === starship.id ) continue;
+		if ( actor.type !== "character" && actor.type !== "npc" ) continue;
+		if ( !isGM && !canCurrentUserUpdateStarshipActor(actor) ) continue;
+
+		const deploymentFlag = getCrewDeploymentFlag(actor);
+		const assignedShip = deploymentFlag?.starshipUuid ? resolveActorDocument(deploymentFlag.starshipUuid) : null;
+		const canDeployPilot = canCurrentUserDeployStarshipCrewRole(starship, actor, "pilot");
+		const canDeployCrew = canCurrentUserDeployStarshipCrewRole(starship, actor, "crew");
+		const canDeployPassenger = canCurrentUserDeployStarshipCrewRole(starship, actor, "passenger");
+		if ( !canDeployPilot && !canDeployCrew && !canDeployPassenger ) continue;
+
+		choices.push({
+			uuid: actor.uuid,
+			name: actor.name,
+			img: actor.img,
+			type: actor.type,
+			assignedElsewhere: Boolean(deploymentFlag?.starshipUuid && (deploymentFlag.starshipUuid !== starship.uuid)),
+			assignedShipName: assignedShip?.name ?? deploymentFlag?.starshipName ?? "",
+			roles: Array.isArray(deploymentFlag?.roles) ? deploymentFlag.roles : [],
+			canDeployPilot,
+			canDeployCrew,
+			canDeployPassenger
+		});
+	}
+	return choices.sort(compareAvailableCrewChoices);
 }
 
 export async function undeployStarshipCrew(starshipSubject, crewSubject, roles = STARSHIP_DEPLOYMENT_ROLES) {

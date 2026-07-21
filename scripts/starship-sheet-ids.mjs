@@ -22,7 +22,7 @@ export const STARSHIP_FEATURES_TAB_ID = "sw5e-starship-features";
 export const STOCK_CARGO_TAB_ID = "inventory";
 export const STOCK_FEATURES_TAB_ID = "features";
 export const STOCK_STARSHIP_TAB_ORDER = [STARSHIP_TAB_ID, STOCK_CARGO_TAB_ID, STARSHIP_FEATURES_TAB_ID, "effects", "description"];
-export const CUSTOM_STARSHIP_TAB_IDS = new Set([STARSHIP_TAB_ID]);
+export const CUSTOM_STARSHIP_TAB_IDS = new Set();
 
 export const SOTG_SUB_TAB_IDS = new Set(["overview"]);
 

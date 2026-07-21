@@ -1,7 +1,5 @@
 import { getModuleId, HOOKS_NAMESPACE } from "../module-support.mjs";
 import {
-	applyDerivedStarshipMovement,
-	applyDerivedStarshipTravel,
 	getDerivedStarshipRuntime,
 	getLegacyStarshipActorSystem,
 	mergeVehicleAbilityValues
@@ -75,28 +73,12 @@ export function patchStarshipPrepare() {
 					} : {}
 				);
 				const movement = runtime.movement ?? {};
-				if ( actorSource.system && (typeof actorSource.system === "object") ) {
-					applyDerivedStarshipMovement(actorSource.system, movement);
-					applyDerivedStarshipTravel(actorSource.system, runtime.travel ?? {});
-				}
-				const legacySnapshot = actorSource.flags?.sw5e?.legacyStarshipActor?.system;
-				if ( legacySnapshot && (typeof legacySnapshot === "object") ) {
-					applyDerivedStarshipMovement(legacySnapshot, movement);
-					applyDerivedStarshipTravel(legacySnapshot, runtime.travel ?? {});
-				}
 				if ( this.attributes?.movement && (typeof this.attributes.movement === "object") ) {
 					this.attributes.movement.space = movement.space;
 					this.attributes.movement.turn = movement.turn;
 					this.attributes.movement.walk = 0;
 					this.attributes.movement.fly = 0;
 					if ( movement.units ) this.attributes.movement.units = movement.units;
-				}
-				if ( actorSource.system?.attributes?.movement && (typeof actorSource.system.attributes.movement === "object") ) {
-					actorSource.system.attributes.movement.space = movement.space;
-					actorSource.system.attributes.movement.turn = movement.turn;
-					actorSource.system.attributes.movement.walk = 0;
-					actorSource.system.attributes.movement.fly = 0;
-					if ( movement.units ) actorSource.system.attributes.movement.units = movement.units;
 				}
 				// Ensure vehicle type is always "space" — existing world actors may have "air" stored
 				// from before buildVehicleSystem set details.type correctly.
