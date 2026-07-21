@@ -319,15 +319,37 @@ export function customizeStarshipPortraitBadges(root, actor, app = null, { runti
 	initBlock.removeAttribute("hidden");
 	initBlock.style.removeProperty("display");
 	initBlock.replaceChildren();
-	const initSpan = document.createElement("span");
-	initSpan.textContent = initDisplay;
-	initBlock.append(initSpan);
+	const initEditable = Boolean(app?.isEditable) && !playMode;
+	const initConfigLabel = localizeOrFallback("DND5E.InitiativeConfig", "Configure Initiative");
 	if ( playMode ) {
+		const initSpan = document.createElement("span");
+		initSpan.textContent = initDisplay;
+		initBlock.append(initSpan);
 		initBlock.classList.add("rollable");
 		initBlock.dataset.action = "roll";
 		initBlock.dataset.type = "initiative";
 		initBlock.setAttribute("aria-label", initLabel);
+	} else if ( initEditable ) {
+		initBlock.classList.remove("rollable");
+		initBlock.removeAttribute("data-action");
+		initBlock.removeAttribute("data-type");
+		initBlock.setAttribute("aria-label", initConfigLabel);
+		const button = document.createElement("button");
+		button.type = "button";
+		button.className = "config-button unbutton";
+		button.dataset.action = "showConfiguration";
+		button.dataset.config = "initiative";
+		button.dataset.tooltip = "DND5E.InitiativeConfig";
+		button.setAttribute("aria-label", initConfigLabel);
+		const icon = document.createElement("i");
+		icon.className = "fas fa-cog";
+		icon.setAttribute("inert", "");
+		button.append(icon);
+		initBlock.append(button);
 	} else {
+		const initSpan = document.createElement("span");
+		initSpan.textContent = initDisplay;
+		initBlock.append(initSpan);
 		initBlock.classList.remove("rollable");
 		initBlock.removeAttribute("data-action");
 		initBlock.removeAttribute("data-type");
