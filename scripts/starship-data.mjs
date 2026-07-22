@@ -1,4 +1,5 @@
 import { getBaseCurrencyKey, normalizeSwPriceDenomination } from "./currencies.mjs";
+import { getCharacterDeploymentSummary } from "./character-deployments.mjs";
 import {
 	appendProficiencyTierFlavor,
 	createProficiencyTierChatFlag,
@@ -1312,31 +1313,6 @@ function getStarshipActorProficiencyBonus(actor, legacySystem) {
 	) ?? 0;
 }
 
-/** UUIDs assigned to this starship’s deployment (pilot, active station, crew, passenger). */
-function collectStarshipDeploymentUuids(starshipActor) {
-	const legacy = getLegacyStarshipActorSystem(starshipActor);
-	const deployment = legacy.attributes?.deployment ?? {};
-	const pilot = deployment.pilot?.value ?? deployment.pilot ?? null;
-	const active = deployment.active?.value ?? deployment.active ?? null;
-	const crew = getDeploymentUuidList(deployment.crew);
-	const passenger = getDeploymentUuidList(deployment.passenger);
-	return new Set([pilot, active, ...crew, ...passenger].filter(Boolean));
-}
-
-/**
- * Pilot + crew + passenger UUIDs only (excludes the `active` station pointer).
- * Used to require active/pilot fallbacks to reference actors who are actually on the deployed roster.
- * Phase 1 — see `ai/rules-research/starships/starship-crew-pb-source-design.md`.
- */
-function collectStarshipDeploymentRosterCoreUuids(starshipActor) {
-	const legacy = getLegacyStarshipActorSystem(starshipActor);
-	const deployment = legacy.attributes?.deployment ?? {};
-	const pilot = deployment.pilot?.value ?? deployment.pilot ?? null;
-	const crew = getDeploymentUuidList(deployment.crew);
-	const passenger = getDeploymentUuidList(deployment.passenger);
-	return new Set([pilot, ...crew, ...passenger].filter(Boolean));
-}
-
 function normalizeDeploymentActorUuid(raw) {
 	if ( raw === undefined || raw === null || raw === "" ) return null;
 	if ( typeof raw === "string" ) return raw;
@@ -1344,59 +1320,141 @@ function normalizeDeploymentActorUuid(raw) {
 }
 
 /**
- * Ship-centric crew proficiency source for starship skills (Phase 1).
- * Order: rolling user’s assigned character if deployed → active station (if on core roster) → pilot (if on core roster) → none.
- * Read-only; does not mutate deployment. Avoids importing `starship-character.mjs` (no circular dependency).
+ * Pilot / crew / passenger UUID sets for Bug 29A qualification (excludes Active station pointer).
  * @param {Actor} starshipActor
- * @param {User} rollingUser
- * @returns {{ actor: Actor|null, source: "assigned"|"active"|"pilot"|"none", name: string, reasonKey?: string }}
+ * @returns {{ pilotUuid: string|null, crewUuids: Set<string>, passengerUuids: Set<string> }}
  */
-function resolveStarshipSkillCrewPbSource(starshipActor, rollingUser) {
-	const deploymentMembers = collectStarshipDeploymentUuids(starshipActor);
-	const coreRoster = collectStarshipDeploymentRosterCoreUuids(starshipActor);
-
-	const char = rollingUser?.character;
-	if ( char?.documentName === "Actor" && char.uuid && deploymentMembers.has(char.uuid) ) {
-		return {
-			actor: char,
-			source: "assigned",
-			name: char.name ?? ""
-		};
-	}
-
+function getStarshipPilotCrewPassengerSets(starshipActor) {
 	const legacy = getLegacyStarshipActorSystem(starshipActor);
 	const deployment = legacy.attributes?.deployment ?? {};
-
-	const activeUuid = normalizeDeploymentActorUuid(deployment.active?.value ?? deployment.active ?? null);
-	if ( activeUuid && coreRoster.has(activeUuid) ) {
-		const activeActor = resolveActorDocument(activeUuid);
-		if ( activeActor ) {
-			return {
-				actor: activeActor,
-				source: "active",
-				name: activeActor.name ?? ""
-			};
-		}
-	}
-
 	const pilotUuid = normalizeDeploymentActorUuid(deployment.pilot?.value ?? deployment.pilot ?? null);
-	if ( pilotUuid && coreRoster.has(pilotUuid) ) {
-		const pilotActor = resolveActorDocument(pilotUuid);
-		if ( pilotActor ) {
-			return {
-				actor: pilotActor,
-				source: "pilot",
-				name: pilotActor.name ?? ""
-			};
-		}
-	}
+	const crewUuids = new Set(getDeploymentUuidList(deployment.crew).map(normalizeDeploymentActorUuid).filter(Boolean));
+	const passengerUuids = new Set(
+		getDeploymentUuidList(deployment.passenger).map(normalizeDeploymentActorUuid).filter(Boolean)
+	);
+	return { pilotUuid, crewUuids, passengerUuids };
+}
 
+/**
+ * Max valid stored Deployment rank across parent Deployment feats.
+ * Does not use `displayRank` for gating (displayRank mirrors valid storedRank else 0 for UI only).
+ * @param {Actor} actor
+ * @returns {number}
+ */
+function getActorMaxValidDeploymentStoredRank(actor) {
+	const summary = getCharacterDeploymentSummary(actor);
+	let maxRank = 0;
+	for ( const entry of summary?.deployments ?? [] ) {
+		if ( entry?.rankFlagInvalid ) continue;
+		const stored = entry?.storedRank;
+		if ( stored === null || stored === undefined ) continue;
+		const n = Number(stored);
+		if ( !Number.isFinite(n) ) continue;
+		if ( n > maxRank ) maxRank = n;
+	}
+	return maxRank;
+}
+
+/**
+ * Pilot or Crew membership with max valid stored Deployment rank >= 1. Passenger-only never qualifies.
+ * @param {Actor} starshipActor
+ * @param {Actor} crewActor
+ * @returns {boolean}
+ */
+function actorQualifiesForStarshipCrewPb(starshipActor, crewActor) {
+	if ( !crewActor || crewActor.documentName !== "Actor" || !crewActor.uuid ) return false;
+	const { pilotUuid, crewUuids } = getStarshipPilotCrewPassengerSets(starshipActor);
+	const uuid = crewActor.uuid;
+	const isPilotOrCrew = (pilotUuid && uuid === pilotUuid) || crewUuids.has(uuid);
+	if ( !isPilotOrCrew ) return false;
+	return getActorMaxValidDeploymentStoredRank(crewActor) >= 1;
+}
+
+/**
+ * Exactly one canvas-controlled Token Actor that qualifies (local client selection only).
+ * @param {Actor} starshipActor
+ * @param {User} rollingUser
+ * @returns {Actor|null}
+ */
+function resolveUnambiguousControlledQualifyingActor(starshipActor, rollingUser) {
+	if ( !rollingUser || rollingUser !== globalThis.game?.user ) return null;
+	const controlled = globalThis.canvas?.tokens?.controlled;
+	if ( !Array.isArray(controlled) || !controlled.length ) return null;
+
+	const qualifying = [];
+	const seen = new Set();
+	for ( const token of controlled ) {
+		const actor = token?.actor;
+		if ( !actor?.uuid || seen.has(actor.uuid) ) continue;
+		seen.add(actor.uuid);
+		if ( actorQualifiesForStarshipCrewPb(starshipActor, actor) ) qualifying.push(actor);
+	}
+	return qualifying.length === 1 ? qualifying[0] : null;
+}
+
+function buildStarshipCrewPbNoneResult(reasonKey="SW5E.Starship.Roll.CrewPBSourceNoneReason") {
 	return {
 		actor: null,
 		source: "none",
 		name: "",
-		reasonKey: "SW5E.Starship.Roll.CrewPBSourceNoneReason"
+		reasonKey
 	};
+}
+
+function buildStarshipCrewPbSourceResult(actor, source) {
+	return {
+		actor,
+		source,
+		name: actor?.name ?? ""
+	};
+}
+
+/**
+ * Bug 29A responsible crew Actor for starship skill PB.
+ * Modes:
+ * - `roll`: explicit → assigned → one controlled qualified Actor → none
+ * - `display`: assigned → none (no controlled-token dependence)
+ * Never uses Active station or Pilot as silent fallbacks. Never uses Passenger-only membership.
+ * @param {Actor} starshipActor
+ * @param {User} rollingUser
+ * @param {{ mode: "roll"|"display", explicitActor?: Actor|null }} options
+ * @returns {{ actor: Actor|null, source: "explicit"|"assigned"|"controlled"|"none", name: string, reasonKey?: string }}
+ */
+function resolveStarshipResponsibleCrewActor(starshipActor, rollingUser, options={}) {
+	const mode = options?.mode;
+	if ( mode !== "roll" && mode !== "display" ) {
+		console.warn("SW5E MODULE | resolveStarshipResponsibleCrewActor requires mode \"roll\" or \"display\".");
+		return buildStarshipCrewPbNoneResult();
+	}
+
+	if ( mode === "roll" ) {
+		const explicit = options?.explicitActor ?? null;
+		if ( explicit && actorQualifiesForStarshipCrewPb(starshipActor, explicit) ) {
+			return buildStarshipCrewPbSourceResult(explicit, "explicit");
+		}
+	}
+
+	const assigned = rollingUser?.character;
+	if ( assigned && actorQualifiesForStarshipCrewPb(starshipActor, assigned) ) {
+		return buildStarshipCrewPbSourceResult(assigned, "assigned");
+	}
+
+	if ( mode === "roll" ) {
+		const controlled = resolveUnambiguousControlledQualifyingActor(starshipActor, rollingUser);
+		if ( controlled ) return buildStarshipCrewPbSourceResult(controlled, "controlled");
+	}
+
+	return buildStarshipCrewPbNoneResult();
+}
+
+/**
+ * Skill crew-PB source with explicit roll vs display mode (Bug 29A).
+ * @param {Actor} starshipActor
+ * @param {User} rollingUser
+ * @param {{ mode: "roll"|"display", explicitActor?: Actor|null }} options
+ */
+function resolveStarshipSkillCrewPbSource(starshipActor, rollingUser, options={}) {
+	return resolveStarshipResponsibleCrewActor(starshipActor, rollingUser, options);
 }
 
 function getStarshipSkillCrewPbSourceLabel(pbSource) {
@@ -1410,11 +1468,11 @@ function getStarshipSkillCrewPbSourceLabel(pbSource) {
 	if ( pbSource.source === "assigned" ) {
 		return game.i18n.format("SW5E.Starship.Roll.CrewPBSourceAssigned", { name });
 	}
-	if ( pbSource.source === "active" ) {
-		return game.i18n.format("SW5E.Starship.Roll.CrewPBSourceActive", { name });
+	if ( pbSource.source === "controlled" ) {
+		return game.i18n.format("SW5E.Starship.Roll.CrewPBSourceControlled", { name });
 	}
-	if ( pbSource.source === "pilot" ) {
-		return game.i18n.format("SW5E.Starship.Roll.CrewPBSourcePilot", { name });
+	if ( pbSource.source === "explicit" ) {
+		return game.i18n.format("SW5E.Starship.Roll.CrewPBSourceExplicit", { name });
 	}
 	return game.i18n.format("SW5E.Starship.Roll.CrewPBSourceNone", {
 		reason: game.i18n.localize("SW5E.Starship.Roll.CrewPBSourceNoneReason")
@@ -1473,7 +1531,7 @@ function buildStarshipSkillChatFlavorSuffix(pbSource, detail={}) {
 }
 
 function buildStarshipSkillDisplayEntry(actor, entry, rollingUser = globalThis.game?.user) {
-	const crewPbSource = resolveStarshipSkillCrewPbSource(actor, rollingUser);
+	const crewPbSource = resolveStarshipSkillCrewPbSource(actor, rollingUser, { mode: "display" });
 	const deployedRoller = crewPbSource.actor;
 	const rollerPb = toFiniteNumber(deployedRoller?.system?.attributes?.prof, 0) ?? 0;
 	const proficiencyMultiplier = getStarshipSkillProficiencyMultiplier(entry.proficiencyMode);
@@ -1516,7 +1574,7 @@ function qualifiesForStarshipSkillRollMessaging(actor) {
 	});
 }
 
-/** Prepared skill rows for the sheet sidebar; proficiency uses the merged vehicle `attributes.prof` × tier (often 0). Rolls resolve crew PB ship-centrically — see {@link rollStarshipSkill}. */
+/** Prepared skill rows for the sheet sidebar; proficiency uses the merged vehicle `attributes.prof` × tier (often 0). Display-time crew PB uses assigned-only resolution — see {@link rollStarshipSkill} for roll-time (may include controlled Token). */
 export function getStarshipSkillEntries(actor) {
 	const legacySystem = getLegacyStarshipActorSystem(actor);
 	const runtime = getDerivedStarshipRuntime(actor);
@@ -1554,9 +1612,9 @@ export function getStarshipSkillEntries(actor) {
 
 /**
  * Display-only starship skill rows for the current user: keeps stored tier / bonus data from
- * {@link getStarshipSkillEntries} but swaps the displayed proficiency contribution to the same
- * ship-centric crew PB source used by {@link rollStarshipSkill}. This preserves current roll math
- * and data shape while fixing row parity for the sheet.
+ * {@link getStarshipSkillEntries} but swaps the displayed proficiency contribution to the
+ * display-time crew PB source (assigned qualified Actor → none). Roll-time resolution may also
+ * use an unambiguous controlled Token — see {@link rollStarshipSkill}.
  * @param {Actor} actor
  * @param {User} [rollingUser]
  * @returns {Array<object>}
@@ -1849,8 +1907,8 @@ function buildStarshipSkillFormula(
  * @param {Actor} actor Starship (vehicle) actor
  * @param {string} skillId Starship skill key
  * @param {Event} [event] Click / key modifiers for fast-forward rolls
- * @param {User} [rollingUser] User performing the roll (defaults to `game.user`). Crew PB is resolved ship-centrically inside `rollStarshipSkill` (assigned+deployed, then active, then pilot — see `starship-crew-pb-source-design.md`).
- * @param {{ flavorPrefix?: string, dc?: number|null }} [messageOptions] Optional chat flavor prefix and DC comparison.
+ * @param {User} [rollingUser] User performing the roll (defaults to `game.user`). Crew PB uses Bug 29A roll-time resolution (explicit → assigned → one controlled qualified Actor → none).
+ * @param {{ flavorPrefix?: string, dc?: number|null, explicitActor?: Actor|null }} [messageOptions] Optional chat flavor prefix, DC comparison, and explicit crew PB Actor override.
  * @returns {Promise<{ roll: Roll, total: number, skillId: string, label: string }|null>}
  */
 export async function rollStarshipSkill(actor, skillId, event, rollingUser, messageOptions = {}) {
@@ -1858,7 +1916,10 @@ export async function rollStarshipSkill(actor, skillId, event, rollingUser, mess
 	if ( !entry ) return null;
 
 	const roller = rollingUser ?? game.user;
-	const crewPbSource = resolveStarshipSkillCrewPbSource(actor, roller);
+	const crewPbSource = resolveStarshipSkillCrewPbSource(actor, roller, {
+		mode: "roll",
+		explicitActor: messageOptions?.explicitActor ?? null
+	});
 	const deployedRoller = crewPbSource.actor;
 	const rollerPb = toFiniteNumber(deployedRoller?.system?.attributes?.prof, 0) ?? 0;
 	const proficiencyMultiplier = getStarshipSkillProficiencyMultiplier(entry.proficiencyMode);

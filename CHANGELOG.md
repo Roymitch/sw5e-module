@@ -9,6 +9,7 @@
 - **Starship Add Crew multi-select:** deploy multiple distinct Actors from the Add Crew dialog in one Crew or Passenger action (Pilot requires exactly one selection). Aggregate NPC quantity is not included.
 
 ### Changed
+- **Starship skill proficiency source:** Starship skill checks use the proficiency bonus of the qualified assigned or controlled Pilot/Crew character (Pilot or Crew membership and Deployment rank ≥ 1) instead of Active Crew or Pilot silent fallback. Passenger-only and rank-zero crew do not supply skill PB. Passive skill preview uses the assigned character only. Ability checks, saving throws, and attacks are unchanged.
 - **HGTTG species pack flags:** removed absolute local `pdfPath` values from HoloNet Guide to the Galaxy species source and stopped import tooling from writing those paths back into pack flags.
 - **Sabacc RollTables:** table face icons now use `modules/sw5e-module/` asset paths instead of legacy `modules/sw5e/` paths.
 - **NPC power provenance:** relinked embedded fistoscodex/monsters power `sourceId` / `compendiumSource` UUIDs to current Powers & Maneuvers document IDs where name+type matched uniquely.
