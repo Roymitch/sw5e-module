@@ -3,6 +3,9 @@
 ### [1.4.0] 2026-07-14
 
 ### Added
+- **Starship Core crew roster PC/NPC groups:** Core Crew & Passengers lists assigned Actors under Player Characters and NPCs headings (Other when applicable).
+- **Starship Core crew roster interactions:** collapsible crew groups (sheet-local), Actor-sheet open from portrait/name, Deployment feat subtitles, and permission-aware ContextMenu5e actions (View, Display in Chat, Activate).
+- **Starship Core crew PLAY management chrome:** visible Set Pilot / Remove controls are restricted to EDIT; authorized users may still Remove through the PLAY/EDIT context menu via `undeployStarshipCrew`.
 - **Starship Add Crew multi-select:** deploy multiple distinct Actors from the Add Crew dialog in one Crew or Passenger action (Pilot requires exactly one selection). Aggregate NPC quantity is not included.
 
 ### Changed

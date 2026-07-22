@@ -99,77 +99,112 @@
       />
     </div>
     <div class="sw5e-starship-item-list sw5e-starship-crew-roster">
-      {{#each crew.roster}}
-        <article
-          class="sw5e-starship-item-row sw5e-starship-crew-row{{#if active}} sw5e-crew-active{{/if}}"
-          data-search="{{searchText}}"
-        >
-          <div class="sw5e-starship-item-main">
-            <img class="sw5e-starship-item-image" src="{{img}}" alt="{{name}}" />
-            <div class="sw5e-starship-item-copy">
-              <strong class="sw5e-starship-item-name">{{name}}</strong>
-              <div class="sw5e-crew-badges">
-                {{#if isPilot}}<span class="sw5e-crew-badge sw5e-crew-badge-pilot">{{ localize "SW5E.StarshipCrewBadgePilot" }}</span>{{/if}}
-                {{#if active}}<span class="sw5e-crew-badge sw5e-crew-badge-active">{{ localize "SW5E.StarshipCrewBadgeActive" }}</span>{{/if}}
-                {{#unless isPilot}}{{#if isCrew}}<span class="sw5e-crew-badge">{{ localize "SW5E.StarshipCrewBadgeCrew" }}</span>{{/if}}{{/unless}}
-                {{#if isPassenger}}<span class="sw5e-crew-badge">{{ localize "SW5E.StarshipCrewBadgePassenger" }}</span>{{/if}}
+      {{#each crew.rosterGroups}}
+        <div class="sw5e-starship-crew-group{{#if collapsed}} is-collapsed{{/if}}" data-crew-group="{{key}}">
+          <div class="sw5e-starship-crew-group-header">
+            <button
+              type="button"
+              class="sw5e-starship-crew-group-collapse sw5e-starship-core-collapsible-toggle"
+              data-sw5e-crew-roster-collapse="{{key}}"
+              data-expand-label="{{expandLabel}}"
+              data-collapse-label="{{collapseLabel}}"
+              aria-expanded="{{#if collapsed}}false{{else}}true{{/if}}"
+              aria-controls="{{bodyId}}"
+              title="{{#if collapsed}}{{expandLabel}}{{else}}{{collapseLabel}}{{/if}}"
+              aria-label="{{#if collapsed}}{{expandLabel}}{{else}}{{collapseLabel}}{{/if}}"
+            >
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <h3 class="sw5e-starship-crew-group-heading" id="{{bodyId}}-label">{{label}}</h3>
+          </div>
+          <div class="sw5e-starship-crew-group-body" id="{{bodyId}}" role="group" aria-labelledby="{{bodyId}}-label">
+          {{#each rows}}
+            <article
+              class="sw5e-starship-item-row sw5e-starship-crew-row{{#if active}} sw5e-crew-active{{/if}}"
+              data-search="{{searchText}}"
+              data-actor-uuid="{{uuid}}"
+            >
+              <div class="sw5e-starship-item-main">
+                <img
+                  class="sw5e-starship-item-image"
+                  src="{{img}}"
+                  alt="{{name}}"
+                  data-sw5e-crew-open-actor="1"
+                />
+                <div class="sw5e-starship-item-copy">
+                  <strong class="sw5e-starship-item-name" data-sw5e-crew-open-actor="1">{{name}}</strong>
+                  {{#if deploymentAssignmentLabel}}
+                    <div class="sw5e-starship-crew-assignment">{{deploymentAssignmentLabel}}</div>
+                  {{/if}}
+                  <div class="sw5e-crew-badges">
+                    {{#if isPilot}}<span class="sw5e-crew-badge sw5e-crew-badge-pilot">{{ localize "SW5E.StarshipCrewBadgePilot" }}</span>{{/if}}
+                    {{#if active}}<span class="sw5e-crew-badge sw5e-crew-badge-active">{{ localize "SW5E.StarshipCrewBadgeActive" }}</span>{{/if}}
+                    {{#unless isPilot}}{{#if isCrew}}<span class="sw5e-crew-badge">{{ localize "SW5E.StarshipCrewBadgeCrew" }}</span>{{/if}}{{/unless}}
+                    {{#if isPassenger}}<span class="sw5e-crew-badge">{{ localize "SW5E.StarshipCrewBadgePassenger" }}</span>{{/if}}
+                  </div>
+                </div>
               </div>
-            </div>
+              <div class="sw5e-starship-item-actions sw5e-starship-crew-row-actions">
+                {{#if @root.sotgSheetEditMode}}
+                {{#if isPilot}}
+                  <button
+                    type="button"
+                    class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
+                    data-sw5e-crew-command="undeploy-pilot"
+                    data-actor-uuid="{{uuid}}"
+                    title="{{ localize "SW5E.StarshipCrewClearPilot" }}"
+                    aria-label="{{ localize "SW5E.StarshipCrewClearPilot" }}"
+                    {{#unless canUndeployPilot}}disabled{{/unless}}
+                  >
+                    <i class="fa-solid fa-user-slash" inert></i>
+                  </button>
+                {{else}}
+                  <button
+                    type="button"
+                    class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
+                    data-sw5e-crew-command="set-pilot"
+                    data-actor-uuid="{{uuid}}"
+                    title="{{ localize "SW5E.StarshipCrewSetPilot" }}"
+                    aria-label="{{ localize "SW5E.StarshipCrewSetPilot" }}"
+                    {{#unless canSetPilot}}disabled{{/unless}}
+                  >
+                    <i class="fa-solid fa-user-check" inert></i>
+                  </button>
+                {{/if}}
+                {{/if}}
+                <button
+                  type="button"
+                  class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
+                  data-sw5e-crew-command="toggle-active"
+                  data-actor-uuid="{{uuid}}"
+                  title="{{#if active}}{{ localize "SW5E.StarshipCrewDeactivate" }}{{else}}{{ localize "SW5E.StarshipCrewActivate" }}{{/if}}"
+                  aria-label="{{#if active}}{{ localize "SW5E.StarshipCrewDeactivate" }}{{else}}{{ localize "SW5E.StarshipCrewActivate" }}{{/if}}"
+                  {{#unless canToggleActive}}disabled{{/unless}}
+                >
+                  {{#if active}}
+                  <i class="fa-solid fa-power-off" inert></i>
+                  {{else}}
+                  <i class="fa-solid fa-toggle-on" inert></i>
+                  {{/if}}
+                </button>
+                {{#if @root.sotgSheetEditMode}}
+                <button
+                  type="button"
+                  class="sw5e-starship-item-button sw5e-starship-crew-icon-button sw5e-starship-item-button-danger"
+                  data-sw5e-crew-command="remove"
+                  data-actor-uuid="{{uuid}}"
+                  title="{{ localize "SW5E.StarshipCrewRemove" }}"
+                  aria-label="{{ localize "SW5E.StarshipCrewRemove" }}"
+                  {{#unless canRemove}}disabled{{/unless}}
+                >
+                  <i class="fa-solid fa-user-xmark" inert></i>
+                </button>
+                {{/if}}
+              </div>
+            </article>
+          {{/each}}
           </div>
-          <div class="sw5e-starship-item-actions sw5e-starship-crew-row-actions">
-            {{#if isPilot}}
-              <button
-                type="button"
-                class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
-                data-sw5e-crew-command="undeploy-pilot"
-                data-actor-uuid="{{uuid}}"
-                title="{{ localize "SW5E.StarshipCrewClearPilot" }}"
-                aria-label="{{ localize "SW5E.StarshipCrewClearPilot" }}"
-                {{#unless canUndeployPilot}}disabled{{/unless}}
-              >
-                <i class="fa-solid fa-user-slash" inert></i>
-              </button>
-            {{else}}
-              <button
-                type="button"
-                class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
-                data-sw5e-crew-command="set-pilot"
-                data-actor-uuid="{{uuid}}"
-                title="{{ localize "SW5E.StarshipCrewSetPilot" }}"
-                aria-label="{{ localize "SW5E.StarshipCrewSetPilot" }}"
-                {{#unless canSetPilot}}disabled{{/unless}}
-              >
-                <i class="fa-solid fa-user-check" inert></i>
-              </button>
-            {{/if}}
-            <button
-              type="button"
-              class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
-              data-sw5e-crew-command="toggle-active"
-              data-actor-uuid="{{uuid}}"
-              title="{{#if active}}{{ localize "SW5E.StarshipCrewDeactivate" }}{{else}}{{ localize "SW5E.StarshipCrewActivate" }}{{/if}}"
-              aria-label="{{#if active}}{{ localize "SW5E.StarshipCrewDeactivate" }}{{else}}{{ localize "SW5E.StarshipCrewActivate" }}{{/if}}"
-              {{#unless canToggleActive}}disabled{{/unless}}
-            >
-              {{#if active}}
-              <i class="fa-solid fa-power-off" inert></i>
-              {{else}}
-              <i class="fa-solid fa-toggle-on" inert></i>
-              {{/if}}
-            </button>
-            <button
-              type="button"
-              class="sw5e-starship-item-button sw5e-starship-crew-icon-button sw5e-starship-item-button-danger"
-              data-sw5e-crew-command="remove"
-              data-actor-uuid="{{uuid}}"
-              title="{{ localize "SW5E.StarshipCrewRemove" }}"
-              aria-label="{{ localize "SW5E.StarshipCrewRemove" }}"
-              {{#unless canRemove}}disabled{{/unless}}
-            >
-              <i class="fa-solid fa-user-xmark" inert></i>
-            </button>
-          </div>
-        </article>
+        </div>
       {{/each}}
     </div>
     <p class="sw5e-starship-crew-assigned-search-empty is-hidden" hidden>{{ localize "SW5E.StarshipCrewAssignedSearchEmpty" }}</p>

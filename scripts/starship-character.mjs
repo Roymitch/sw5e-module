@@ -219,6 +219,21 @@ export function canCurrentUserDeployStarshipCrewRole(starshipSubject, crewSubjec
 }
 
 /**
+ * Presentation helper: true when the undeploy write set is authorized.
+ * Mutation helpers re-run the same resolve+permission preflight before any write.
+ * @param {object|string} starshipSubject
+ * @param {object|string} crewSubject
+ * @returns {boolean}
+ */
+export function canCurrentUserUndeployStarshipCrew(starshipSubject, crewSubject) {
+	const starship = resolveActorDocument(starshipSubject);
+	const crewActor = resolveActorDocument(crewSubject);
+	const writeSet = resolveUndeployWriteSet(starship, crewActor);
+	if ( !writeSet.ok ) return false;
+	return canUpdateAllActors(writeSet.actors);
+}
+
+/**
  * Resolve subjects once to distinct deployable crew Actors (ordered by first appearance).
  * Fail closed if any non-empty subject cannot be resolved to a deployable character/npc.
  * @param {Array<object|string>} subjects
@@ -505,6 +520,49 @@ export async function toggleStarshipActiveCrew(starshipSubject, crewSubject = nu
 	deployment.active.value = nextActive;
 	await starship.update(buildDeploymentUpdateData(deployment));
 	return true;
+}
+
+/**
+ * Partition a flat crew roster into headed groups without cloning row objects.
+ * `rows` arrays hold references into the given `roster` (same object identity).
+ * Empty groups are omitted. Unknown Actor types land in `other` only when present.
+ *
+ * @param {object[]} roster
+ * @returns {Array<{ key: string, labelKey: string, rows: object[] }>}
+ */
+export function partitionCrewRosterGroups(roster) {
+	const list = Array.isArray(roster) ? roster : [];
+	const characters = [];
+	const npcs = [];
+	const others = [];
+	for ( const row of list ) {
+		if ( row?.type === "character" ) characters.push(row);
+		else if ( row?.type === "npc" ) npcs.push(row);
+		else others.push(row);
+	}
+	const groups = [];
+	if ( characters.length ) {
+		groups.push({
+			key: "character",
+			labelKey: "SW5E.StarshipCrewGroupCharacters",
+			rows: characters
+		});
+	}
+	if ( npcs.length ) {
+		groups.push({
+			key: "npc",
+			labelKey: "SW5E.StarshipCrewGroupNpcs",
+			rows: npcs
+		});
+	}
+	if ( others.length ) {
+		groups.push({
+			key: "other",
+			labelKey: "SW5E.StarshipCrewGroupOther",
+			rows: others
+		});
+	}
+	return groups;
 }
 
 export function buildVehicleStarshipCrewContext(actor, { sheetEditable = true } = {}) {

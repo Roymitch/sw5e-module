@@ -67,6 +67,9 @@ import {
 	buildStarshipCrewRoleGroups,
 	enrichCrewContextForSheetSearch,
 	ensureStarshipAssignedCrewSearch,
+	ensureStarshipCrewRosterContextMenu,
+	ensureStarshipCrewRosterGroupCollapse,
+	ensureStarshipCrewRosterOpenActor,
 	openAddCrewDialog
 } from "../starship-sheet-crew.mjs";
 import {
@@ -187,7 +190,9 @@ function buildStarshipCoreRenderData(app, actor, runtime, { integrated = true, s
 	const crewManageEditable = canUpdateActor && actorEditable;
 	const crew = enrichCrewContextForSheetSearch(buildVehicleStarshipCrewContext(actor, {
 		sheetEditable: crewManageEditable
-	}));
+	}), {
+		collapseMap: app?._sw5eCrewRosterGroupCollapse
+	});
 	const systemsCore = buildSystemsCoreContext(actor, { runtime });
 	const overviewAbilities = buildOverviewAbilitiesContext(actor, actorEditable);
 
@@ -279,6 +284,9 @@ function ensureStarshipCoreInteractions(wrapper, app, actor) {
 		ensureStarshipSotgItemRowInteractions(wrapper, app);
 		ensureStarshipCorePanelCollapseDelegate(wrapper, app);
 		ensureStarshipAssignedCrewSearch(wrapper, app);
+		ensureStarshipCrewRosterGroupCollapse(wrapper, app);
+		ensureStarshipCrewRosterOpenActor(wrapper, app);
+		ensureStarshipCrewRosterContextMenu(wrapper, app);
 		return;
 	}
 
@@ -286,6 +294,9 @@ function ensureStarshipCoreInteractions(wrapper, app, actor) {
 	ensureStarshipSotgItemRowInteractions(wrapper, app);
 	ensureStarshipCorePanelCollapseDelegate(wrapper, app);
 	ensureStarshipAssignedCrewSearch(wrapper, app);
+	ensureStarshipCrewRosterGroupCollapse(wrapper, app);
+	ensureStarshipCrewRosterOpenActor(wrapper, app);
+	ensureStarshipCrewRosterContextMenu(wrapper, app);
 
 	const handleTabClick = async event => {
 		const target = getEventTargetElement(event);
@@ -401,9 +412,14 @@ function ensureStarshipCoreInteractions(wrapper, app, actor) {
 			warnStarshipActorUpdateDenied();
 			return;
 		}
+		const command = btn.dataset.sw5eCrewCommand;
+		if ( (command === "remove" || command === "set-pilot" || command === "undeploy-pilot")
+			&& !isStarshipSheetEditMode(app) ) {
+			warnStarshipActorUpdateDenied();
+			return;
+		}
 		btn.disabled = true;
 		try {
-			const command = btn.dataset.sw5eCrewCommand;
 			const uuid = btn.dataset.actorUuid;
 			if ( command === "open-add-crew" ) {
 				await openAddCrewDialog(actor);

@@ -8,10 +8,15 @@ import {
 	buildVehicleAvailableActors,
 	buildVehicleStarshipCrewContext,
 	canCurrentUserDeployStarshipCrewRole,
+	canCurrentUserUndeployStarshipCrew,
 	deployStarshipCrew,
-	deployStarshipCrewBatch
+	deployStarshipCrewBatch,
+	partitionCrewRosterGroups,
+	toggleStarshipActiveCrew,
+	undeployStarshipCrew
 } from "./starship-character.mjs";
 import {
+	getCharacterDeploymentSummary,
 	groupCharacterDeploymentFeaturesByParent,
 	normalizeDeploymentGroupingKey
 } from "./character-deployments.mjs";
@@ -23,6 +28,21 @@ import { escapeHtml, localizeOrFallback } from "./starship-sheet-html.mjs";
 import { getCompendiumPack, STARSHIP_TAB_ID } from "./starship-sheet-ids.mjs";
 import { getCrewRoleCollapseMapForStarship } from "./patch/starship-sheet-delegates.mjs";
 import { makeItemEntry } from "./patch/starship-sheet-core-context.mjs";
+import { isStarshipSheetEditMode } from "./patch/starship-sheet-sidebar.mjs";
+
+/** @type {WeakSet<HTMLElement>} */
+const _sw5eCrewRosterContextMenuWrappers = new WeakSet();
+
+function getDnd5eContextMenu5e() {
+	return globalThis.dnd5e?.applications?.ContextMenu5e ?? null;
+}
+
+function getEventTargetElement(event) {
+	const t = event?.target;
+	if ( t instanceof HTMLElement ) return t;
+	if ( t?.parentElement instanceof HTMLElement ) return t.parentElement;
+	return null;
+}
 
 export function resolveCrewActorFromUuid(uuid) {
 	if ( !uuid ) return null;
@@ -228,8 +248,28 @@ export function buildStarshipCrewRoleGroups(actor) {
 	});
 }
 
+/**
+ * Parent Deployment feat label for a resolved crew Actor (highest displayRank, then name).
+ * Call once per Actor during context prep — do not re-scan in render helpers.
+ * @param {object|null} actor
+ * @returns {string}
+ */
+export function resolveDeploymentAssignmentLabel(actor) {
+	if ( !actor ) return "";
+	const deployments = getCharacterDeploymentSummary(actor)?.deployments;
+	if ( !Array.isArray(deployments) || !deployments.length ) return "";
+	const lang = globalThis.game?.i18n?.lang;
+	const sorted = deployments.slice().sort((left, right) => {
+		const rankDelta = (Number(right?.displayRank) || 0) - (Number(left?.displayRank) || 0);
+		if ( rankDelta !== 0 ) return rankDelta;
+		return String(left?.name ?? "").localeCompare(String(right?.name ?? ""), lang);
+	});
+	return String(sorted[0]?.name ?? "").trim();
+}
+
 export function buildAssignedCrewSearchText(record) {
 	const parts = [String(record?.name ?? "")];
+	if ( record?.deploymentAssignmentLabel ) parts.push(String(record.deploymentAssignmentLabel));
 	if ( record?.isPilot ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgePilot", "Pilot"));
 	if ( record?.active ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgeActive", "Active"));
 	if ( !record?.isPilot && record?.isCrew ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgeCrew", "Crew"));
@@ -237,28 +277,97 @@ export function buildAssignedCrewSearchText(record) {
 	return parts.join(" ").trim().toLowerCase();
 }
 
+const CREW_ROSTER_GROUP_LABEL_FALLBACKS = Object.freeze({
+	character: "Player Characters",
+	npc: "NPCs",
+	other: "Other"
+});
+
 /**
- * Enrich crew template context with precomputed search text. Does not reorder roster.
- * @param {{ roster?: object[] }} crewContext
- * @returns {{ roster: object[] }}
+ * @param {object|null|undefined} actor
+ * @returns {boolean}
  */
-export function enrichCrewContextForSheetSearch(crewContext) {
+export function canCurrentUserObserveActor(actor) {
+	if ( !actor || !globalThis.game?.user ) return false;
+	const levels = globalThis.CONST?.DOCUMENT_OWNERSHIP_LEVELS;
+	const observer = levels?.OBSERVER ?? 2;
+	try {
+		return Boolean(actor.testUserPermission?.(globalThis.game.user, observer));
+	} catch ( _err ) {
+		return false;
+	}
+}
+
+/**
+ * Enrich crew template context once: resolve each Actor, attach Deployment label + searchText,
+ * then derive rosterGroups by referencing enriched rows. Collapse is derived from the sheet app map.
+ * @param {{ roster?: object[] }} crewContext
+ * @param {{ collapseMap?: Record<string, boolean> }} [options]
+ * @returns {{ roster: object[], rosterGroups: object[] }}
+ */
+export function enrichCrewContextForSheetSearch(crewContext, { collapseMap = null } = {}) {
 	const roster = Array.isArray(crewContext?.roster) ? crewContext.roster : [];
+	const map = collapseMap && typeof collapseMap === "object" ? collapseMap : {};
+	const enrichedRoster = roster.map(record => {
+		const actor = resolveCrewActorFromUuid(record?.uuid);
+		const deploymentAssignmentLabel = resolveDeploymentAssignmentLabel(actor);
+		const enriched = {
+			...record,
+			deploymentAssignmentLabel
+		};
+		enriched.searchText = buildAssignedCrewSearchText(enriched);
+		return enriched;
+	});
+	const expandLabel = localizeOrFallback("SW5E.StarshipCrewGroupExpand", "Expand crew group");
+	const collapseLabel = localizeOrFallback("SW5E.StarshipCrewGroupCollapse", "Collapse crew group");
+	const rosterGroups = partitionCrewRosterGroups(enrichedRoster).map(group => ({
+		key: group.key,
+		labelKey: group.labelKey,
+		label: localizeOrFallback(
+			group.labelKey,
+			CREW_ROSTER_GROUP_LABEL_FALLBACKS[group.key] ?? group.key
+		),
+		rows: group.rows,
+		collapsed: Boolean(map[group.key]),
+		bodyId: `sw5e-crew-group-body-${group.key}`,
+		expandLabel,
+		collapseLabel
+	}));
 	return {
 		...crewContext,
-		roster: roster.map(record => ({
-			...record,
-			searchText: buildAssignedCrewSearchText(record)
-		}))
+		roster: enrichedRoster,
+		rosterGroups
 	};
 }
 
 /**
- * Client-side filter for assigned roster rows. No document I/O.
+ * Sync a roster group’s collapsed presentation in the DOM only.
+ * @param {HTMLElement} group
+ * @param {boolean} collapsed
+ */
+export function syncCrewRosterGroupCollapsedDom(group, collapsed) {
+	if ( !(group instanceof HTMLElement) ) return;
+	group.classList.toggle("is-collapsed", Boolean(collapsed));
+	const btn = group.querySelector("[data-sw5e-crew-roster-collapse]");
+	if ( !(btn instanceof HTMLElement) ) return;
+	btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+	const expandLabel = btn.dataset.expandLabel
+		?? localizeOrFallback("SW5E.StarshipCrewGroupExpand", "Expand crew group");
+	const collapseLabel = btn.dataset.collapseLabel
+		?? localizeOrFallback("SW5E.StarshipCrewGroupCollapse", "Collapse crew group");
+	const label = collapsed ? expandLabel : collapseLabel;
+	btn.title = label;
+	btn.setAttribute("aria-label", label);
+}
+
+/**
+ * Client-side filter for assigned roster rows. Search temporary expand is DOM-only —
+ * does not write app collapse map or mutate crew context.
  * @param {HTMLElement} wrapper
  * @param {string} query
+ * @param {object} [app]
  */
-export function applyStarshipAssignedCrewSearchFilter(wrapper, query) {
+export function applyStarshipAssignedCrewSearchFilter(wrapper, query, app = null) {
 	if ( !(wrapper instanceof HTMLElement) ) return;
 	const needle = String(query ?? "").trim().toLowerCase();
 	const rows = wrapper.querySelectorAll(".sw5e-starship-crew-roster .sw5e-starship-crew-row");
@@ -270,6 +379,27 @@ export function applyStarshipAssignedCrewSearchFilter(wrapper, query) {
 		const match = !needle || hay.includes(needle);
 		row.classList.toggle("is-filtered-out", !match);
 		if ( match ) visible += 1;
+	}
+
+	const collapseMap = app?._sw5eCrewRosterGroupCollapse && typeof app._sw5eCrewRosterGroupCollapse === "object"
+		? app._sw5eCrewRosterGroupCollapse
+		: {};
+
+	for ( const group of wrapper.querySelectorAll(".sw5e-starship-crew-roster .sw5e-starship-crew-group") ) {
+		const groupRows = group.querySelectorAll(".sw5e-starship-crew-row");
+		let groupVisible = 0;
+		for ( const row of groupRows ) {
+			if ( !row.classList.contains("is-filtered-out") ) groupVisible += 1;
+		}
+		const hideGroup = Boolean(needle) && groupVisible === 0;
+		group.classList.toggle("is-filtered-out", hideGroup);
+
+		if ( needle ) {
+			if ( groupVisible > 0 ) syncCrewRosterGroupCollapsedDom(group, false);
+		} else {
+			const key = group.getAttribute("data-crew-group") ?? "";
+			syncCrewRosterGroupCollapsedDom(group, Boolean(collapseMap[key]));
+		}
 	}
 
 	const empty = wrapper.querySelector(".sw5e-starship-crew-assigned-search-empty");
@@ -293,7 +423,7 @@ export function ensureStarshipAssignedCrewSearch(wrapper, app) {
 		? app._sw5eAssignedCrewSearchQuery
 		: "";
 	if ( input.value !== stored ) input.value = stored;
-	applyStarshipAssignedCrewSearchFilter(wrapper, stored);
+	applyStarshipAssignedCrewSearchFilter(wrapper, stored, app);
 
 	if ( wrapper.dataset.sw5eAssignedCrewSearchDelegate === "1" ) return;
 	wrapper.dataset.sw5eAssignedCrewSearchDelegate = "1";
@@ -302,8 +432,253 @@ export function ensureStarshipAssignedCrewSearch(wrapper, app) {
 		if ( !(target instanceof HTMLInputElement) ) return;
 		if ( !target.classList.contains("sw5e-starship-crew-assigned-search") ) return;
 		if ( app ) app._sw5eAssignedCrewSearchQuery = target.value;
-		applyStarshipAssignedCrewSearchFilter(wrapper, target.value);
+		applyStarshipAssignedCrewSearchFilter(wrapper, target.value, app);
 	});
+}
+
+/**
+ * Sheet-app collapse preferences for PC/NPC/(Other) roster groups. One-install per wrapper.
+ * @param {HTMLElement} wrapper
+ * @param {object} app
+ */
+export function ensureStarshipCrewRosterGroupCollapse(wrapper, app) {
+	if ( !(wrapper instanceof HTMLElement) ) return;
+	if ( wrapper.dataset.sw5eCrewRosterCollapseDelegate === "1" ) return;
+	wrapper.dataset.sw5eCrewRosterCollapseDelegate = "1";
+	wrapper.addEventListener("click", event => {
+		const btn = event.target?.closest?.("[data-sw5e-crew-roster-collapse]");
+		if ( !(btn instanceof HTMLElement) ) return;
+		event.preventDefault();
+		event.stopPropagation();
+		const group = btn.closest(".sw5e-starship-crew-group");
+		if ( !(group instanceof HTMLElement) ) return;
+		const key = btn.getAttribute("data-sw5e-crew-roster-collapse")
+			|| group.getAttribute("data-crew-group")
+			|| "";
+		if ( !key ) return;
+		if ( !app._sw5eCrewRosterGroupCollapse || typeof app._sw5eCrewRosterGroupCollapse !== "object" ) {
+			app._sw5eCrewRosterGroupCollapse = {};
+		}
+		const willCollapse = !group.classList.contains("is-collapsed");
+		app._sw5eCrewRosterGroupCollapse[key] = willCollapse;
+		syncCrewRosterGroupCollapsedDom(group, willCollapse);
+	});
+}
+
+/**
+ * Portrait/name open Actor sheet after OBSERVER permission check. One-install per wrapper.
+ * @param {HTMLElement} wrapper
+ * @param {object} _app
+ */
+export function ensureStarshipCrewRosterOpenActor(wrapper, _app) {
+	if ( !(wrapper instanceof HTMLElement) ) return;
+	if ( wrapper.dataset.sw5eCrewRosterOpenActorDelegate === "1" ) return;
+	wrapper.dataset.sw5eCrewRosterOpenActorDelegate = "1";
+	wrapper.addEventListener("click", event => {
+		const target = getEventTargetElement(event);
+		if ( !target ) return;
+		if ( target.closest("[data-sw5e-crew-command], [data-sw5e-crew-roster-collapse], [data-context-menu]") ) return;
+		const openEl = target.closest("[data-sw5e-crew-open-actor]");
+		if ( !openEl ) return;
+		const row = openEl.closest(".sw5e-starship-crew-row[data-actor-uuid]");
+		if ( !row ) return;
+		event.preventDefault();
+		void openStarshipCrewRosterActorSheet(row.getAttribute("data-actor-uuid"));
+	});
+}
+
+/**
+ * @param {string|null} uuid
+ * @returns {Promise<void>}
+ */
+export async function openStarshipCrewRosterActorSheet(uuid) {
+	if ( !uuid ) {
+		ui?.notifications?.warn?.(localizeOrFallback(
+			"SW5E.StarshipCrewActorMissing",
+			"That crew member could not be found."
+		));
+		return;
+	}
+	let actor = resolveCrewActorFromUuid(uuid);
+	if ( !actor && globalThis.fromUuid ) {
+		try {
+			actor = await globalThis.fromUuid(uuid);
+		} catch ( _err ) {
+			actor = null;
+		}
+	}
+	if ( !actor ) {
+		ui?.notifications?.warn?.(localizeOrFallback(
+			"SW5E.StarshipCrewActorMissing",
+			"That crew member could not be found."
+		));
+		return;
+	}
+	if ( !canCurrentUserObserveActor(actor) ) {
+		ui?.notifications?.warn?.(localizeOrFallback(
+			"SW5E.StarshipCrewActorNoPermission",
+			"You do not have permission to view that actor."
+		));
+		return;
+	}
+	await actor.sheet?.render(true);
+}
+
+/**
+ * Portrait + name + @UUID only. Re-checks OBSERVER before create.
+ * @param {object} actor
+ * @returns {Promise<void>}
+ */
+export async function displayStarshipCrewActorInChat(actor) {
+	if ( !canCurrentUserObserveActor(actor) ) return;
+	const name = String(actor.name ?? "");
+	const img = String(actor.img || "icons/svg/mystery-man.svg");
+	const uuid = String(actor.uuid ?? "");
+	if ( !uuid ) return;
+	const content = [
+		`<div class="sw5e-starship-crew-chat-card">`,
+		`<img class="sw5e-starship-crew-chat-portrait" src="${escapeHtml(img)}" alt="" width="36" height="36" />`,
+		`<div class="sw5e-starship-crew-chat-copy">`,
+		`<strong class="sw5e-starship-crew-chat-name">${escapeHtml(name)}</strong>`,
+		`<div>@UUID[${uuid}]</div>`,
+		`</div></div>`
+	].join("");
+	const ChatMessageCls = globalThis.ChatMessage;
+	if ( !ChatMessageCls?.implementation?.create && !ChatMessageCls?.create ) return;
+	const create = ChatMessageCls.implementation?.create?.bind(ChatMessageCls.implementation)
+		?? ChatMessageCls.create.bind(ChatMessageCls);
+	await create({ content });
+}
+
+/**
+ * @param {HTMLElement} element
+ * @param {object} app
+ */
+export function prepareStarshipCrewRosterContextMenu(element, app) {
+	const row = element?.closest?.(".sw5e-starship-crew-row[data-actor-uuid]") ?? element;
+	const uuid = row?.getAttribute?.("data-actor-uuid") || row?.dataset?.actorUuid || "";
+	const actor = resolveCrewActorFromUuid(uuid);
+	const sheetEditMode = isStarshipSheetEditMode(app);
+	const canObserve = canCurrentUserObserveActor(actor);
+
+	const options = [{
+		name: localizeOrFallback("SW5E.StarshipCrewContextView", "View Character"),
+		icon: '<i class="fa-solid fa-eye fa-fw"></i>',
+		condition: () => canCurrentUserObserveActor(resolveCrewActorFromUuid(uuid)),
+		callback: () => { void openStarshipCrewRosterActorSheet(uuid); }
+	}, {
+		name: localizeOrFallback("SW5E.StarshipCrewContextDisplayChat", "Display in Chat"),
+		icon: '<i class="fa-solid fa-message fa-fw"></i>',
+		condition: () => canCurrentUserObserveActor(resolveCrewActorFromUuid(uuid)),
+		callback: () => {
+			const live = resolveCrewActorFromUuid(uuid);
+			if ( !canCurrentUserObserveActor(live) ) return;
+			void displayStarshipCrewActorInChat(live);
+		}
+	}];
+
+	const canToggle = Boolean(row?.querySelector?.('[data-sw5e-crew-command="toggle-active"]:not([disabled])'))
+		|| (app?.isEditable !== false && canCurrentUserUpdateStarshipActor(app?.actor));
+	if ( canToggle ) {
+		const isActive = row?.classList?.contains("sw5e-crew-active");
+		options.push({
+			name: isActive
+				? localizeOrFallback("SW5E.StarshipCrewDeactivate", "Deactivate Crew Member")
+				: localizeOrFallback("SW5E.StarshipCrewActivate", "Activate Crew Member"),
+			icon: '<i class="fa-solid fa-toggle-on fa-fw"></i>',
+			condition: () => app?.isEditable !== false && canCurrentUserUpdateStarshipActor(app?.actor),
+			callback: async () => {
+				if ( app?.isEditable === false ) {
+					warnStarshipActorUpdateDenied();
+					return;
+				}
+				const ok = await toggleStarshipActiveCrew(app?.actor, uuid);
+				if ( ok !== true ) warnStarshipActorUpdateDenied();
+			},
+			group: "state"
+		});
+	}
+
+	const canRemove = app?.isEditable !== false
+		&& canCurrentUserUndeployStarshipCrew(app?.actor, actor ?? uuid);
+	if ( canRemove ) {
+		options.push({
+			name: localizeOrFallback("SW5E.StarshipCrewRemove", "Remove Crew Member"),
+			icon: '<i class="fa-solid fa-user-xmark fa-fw"></i>',
+			condition: () => app?.isEditable !== false
+				&& canCurrentUserUndeployStarshipCrew(app?.actor, resolveCrewActorFromUuid(uuid) ?? uuid),
+			callback: async () => {
+				if ( app?.isEditable === false
+					|| !canCurrentUserUndeployStarshipCrew(app?.actor, resolveCrewActorFromUuid(uuid) ?? uuid) ) {
+					warnStarshipActorUpdateDenied();
+					return;
+				}
+				const ok = await undeployStarshipCrew(app.actor, uuid);
+				if ( ok !== true ) warnStarshipActorUpdateDenied();
+			},
+			group: "action"
+		});
+	}
+
+	if ( sheetEditMode ) {
+		const canSetPilot = Boolean(row?.querySelector?.('[data-sw5e-crew-command="set-pilot"]:not([disabled])'));
+		const canClearPilot = Boolean(row?.querySelector?.('[data-sw5e-crew-command="undeploy-pilot"]:not([disabled])'));
+		if ( canSetPilot ) {
+			options.push({
+				name: localizeOrFallback("SW5E.StarshipCrewSetPilot", "Set Pilot"),
+				icon: '<i class="fa-solid fa-user-check fa-fw"></i>',
+				condition: () => isStarshipSheetEditMode(app),
+				callback: async () => {
+					if ( !isStarshipSheetEditMode(app) ) {
+						warnStarshipActorUpdateDenied();
+						return;
+					}
+					const ok = await deployStarshipCrew(app.actor, uuid, "pilot");
+					if ( ok !== true ) warnStarshipActorUpdateDenied();
+				},
+				group: "action"
+			});
+		}
+		if ( canClearPilot ) {
+			options.push({
+				name: localizeOrFallback("SW5E.StarshipCrewClearPilot", "Clear Pilot"),
+				icon: '<i class="fa-solid fa-user-slash fa-fw"></i>',
+				condition: () => isStarshipSheetEditMode(app),
+				callback: async () => {
+					if ( !isStarshipSheetEditMode(app) ) {
+						warnStarshipActorUpdateDenied();
+						return;
+					}
+					const ok = await undeployStarshipCrew(app.actor, uuid, ["pilot"]);
+					if ( ok !== true ) warnStarshipActorUpdateDenied();
+				},
+				group: "action"
+			});
+		}
+	}
+
+	ui.context.menuItems = options;
+	return canObserve;
+}
+
+/**
+ * One-install ContextMenu5e for Core crew roster rows (SotG parity lifecycle).
+ * @param {HTMLElement} wrapper
+ * @param {object} app
+ */
+export function ensureStarshipCrewRosterContextMenu(wrapper, app) {
+	if ( !(wrapper instanceof HTMLElement) || _sw5eCrewRosterContextMenuWrappers.has(wrapper) ) return;
+	_sw5eCrewRosterContextMenuWrappers.add(wrapper);
+
+	const ContextMenu5e = getDnd5eContextMenu5e();
+	if ( ContextMenu5e ) {
+		new ContextMenu5e(wrapper, ".sw5e-starship-crew-row[data-actor-uuid]", [], {
+			onOpen: el => prepareStarshipCrewRosterContextMenu(el, app),
+			jQuery: false
+		});
+	} else {
+		console.warn("SW5E MODULE | dnd5e ContextMenu5e unavailable (is the dnd5e system loaded?).");
+	}
 }
 
 /**
