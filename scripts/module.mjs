@@ -21,6 +21,7 @@ import { patchStarshipMovementSensesConfig } from "./starship-movement-config.mj
 import { patchStarshipSheet } from "./patch/starship-sheet.mjs";
 import { patchStarshipActivityConfigUi } from "./patch/starship-activity.mjs";
 import { registerStarshipSystemDamageRollHooks } from "./starship-system-damage.mjs";
+import { registerStarshipSavePilotPbHooks } from "./starship-data.mjs";
 import { registerStarshipDamageReductionHooks } from "./starship-damage-reduction.mjs";
 import { registerStarshipWeaponRollHooks } from "./starship-weapon-rolls.mjs";
 import { registerStarshipLauncherAmmoBridgeHooks } from "./starship-launcher-ammo.mjs";
@@ -113,6 +114,7 @@ Hooks.once('init', async function() {
 	registerStarshipMovementReadyHooks();
 	patchStarshipMovementSensesConfig();
 	registerStarshipSystemDamageRollHooks();
+	registerStarshipSavePilotPbHooks();
 	registerStarshipDamageReductionHooks();
 	registerStarshipWeaponRollHooks();
 	registerSw5eActivityTriggerHooks();

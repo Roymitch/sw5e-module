@@ -1370,6 +1370,166 @@ function actorQualifiesForStarshipCrewPb(starshipActor, crewActor) {
 	return getActorMaxValidDeploymentStoredRank(crewActor) >= 1;
 }
 
+/** Roll-config marker: Pilot save PB already injected for this roll only (never an Actor flag). */
+const STARSHIP_SAVE_PILOT_PB_INJECTED_KEY = "sw5ePilotSavePbInjected";
+/** Formula/@data key for Pilot save proficiency (dnd5e constructParts / mergeConfigs). */
+const STARSHIP_SAVE_PILOT_PB_DATA_KEY = "sw5ePilotSaveProf";
+const STARSHIP_SAVE_PILOT_PB_PART = `@${STARSHIP_SAVE_PILOT_PB_DATA_KEY}`;
+
+/**
+ * Bug 29C: resolve exactly `deployment.pilot.value` for save PB.
+ * No Crew / Active / controlled / rolling-user / Passenger / 29A responsible-Actor substitutes.
+ * @param {Actor} starshipActor
+ * @returns {Actor|null}
+ */
+export function resolveStarshipSavePilotActor(starshipActor) {
+	if ( !isStarshipFlagVehicle(starshipActor) ) return null;
+	const { pilotUuid } = getStarshipPilotCrewPassengerSets(starshipActor);
+	if ( !pilotUuid ) return null;
+	const pilot = resolveActorDocument(pilotUuid);
+	if ( !pilot || pilot.documentName !== "Actor" ) return null;
+	if ( getActorMaxValidDeploymentStoredRank(pilot) < 1 ) return null;
+	const pb = toFiniteNumber(pilot?.system?.attributes?.prof, NaN);
+	if ( !Number.isFinite(pb) ) return null;
+	return pilot;
+}
+
+/**
+ * Save-equipped gate: `proficient <= 0` → none; `proficient > 0` → Pilot PB once (no tier multiplication).
+ * @param {Actor} starshipActor
+ * @param {string} abilityId
+ * @returns {number}
+ */
+export function getStarshipSavePilotProficiency(starshipActor, abilityId) {
+	if ( !isStarshipFlagVehicle(starshipActor) || !abilityId ) return 0;
+	const proficient = toFiniteNumber(starshipActor?.system?.abilities?.[abilityId]?.proficient, 0) ?? 0;
+	if ( proficient <= 0 ) return 0;
+	const pilot = resolveStarshipSavePilotActor(starshipActor);
+	if ( !pilot ) return 0;
+	return toFiniteNumber(pilot.system?.attributes?.prof, 0) ?? 0;
+}
+
+/**
+ * Deterministic numeric eval of a save-bonus formula for sheet display only.
+ * Nondeterministic dice / unsafe formulas are omitted (not coerced to 0).
+ * @param {string} formula
+ * @param {object} [rollData]
+ * @returns {{ ok: boolean, value: number }}
+ */
+function evaluateDeterministicSaveBonusFormula(formula, rollData = {}) {
+	const raw = String(formula ?? "").trim();
+	if ( !raw ) return { ok: true, value: 0 };
+	try {
+		const RollCls = globalThis.CONFIG?.Dice?.BasicRoll ?? globalThis.Roll;
+		if ( !RollCls ) return { ok: false, value: 0 };
+		const roll = new RollCls(raw, rollData);
+		if ( typeof roll.isDeterministic === "boolean" ) {
+			if ( !roll.isDeterministic ) return { ok: false, value: 0 };
+		} else if ( /\d+d\d/i.test(raw) ) {
+			// Foundry without isDeterministic: refuse dice formulas rather than coerce to 0.
+			return { ok: false, value: 0 };
+		}
+		const simplifyBonus = globalThis.dnd5e?.utils?.simplifyBonus;
+		if ( typeof simplifyBonus === "function" ) {
+			const value = Number(simplifyBonus(raw, rollData));
+			if ( !Number.isFinite(value) ) return { ok: false, value: 0 };
+			return { ok: true, value };
+		}
+		const replaced = RollCls.replaceFormulaData?.(raw, rollData, { missing: "0" }) ?? raw;
+		const value = Number(RollCls.safeEval?.(replaced));
+		if ( !Number.isFinite(value) ) return { ok: false, value: 0 };
+		return { ok: true, value };
+	} catch (_err) {
+		return { ok: false, value: 0 };
+	}
+}
+
+/**
+ * Shared save modifier parts for roll injection and sheet display (Bug 29C).
+ * Roll keeps `saveBonusFormula` as a formula term; display uses deterministic terms only.
+ * @param {Actor} starshipActor
+ * @param {string} abilityId
+ * @returns {{
+ *   shipModifier: number,
+ *   saveBonusFormula: string,
+ *   pilotProficiency: number,
+ *   saveBonusDeterministic: boolean,
+ *   saveBonusDeterministicValue: number|null,
+ *   displayTotal: number,
+ *   displayOmitsSaveBonus: boolean
+ * }}
+ */
+export function buildStarshipSaveModifierParts(starshipActor, abilityId) {
+	const entry = getStarshipAbilityRollEntry(starshipActor, abilityId);
+	const shipModifier = toFiniteNumber(entry?.mod, 0) ?? 0;
+	const saveBonusFormula = String(entry?.saveBonus ?? "").trim();
+	const pilotProficiency = getStarshipSavePilotProficiency(starshipActor, abilityId);
+	const rollData = starshipActor?.getRollData?.() ?? {};
+	const bonusEval = evaluateDeterministicSaveBonusFormula(saveBonusFormula, rollData);
+	const displayTotal = bonusEval.ok
+		? shipModifier + bonusEval.value + pilotProficiency
+		: shipModifier + pilotProficiency;
+	return {
+		shipModifier,
+		saveBonusFormula,
+		pilotProficiency,
+		saveBonusDeterministic: bonusEval.ok,
+		saveBonusDeterministicValue: bonusEval.ok ? bonusEval.value : null,
+		displayTotal,
+		displayOmitsSaveBonus: !bonusEval.ok && Boolean(saveBonusFormula)
+	};
+}
+
+/**
+ * Fresh per-call merge fragment for stock `rollSavingThrow` (dnd5e 5.2.5 `D20Roll.mergeConfigs`).
+ * Does not mutate shared arrays; caller passes a new object each roll.
+ * @param {Actor} starshipActor
+ * @param {string} abilityId
+ * @returns {{ sw5ePilotSavePbInjected?: boolean, rolls?: object[] }}
+ */
+export function buildStarshipSavePilotPbStockRollConfig(starshipActor, abilityId) {
+	const pilotProficiency = getStarshipSavePilotProficiency(starshipActor, abilityId);
+	if ( !pilotProficiency ) return {};
+	return {
+		[STARSHIP_SAVE_PILOT_PB_INJECTED_KEY]: true,
+		rolls: [{
+			parts: [STARSHIP_SAVE_PILOT_PB_PART],
+			data: { [STARSHIP_SAVE_PILOT_PB_DATA_KEY]: pilotProficiency }
+		}]
+	};
+}
+
+/**
+ * `dnd5e.preRollSavingThrow` inject: clone this roll's parts/data; once-marker on config only.
+ * Preserves stock dialog / hooks / chat — does not bypass `rollSavingThrow`.
+ * @param {object} config
+ */
+export function injectStarshipSavePilotPbIntoRollConfig(config) {
+	if ( !config || config[STARSHIP_SAVE_PILOT_PB_INJECTED_KEY] ) return;
+	if ( !(config.hookNames ?? []).includes("SavingThrow") ) return;
+	const actor = config.subject?.documentName === "Actor" ? config.subject : null;
+	if ( !isStarshipFlagVehicle(actor) ) return;
+	const abilityId = config.ability;
+	const pilotProficiency = getStarshipSavePilotProficiency(actor, abilityId);
+	config[STARSHIP_SAVE_PILOT_PB_INJECTED_KEY] = true;
+	if ( !pilotProficiency ) return;
+
+	const roll = config.rolls?.[0];
+	if ( !roll ) return;
+
+	const existingParts = Array.isArray(roll.parts) ? roll.parts : [];
+	if ( existingParts.includes(STARSHIP_SAVE_PILOT_PB_PART) ) return;
+
+	roll.parts = [...existingParts, STARSHIP_SAVE_PILOT_PB_PART];
+	roll.data = foundry.utils.mergeObject({}, roll.data ?? {}, { inplace: false });
+	roll.data[STARSHIP_SAVE_PILOT_PB_DATA_KEY] = pilotProficiency;
+}
+
+/** Register stock-path Pilot save PB injection (keeps `rollSavingThrow` primary). */
+export function registerStarshipSavePilotPbHooks() {
+	Hooks.on("dnd5e.preRollSavingThrow", injectStarshipSavePilotPbIntoRollConfig);
+}
+
 /**
  * Exactly one canvas-controlled Token Actor that qualifies (local client selection only).
  * @param {Actor} starshipActor
@@ -1699,10 +1859,19 @@ function getStarshipAbilityRollData(actor, abilityId, entry, mode) {
 function buildStarshipAbilityRollFormula(actor, abilityId, entry, mode) {
 	const rollData = getStarshipAbilityRollData(actor, abilityId, entry, mode);
 	const bonus = mode === "save" ? entry.saveBonus : entry.checkBonus;
-	const formula = buildRollFormula([
+	const terms = [
 		normalizeFormulaTerm(entry.mod, rollData),
 		normalizeFormulaTerm(bonus, rollData)
-	]);
+	];
+	if ( mode === "save" ) {
+		const pilotProficiency = getStarshipSavePilotProficiency(actor, abilityId);
+		if ( pilotProficiency ) {
+			rollData[STARSHIP_SAVE_PILOT_PB_DATA_KEY] = pilotProficiency;
+			rollData.prof = pilotProficiency;
+			terms.push(normalizeFormulaTerm(pilotProficiency, rollData));
+		}
+	}
+	const formula = buildRollFormula(terms);
 	return { formula, rollData };
 }
 
@@ -1770,6 +1939,9 @@ export async function rollStarshipAbilityCheck(actor, abilityId, event) {
 
 /**
  * Roll a Starship ability saving throw using prepared vehicle save data when possible.
+ * Stock `rollSavingThrow` remains primary (Bug 29C): Pilot PB injects via a fresh per-call
+ * `rolls` merge config (dnd5e 5.2.5 `D20Roll.mergeConfigs`) plus `preRollSavingThrow` safety net.
+ * Does not bypass stock merely to add Pilot PB.
  * @param {Actor} actor
  * @param {string} abilityId
  * @param {Event} [event]
@@ -1780,7 +1952,14 @@ export async function rollStarshipAbilitySave(actor, abilityId, event) {
 	if ( autoFail ) return autoFail;
 	if ( typeof actor?.rollSavingThrow === "function" ) {
 		try {
-			return await actor.rollSavingThrow({ ability: abilityId, event });
+			const pilotPbConfig = isStarshipFlagVehicle(actor)
+				? buildStarshipSavePilotPbStockRollConfig(actor, abilityId)
+				: {};
+			return await actor.rollSavingThrow({
+				ability: abilityId,
+				event,
+				...pilotPbConfig
+			});
 		} catch (err) {
 			console.warn("SW5E MODULE | Starship save roll via rollSavingThrow failed; using fallback.", err);
 		}
@@ -1826,7 +2005,8 @@ export async function rollStarshipAbility(actor, abilityId, event) {
 	});
 
 	if ( selection === "check" ) return executeStarshipAbilityRoll(actor, abilityId, "check", event);
-	if ( selection === "save" ) return executeStarshipAbilityRoll(actor, abilityId, "save", event);
+	// Route chooser saves through stock-primary `rollStarshipAbilitySave` (not custom-only).
+	if ( selection === "save" ) return rollStarshipAbilitySave(actor, abilityId, event);
 	return null;
 }
 

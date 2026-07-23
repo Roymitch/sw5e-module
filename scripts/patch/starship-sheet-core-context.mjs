@@ -5,13 +5,15 @@
 
 import { normalizeSwPriceDenomination } from "../currencies.mjs";
 import {
+	buildStarshipSaveModifierParts,
 	deriveStarshipPools,
 	getDerivedStarshipRuntime,
 	getLegacyStarshipActorSystem,
 	getStarshipAdvancedPowerContext,
 	getStarshipPowerRecoverySummary,
 	getStarshipSkillDisplayEntries,
-	getStarshipSkillEntries
+	getStarshipSkillEntries,
+	isStarshipFlagVehicle
 } from "../starship-data.mjs";
 import { getExpandedProficiencyHoverLabel } from "./proficiency.mjs";
 import { escapeHtml, localizeOrFallback } from "../starship-sheet-html.mjs";
@@ -963,9 +965,16 @@ export function buildOverviewAbilitiesContext(actor, editable = false) {
 		const value = Number.isFinite(liveValue) ? liveValue : sourceValue;
 		const currentMod = Number(live?.mod);
 		const mod = Number.isFinite(currentMod) ? currentMod : Math.floor((value - 10) / 2);
-		const savePrepared = live?.save;
-		let saveValue = Number(savePrepared?.value ?? savePrepared);
-		if ( !Number.isFinite(saveValue) ) saveValue = mod;
+		// Bug 29C: display uses shared save parts (mod + deterministic bonus + Pilot PB once).
+		// Never combine stock prepared `save.value` with Pilot PB.
+		let saveValue = mod;
+		if ( isStarshipFlagVehicle(actor) ) {
+			saveValue = buildStarshipSaveModifierParts(actor, key).displayTotal;
+		} else {
+			const savePrepared = live?.save;
+			saveValue = Number(savePrepared?.value ?? savePrepared);
+			if ( !Number.isFinite(saveValue) ) saveValue = mod;
+		}
 		const proficient = Number.isFinite(Number(live?.proficient)) ? Number(live.proficient) : 0;
 		const abbrKey = typeof cfg.abbreviation === "string" ? cfg.abbreviation : "";
 		const abbrLocalized = abbrKey ? game.i18n.localize(abbrKey) : "";
