@@ -12,7 +12,6 @@ import {
 	deployStarshipCrew,
 	deployStarshipCrewBatch,
 	partitionCrewRosterGroups,
-	toggleStarshipActiveCrew,
 	undeployStarshipCrew
 } from "./starship-character.mjs";
 import {
@@ -271,7 +270,6 @@ export function buildAssignedCrewSearchText(record) {
 	const parts = [String(record?.name ?? "")];
 	if ( record?.deploymentAssignmentLabel ) parts.push(String(record.deploymentAssignmentLabel));
 	if ( record?.isPilot ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgePilot", "Pilot"));
-	if ( record?.active ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgeActive", "Active"));
 	if ( !record?.isPilot && record?.isCrew ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgeCrew", "Crew"));
 	if ( record?.isPassenger ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgePassenger", "Passenger"));
 	return parts.join(" ").trim().toLowerCase();
@@ -576,28 +574,6 @@ export function prepareStarshipCrewRosterContextMenu(element, app) {
 			void displayStarshipCrewActorInChat(live);
 		}
 	}];
-
-	const canToggle = Boolean(row?.querySelector?.('[data-sw5e-crew-command="toggle-active"]:not([disabled])'))
-		|| (app?.isEditable !== false && canCurrentUserUpdateStarshipActor(app?.actor));
-	if ( canToggle ) {
-		const isActive = row?.classList?.contains("sw5e-crew-active");
-		options.push({
-			name: isActive
-				? localizeOrFallback("SW5E.StarshipCrewDeactivate", "Deactivate Crew Member")
-				: localizeOrFallback("SW5E.StarshipCrewActivate", "Activate Crew Member"),
-			icon: '<i class="fa-solid fa-toggle-on fa-fw"></i>',
-			condition: () => app?.isEditable !== false && canCurrentUserUpdateStarshipActor(app?.actor),
-			callback: async () => {
-				if ( app?.isEditable === false ) {
-					warnStarshipActorUpdateDenied();
-					return;
-				}
-				const ok = await toggleStarshipActiveCrew(app?.actor, uuid);
-				if ( ok !== true ) warnStarshipActorUpdateDenied();
-			},
-			group: "state"
-		});
-	}
 
 	const canRemove = app?.isEditable !== false
 		&& canCurrentUserUndeployStarshipCrew(app?.actor, actor ?? uuid);

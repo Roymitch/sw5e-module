@@ -333,11 +333,9 @@ function buildResolvedCrewRecord(deployment, uuid, starship, { sheetEditable = t
 		isPilot: roles.includes("pilot"),
 		isCrew: roles.includes("crew"),
 		isPassenger: roles.includes("passenger"),
-		active: deployment.active.value === uuid,
 		roles,
 		proficiency: toNumber(actor?.system?.attributes?.prof, 0),
 		pilotSkill: toNumber(actor?.system?.skills?.pil?.value, 0),
-		canToggleActive: sheetEditable && canShip,
 		canRemove: canMutateAssignment,
 		canUndeployPilot: canMutateAssignment && roles.includes("pilot"),
 		canSetPilot
@@ -345,8 +343,8 @@ function buildResolvedCrewRecord(deployment, uuid, starship, { sheetEditable = t
 }
 
 function compareCrewRecords(left, right) {
+	// Bug 29D: Pilot-first, then deterministic name. No Active-first sorting.
 	if ( left.isPilot !== right.isPilot ) return left.isPilot ? -1 : 1;
-	if ( left.active !== right.active ) return left.active ? -1 : 1;
 	return left.name.localeCompare(right.name);
 }
 
@@ -506,6 +504,14 @@ export async function deployStarshipCrewBatch(starshipSubject, subjects, role) {
 	return { ok: true, phase: "write", completed, failed: null, crewActors };
 }
 
+/**
+ * Legacy helper (Bug 29D): Active Crew is no longer a sheet UI station or proficiency source.
+ * `deployment.active.value` may still be persisted; this writer is unwired from the sheet.
+ * Prefer leaving the field inert rather than migrating. Callers should not use this for PB.
+ * @param {Actor|string} starshipSubject
+ * @param {Actor|string|null} [crewSubject]
+ * @returns {Promise<boolean>}
+ */
 export async function toggleStarshipActiveCrew(starshipSubject, crewSubject = null) {
 	const starship = resolveActorDocument(starshipSubject);
 	if ( !isLegacyVehicleStarship(starship) ) return false;

@@ -4,13 +4,14 @@
 
 ### Added
 - **Starship Core crew roster PC/NPC groups:** Core Crew & Passengers lists assigned Actors under Player Characters and NPCs headings (Other when applicable).
-- **Starship Core crew roster interactions:** collapsible crew groups (sheet-local), Actor-sheet open from portrait/name, Deployment feat subtitles, and permission-aware ContextMenu5e actions (View, Display in Chat, Activate).
+- **Starship Core crew roster interactions:** collapsible crew groups (sheet-local), Actor-sheet open from portrait/name, Deployment feat subtitles, and permission-aware ContextMenu5e actions (View, Display in Chat; Remove when authorized).
 - **Starship Core crew PLAY management chrome:** visible Set Pilot / Remove controls are restricted to EDIT; authorized users may still Remove through the PLAY/EDIT context menu via `undeployStarshipCrew`.
 - **Starship Add Crew multi-select:** deploy multiple distinct Actors from the Add Crew dialog in one Crew or Passenger action (Pilot requires exactly one selection). Aggregate NPC quantity is not included.
 
 ### Changed
 - **Starship skill proficiency source:** Starship skill checks use the proficiency bonus of the qualified assigned or controlled Pilot/Crew character (Pilot or Crew membership and Deployment rank ≥ 1) instead of Active Crew or Pilot silent fallback. Passenger-only and rank-zero crew do not supply skill PB. Passive skill preview uses the assigned character only. Ability checks and attacks are unchanged by that skill path.
 - **Starship saving-throw Pilot proficiency (Bug 29C):** When an ability is save-equipped (`system.abilities.<abil>.proficient > 0`), starship saving throws add the assigned Pilot’s proficiency bonus **once** (from `deployment.pilot.value`, Deployment rank ≥ 1, finite prepared PB). Stock `rollSavingThrow` remains primary; Pilot PB is injected via per-roll `rolls` merge / `dnd5e.preRollSavingThrow` without writing Actor data or multiplying by expanded equip tiers. Bare ability checks stay mod-only. NPC/stat-block ship-owned save PB remains deferred.
+- **Starship Active Crew UI removed (Bug 29D):** Activate/Deactivate controls, Active badge, Active-first roster sorting, and the Active Crew overview note are removed. Stealth/deployed-set scans use Pilot/Crew/Passenger membership only (stale `deployment.active.value` is ignored). The legacy `active.value` flag may remain persisted but is behaviorally inert; no migration.
 - **HGTTG species pack flags:** removed absolute local `pdfPath` values from HoloNet Guide to the Galaxy species source and stopped import tooling from writing those paths back into pack flags.
 - **Sabacc RollTables:** table face icons now use `modules/sw5e-module/` asset paths instead of legacy `modules/sw5e/` paths.
 - **NPC power provenance:** relinked embedded fistoscodex/monsters power `sourceId` / `compendiumSource` UUIDs to current Powers & Maneuvers document IDs where name+type matched uniquely.

@@ -16558,6 +16558,89 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e
   font-size: var(--font-size-12, 0.75rem);
   color: var(--color-text-dark-secondary, #4b4a44);
 }
+/* —— PLAY compact roster rows (Phase 1C′) ——
+ * Wide: [Portrait] [Name] [Deployment] [Role pill] on one line.
+ * Narrow: meta stacks under the name; name stays single-line with ellipsis. */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-crew-row--play {
+  align-items: center;
+  gap: 0.45rem;
+  /* Beat theme 0.55rem padding so PLAY rows stay compact. */
+  padding: 0.35rem 0.55rem !important;
+}
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-crew-row--play .sw5e-starship-crew-row-actions {
+  display: none;
+}
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-crew-row--play .sw5e-starship-item-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: center;
+}
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-crew-row--play .sw5e-starship-item-copy {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 0.5rem;
+  row-gap: 0.2rem;
+  min-width: 0;
+  /* Override base vertical grid for PLAY only. */
+  gap: 0.2rem 0.5rem;
+}
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-crew-row--play .sw5e-starship-item-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-crew-row--play .sw5e-starship-crew-meta {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  flex: 0 1 auto;
+  max-width: 55%;
+  min-width: 0;
+  text-align: right;
+}
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-crew-row--play .sw5e-starship-crew-assignment {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-crew-row--play .sw5e-crew-badges {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.2rem;
+  flex: 0 0 auto;
+  margin-top: 0;
+}
+/* Narrow sheet: meta stacks under the name; name uses full row width. */
+@media (max-width: 560px) {
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-crew-row--play .sw5e-starship-item-name {
+    flex: 1 1 100%;
+  }
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-crew-row--play .sw5e-starship-crew-meta {
+    flex: 1 1 100%;
+    max-width: none;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    row-gap: 0.15rem;
+  }
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-crew-row--play .sw5e-starship-crew-assignment {
+    max-width: 100%;
+  }
+}
 .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-starship-crew-row.is-filtered-out,
 .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-crew-roster .sw5e-starship-crew-group.is-filtered-out {
   display: none;

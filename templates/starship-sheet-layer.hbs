@@ -120,7 +120,7 @@
           <div class="sw5e-starship-crew-group-body" id="{{bodyId}}" role="group" aria-labelledby="{{bodyId}}-label">
           {{#each rows}}
             <article
-              class="sw5e-starship-item-row sw5e-starship-crew-row{{#if active}} sw5e-crew-active{{/if}}"
+              class="sw5e-starship-item-row sw5e-starship-crew-row{{#unless @root.sotgSheetEditMode}} sw5e-crew-row--play{{/unless}}"
               data-search="{{searchText}}"
               data-actor-uuid="{{uuid}}"
             >
@@ -133,14 +133,15 @@
                 />
                 <div class="sw5e-starship-item-copy">
                   <strong class="sw5e-starship-item-name" data-sw5e-crew-open-actor="1">{{name}}</strong>
-                  {{#if deploymentAssignmentLabel}}
-                    <div class="sw5e-starship-crew-assignment">{{deploymentAssignmentLabel}}</div>
-                  {{/if}}
-                  <div class="sw5e-crew-badges">
-                    {{#if isPilot}}<span class="sw5e-crew-badge sw5e-crew-badge-pilot">{{ localize "SW5E.StarshipCrewBadgePilot" }}</span>{{/if}}
-                    {{#if active}}<span class="sw5e-crew-badge sw5e-crew-badge-active">{{ localize "SW5E.StarshipCrewBadgeActive" }}</span>{{/if}}
-                    {{#unless isPilot}}{{#if isCrew}}<span class="sw5e-crew-badge">{{ localize "SW5E.StarshipCrewBadgeCrew" }}</span>{{/if}}{{/unless}}
-                    {{#if isPassenger}}<span class="sw5e-crew-badge">{{ localize "SW5E.StarshipCrewBadgePassenger" }}</span>{{/if}}
+                  <div class="sw5e-starship-crew-meta">
+                    {{#if deploymentAssignmentLabel}}
+                      <div class="sw5e-starship-crew-assignment">{{deploymentAssignmentLabel}}</div>
+                    {{/if}}
+                    <div class="sw5e-crew-badges">
+                      {{#if isPilot}}<span class="sw5e-crew-badge sw5e-crew-badge-pilot">{{ localize "SW5E.StarshipCrewBadgePilot" }}</span>{{/if}}
+                      {{#unless isPilot}}{{#if isCrew}}<span class="sw5e-crew-badge">{{ localize "SW5E.StarshipCrewBadgeCrew" }}</span>{{/if}}{{/unless}}
+                      {{#if isPassenger}}<span class="sw5e-crew-badge">{{ localize "SW5E.StarshipCrewBadgePassenger" }}</span>{{/if}}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -172,21 +173,6 @@
                   </button>
                 {{/if}}
                 {{/if}}
-                <button
-                  type="button"
-                  class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
-                  data-sw5e-crew-command="toggle-active"
-                  data-actor-uuid="{{uuid}}"
-                  title="{{#if active}}{{ localize "SW5E.StarshipCrewDeactivate" }}{{else}}{{ localize "SW5E.StarshipCrewActivate" }}{{/if}}"
-                  aria-label="{{#if active}}{{ localize "SW5E.StarshipCrewDeactivate" }}{{else}}{{ localize "SW5E.StarshipCrewActivate" }}{{/if}}"
-                  {{#unless canToggleActive}}disabled{{/unless}}
-                >
-                  {{#if active}}
-                  <i class="fa-solid fa-power-off" inert></i>
-                  {{else}}
-                  <i class="fa-solid fa-toggle-on" inert></i>
-                  {{/if}}
-                </button>
                 {{#if @root.sotgSheetEditMode}}
                 <button
                   type="button"

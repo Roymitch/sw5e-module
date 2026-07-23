@@ -931,7 +931,6 @@ export function getLegacyNotes(actor, { runtime } = {}) {
 	if ( legacySystem.attributes?.power?.routing ) notes.push(`Routing: ${legacySystem.attributes.power.routing}`);
 	if ( legacySystem.attributes?.systemDamage ) notes.push(`System Damage ${legacySystem.attributes.systemDamage}`);
 	if ( resolvedRuntime.travel?.hyperdriveClass ) notes.push(`Hyperdrive Class ${resolvedRuntime.travel.hyperdriveClass}`);
-	if ( resolvedRuntime.crew?.activeCrewName ) notes.push(`Active Crew: ${resolvedRuntime.crew.activeCrewName}`);
 	if ( resolvedRuntime.movement?.enginesMultiplier === 2 ) notes.push(localizeOrFallback("SW5E.PowerRoutingEnginesPositive", "The ship's flying speed is doubled"));
 	else if ( resolvedRuntime.movement?.enginesMultiplier === 0.5 ) notes.push(localizeOrFallback("SW5E.PowerRoutingEnginesNegative", "The ship's flying speed is reduced by half"));
 	return notes;

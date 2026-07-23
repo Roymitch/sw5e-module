@@ -266,12 +266,12 @@ function resolveActorDocument(subject) {
 function getStarshipCrewState(actor, legacySystem = {}) {
 	const deployment = legacySystem.attributes?.deployment ?? {};
 	const pilotUuid = deployment.pilot?.value ?? deployment.pilot ?? null;
-	const activeUuid = deployment.active?.value ?? deployment.active ?? null;
 	const crewUuids = getDeploymentUuidList(deployment.crew);
 	const passengerUuids = getDeploymentUuidList(deployment.passenger);
 	const pilotActor = resolveActorDocument(pilotUuid);
-	const activeActor = resolveActorDocument(activeUuid);
-	const deployedActors = Array.from(new Set([pilotUuid, activeUuid, ...crewUuids, ...passengerUuids]))
+	// Bug 29D: deployed/stealth set is membership-only (Pilot + Crew + Passenger).
+	// Ignore deployment.active.value so stale Active cannot uniquely affect stealth pace.
+	const deployedActors = Array.from(new Set([pilotUuid, ...crewUuids, ...passengerUuids]))
 		.map(resolveActorDocument)
 		.filter(Boolean);
 
@@ -282,7 +282,7 @@ function getStarshipCrewState(actor, legacySystem = {}) {
 	return {
 		pilotAssigned: Boolean(pilotUuid),
 		pilotName: pilotActor?.name ?? "",
-		activeCrewName: activeActor?.name ?? "",
+		activeCrewName: "",
 		crewCount: crewUuids.length,
 		passengerCount: passengerUuids.length,
 		pilotSkill: toFiniteNumber(pilotActor?.system?.skills?.pil?.value, 0) ?? 0,

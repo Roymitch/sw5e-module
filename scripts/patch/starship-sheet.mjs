@@ -14,8 +14,7 @@ import {
 	buildVehicleStarshipCrewContext,
 	canCurrentUserDeployStarshipCrewRole,
 	deployStarshipCrew,
-	undeployStarshipCrew,
-	toggleStarshipActiveCrew
+	undeployStarshipCrew
 } from "../starship-character.mjs";
 import { getExpandedProficiencyHoverLabel } from "./proficiency.mjs";
 import {
@@ -429,10 +428,9 @@ function ensureStarshipCoreInteractions(wrapper, app, actor) {
 			let ok = false;
 			if ( command === "deploy" ) ok = await deployStarshipCrew(actor, uuid, btn.dataset.deployRole);
 			else if ( command === "remove" ) ok = await undeployStarshipCrew(actor, uuid);
-			else if ( command === "toggle-active" ) ok = await toggleStarshipActiveCrew(actor, uuid);
 			else if ( command === "set-pilot" ) ok = await deployStarshipCrew(actor, uuid, "pilot");
 			else if ( command === "undeploy-pilot" ) ok = await undeployStarshipCrew(actor, uuid, ["pilot"]);
-			else return;
+			else return; // including stale toggle-active: no write
 
 			if ( ok !== true ) warnStarshipActorUpdateDenied();
 		} catch ( err ) {
