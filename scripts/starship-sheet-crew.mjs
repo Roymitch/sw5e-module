@@ -11,7 +11,10 @@ import {
 	canCurrentUserUndeployStarshipCrew,
 	deployStarshipCrew,
 	deployStarshipCrewBatch,
+	getStarshipCrewCustomRole,
+	isStarshipCrewMemberUuid,
 	partitionCrewRosterGroups,
+	setStarshipCrewCustomRole,
 	undeployStarshipCrew
 } from "./starship-character.mjs";
 import {
@@ -24,7 +27,7 @@ import {
 	warnStarshipActorUpdateDenied
 } from "./starship-permissions.mjs";
 import { escapeHtml, localizeOrFallback } from "./starship-sheet-html.mjs";
-import { getCompendiumPack, STARSHIP_TAB_ID } from "./starship-sheet-ids.mjs";
+import { getCompendiumPack, STARSHIP_TAB_ID, isSw5eStarshipActor } from "./starship-sheet-ids.mjs";
 import { getCrewRoleCollapseMapForStarship } from "./patch/starship-sheet-delegates.mjs";
 import { makeItemEntry } from "./patch/starship-sheet-core-context.mjs";
 import { isStarshipSheetEditMode } from "./patch/starship-sheet-sidebar.mjs";
@@ -268,11 +271,87 @@ export function resolveDeploymentAssignmentLabel(actor) {
 
 export function buildAssignedCrewSearchText(record) {
 	const parts = [String(record?.name ?? "")];
-	if ( record?.deploymentAssignmentLabel ) parts.push(String(record.deploymentAssignmentLabel));
-	if ( record?.isPilot ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgePilot", "Pilot"));
-	if ( !record?.isPilot && record?.isCrew ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgeCrew", "Crew"));
-	if ( record?.isPassenger ) parts.push(localizeOrFallback("SW5E.StarshipCrewBadgePassenger", "Passenger"));
+	const type = String(record?.type ?? "").trim();
+	if ( type ) parts.push(type);
+
+	const deploymentLabel = String(record?.deploymentAssignmentLabel ?? "").trim();
+	if ( deploymentLabel ) parts.push(deploymentLabel);
+
+	const customRole = String(record?.customRole ?? "").trim();
+	if ( customRole ) parts.push(customRole);
+
+	const isPilot = Boolean(record?.isPilot);
+	const isCrew = Boolean(record?.isCrew);
+	const isPassengerOnly = Boolean(record?.isPassengerOnly)
+		|| (Boolean(record?.isPassenger) && !isPilot && !isCrew);
+
+	// Stable English membership tokens (required search contract).
+	if ( isPilot ) {
+		parts.push("pilot", "crew");
+		parts.push(localizeOrFallback("SW5E.StarshipCrewBadgePilot", "Pilot"));
+		parts.push(localizeOrFallback("SW5E.StarshipCrewBadgeCrew", "Crew"));
+	} else if ( isCrew ) {
+		parts.push("crew");
+		parts.push(localizeOrFallback("SW5E.StarshipCrewBadgeCrew", "Crew"));
+	} else if ( isPassengerOnly ) {
+		parts.push("passenger");
+		parts.push(localizeOrFallback("SW5E.StarshipCrewBadgePassenger", "Passenger"));
+	}
+
 	return parts.join(" ").trim().toLowerCase();
+}
+
+/**
+ * Deployment label only — Custom Role / subtitle / membership do not count.
+ * @param {object} record
+ * @returns {boolean}
+ */
+function crewRowHasDeployment(record) {
+	return Boolean(String(record?.deploymentAssignmentLabel ?? "").trim());
+}
+
+/**
+ * Overlap-tolerant classification + sort category for an enriched roster row.
+ * Precedence: Pilot → Crew → Passenger-only → Other. Does not repair stored membership.
+ * @param {object} record
+ * @returns {object}
+ */
+function deriveCrewRosterSortFields(record) {
+	const isPilot = Boolean(record?.isPilot);
+	const isCrew = Boolean(record?.isCrew);
+	const isPassenger = Boolean(record?.isPassenger);
+	const isCrewMember = isPilot || isCrew;
+	const isPassengerOnly = isPassenger && !isPilot && !isCrew;
+	const hasDeployment = crewRowHasDeployment(record);
+
+	let sortCategory = 4;
+	if ( isPilot ) sortCategory = 0;
+	else if ( isCrewMember && hasDeployment ) sortCategory = 1;
+	else if ( isCrewMember ) sortCategory = 2;
+	else if ( isPassengerOnly ) sortCategory = 3;
+
+	return {
+		isCrewMember,
+		isPassengerOnly,
+		hasDeployment,
+		sortCategory,
+		showRolePill: isCrewMember
+	};
+}
+
+/**
+ * @param {object} left
+ * @param {object} right
+ * @returns {number}
+ */
+function compareEnrichedCrewRows(left, right) {
+	const leftCat = Number(left?.sortCategory);
+	const rightCat = Number(right?.sortCategory);
+	const leftRank = Number.isFinite(leftCat) ? leftCat : 4;
+	const rightRank = Number.isFinite(rightCat) ? rightCat : 4;
+	if ( leftRank !== rightRank ) return leftRank - rightRank;
+	const lang = globalThis.game?.i18n?.lang;
+	return String(left?.name ?? "").localeCompare(String(right?.name ?? ""), lang);
 }
 
 const CREW_ROSTER_GROUP_LABEL_FALLBACKS = Object.freeze({
@@ -297,25 +376,41 @@ export function canCurrentUserObserveActor(actor) {
 }
 
 /**
- * Enrich crew template context once: resolve each Actor, attach Deployment label + searchText,
- * then derive rosterGroups by referencing enriched rows. Collapse is derived from the sheet app map.
+ * Enrich crew template context once: resolve each Actor, derive Deployment/custom/search/sort fields,
+ * sort the flat enriched roster, then partition into PC/NPC/Other (shared row references).
  * @param {{ roster?: object[] }} crewContext
- * @param {{ collapseMap?: Record<string, boolean> }} [options]
+ * @param {{ collapseMap?: Record<string, boolean>, starship?: object|null }} [options]
  * @returns {{ roster: object[], rosterGroups: object[] }}
  */
-export function enrichCrewContextForSheetSearch(crewContext, { collapseMap = null } = {}) {
+export function enrichCrewContextForSheetSearch(crewContext, { collapseMap = null, starship = null } = {}) {
 	const roster = Array.isArray(crewContext?.roster) ? crewContext.roster : [];
 	const map = collapseMap && typeof collapseMap === "object" ? collapseMap : {};
+	const ship = starship ?? null;
+
+	// 1–2. Resolve/enrich every row and derive sort/search fields before any sort.
 	const enrichedRoster = roster.map(record => {
 		const actor = resolveCrewActorFromUuid(record?.uuid);
 		const deploymentAssignmentLabel = resolveDeploymentAssignmentLabel(actor);
+		const customRole = ship && record?.uuid ? getStarshipCrewCustomRole(ship, record.uuid) : "";
+		const assignmentSubtitle = deploymentAssignmentLabel || customRole || "";
 		const enriched = {
 			...record,
-			deploymentAssignmentLabel
+			deploymentAssignmentLabel,
+			customRole,
+			assignmentSubtitle,
+			...deriveCrewRosterSortFields({
+				...record,
+				deploymentAssignmentLabel
+			})
 		};
 		enriched.searchText = buildAssignedCrewSearchText(enriched);
 		return enriched;
 	});
+
+	// 3. Sort flat enriched roster (within-group order preserved by partition).
+	enrichedRoster.sort(compareEnrichedCrewRows);
+
+	// 4. Partition — group.rows reference the same enriched objects.
 	const expandLabel = localizeOrFallback("SW5E.StarshipCrewGroupExpand", "Expand crew group");
 	const collapseLabel = localizeOrFallback("SW5E.StarshipCrewGroupCollapse", "Collapse crew group");
 	const rosterGroups = partitionCrewRosterGroups(enrichedRoster).map(group => ({
@@ -549,6 +644,145 @@ export async function displayStarshipCrewActorInChat(actor) {
 }
 
 /**
+ * User-facing notify for Custom Role save failures without exposing internal reasons.
+ * @param {string} [reason]
+ */
+function notifyStarshipCrewCustomRoleFailure(reason) {
+	if ( reason === "permission" ) {
+		warnStarshipActorUpdateDenied();
+		return;
+	}
+	if ( reason && reason !== "cancel" && reason !== "dismissed" ) {
+		console.debug("SW5E MODULE | Custom Role save failed", { reason });
+	}
+	ui.notifications?.warn?.(localizeOrFallback(
+		"SW5E.StarshipCrewCustomRoleSaveFailed",
+		"Could not save custom role."
+	));
+}
+
+/**
+ * DialogV2 prompt to set/clear ship-owned custom role for a crew UUID.
+ * Save button callback owns: input read → permission/membership recheck → write → readback.
+ * Clear button does not read the input; empty write clears customRole.
+ * Missing form/input on Save is not treated as clear.
+ * @param {{ starshipActor: Actor, actorUuid: string }} options
+ * @returns {Promise<{ ok: boolean, reason?: string, actorUuid?: string, customRole?: string }>}
+ */
+export async function openStarshipCrewCustomRoleDialog({ starshipActor, actorUuid } = {}) {
+	const uuid = typeof actorUuid === "string" ? actorUuid : "";
+	if ( !starshipActor || starshipActor.documentName !== "Actor" || !uuid ) {
+		notifyStarshipCrewCustomRoleFailure(!uuid ? "no-uuid" : "not-starship");
+		return { ok: false, reason: !uuid ? "no-uuid" : "not-starship" };
+	}
+	if ( !isSw5eStarshipActor(starshipActor) ) {
+		notifyStarshipCrewCustomRoleFailure("not-starship");
+		return { ok: false, reason: "not-starship" };
+	}
+	if ( !canCurrentUserUpdateStarshipActor(starshipActor) ) {
+		notifyStarshipCrewCustomRoleFailure("permission");
+		return { ok: false, reason: "permission" };
+	}
+	if ( !isStarshipCrewMemberUuid(starshipActor, uuid) ) {
+		notifyStarshipCrewCustomRoleFailure("membership");
+		return { ok: false, reason: "membership" };
+	}
+
+	const current = getStarshipCrewCustomRole(starshipActor, uuid);
+	const title = localizeOrFallback("SW5E.StarshipCrewCustomRoleDialogTitle", "Custom Role");
+	const fieldLabel = localizeOrFallback("SW5E.StarshipCrewCustomRoleLabel", "Custom Role");
+	const content = `
+<div class="standard-form sw5e-starship-crew-custom-role-dialog">
+  <div class="form-group">
+    <label>${escapeHtml(fieldLabel)}</label>
+    <input type="text" name="sw5e-crew-custom-role" value="${escapeHtml(current)}" maxlength="80" autocomplete="off" />
+  </div>
+</div>`;
+
+	const result = await foundry.applications.api.DialogV2.wait({
+		window: { title },
+		content,
+		position: { width: 360 },
+		// Keep dialog open on Save/Clear failure; close explicitly on success/cancel via submit.
+		form: { closeOnSubmit: false },
+		rejectClose: false,
+		buttons: [
+			{
+				action: "save",
+				label: globalThis.game?.i18n?.localize?.("Save") ?? "Save",
+				icon: "fas fa-check",
+				default: true,
+				callback: async (event, button, _dialog) => {
+					const input = button?.form?.elements?.["sw5e-crew-custom-role"];
+					if ( !(input instanceof HTMLInputElement) && !(input instanceof HTMLTextAreaElement) ) {
+						notifyStarshipCrewCustomRoleFailure("missing-input");
+						return { ok: false, reason: "missing-input" };
+					}
+
+					if ( !canCurrentUserUpdateStarshipActor(starshipActor) ) {
+						notifyStarshipCrewCustomRoleFailure("permission");
+						return { ok: false, reason: "permission" };
+					}
+					if ( !isStarshipCrewMemberUuid(starshipActor, uuid) ) {
+						notifyStarshipCrewCustomRoleFailure("membership");
+						return { ok: false, reason: "membership" };
+					}
+
+					const writeResult = await setStarshipCrewCustomRole(starshipActor, uuid, input.value);
+					if ( writeResult?.ok !== true ) {
+						const reason = writeResult?.ok === false ? writeResult.reason : "update";
+						notifyStarshipCrewCustomRoleFailure(reason);
+						return writeResult?.ok === false
+							? writeResult
+							: { ok: false, reason: "update" };
+					}
+					return writeResult;
+				}
+			},
+			{
+				action: "clear",
+				label: localizeOrFallback("SW5E.StarshipCrewCustomRoleClear", "Clear"),
+				icon: "fas fa-eraser",
+				callback: async () => {
+					if ( !canCurrentUserUpdateStarshipActor(starshipActor) ) {
+						notifyStarshipCrewCustomRoleFailure("permission");
+						return { ok: false, reason: "permission" };
+					}
+					if ( !isStarshipCrewMemberUuid(starshipActor, uuid) ) {
+						notifyStarshipCrewCustomRoleFailure("membership");
+						return { ok: false, reason: "membership" };
+					}
+
+					const writeResult = await setStarshipCrewCustomRole(starshipActor, uuid, "");
+					if ( writeResult?.ok !== true ) {
+						const reason = writeResult?.ok === false ? writeResult.reason : "update";
+						notifyStarshipCrewCustomRoleFailure(reason);
+						return writeResult?.ok === false
+							? writeResult
+							: { ok: false, reason: "update" };
+					}
+					return writeResult;
+				}
+			},
+			{
+				action: "cancel",
+				label: globalThis.game?.i18n?.localize?.("Cancel") ?? "Cancel",
+				icon: "fas fa-times",
+				callback: () => ({ ok: false, reason: "cancel" })
+			}
+		],
+		submit: async (submitResult, dialog) => {
+			const ok = submitResult?.ok === true;
+			const cancelled = submitResult?.reason === "cancel" || submitResult === "cancel";
+			if ( ok || cancelled ) await dialog.close({ submitted: true });
+		}
+	});
+
+	if ( result && typeof result === "object" && "ok" in result ) return result;
+	return { ok: false, reason: "dismissed" };
+}
+
+/**
  * @param {HTMLElement} element
  * @param {object} app
  */
@@ -574,6 +808,64 @@ export function prepareStarshipCrewRosterContextMenu(element, app) {
 			void displayStarshipCrewActorInChat(live);
 		}
 	}];
+
+	const canSetCustomRole = app?.isEditable !== false
+		&& canCurrentUserUpdateStarshipActor(app?.actor)
+		&& isStarshipCrewMemberUuid(app?.actor, uuid);
+	if ( canSetCustomRole ) {
+		options.push({
+			name: localizeOrFallback("SW5E.StarshipCrewContextSetCustomRole", "Set Custom Role"),
+			icon: '<i class="fa-solid fa-id-badge fa-fw"></i>',
+			condition: () => app?.isEditable !== false
+				&& canCurrentUserUpdateStarshipActor(app?.actor)
+				&& isStarshipCrewMemberUuid(app?.actor, uuid),
+			callback: async () => {
+				const starshipActor = app.actor;
+				if ( app?.isEditable === false
+					|| !canCurrentUserUpdateStarshipActor(starshipActor)
+					|| !isStarshipCrewMemberUuid(starshipActor, uuid) ) {
+					warnStarshipActorUpdateDenied();
+					return;
+				}
+				await openStarshipCrewCustomRoleDialog({ starshipActor, actorUuid: uuid });
+			},
+			group: "action"
+		});
+
+		// Visibility from raw stored customRole only (not assignmentSubtitle / Deployment label).
+		const hasStoredCustomRole = Boolean(getStarshipCrewCustomRole(app.actor, uuid));
+		if ( hasStoredCustomRole ) {
+			options.push({
+				name: localizeOrFallback("SW5E.StarshipCrewContextClearCustomRole", "Clear Custom Role"),
+				icon: '<i class="fa-solid fa-eraser fa-fw"></i>',
+				condition: () => app?.isEditable !== false
+					&& canCurrentUserUpdateStarshipActor(app?.actor)
+					&& isStarshipCrewMemberUuid(app?.actor, uuid)
+					&& Boolean(getStarshipCrewCustomRole(app?.actor, uuid)),
+				callback: async () => {
+					const starshipActor = app.actor;
+					if ( app?.isEditable === false || !canCurrentUserUpdateStarshipActor(starshipActor) ) {
+						notifyStarshipCrewCustomRoleFailure("permission");
+						return;
+					}
+					if ( !isStarshipCrewMemberUuid(starshipActor, uuid) ) {
+						notifyStarshipCrewCustomRoleFailure("membership");
+						return;
+					}
+					// Already empty: no-op (do not invent a profile).
+					if ( !getStarshipCrewCustomRole(starshipActor, uuid) ) return;
+
+					const writeResult = await setStarshipCrewCustomRole(starshipActor, uuid, "");
+					if ( writeResult?.ok !== true ) {
+						notifyStarshipCrewCustomRoleFailure(
+							writeResult?.ok === false ? writeResult.reason : "update"
+						);
+					}
+				},
+				group: "action"
+			});
+		}
+	}
 
 	const canRemove = app?.isEditable !== false
 		&& canCurrentUserUndeployStarshipCrew(app?.actor, actor ?? uuid);

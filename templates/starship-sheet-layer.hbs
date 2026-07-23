@@ -134,14 +134,28 @@
                 <div class="sw5e-starship-item-copy">
                   <strong class="sw5e-starship-item-name" data-sw5e-crew-open-actor="1">{{name}}</strong>
                   <div class="sw5e-starship-crew-meta">
-                    {{#if deploymentAssignmentLabel}}
-                      <div class="sw5e-starship-crew-assignment">{{deploymentAssignmentLabel}}</div>
+                    {{#if assignmentSubtitle}}
+                      <div class="sw5e-starship-crew-assignment">{{assignmentSubtitle}}</div>
                     {{/if}}
+                    {{#if showRolePill}}
                     <div class="sw5e-crew-badges">
-                      {{#if isPilot}}<span class="sw5e-crew-badge sw5e-crew-badge-pilot">{{ localize "SW5E.StarshipCrewBadgePilot" }}</span>{{/if}}
-                      {{#unless isPilot}}{{#if isCrew}}<span class="sw5e-crew-badge">{{ localize "SW5E.StarshipCrewBadgeCrew" }}</span>{{/if}}{{/unless}}
-                      {{#if isPassenger}}<span class="sw5e-crew-badge">{{ localize "SW5E.StarshipCrewBadgePassenger" }}</span>{{/if}}
+                      {{#if isPilot}}
+                        <span
+                          class="sw5e-crew-badge sw5e-crew-badge-pilot"
+                          title="{{ localize "SW5E.StarshipCrewBadgePilot" }}"
+                          aria-label="{{ localize "SW5E.StarshipCrewBadgePilot" }}"
+                        >P</span>
+                      {{else}}
+                        {{#if isCrew}}
+                          <span
+                            class="sw5e-crew-badge"
+                            title="{{ localize "SW5E.StarshipCrewBadgeCrew" }}"
+                            aria-label="{{ localize "SW5E.StarshipCrewBadgeCrew" }}"
+                          >C</span>
+                        {{/if}}
+                      {{/if}}
                     </div>
+                    {{/if}}
                   </div>
                 </div>
               </div>

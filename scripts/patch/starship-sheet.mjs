@@ -190,7 +190,8 @@ function buildStarshipCoreRenderData(app, actor, runtime, { integrated = true, s
 	const crew = enrichCrewContextForSheetSearch(buildVehicleStarshipCrewContext(actor, {
 		sheetEditable: crewManageEditable
 	}), {
-		collapseMap: app?._sw5eCrewRosterGroupCollapse
+		collapseMap: app?._sw5eCrewRosterGroupCollapse,
+		starship: actor
 	});
 	const systemsCore = buildSystemsCoreContext(actor, { runtime });
 	const overviewAbilities = buildOverviewAbilitiesContext(actor, actorEditable);

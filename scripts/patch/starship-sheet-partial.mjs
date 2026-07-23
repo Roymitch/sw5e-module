@@ -586,6 +586,8 @@ export function signaturePayloadCoreCrew(meta = {}) {
 				name: entry?.name ?? "",
 				img: entry?.img ?? "",
 				searchText: entry?.searchText ?? "",
+				assignmentSubtitle: entry?.assignmentSubtitle ?? "",
+				customRole: entry?.customRole ?? "",
 				active: Boolean(entry?.active),
 				isPilot: Boolean(entry?.isPilot),
 				isCrew: Boolean(entry?.isCrew),

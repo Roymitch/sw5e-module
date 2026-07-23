@@ -3,6 +3,9 @@ import { canCurrentUserUpdateStarshipActor } from "./starship-permissions.mjs";
 
 export const STARSHIP_CREW_DEPLOYMENT_FLAG = "starshipDeployment";
 
+/** Soft max length for ship-owned custom role strings (truncate on write). */
+export const STARSHIP_CREW_CUSTOM_ROLE_MAX_LENGTH = 80;
+
 const STARSHIP_DEPLOYMENT_ROLES = ["pilot", "crew", "passenger"];
 
 function cloneDeep(data) {
@@ -92,6 +95,487 @@ function getDeploymentRolesForUuid(deployment, uuid) {
 	if ( deployment?.crew?.items?.has?.(uuid) ) roles.push("crew");
 	if ( deployment?.passenger?.items?.has?.(uuid) ) roles.push("passenger");
 	return roles;
+}
+
+/**
+ * Clone `flags.sw5e.starship.crewProfiles` as a plain object map.
+ * Storage keys encode Actor UUIDs so Foundry expandObject/setProperty do not split on `.`.
+ * Conceptual identity remains the full Actor UUID.
+ * @param {Actor|null|undefined} starship
+ * @returns {Record<string, object>}
+ */
+function cloneCrewProfilesMap(starship) {
+	return normalizeCrewProfilesMap(starship?.flags?.sw5e?.starship?.crewProfiles);
+}
+
+/** Fullwidth full stop — not a Foundry setProperty path separator. */
+const CREW_PROFILE_KEY_DOT = "\uFF0E";
+
+/**
+ * @param {string} uuid
+ * @returns {string}
+ */
+function toCrewProfileStorageKey(uuid) {
+	return String(uuid ?? "").replaceAll(".", CREW_PROFILE_KEY_DOT);
+}
+
+/**
+ * @param {string} key
+ * @returns {string}
+ */
+function fromCrewProfileStorageKey(key) {
+	return String(key ?? "").replaceAll(CREW_PROFILE_KEY_DOT, ".");
+}
+
+/**
+ * @param {unknown} value
+ * @returns {boolean}
+ */
+function isCrewProfileObject(value) {
+	return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+/**
+ * @param {unknown} nest
+ * @returns {boolean}
+ */
+function isActorIdNest(nest) {
+	if ( !isCrewProfileObject(nest) ) return false;
+	return !Object.prototype.hasOwnProperty.call(nest, "customRole")
+		&& !Object.prototype.hasOwnProperty.call(nest, "hidden");
+}
+
+/**
+ * Locate proven profile shapes for one Actor UUID in raw crewProfiles.
+ * Proven shapes only: canonical encoded, raw UUID own-key, nested Actor→id.
+ * @param {unknown} raw
+ * @param {string} actorUuid
+ * @returns {{
+ *   storageKey: string,
+ *   actorId: string|null,
+ *   hasCanonical: boolean,
+ *   canonicalProfile: object|null,
+ *   hasRawUuid: boolean,
+ *   rawUuidProfile: object|null,
+ *   hasNested: boolean,
+ *   nestedLegacyProfile: object|null
+ * }}
+ */
+function locateCrewProfileShapes(raw, actorUuid) {
+	const uuid = String(actorUuid ?? "");
+	const storageKey = toCrewProfileStorageKey(uuid);
+	const actorId = uuid.startsWith("Actor.") ? uuid.slice("Actor.".length) : null;
+	const result = {
+		storageKey,
+		actorId,
+		hasCanonical: false,
+		canonicalProfile: null,
+		hasRawUuid: false,
+		rawUuidProfile: null,
+		hasNested: false,
+		nestedLegacyProfile: null
+	};
+	if ( !uuid || !isCrewProfileObject(raw) ) return result;
+
+	if ( Object.prototype.hasOwnProperty.call(raw, storageKey) ) {
+		result.hasCanonical = true;
+		result.canonicalProfile = isCrewProfileObject(raw[storageKey]) ? { ...raw[storageKey] } : {};
+	}
+	if ( uuid.includes(".") && Object.prototype.hasOwnProperty.call(raw, uuid) ) {
+		result.hasRawUuid = true;
+		result.rawUuidProfile = isCrewProfileObject(raw[uuid]) ? { ...raw[uuid] } : {};
+	}
+	if ( actorId && isActorIdNest(raw.Actor) && Object.prototype.hasOwnProperty.call(raw.Actor, actorId) ) {
+		result.hasNested = true;
+		result.nestedLegacyProfile = isCrewProfileObject(raw.Actor[actorId])
+			? { ...raw.Actor[actorId] }
+			: {};
+	}
+	return result;
+}
+
+/**
+ * @param {unknown} raw
+ * @returns {Set<string>}
+ */
+function listCrewProfileActorUuids(raw) {
+	const uuids = new Set();
+	if ( !isCrewProfileObject(raw) ) return uuids;
+	for ( const [key, value] of Object.entries(raw) ) {
+		if ( !key ) continue;
+		if ( key.includes(CREW_PROFILE_KEY_DOT) ) {
+			uuids.add(fromCrewProfileStorageKey(key));
+			continue;
+		}
+		if ( key === "Actor" && isActorIdNest(value) ) {
+			for ( const id of Object.keys(value) ) {
+				if ( id ) uuids.add(`Actor.${id}`);
+			}
+			continue;
+		}
+		if ( key.includes(".") ) uuids.add(key);
+	}
+	return uuids;
+}
+
+/**
+ * Merge sibling fields: later profiles overwrite earlier (call with nested → raw → canonical).
+ * `customRole` is never copied from profile layers here.
+ * @param {...(object|null|undefined)} profiles
+ * @returns {object}
+ */
+function mergeCrewProfileSiblings(...profiles) {
+	const result = {};
+	for ( const profile of profiles ) {
+		if ( !isCrewProfileObject(profile) ) continue;
+		for ( const [key, value] of Object.entries(profile) ) {
+			if ( key === "customRole" ) continue;
+			result[key] = value;
+		}
+	}
+	return result;
+}
+
+/**
+ * Role string from a single profile object.
+ * @param {object|null|undefined} profile
+ * @returns {string}
+ */
+function customRoleFromProfile(profile) {
+	const role = profile?.customRole;
+	return typeof role === "string" ? role : "";
+}
+
+/**
+ * Compatibility reader role from located shapes (missing vs empty canonical).
+ * @param {ReturnType<typeof locateCrewProfileShapes>} shapes
+ * @returns {string}
+ */
+function resolveCustomRoleFromShapes(shapes) {
+	if ( shapes.hasCanonical ) {
+		const role = customRoleFromProfile(shapes.canonicalProfile);
+		return typeof role === "string" && role.trim() ? normalizeCustomRoleText(role) : "";
+	}
+	for ( const profile of [shapes.rawUuidProfile, shapes.nestedLegacyProfile] ) {
+		const role = customRoleFromProfile(profile);
+		if ( typeof role === "string" && role.trim() ) return normalizeCustomRoleText(role);
+	}
+	return "";
+}
+
+/**
+ * Pure helper: rebuild crewProfiles as encoded-only map for one Actor mutation.
+ * Preserves other Actors; merges target siblings (canonical wins; legacy fills gaps);
+ * customRole for target comes only from nextRole (omit when clear + no siblings).
+ * @param {{
+ *   rawProfiles: unknown,
+ *   actorUuid: string,
+ *   nextRole: string,
+ *   removeTarget?: boolean
+ * }} options
+ * @returns {Record<string, object>}
+ */
+function canonicalizeCrewProfilesForActor({
+	rawProfiles,
+	actorUuid,
+	nextRole,
+	removeTarget = false
+} = {}) {
+	const cleaned = {};
+	const targetUuid = String(actorUuid ?? "");
+	const uuids = listCrewProfileActorUuids(rawProfiles);
+	if ( targetUuid ) uuids.add(targetUuid);
+
+	for ( const uuid of uuids ) {
+		const shapes = locateCrewProfileShapes(rawProfiles, uuid);
+		const siblings = mergeCrewProfileSiblings(
+			shapes.nestedLegacyProfile,
+			shapes.rawUuidProfile,
+			shapes.canonicalProfile
+		);
+
+		if ( uuid === targetUuid ) {
+			if ( removeTarget ) continue;
+			const role = normalizeCustomRoleText(nextRole);
+			if ( role ) {
+				cleaned[shapes.storageKey] = { ...siblings, customRole: role };
+			} else if ( Object.keys(siblings).length ) {
+				cleaned[shapes.storageKey] = { ...siblings };
+			}
+			continue;
+		}
+
+		const role = resolveCustomRoleFromShapes(shapes);
+		if ( role ) cleaned[shapes.storageKey] = { ...siblings, customRole: role };
+		else if ( Object.keys(siblings).length || shapes.hasCanonical || shapes.hasRawUuid || shapes.hasNested ) {
+			if ( Object.keys(siblings).length ) cleaned[shapes.storageKey] = { ...siblings };
+			else if ( shapes.hasCanonical || shapes.hasRawUuid || shapes.hasNested ) {
+				// Preserve empty profile shell only if it existed somehow without siblings/role — skip empty.
+			}
+		}
+	}
+	return cleaned;
+}
+
+/**
+ * Normalize raw flag data into an encoded-key profile map.
+ * Recovers Foundry-split shapes (`{ Actor: { <id>: profile } }`) from failed prior writes.
+ * @param {unknown} raw
+ * @returns {Record<string, object>}
+ */
+function normalizeCrewProfilesMap(raw) {
+	const map = {};
+	if ( !raw || typeof raw !== "object" || Array.isArray(raw) ) return map;
+
+	const assignProfile = (uuid, value) => {
+		if ( !uuid ) return;
+		const storageKey = toCrewProfileStorageKey(uuid);
+		map[storageKey] = value && typeof value === "object" && !Array.isArray(value)
+			? { ...value }
+			: {};
+	};
+
+	for ( const [key, value] of Object.entries(raw) ) {
+		if ( !key ) continue;
+
+		// Split form from expandObject: Actor -> { id -> profile }
+		if ( key === "Actor" && value && typeof value === "object" && !Array.isArray(value) ) {
+			const looksLikeNest = !Object.prototype.hasOwnProperty.call(value, "customRole")
+				&& !Object.prototype.hasOwnProperty.call(value, "hidden");
+			if ( looksLikeNest ) {
+				for ( const [id, profile] of Object.entries(value) ) {
+					if ( !id ) continue;
+					assignProfile(`Actor.${id}`, profile);
+				}
+				continue;
+			}
+		}
+
+		if ( key.includes(CREW_PROFILE_KEY_DOT) ) {
+			assignProfile(fromCrewProfileStorageKey(key), value);
+			continue;
+		}
+		if ( key.includes(".") ) {
+			assignProfile(key, value);
+			continue;
+		}
+		// Unknown bare key — keep under encoded form of itself (no dots to split).
+		assignProfile(key, value);
+	}
+	return map;
+}
+
+/**
+ * @param {object} profile
+ * @returns {boolean}
+ */
+function profileHasSiblings(profile) {
+	if ( !isCrewProfileObject(profile) ) return false;
+	const copy = { ...profile };
+	delete copy.customRole;
+	return Object.keys(copy).length > 0;
+}
+
+/**
+ * Persist cleaned profiles when a raw dotted UUID key exists (non-atomic two-step).
+ * @param {Actor} starship
+ * @param {Record<string, object>} cleanedProfiles
+ * @returns {Promise<boolean>}
+ */
+async function replaceCrewProfilesMap(starship, cleanedProfiles) {
+	try {
+		await starship.update({ "flags.sw5e.starship.-=crewProfiles": null });
+	} catch ( _err ) {
+		return false;
+	}
+	try {
+		await starship.update({ "flags.sw5e.starship.crewProfiles": cleanedProfiles });
+	} catch ( _err ) {
+		return false;
+	}
+	return true;
+}
+
+/**
+ * Narrow Foundry updates for canonical + nested shapes (no raw dotted UUID key).
+ * @param {string} storageKey
+ * @param {string|null} actorId
+ * @param {ReturnType<typeof locateCrewProfileShapes>} shapes
+ * @param {string} nextRole
+ * @param {object} targetProfile
+ * @returns {object}
+ */
+function buildNarrowCrewProfileUpdate(storageKey, actorId, shapes, nextRole, targetProfile) {
+	const update = {};
+	if ( nextRole ) {
+		update[`flags.sw5e.starship.crewProfiles.${storageKey}`] = targetProfile;
+	} else if ( shapes.hasCanonical ) {
+		if ( profileHasSiblings(shapes.canonicalProfile) ) {
+			update[`flags.sw5e.starship.crewProfiles.${storageKey}.-=customRole`] = null;
+		} else {
+			update[`flags.sw5e.starship.crewProfiles.-=${storageKey}`] = null;
+		}
+	}
+
+	if ( shapes.hasNested && actorId ) {
+		if ( profileHasSiblings(shapes.nestedLegacyProfile) ) {
+			update[`flags.sw5e.starship.crewProfiles.Actor.${actorId}.-=customRole`] = null;
+		} else {
+			update[`flags.sw5e.starship.crewProfiles.Actor.-=${actorId}`] = null;
+		}
+	}
+	return update;
+}
+
+/**
+ * After clear with siblings on canonical only, ensure customRole removed via narrow path;
+ * when setting, targetProfile already includes role.
+ * When clearing and canonical missing but nested present, nested deletes alone suffice.
+ * When setting and no legacy, write encoded key only.
+ * @param {Actor} starship
+ * @param {string} actorUuid
+ * @param {string} nextRole
+ * @param {boolean} [removeTarget]
+ * @returns {Promise<{ ok: true }|{ ok: false, reason: string }>}
+ */
+async function persistCanonicalCrewProfile(starship, actorUuid, nextRole, removeTarget = false) {
+	const rawProfiles = cloneDeep(starship?.flags?.sw5e?.starship?.crewProfiles ?? {});
+	const shapes = locateCrewProfileShapes(rawProfiles, actorUuid);
+	const cleaned = canonicalizeCrewProfilesForActor({
+		rawProfiles,
+		actorUuid,
+		nextRole,
+		removeTarget
+	});
+	const storageKey = toCrewProfileStorageKey(actorUuid);
+	const targetProfile = cleaned[storageKey] ?? {};
+
+	if ( shapes.hasRawUuid ) {
+		const replaced = await replaceCrewProfilesMap(starship, cleaned);
+		return replaced ? { ok: true } : { ok: false, reason: "update" };
+	}
+
+	if ( removeTarget ) {
+		const update = {};
+		if ( shapes.hasCanonical ) {
+			update[`flags.sw5e.starship.crewProfiles.-=${storageKey}`] = null;
+		}
+		if ( shapes.hasNested && shapes.actorId ) {
+			update[`flags.sw5e.starship.crewProfiles.Actor.-=${shapes.actorId}`] = null;
+		}
+		if ( !Object.keys(update).length ) return { ok: true };
+		try {
+			await starship.update(update);
+		} catch ( _err ) {
+			return { ok: false, reason: "update" };
+		}
+		return { ok: true };
+	}
+
+	const narrow = buildNarrowCrewProfileUpdate(
+		storageKey,
+		shapes.actorId,
+		shapes,
+		nextRole,
+		targetProfile
+	);
+
+	// Canonical-only set with no nested: write encoded key (or clear via narrow).
+	if ( !Object.keys(narrow).length && nextRole ) {
+		narrow[`flags.sw5e.starship.crewProfiles.${storageKey}`] = targetProfile;
+	}
+
+	if ( !Object.keys(narrow).length ) return { ok: true };
+
+	try {
+		await starship.update(narrow);
+	} catch ( _err ) {
+		return { ok: false, reason: "update" };
+	}
+	return { ok: true };
+}
+
+/**
+ * @param {Actor|null|undefined} starship
+ * @param {string} uuid
+ * @returns {boolean}
+ */
+export function isStarshipCrewMemberUuid(starship, uuid) {
+	if ( !starship || !uuid || !isLegacyVehicleStarship(starship) ) return false;
+	const deployment = cloneStarshipDeployment(starship);
+	return getDeploymentRolesForUuid(deployment, uuid).length > 0;
+}
+
+/**
+ * Ship-owned custom role for a crew UUID.
+ * If a canonical encoded profile exists, return its role (or "") — never fall through to legacy.
+ * Only when the canonical profile is missing: raw UUID, then nested Actor→id.
+ * @param {Actor|null|undefined} starship
+ * @param {string} uuid
+ * @returns {string}
+ */
+export function getStarshipCrewCustomRole(starship, uuid) {
+	if ( !starship || !uuid ) return "";
+	const shapes = locateCrewProfileShapes(starship?.flags?.sw5e?.starship?.crewProfiles, uuid);
+	return resolveCustomRoleFromShapes(shapes);
+}
+
+/**
+ * Normalize custom role text: trim, soft-truncate to max length, empty → "".
+ * @param {unknown} value
+ * @returns {string}
+ */
+function normalizeCustomRoleText(value) {
+	const trimmed = String(value ?? "").trim();
+	if ( !trimmed ) return "";
+	if ( trimmed.length <= STARSHIP_CREW_CUSTOM_ROLE_MAX_LENGTH ) return trimmed;
+	return trimmed.slice(0, STARSHIP_CREW_CUSTOM_ROLE_MAX_LENGTH);
+}
+
+/**
+ * Set or clear ship-owned custom role for a deployed crew UUID.
+ * Canonical encoded key is authoritative for new writes.
+ * Proven legacy shapes (raw UUID / nested Actor) are removed on successful Set/Clear.
+ * Immediate equality readback; empty===empty is success for intentional clear.
+ * @param {Actor|string} starshipSubject
+ * @param {string} crewUuid
+ * @param {unknown} roleText
+ * @returns {Promise<{ ok: true, actorUuid: string, customRole: string }|{ ok: false, reason: string }>}
+ */
+export async function setStarshipCrewCustomRole(starshipSubject, crewUuid, roleText) {
+	const starship = resolveActorDocument(starshipSubject);
+	const uuid = typeof crewUuid === "string" ? crewUuid : "";
+	if ( !uuid ) return { ok: false, reason: "no-uuid" };
+	if ( !starship || !isLegacyVehicleStarship(starship) ) return { ok: false, reason: "not-starship" };
+	if ( !canCurrentUserUpdateStarshipActor(starship) ) return { ok: false, reason: "permission" };
+	if ( !isStarshipCrewMemberUuid(starship, uuid) ) return { ok: false, reason: "membership" };
+
+	const storageKey = toCrewProfileStorageKey(uuid);
+	const nextRole = normalizeCustomRoleText(roleText);
+
+	const persist = await persistCanonicalCrewProfile(starship, uuid, nextRole, false);
+	if ( persist.ok !== true ) return persist;
+
+	// Strict equality only — empty readback is success when nextRole is also "".
+	const readback = getStarshipCrewCustomRole(starship, uuid);
+	if ( readback !== nextRole ) {
+		const stored = starship?.flags?.sw5e?.starship?.crewProfiles;
+		const storedKeys = stored && typeof stored === "object" ? Object.keys(stored) : [];
+		const shapes = locateCrewProfileShapes(stored, uuid);
+		console.debug("SW5E MODULE | Custom Role readback failed", {
+			actorUuid: uuid,
+			storageKey,
+			expected: nextRole,
+			readback,
+			storedKeys,
+			hasCanonical: shapes.hasCanonical,
+			hasRawUuid: shapes.hasRawUuid,
+			hasNested: shapes.hasNested
+		});
+		return { ok: false, reason: "readback" };
+	}
+
+	return { ok: true, actorUuid: uuid, customRole: nextRole };
 }
 
 function syncDeploymentActiveFlags(deployment) {
@@ -421,7 +905,35 @@ export async function undeployStarshipCrew(starshipSubject, crewSubject, roles =
 	if ( roleSet.has("crew") ) deployment.crew.items.delete(crewUuid);
 	if ( roleSet.has("passenger") ) deployment.passenger.items.delete(crewUuid);
 
-	await starship.update(buildDeploymentUpdateData(deployment));
+	const updateData = buildDeploymentUpdateData(deployment);
+	// Clear ship-owned profile only when membership fully ends — same owner as Custom Role cleanup.
+	if ( !getDeploymentRolesForUuid(deployment, crewUuid).length ) {
+		const rawProfiles = cloneDeep(starship?.flags?.sw5e?.starship?.crewProfiles ?? {});
+		const shapes = locateCrewProfileShapes(rawProfiles, crewUuid);
+		if ( shapes.hasCanonical || shapes.hasRawUuid || shapes.hasNested ) {
+			const cleaned = canonicalizeCrewProfilesForActor({
+				rawProfiles,
+				actorUuid: crewUuid,
+				nextRole: "",
+				removeTarget: true
+			});
+			if ( shapes.hasRawUuid ) {
+				await starship.update(updateData);
+				const replaced = await replaceCrewProfilesMap(starship, cleaned);
+				if ( !replaced ) return false;
+				await updateCrewDeploymentFlag(crewActor, starship, getDeploymentRolesForUuid(deployment, crewUuid));
+				return true;
+			}
+			if ( shapes.hasCanonical ) {
+				updateData[`flags.sw5e.starship.crewProfiles.-=${shapes.storageKey}`] = null;
+			}
+			if ( shapes.hasNested && shapes.actorId ) {
+				updateData[`flags.sw5e.starship.crewProfiles.Actor.-=${shapes.actorId}`] = null;
+			}
+		}
+	}
+
+	await starship.update(updateData);
 	await updateCrewDeploymentFlag(crewActor, starship, getDeploymentRolesForUuid(deployment, crewUuid));
 	return true;
 }
