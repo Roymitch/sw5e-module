@@ -3,12 +3,14 @@
 ### [1.4.0] 2026-07-14
 
 ### Added
+- **Starship skill responsible-crew picker:** When two or more distinct qualified Pilot/Crew Actors are aboard (Deployment rank ≥ 1, finite prepared PB), the Starship skill roll dialog shows a **Responsible Crew Member** selector. One qualified Actor is used automatically; zero qualified Actors roll with no crew PB. Selection is local to that roll (no Active Crew restore, no persistence). GM/Assistant users see all qualified visible Pilot/Crew; ordinary players only their owned qualified Actors. Fast-forward with multiple candidates opens the dialog instead of silently choosing a source.
 - **Starship Core crew roster PC/NPC groups:** Core Crew & Passengers lists assigned Actors under Player Characters and NPCs headings (Other when applicable).
 - **Starship Core crew roster interactions:** collapsible crew groups (sheet-local), Actor-sheet open from portrait/name, Deployment feat subtitles, and permission-aware ContextMenu5e actions (View, Display in Chat; Remove when authorized).
 - **Starship Core crew PLAY management chrome:** visible Set Pilot / Remove controls are restricted to EDIT; authorized users may still Remove through the PLAY/EDIT context menu via `undeployStarshipCrew`.
 - **Starship Add Crew multi-select:** deploy multiple distinct Actors from the Add Crew dialog in one Crew or Passenger action (Pilot requires exactly one selection). Aggregate NPC quantity is not included.
 
 ### Changed
+- **Starship skill crew PB attribution:** GM and starship-update users see a local named crew PB source on the starship skill sheet and skill roll dialog when a qualifying source exists. Public skill chat remains nameless (ship speaker; no crew Actor name/UUID in public flavor).
 - **Starship Core assigned roster sort:** Within each Player Characters / NPCs / Other group, assigned rows sort as Pilot, then Pilot/Crew with a Deployment assignment, then Pilot/Crew without Deployment, then passengers (Actor name tie-break). Custom Role alone does not count as a Deployment for sorting.
 - **Starship Core membership pills:** Pilot shows a compact `P` pill (existing Pilot colors) and Crew shows `C`; Passenger-only members show no membership pill. Accessible Pilot/Crew names remain on the visible pills.
 - **Starship Core assigned roster search:** Assigned-roster search matches Actor name/type, Deployment assignment labels, stored Custom Roles (even when a Deployment label is shown), and stable membership terms `pilot` / `crew` / `passenger` (`crew` includes the Pilot; passenger-only members match `passenger` only).
@@ -30,6 +32,7 @@
 - **Repository hygiene:** HGTTG PDF art cache is gitignored and untracked; dormant legacy reload subsystem and CheckboxSelect app/template were removed.
 
 ### Fixed
+- **Starship skill crew candidate lists:** Pilot/Crew UUID lists used for skill crew PB and the responsible-crew picker correctly read Foundry-stored deployment crew containers (arrays, Sets, and numeric-key object maps), so qualified crew are not under-counted.
 - **Starship Actor drop → crew:** dragging a PC or NPC onto a SW5E starship sheet deploys them into the SW5E Crew & Passengers roster as crew (via existing deployment flags), instead of doing nothing or only writing stock vehicle `system.crew` / `system.passengers`. Non-starship vehicles keep stock dnd5e drop behavior. Alt-drop hidden/stowaway membership is not included yet.
 - **Maneuver Heal `@mod`:** Heal Activities on Maneuver items with blank Activity ability now resolve `@mod` from the Maneuver ability contract (`item.abilityMod` key), instead of always using `0`.
 - **Maneuver heal formulas (pack):** Powers & Maneuvers heal/temp-HP formulas that used `1d@superiority.die + max(...)` now use `1d@superiority.die + @mod`.

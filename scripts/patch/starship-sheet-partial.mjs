@@ -630,6 +630,7 @@ export function signaturePayloadCoreSkills(meta = {}) {
 		overviewSkillsAriaLabel: meta.overviewSkillsAriaLabel ?? "",
 		overviewSkillsKicker: meta.overviewSkillsKicker ?? "",
 		overviewSkillConfigureTitle: meta.overviewSkillConfigureTitle ?? "",
+		skillsCrewPbAttribution: meta.skillsCrewPbAttribution ?? "",
 		skills: (meta.skills ?? []).map(skill => ({
 			id: skill?.id ?? "",
 			label: skill?.label ?? "",
@@ -637,7 +638,8 @@ export function signaturePayloadCoreSkills(meta = {}) {
 			icon: skill?.icon ?? "",
 			modDisplay: skill?.modDisplay ?? "",
 			passiveDisplay: skill?.passiveDisplay ?? "",
-			proficiencyClass: skill?.proficiencyClass ?? ""
+			proficiencyClass: skill?.proficiencyClass ?? "",
+			crewPbAttributionLabel: skill?.crewPbAttributionLabel ?? ""
 		}))
 	};
 }

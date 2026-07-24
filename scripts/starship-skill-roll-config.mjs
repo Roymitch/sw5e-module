@@ -1,3 +1,4 @@
+import { getExpandedProficiencyMultiplier } from "./patch/proficiency.mjs";
 import { applySw5eThemeScope } from "./theme.mjs";
 
 const Dialog5e = dnd5e.applications.api.Dialog5e;
@@ -42,19 +43,68 @@ function buildSkillPromptTitle(entry = {}) {
 	return `${ability} (${skill}) Check`;
 }
 
+function formatResponsibleCrewOptionLabel(candidate={}) {
+	const name = String(candidate.actorName ?? "").trim() || candidate.actorUuid || "";
+	const role = String(candidate.deploymentLabel ?? "").trim();
+	return role ? `${name} (${role})` : name;
+}
+
+function computePreviewProficiencyPoints(proficiencyMode, crewPb) {
+	const pb = Number(crewPb);
+	if ( !Number.isFinite(pb) ) return 0;
+	return Math.round(pb * getExpandedProficiencyMultiplier(proficiencyMode));
+}
+
 export class StarshipSkillRollConfigApp extends Dialog5e {
-	constructor({ actor, entry, abilities, defaultRollMode, initialMode, forcedAdvantage, systemDamageNote }={}) {
+	constructor({
+		actor,
+		entry,
+		abilities,
+		defaultRollMode,
+		initialMode,
+		forcedAdvantage,
+		systemDamageNote,
+		crewPbAttributionLabel,
+		canShowCrewPbAttribution=false,
+		showResponsibleCrewPicker=false,
+		responsibleCrewCandidates=[],
+		preselectedResponsibleCrewUuid=""
+	}={}) {
 		super({
 			window: {
 				subtitle: actor?.name ?? ""
 			}
 		});
 		this.actor = actor;
-		this.entry = entry;
+		this.entry = entry ? foundry.utils.deepClone(entry) : {};
 		this.abilities = abilities ?? {};
 		this.defaultRollMode = defaultRollMode ?? game.settings.get("core", "rollMode");
 		this.forcedAdvantage = Boolean(forcedAdvantage);
 		this.systemDamageNote = systemDamageNote ?? "";
+		this.canShowCrewPbAttribution = Boolean(canShowCrewPbAttribution);
+		this.crewPbAttributionLabel = this.canShowCrewPbAttribution && typeof crewPbAttributionLabel === "string"
+			? crewPbAttributionLabel.trim()
+			: "";
+		this.showResponsibleCrewPicker = Boolean(showResponsibleCrewPicker);
+		this.responsibleCrewCandidates = Array.isArray(responsibleCrewCandidates)
+			? responsibleCrewCandidates.map(candidate => ({
+				actorUuid: String(candidate?.actorUuid ?? ""),
+				actorName: String(candidate?.actorName ?? ""),
+				image: String(candidate?.image ?? ""),
+				membershipRole: String(candidate?.membershipRole ?? ""),
+				deploymentLabel: String(candidate?.deploymentLabel ?? ""),
+				proficiencyBonus: Number.isFinite(Number(candidate?.proficiencyBonus))
+					? Number(candidate.proficiencyBonus)
+					: 0
+			})).filter(candidate => candidate.actorUuid)
+			: [];
+		const preselect = String(preselectedResponsibleCrewUuid ?? "").trim();
+		this.selectedResponsibleCrewUuid = this.responsibleCrewCandidates.some(c => c.actorUuid === preselect)
+			? preselect
+			: "";
+		this.baseAbilityMod = Number(this.entry?.parts?.abilityMod) || 0;
+		this.baseBonus = Number(this.entry?.parts?.bonus) || 0;
+		this.proficiencyMode = this.entry?.proficiencyMode;
 		const advantage = CONFIG?.Dice?.D20Roll?.ADV_MODE?.ADVANTAGE ?? 1;
 		this.initialMode = this.forcedAdvantage ? advantage : (initialMode ?? (CONFIG?.Dice?.D20Roll?.ADV_MODE?.NORMAL ?? 0));
 		this.#result = new Promise(resolve => {
@@ -163,6 +213,33 @@ export class StarshipSkillRollConfigApp extends Dialog5e {
 				value: this.defaultRollMode
 			}
 		];
+
+		if ( this.showResponsibleCrewPicker ) {
+			const placeholder = localizeOrFallback(
+				"SW5E.Starship.Roll.SelectCrewMember",
+				"Select a crew member"
+			);
+			const options = [
+				{ value: "", label: placeholder },
+				...this.responsibleCrewCandidates.map(candidate => ({
+					value: candidate.actorUuid,
+					label: formatResponsibleCrewOptionLabel(candidate)
+				}))
+			];
+			context.fields.unshift({
+				field: new foundry.data.fields.StringField({
+					required: true,
+					blank: true,
+					label: localizeOrFallback(
+						"SW5E.Starship.Roll.ResponsibleCrew",
+						"Responsible Crew Member"
+					)
+				}),
+				name: "responsibleCrewUuid",
+				options,
+				value: this.selectedResponsibleCrewUuid || ""
+			});
+		}
 		return context;
 	}
 
@@ -202,6 +279,52 @@ export class StarshipSkillRollConfigApp extends Dialog5e {
 		return context;
 	}
 
+	#applyResponsibleCrewPreview(actorUuid) {
+		const uuid = String(actorUuid ?? "").trim();
+		this.selectedResponsibleCrewUuid = uuid;
+		const candidate = this.responsibleCrewCandidates.find(entry => entry.actorUuid === uuid) ?? null;
+		const proficiency = candidate
+			? computePreviewProficiencyPoints(this.proficiencyMode, candidate.proficiencyBonus)
+			: 0;
+		this.entry.parts ??= {};
+		this.entry.parts.abilityMod = this.baseAbilityMod;
+		this.entry.parts.bonus = this.baseBonus;
+		this.entry.parts.proficiency = proficiency;
+		this.entry.total = this.baseAbilityMod + proficiency + this.baseBonus;
+
+		if ( candidate && this.canShowCrewPbAttribution ) {
+			this.crewPbAttributionLabel = game.i18n.format("SW5E.Starship.Roll.CrewPBSourceExplicit", {
+				name: candidate.actorName
+			});
+		} else {
+			this.crewPbAttributionLabel = "";
+		}
+
+		const root = this.element instanceof HTMLElement ? this.element : this.element?.[0] ?? null;
+		if ( !root ) return;
+		const formulaEl = root.querySelector(".rolls .roll .formula, [data-formula], .dice-formula");
+		const formulaNodes = root.querySelectorAll(".formula");
+		const label = buildFormulaLabel(this.entry);
+		if ( formulaEl ) formulaEl.textContent = label;
+		for ( const node of formulaNodes ) node.textContent = label;
+
+		let note = root.querySelector(".sw5e-starship-skill-crew-pb-note");
+		if ( this.crewPbAttributionLabel ) {
+			if ( !note ) {
+				const fieldset = root.querySelector("fieldset");
+				const after = root.querySelector(".sw5e-starship-skill-system-note") ?? fieldset;
+				if ( after ) {
+					note = document.createElement("p");
+					note.className = "notes sw5e-starship-skill-crew-pb-note";
+					after.insertAdjacentElement("afterend", note);
+				}
+			}
+			if ( note ) note.textContent = this.crewPbAttributionLabel;
+		} else if ( note ) {
+			note.remove();
+		}
+	}
+
 	_onRender(context, options) {
 		super._onRender(context, options);
 		const root = this.element instanceof HTMLElement ? this.element : this.element?.[0] ?? null;
@@ -233,6 +356,58 @@ export class StarshipSkillRollConfigApp extends Dialog5e {
 				fieldset.insertAdjacentElement("afterend", note);
 			}
 		}
+
+		if ( this.crewPbAttributionLabel ) {
+			const fieldset = root.querySelector("fieldset");
+			const after = root.querySelector(".sw5e-starship-skill-system-note") ?? fieldset;
+			if ( after && !root.querySelector(".sw5e-starship-skill-crew-pb-note") ) {
+				const note = document.createElement("p");
+				note.className = "notes sw5e-starship-skill-crew-pb-note";
+				note.textContent = this.crewPbAttributionLabel;
+				after.insertAdjacentElement("afterend", note);
+			}
+		}
+
+		if ( this.showResponsibleCrewPicker && root.dataset.sw5eCrewPickerBound !== "true" ) {
+			let select = root.querySelector('select[name="responsibleCrewUuid"]');
+			// Fallback: if formField omitted the control, inject into the configuration fieldset.
+			if ( !select ) {
+				const fieldset = root.querySelector("fieldset");
+				if ( fieldset ) {
+					const wrap = document.createElement("div");
+					wrap.className = "form-group sw5e-starship-responsible-crew";
+					const label = document.createElement("label");
+					label.textContent = localizeOrFallback(
+						"SW5E.Starship.Roll.ResponsibleCrew",
+						"Responsible Crew Member"
+					);
+					select = document.createElement("select");
+					select.name = "responsibleCrewUuid";
+					const placeholder = document.createElement("option");
+					placeholder.value = "";
+					placeholder.textContent = localizeOrFallback(
+						"SW5E.Starship.Roll.SelectCrewMember",
+						"Select a crew member"
+					);
+					select.append(placeholder);
+					for ( const candidate of this.responsibleCrewCandidates ) {
+						const option = document.createElement("option");
+						option.value = candidate.actorUuid;
+						option.textContent = formatResponsibleCrewOptionLabel(candidate);
+						if ( candidate.actorUuid === this.selectedResponsibleCrewUuid ) option.selected = true;
+						select.append(option);
+					}
+					wrap.append(label, select);
+					fieldset.append(wrap);
+				}
+			}
+			if ( select ) {
+				select.addEventListener("change", event => {
+					this.#applyResponsibleCrewPreview(event.currentTarget?.value);
+				});
+				root.dataset.sw5eCrewPickerBound = "true";
+			}
+		}
 	}
 
 	async close(options={}) {
@@ -257,11 +432,29 @@ export class StarshipSkillRollConfigApp extends Dialog5e {
 			?? formData.object?.roll?.[0]?.situational
 			?? "";
 
+		const responsibleCrewUuid = String(
+			formData.get("responsibleCrewUuid")
+			?? formData.object?.responsibleCrewUuid
+			?? this.selectedResponsibleCrewUuid
+			?? ""
+		).trim();
+
+		if ( this.showResponsibleCrewPicker ) {
+			const permitted = this.responsibleCrewCandidates.some(candidate => candidate.actorUuid === responsibleCrewUuid);
+			if ( !responsibleCrewUuid || !permitted ) {
+				const warnTitle = game.i18n.localize("SW5E.Starship.Roll.NoCrewPBTitle");
+				const warnBody = game.i18n.localize("SW5E.Starship.Roll.NoCrewPBNotSelected");
+				ui.notifications.warn(`${warnTitle}: ${warnBody}`);
+				return;
+			}
+		}
+
 		this.#finish({
 			ability: String(formData.get("ability") || this.entry?.ability || "int"),
 			bonus: String(situational).trim(),
 			rollMode: String(formData.get("rollMode") || this.defaultRollMode),
-			advantageMode: Number.isFinite(Number(advantageMode)) ? Number(advantageMode) : this.initialMode
+			advantageMode: Number.isFinite(Number(advantageMode)) ? Number(advantageMode) : this.initialMode,
+			responsibleCrewUuid
 		});
 		await this.close({ submitted: true });
 	}

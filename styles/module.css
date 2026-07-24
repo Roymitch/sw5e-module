@@ -17245,10 +17245,17 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor .ite
   z-index: 1;
   opacity: 1 !important;
 }
-/* Starship skill roll config — optional system note after configuration */
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.application.roll-configuration.sw5e-starship-skill-roll-config .sw5e-starship-skill-system-note,
-body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.application.roll-configuration.sw5e-starship-skill-roll-config .sw5e-starship-skill-system-note {
+/* Starship skill roll config — optional system / crew-PB notes after configuration */
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.application.roll-configuration.sw5e-starship-skill-roll-config :is(.sw5e-starship-skill-system-note, .sw5e-starship-skill-crew-pb-note),
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.application.roll-configuration.sw5e-starship-skill-roll-config :is(.sw5e-starship-skill-system-note, .sw5e-starship-skill-crew-pb-note) {
   color: var(--sw5e-theme-muted-text) !important;
+}
+/* Starship Overview skills — entitlement-gated crew PB source (Bug 29E) */
+body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-skills-crew-pb,
+body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-skills-crew-pb,
+body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet .sw5e-starship-skills-crew-pb {
+  margin: 0.25rem 0 0.5rem;
+  color: var(--sw5e-theme-muted-text);
 }
 /* ——— Starship portrait badge polish ——— */
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet :is(aside.sheet-sidebar, [data-application-part="sidebar"]) .portrait,

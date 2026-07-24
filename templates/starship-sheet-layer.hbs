@@ -630,10 +630,13 @@
             {{#if skills.length}}
             <section class="sw5e-starship-overview-skills" aria-label="{{overviewSkillsAriaLabel}}">
               <header class="sw5e-starship-overview-skills-header">
-                <div>
+                    <div>
                   <span class="sw5e-starship-kicker">{{overviewSkillsKicker}}</span>
                 </div>
               </header>
+              {{#if skillsCrewPbAttribution}}
+              <p class="notes sw5e-starship-skills-crew-pb">{{skillsCrewPbAttribution}}</p>
+              {{/if}}
               <ul class="sw5e-starship-skill-list sw5e-starship-skill-list--pc" role="list">
                 {{#each skills}}
                 <li class="sw5e-starship-skill-row sw5e-starship-skill-row--pc{{proficiencyClass}}" data-skill-id="{{id}}">

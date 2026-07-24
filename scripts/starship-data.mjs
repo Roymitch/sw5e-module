@@ -9,6 +9,7 @@ import {
 	isMasteryProficiencyTier,
 	isRerollProficiencyTier
 } from "./patch/proficiency.mjs";
+import { canAttributeStarshipCrewActor, isStarshipCrewMembershipVisibleToUser } from "./starship-permissions.mjs";
 import { resolveStarshipPowerRoutingState } from "./starship-routing-gate.mjs";
 import {
 	applyStarshipSystemDamageSkillCheckAdvantageDefault,
@@ -247,10 +248,25 @@ function getPowerRoutingState(legacySystem = {}) {
 
 export { getPowerRoutingState };
 
-function getDeploymentUuidList(value) {
-	if ( Array.isArray(value?.items) ) return value.items.filter(Boolean);
-	if ( Array.isArray(value?.value) ) return value.value.filter(Boolean);
-	if ( Array.isArray(value) ) return value.filter(Boolean);
+/**
+ * Normalize deployment UUID containers written by Foundry updates (array, Set, or numeric-key object).
+ * @param {unknown} value
+ * @returns {string[]}
+ */
+export function getDeploymentUuidList(value) {
+	if ( value == null || value === "" ) return [];
+	if ( value instanceof Set ) return Array.from(value).filter(Boolean).map(String);
+	if ( Array.isArray(value) ) return value.filter(Boolean).map(String);
+	if ( typeof value === "object" ) {
+		if ( "items" in value ) return getDeploymentUuidList(value.items);
+		if ( "value" in value && (Array.isArray(value.value) || value.value instanceof Set || (value.value && typeof value.value === "object")) ) {
+			return getDeploymentUuidList(value.value);
+		}
+		// Foundry expandObject may persist arrays as { "0": uuid, "1": uuid }.
+		const values = Object.values(value).filter(entry => typeof entry === "string" && entry);
+		if ( values.length ) return values;
+	}
+	if ( typeof value === "string" ) return [value];
 	return [];
 }
 
@@ -1370,6 +1386,180 @@ function actorQualifiesForStarshipCrewPb(starshipActor, crewActor) {
 	return getActorMaxValidDeploymentStoredRank(crewActor) >= 1;
 }
 
+/**
+ * Ordinary-player OWNER gate for responsible-crew picker (not OBSERVER/LIMITED/Token control).
+ * @param {User|null|undefined} user
+ * @param {Actor|null|undefined} crewActor
+ * @returns {boolean}
+ */
+export function userOwnsStarshipResponsibleCrewActor(user, crewActor) {
+	if ( !user || !crewActor ) return false;
+	return crewActor.testUserPermission?.(user, "OWNER") === true;
+}
+
+/**
+ * @param {number} distinctCount
+ * @returns {"none"|"automatic"|"picker"}
+ */
+export function determineResponsibleCrewSelectionMode(distinctCount) {
+	const n = Number(distinctCount);
+	if ( !Number.isFinite(n) || n <= 0 ) return "none";
+	if ( n === 1 ) return "automatic";
+	return "picker";
+}
+
+/**
+ * Strip live Actor from an internal candidate for Application context.
+ * @param {{ actor?: Actor, actorUuid: string, membershipRole?: string, deploymentLabel?: string, proficiencyBonus?: number, actorName?: string, image?: string }} internal
+ * @returns {{ actorUuid: string, actorName: string, image: string, membershipRole: string, deploymentLabel: string, proficiencyBonus: number }}
+ */
+export function toDialogSafeResponsibleCrewCandidate(internal={}) {
+	const actor = internal?.actor;
+	return {
+		actorUuid: String(internal?.actorUuid ?? actor?.uuid ?? ""),
+		actorName: String(internal?.actorName ?? actor?.name ?? ""),
+		image: String(internal?.image ?? actor?.img ?? ""),
+		membershipRole: String(internal?.membershipRole ?? ""),
+		deploymentLabel: String(internal?.deploymentLabel ?? ""),
+		proficiencyBonus: Number.isFinite(Number(internal?.proficiencyBonus))
+			? Number(internal.proficiencyBonus)
+			: 0
+	};
+}
+
+/**
+ * @param {Array<object>} internals
+ * @returns {Array<object>}
+ */
+export function toDialogSafeResponsibleCrewCandidates(internals=[]) {
+	return (Array.isArray(internals) ? internals : []).map(toDialogSafeResponsibleCrewCandidate);
+}
+
+function localizeCrewMembershipLabel(role) {
+	if ( role === "pilot" ) {
+		return globalThis.game?.i18n?.localize?.("SW5E.StarshipCrewBadgePilot") || "Pilot";
+	}
+	if ( role === "crew" ) {
+		return globalThis.game?.i18n?.localize?.("SW5E.StarshipCrewBadgeCrew") || "Crew";
+	}
+	return "";
+}
+
+/**
+ * Bug 29E-P: permitted qualified responsible-crew candidates for the rolling user.
+ * Deduplicates by Actor UUID before selection mode. Dialog context must use dialog-safe DTOs only.
+ *
+ * @param {{ starshipActor: Actor, user?: User }} args
+ * @returns {{
+ *   candidates: Array<{ actor: Actor, actorUuid: string, membershipRole: string, deploymentLabel: string, proficiencyBonus: number }>,
+ *   selectionMode: "none"|"automatic"|"picker",
+ *   automaticActor: Actor|null,
+ *   userAuthority: "gm"|"owner"|"none"
+ * }}
+ */
+export function buildStarshipResponsibleCrewCandidates({ starshipActor, user = globalThis.game?.user }={}) {
+	const empty = {
+		candidates: [],
+		selectionMode: "none",
+		automaticActor: null,
+		userAuthority: "none"
+	};
+	if ( !starshipActor || !user ) return empty;
+
+	const userAuthority = user.isGM === true ? "gm" : "owner";
+	const { pilotUuid, crewUuids } = getStarshipPilotCrewPassengerSets(starshipActor);
+	const uuidSet = new Set();
+	if ( pilotUuid ) uuidSet.add(pilotUuid);
+	for ( const uuid of crewUuids ) {
+		if ( uuid ) uuidSet.add(uuid);
+	}
+
+	const candidates = [];
+	for ( const uuid of uuidSet ) {
+		const crewActor = resolveActorDocument(uuid);
+		if ( !actorQualifiesForStarshipCrewPb(starshipActor, crewActor) ) continue;
+		const proficiencyBonus = toFiniteNumber(crewActor?.system?.attributes?.prof, NaN);
+		if ( !Number.isFinite(proficiencyBonus) ) continue;
+		if ( !isStarshipCrewMembershipVisibleToUser(starshipActor, crewActor, user) ) continue;
+		if ( user.isGM !== true && !userOwnsStarshipResponsibleCrewActor(user, crewActor) ) continue;
+
+		const membershipRole = pilotUuid && uuid === pilotUuid ? "pilot" : "crew";
+		candidates.push({
+			actor: crewActor,
+			actorUuid: crewActor.uuid,
+			membershipRole,
+			deploymentLabel: localizeCrewMembershipLabel(membershipRole),
+			proficiencyBonus
+		});
+	}
+
+	const selectionMode = determineResponsibleCrewSelectionMode(candidates.length);
+	return {
+		candidates,
+		selectionMode,
+		automaticActor: selectionMode === "automatic" ? candidates[0]?.actor ?? null : null,
+		userAuthority
+	};
+}
+
+/**
+ * Re-resolve and revalidate a selected UUID against a freshly built candidate set.
+ * @param {{ starshipActor: Actor, user?: User, actorUuid?: string|null }} args
+ * @returns {Actor|null}
+ */
+export function resolveValidatedResponsibleCrewActor({
+	starshipActor,
+	user = globalThis.game?.user,
+	actorUuid = null
+}={}) {
+	const uuid = typeof actorUuid === "string" ? actorUuid.trim() : "";
+	if ( !uuid || !starshipActor || !user ) return null;
+	const rebuilt = buildStarshipResponsibleCrewCandidates({ starshipActor, user });
+	const match = rebuilt.candidates.find(entry => entry.actorUuid === uuid);
+	if ( !match?.actor ) return null;
+	if ( !actorQualifiesForStarshipCrewPb(starshipActor, match.actor) ) return null;
+	const pb = toFiniteNumber(match.actor?.system?.attributes?.prof, NaN);
+	if ( !Number.isFinite(pb) ) return null;
+	if ( !isStarshipCrewMembershipVisibleToUser(starshipActor, match.actor, user) ) return null;
+	if ( user.isGM !== true && !userOwnsStarshipResponsibleCrewActor(user, match.actor) ) return null;
+	return match.actor;
+}
+
+/**
+ * Shared proficiency-points math for skill rolls and dialog preview (29A/29B).
+ * @param {number|null|undefined} proficiencyMode
+ * @param {number|null|undefined} crewPb
+ * @returns {number}
+ */
+export function computeStarshipSkillCrewProficiencyPoints(proficiencyMode, crewPb) {
+	const pb = toFiniteNumber(crewPb, NaN);
+	if ( !Number.isFinite(pb) ) return 0;
+	const multiplier = getStarshipSkillProficiencyMultiplier(proficiencyMode);
+	return Math.round(pb * multiplier);
+}
+
+/**
+ * Assert selected crew identity is absent from public chat message metadata.
+ * @param {object} messageData
+ * @param {{ name?: string, uuid?: string }} identity
+ * @returns {boolean}
+ */
+export function publicChatExcludesResponsibleCrewIdentity(messageData={}, identity={}) {
+	const name = String(identity?.name ?? "").trim();
+	const uuid = String(identity?.uuid ?? "").trim();
+	const blobs = [
+		messageData?.flavor,
+		messageData?.speaker?.alias,
+		messageData?.speaker?.actor,
+		JSON.stringify(messageData?.flags ?? {}),
+		JSON.stringify(messageData?.speaker ?? {})
+	].map(value => String(value ?? ""));
+	const joined = blobs.join("\n");
+	if ( name && joined.includes(name) ) return false;
+	if ( uuid && joined.includes(uuid) ) return false;
+	return true;
+}
+
 /** Roll-config marker: Pilot save PB already injected for this roll only (never an Actor flag). */
 const STARSHIP_SAVE_PILOT_PB_INJECTED_KEY = "sw5ePilotSavePbInjected";
 /** Formula/@data key for Pilot save proficiency (dnd5e constructParts / mergeConfigs). */
@@ -1634,6 +1824,9 @@ function getStarshipSkillCrewPbSourceLabel(pbSource) {
 	if ( pbSource.source === "explicit" ) {
 		return game.i18n.format("SW5E.Starship.Roll.CrewPBSourceExplicit", { name });
 	}
+	if ( pbSource.source === "automatic" ) {
+		return game.i18n.format("SW5E.Starship.Roll.CrewPBSourceAutomatic", { name });
+	}
 	return game.i18n.format("SW5E.Starship.Roll.CrewPBSourceNone", {
 		reason: game.i18n.localize("SW5E.Starship.Roll.CrewPBSourceNoneReason")
 	});
@@ -1699,10 +1892,15 @@ function buildStarshipSkillDisplayEntry(actor, entry, rollingUser = globalThis.g
 		? Math.round(rollerPb * proficiencyMultiplier)
 		: 0;
 	const effectiveTotal = entry.parts.abilityMod + effectiveProficiency + entry.parts.bonus;
+	const fullSourceLabel = getStarshipSkillCrewPbSourceLabel(crewPbSource);
+	const showCrewPbAttribution = crewPbSource?.source !== "none"
+		&& canAttributeStarshipCrewActor(actor, deployedRoller, rollingUser);
 	return {
 		...entry,
 		effectiveCrewPbSource: crewPbSource,
-		effectiveCrewPbSourceLabel: getStarshipSkillCrewPbSourceLabel(crewPbSource),
+		effectiveCrewPbSourceLabel: fullSourceLabel,
+		crewPbAttributionLabel: showCrewPbAttribution ? fullSourceLabel : "",
+		showCrewPbAttribution,
 		effectiveCrewPbLine: buildStarshipSkillCrewPbChatLine(crewPbSource, {
 			rollerPb,
 			proficiencyMode: entry.proficiencyMode,
@@ -2087,7 +2285,7 @@ function buildStarshipSkillFormula(
  * @param {Actor} actor Starship (vehicle) actor
  * @param {string} skillId Starship skill key
  * @param {Event} [event] Click / key modifiers for fast-forward rolls
- * @param {User} [rollingUser] User performing the roll (defaults to `game.user`). Crew PB uses Bug 29A roll-time resolution (explicit → assigned → one controlled qualified Actor → none).
+ * @param {User} [rollingUser] User performing the roll (defaults to `game.user`). Crew PB uses Bug 29A roll-time resolution (explicit → assigned → one controlled qualified Actor → none), with Bug 29E-P picker when multiple permitted candidates exist.
  * @param {{ flavorPrefix?: string, dc?: number|null, explicitActor?: Actor|null }} [messageOptions] Optional chat flavor prefix, DC comparison, and explicit crew PB Actor override.
  * @returns {Promise<{ roll: Roll, total: number, skillId: string, label: string }|null>}
  */
@@ -2096,17 +2294,57 @@ export async function rollStarshipSkill(actor, skillId, event, rollingUser, mess
 	if ( !entry ) return null;
 
 	const roller = rollingUser ?? game.user;
-	const crewPbSource = resolveStarshipSkillCrewPbSource(actor, roller, {
+	const candidatePack = buildStarshipResponsibleCrewCandidates({ starshipActor: actor, user: roller });
+	const priorSource = resolveStarshipSkillCrewPbSource(actor, roller, {
 		mode: "roll",
 		explicitActor: messageOptions?.explicitActor ?? null
 	});
-	const deployedRoller = crewPbSource.actor;
-	const rollerPb = toFiniteNumber(deployedRoller?.system?.attributes?.prof, 0) ?? 0;
+	const priorUuid = priorSource?.actor?.uuid ?? "";
+	const priorPermitted = Boolean(
+		priorUuid && candidatePack.candidates.some(candidate => candidate.actorUuid === priorUuid)
+	);
+	const preselectedResponsibleCrewUuid = priorPermitted ? priorUuid : "";
+
+	let selectedExplicitActor = null;
+	if ( candidatePack.selectionMode === "automatic" ) {
+		const autoUuid = candidatePack.automaticActor?.uuid ?? candidatePack.candidates[0]?.actorUuid ?? "";
+		selectedExplicitActor = resolveValidatedResponsibleCrewActor({
+			starshipActor: actor,
+			user: roller,
+			actorUuid: autoUuid
+		});
+	} else if ( candidatePack.selectionMode === "none" ) {
+		selectedExplicitActor = null;
+	} else if ( messageOptions?.explicitActor ) {
+		// Caller-supplied explicit Actor only when it remains in the permitted set.
+		const callerUuid = messageOptions.explicitActor?.uuid ?? "";
+		selectedExplicitActor = resolveValidatedResponsibleCrewActor({
+			starshipActor: actor,
+			user: roller,
+			actorUuid: callerUuid
+		});
+	}
+
+	const needsPicker = candidatePack.selectionMode === "picker";
+	const forceDialogForPicker = needsPicker;
+	const fastForward = isStarshipFastForward(event) && !forceDialogForPicker;
+
+	const previewActor = needsPicker
+		? (preselectedResponsibleCrewUuid
+			? resolveValidatedResponsibleCrewActor({
+				starshipActor: actor,
+				user: roller,
+				actorUuid: preselectedResponsibleCrewUuid
+			})
+			: null)
+		: selectedExplicitActor;
+
+	const previewPb = toFiniteNumber(previewActor?.system?.attributes?.prof, 0) ?? 0;
 	const proficiencyMultiplier = getStarshipSkillProficiencyMultiplier(entry.proficiencyMode);
-	const rollProficiencyPoints = deployedRoller
-		? Math.round(rollerPb * proficiencyMultiplier)
+	let rollProficiencyPoints = previewActor
+		? computeStarshipSkillCrewProficiencyPoints(entry.proficiencyMode, previewPb)
 		: 0;
-	const rollDataProficiency = deployedRoller ? rollerPb : 0;
+	let rollDataProficiency = previewActor ? previewPb : 0;
 	const dialogEntry = {
 		...entry,
 		parts: {
@@ -2116,7 +2354,26 @@ export async function rollStarshipSkill(actor, skillId, event, rollingUser, mess
 		total: entry.parts.abilityMod + rollProficiencyPoints + entry.parts.bonus
 	};
 
-	const fastForward = isStarshipFastForward(event);
+	const previewSource = (() => {
+		if ( !previewActor ) return buildStarshipCrewPbNoneResult();
+		if ( needsPicker ) {
+			// Named "selected" only when a real picker preselection exists; otherwise no named PB yet.
+			if ( !preselectedResponsibleCrewUuid ) return buildStarshipCrewPbNoneResult();
+			if ( priorPermitted && priorSource.source !== "none" ) {
+				return buildStarshipCrewPbSourceResult(previewActor, priorSource.source);
+			}
+			return buildStarshipCrewPbSourceResult(previewActor, "explicit");
+		}
+		if ( priorPermitted && priorSource.source !== "none" ) {
+			return buildStarshipCrewPbSourceResult(previewActor, priorSource.source);
+		}
+		return buildStarshipCrewPbSourceResult(previewActor, "automatic");
+	})();
+	let crewPbAttributionLabel = previewSource.source !== "none"
+		&& canAttributeStarshipCrewActor(actor, previewActor, roller)
+		? getStarshipSkillCrewPbSourceLabel(previewSource)
+		: "";
+
 	const defaultRollMode = game.settings.get("core", "rollMode");
 	const abilities = buildStarshipRollAbilities(actor);
 	const masteryTier = entry.proficiencyMode;
@@ -2126,12 +2383,16 @@ export async function rollStarshipSkill(actor, skillId, event, rollingUser, mess
 		: getStarshipAdvantageMode(event);
 	const defaultAdvantageMode = applyStarshipSystemDamageSkillCheckAdvantageDefault(actor, baseAdvantageMode);
 	const systemDamageNote = buildStarshipSystemDamageSkillCheckFlavorNote(actor);
+
+	const dialogSafeCandidates = toDialogSafeResponsibleCrewCandidates(candidatePack.candidates);
+
 	const dialogSelection = fastForward
 		? {
 			ability: entry.ability,
 			bonus: "",
 			rollMode: defaultRollMode,
-			advantageMode: forcedAdvantage ? getProficiencyAdvantageMode() : defaultAdvantageMode
+			advantageMode: forcedAdvantage ? getProficiencyAdvantageMode() : defaultAdvantageMode,
+			responsibleCrewUuid: selectedExplicitActor?.uuid ?? ""
 		}
 		: await (await import("./starship-skill-roll-config.mjs")).promptStarshipSkillRoll({
 			actor,
@@ -2140,11 +2401,52 @@ export async function rollStarshipSkill(actor, skillId, event, rollingUser, mess
 			defaultRollMode,
 			initialMode: forcedAdvantage ? getProficiencyAdvantageMode() : defaultAdvantageMode,
 			forcedAdvantage,
-			systemDamageNote
+			systemDamageNote,
+			crewPbAttributionLabel,
+			canShowCrewPbAttribution: Boolean(
+				previewActor
+					? canAttributeStarshipCrewActor(actor, previewActor, roller)
+					: roller?.isGM === true || actor?.canUserModify?.(roller, "update") === true
+			),
+			showResponsibleCrewPicker: needsPicker,
+			responsibleCrewCandidates: dialogSafeCandidates,
+			preselectedResponsibleCrewUuid
 		});
 	if ( !dialogSelection ) return null;
 
 	if ( forcedAdvantage ) dialogSelection.advantageMode = getProficiencyAdvantageMode();
+
+	if ( needsPicker ) {
+		selectedExplicitActor = resolveValidatedResponsibleCrewActor({
+			starshipActor: actor,
+			user: roller,
+			actorUuid: dialogSelection.responsibleCrewUuid
+		});
+		if ( !selectedExplicitActor ) {
+			const warnTitle = game.i18n.localize("SW5E.Starship.Roll.NoCrewPBTitle");
+			const warnBody = game.i18n.localize("SW5E.Starship.Roll.NoCrewPBNotSelected");
+			ui.notifications.warn(`${warnTitle}: ${warnBody}`);
+			return null;
+		}
+	}
+
+	const crewPbSource = resolveStarshipSkillCrewPbSource(actor, roller, {
+		mode: "roll",
+		explicitActor: selectedExplicitActor
+	});
+	const deployedRoller = crewPbSource.actor;
+	if ( selectedExplicitActor && deployedRoller?.uuid !== selectedExplicitActor.uuid ) {
+		const warnTitle = game.i18n.localize("SW5E.Starship.Roll.NoCrewPBTitle");
+		const warnBody = game.i18n.localize("SW5E.Starship.Roll.NoCrewPBNotSelected");
+		ui.notifications.warn(`${warnTitle}: ${warnBody}`);
+		return null;
+	}
+
+	const rollerPb = toFiniteNumber(deployedRoller?.system?.attributes?.prof, 0) ?? 0;
+	rollProficiencyPoints = deployedRoller
+		? computeStarshipSkillCrewProficiencyPoints(entry.proficiencyMode, rollerPb)
+		: 0;
+	rollDataProficiency = deployedRoller ? rollerPb : 0;
 
 	const selectedAbility = dialogSelection.ability in abilities ? dialogSelection.ability : entry.ability;
 	const chosenAbility = abilities[selectedAbility] ?? { mod: entry.parts.abilityMod, bonuses: { check: "" } };
@@ -2170,7 +2472,13 @@ export async function rollStarshipSkill(actor, skillId, event, rollingUser, mess
 
 	if ( starshipCrewPbUi && crewPbSource.source === "none" ) {
 		const warnTitle = game.i18n.localize("SW5E.Starship.Roll.NoCrewPBTitle");
-		const warnBody = game.i18n.localize("SW5E.Starship.Roll.NoCrewPBWarning");
+		const noCandidates = candidatePack.selectionMode === "none"
+			|| (candidatePack.selectionMode === "automatic" && !deployedRoller);
+		const warnBody = game.i18n.localize(
+			noCandidates
+				? "SW5E.Starship.Roll.NoCrewPBWarning"
+				: "SW5E.Starship.Roll.NoCrewPBNotSelected"
+		);
 		ui.notifications.warn(`${warnTitle}: ${warnBody}`);
 	}
 
@@ -2226,6 +2534,18 @@ export async function rollStarshipSkill(actor, skillId, event, rollingUser, mess
 	};
 	if ( tierMetadata && isRerollProficiencyTier(masteryTier) ) {
 		messageData.flags = { sw5e: { proficiencyTier: tierMetadata } };
+	}
+
+	// Local-only audit: selected crew identity must not enter public message metadata.
+	if (
+		deployedRoller
+		&& deployedRoller.name !== actor.name
+		&& !publicChatExcludesResponsibleCrewIdentity(messageData, {
+			name: deployedRoller.name,
+			uuid: deployedRoller.uuid
+		})
+	) {
+		console.warn("SW5E MODULE | Responsible crew identity appears in public skill message metadata.");
 	}
 
 	await roll.toMessage(messageData);

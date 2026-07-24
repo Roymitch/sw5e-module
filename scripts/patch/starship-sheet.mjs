@@ -176,6 +176,7 @@ function logStarshipCorePartDiagnostic(message, details = undefined) {
 function buildStarshipCoreRenderData(app, actor, runtime, { integrated = true, showPowerRouting = shouldShowStarshipPowerRouting(actor) } = {}) {
 	const crewRoleGroups = buildStarshipCrewRoleGroups(actor);
 	const skills = enrichStarshipSkillsForSheet(actor);
+	const skillsCrewPbAttribution = skills.find(skill => skill?.crewPbAttributionLabel)?.crewPbAttributionLabel ?? "";
 	const withIntegrated = arr => arr.map(group => ({
 		...group,
 		supportsSheetNavigation: group.supportsSheetNavigation === false
@@ -205,6 +206,7 @@ function buildStarshipCoreRenderData(app, actor, runtime, { integrated = true, s
 		summaryStrip: makeStarshipSummaryStrip(actor, { runtime }),
 		legacyNotes: getLegacyNotes(actor, { runtime }),
 		skills,
+		skillsCrewPbAttribution,
 		crew,
 		editable: actorEditable,
 		crewManageEditable,
