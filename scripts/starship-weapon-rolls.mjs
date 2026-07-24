@@ -1,10 +1,24 @@
-import { getDerivedStarshipRuntime } from "./starship-data.mjs";
+import {
+	applyStarshipAttackCrewPbInjection,
+	clearStarshipAttackFiringCrewState,
+	createStarshipAttackInvocationId,
+	getDerivedStarshipRuntime,
+	prepareStarshipAttackFiringCrew,
+	publicChatExcludesResponsibleCrewIdentity,
+	storeStarshipAttackFiringCrewState,
+	STARSHIP_ATTACK_FIRING_CREW_PB_KEY,
+	STARSHIP_ATTACK_FIRING_CREW_PREPARED_KEY,
+	STARSHIP_ATTACK_FIRING_CREW_UUID_KEY,
+	STARSHIP_ATTACK_INVOCATION_ID_KEY
+} from "./starship-data.mjs";
+import { getModuleId } from "./module-support.mjs";
 import { isSw5eStarshipActor } from "./patch/starship-movement.mjs";
 
 const STARSHIP_WEAPON_TYPE_PATTERN = /\(starship\)/i;
 const STARSHIP_LAUNCHER_TYPE_VALUES = new Set(["tertiary (starship)", "quaternary (starship)"]);
 const STARSHIP_AMMO_PAYLOAD_SUBTYPES = new Set(["ssmissile", "sstorpedo"]);
 const PLACEHOLDER_LAUNCHER_DAMAGE_PATTERN = /^0d0(?:\s*\+\s*@mod)?$/i;
+const STARSHIP_ATTACK_ROLL_CONFIG_CLASS = "sw5e-starship-attack-roll-config";
 
 function getItemDamageFormulaParts(item) {
 	return (item?.system?.damage?.parts ?? [])
@@ -205,6 +219,21 @@ function isHealDamageRollConfig(config) {
 	return config?.subject?.type === "heal";
 }
 
+/**
+ * Keep Attack Roll dialogs in a usable vertical band (stock uses clientY-80, often near top).
+ * @param {Event|null|undefined} event
+ * @returns {{ top: number, left: number }}
+ */
+export function resolveStarshipAttackRollDialogPosition(event=null) {
+	const viewH = Number(globalThis.window?.innerHeight) || 800;
+	const viewW = Number(globalThis.window?.innerWidth) || 1200;
+	const clientY = Number(event?.clientY);
+	const rawTop = Number.isFinite(clientY) ? clientY - 80 : Math.round(viewH * 0.2);
+	const top = Math.max(48, Math.min(rawTop, Math.max(48, viewH - 360)));
+	const left = Math.max(48, viewW - 710);
+	return { top, left };
+}
+
 function onStarshipWeaponPreRollAttack(config) {
 	if ( !isAttackRollConfig(config) ) return;
 	const item = resolveRollConfigItem(config);
@@ -212,6 +241,176 @@ function onStarshipWeaponPreRollAttack(config) {
 	if ( !item || !actor || !isSw5eStarshipActor(actor) ) return;
 	if ( !shouldUseStarshipWisAttackAbility(item) ) return;
 	applyStarshipWeaponWisModifierToRollConfig(config, getStarshipWisdomModifier(actor));
+}
+
+/**
+ * After stock attack parts are built, inject firing-crew PB once when classified safe.
+ * @param {object} processConfig
+ * @param {object} rollConfig
+ */
+function onStarshipWeaponPostBuildAttackRollConfig(processConfig, rollConfig) {
+	if ( !processConfig || !rollConfig ) return;
+	if ( !(processConfig.hookNames ?? []).some(name => /^attack$/i.test(String(name ?? ""))) ) return;
+	const item = resolveRollConfigItem(processConfig);
+	const actor = resolveRollConfigActor(processConfig);
+	if ( !item || !actor || !isSw5eStarshipActor(actor) ) return;
+	if ( !isStarshipAttackPayloadItem(item) ) return;
+	applyStarshipAttackCrewPbInjection(processConfig, rollConfig);
+}
+
+/**
+ * Assert public attack chat metadata does not expose the firing crew identity.
+ * @param {object} messageConfig
+ * @param {{ name?: string, uuid?: string }} identity
+ */
+function auditStarshipAttackPublicChat(messageConfig, identity) {
+	const data = messageConfig?.data ?? {};
+	if ( publicChatExcludesResponsibleCrewIdentity(data, identity) ) return;
+	console.warn("SW5E MODULE | Starship attack public chat leaked firing-crew identity; stripping flavor/flags identity is not applied automatically.", {
+		identity,
+		flavor: data.flavor,
+		flags: data.flags
+	});
+}
+
+/**
+ * Await firing-crew resolution before stock AttackActivity.rollAttack continues.
+ * @this {AttackActivity}
+ * @param {Function} wrapped
+ * @param {object} [config]
+ * @param {object} [dialog]
+ * @param {object} [message]
+ */
+async function wrapStarshipAttackActivityRollAttack(wrapped, config={}, dialog={}, message={}) {
+	const item = this?.item;
+	const actor = this?.actor;
+	if ( !item || !actor || !isSw5eStarshipActor(actor) || !isStarshipAttackPayloadItem(item) ) {
+		return wrapped(config, dialog, message);
+	}
+	if ( config?.[STARSHIP_ATTACK_FIRING_CREW_PREPARED_KEY] ) {
+		return wrapped(config, dialog, message);
+	}
+
+	const invocationId = createStarshipAttackInvocationId();
+	let prep;
+	try {
+		prep = await prepareStarshipAttackFiringCrew({
+			starshipActor: actor,
+			event: config?.event ?? null,
+			user: globalThis.game?.user,
+			explicitActor: config?.sw5eAttackExplicitActor ?? null
+		});
+	} catch ( err ) {
+		clearStarshipAttackFiringCrewState(invocationId);
+		console.error("SW5E MODULE | Starship attack firing-crew preparation failed.", err);
+		throw err;
+	}
+
+	if ( prep.cancelled ) {
+		clearStarshipAttackFiringCrewState(invocationId);
+		return null;
+	}
+
+	storeStarshipAttackFiringCrewState(invocationId, {
+		actorUuid: prep.explicitActor?.uuid ?? "",
+		proficiencyBonus: prep.proficiencyBonus,
+		source: prep.source,
+		selectionMode: prep.selectionMode
+	});
+
+	const nextConfig = foundry.utils.mergeObject({}, config, { inplace: false });
+	nextConfig[STARSHIP_ATTACK_FIRING_CREW_PREPARED_KEY] = true;
+	nextConfig[STARSHIP_ATTACK_INVOCATION_ID_KEY] = invocationId;
+	nextConfig[STARSHIP_ATTACK_FIRING_CREW_UUID_KEY] = prep.explicitActor?.uuid ?? "";
+	nextConfig[STARSHIP_ATTACK_FIRING_CREW_PB_KEY] = Number.isFinite(Number(prep.proficiencyBonus))
+		? Number(prep.proficiencyBonus)
+		: 0;
+
+	const position = resolveStarshipAttackRollDialogPosition(config?.event);
+	const nextDialog = foundry.utils.mergeObject({}, dialog, { inplace: false });
+	nextDialog.options = foundry.utils.mergeObject({}, nextDialog.options ?? {}, { inplace: false });
+	const existingClasses = Array.isArray(nextDialog.options.classes)
+		? nextDialog.options.classes
+		: (typeof nextDialog.options.classes === "string" ? [nextDialog.options.classes] : []);
+	nextDialog.options.classes = Array.from(new Set([...existingClasses, STARSHIP_ATTACK_ROLL_CONFIG_CLASS]));
+	nextDialog.options.position = foundry.utils.mergeObject(
+		{},
+		nextDialog.options.position ?? {},
+		{ inplace: false }
+	);
+	nextDialog.options.position.top = position.top;
+	nextDialog.options.position.left = position.left;
+
+	const identity = {
+		name: prep.explicitActor?.name ?? "",
+		uuid: prep.explicitActor?.uuid ?? ""
+	};
+	const nextMessage = foundry.utils.mergeObject({}, message, { inplace: false });
+	auditStarshipAttackPublicChat(nextMessage, identity);
+
+	try {
+		const rolls = await wrapped(nextConfig, nextDialog, nextMessage);
+		if ( rolls?.length && nextMessage?.data ) {
+			auditStarshipAttackPublicChat(nextMessage, identity);
+		}
+		return rolls;
+	} finally {
+		clearStarshipAttackFiringCrewState(invocationId);
+	}
+}
+
+/** Module-local guard: set only after successful libWrapper.register. */
+let starshipAttackRollWrapperRegistered = false;
+
+const STARSHIP_ATTACK_ROLL_ATTACK_TARGET = "dnd5e.documents.activity.AttackActivity.prototype.rollAttack";
+
+/**
+ * Register firing-crew WRAPPER using the same lifecycle as working AttackActivity
+ * wraps (power-bonuses `getAttackData`: init-time `libWrapper.register`, no
+ * `libWrapper.ready` gate, no late `libWrapper.Ready` once-listener).
+ *
+ * If init runs before `AttackActivity.prototype.rollAttack` is callable, retry
+ * once on Foundry `ready` (not libWrapper.Ready). Guard stays false until
+ * `libWrapper.register` succeeds.
+ */
+function registerStarshipAttackCrewPbRollAttackWrapper() {
+	if ( starshipAttackRollWrapperRegistered ) return;
+
+	if ( typeof globalThis.libWrapper?.register !== "function" ) {
+		console.warn("SW5E MODULE | libWrapper not available; starship attack firing-crew wrapper not registered.");
+		return;
+	}
+
+	const rollAttack = globalThis.dnd5e?.documents?.activity?.AttackActivity?.prototype?.rollAttack;
+	if ( typeof rollAttack !== "function" ) {
+		console.warn("SW5E MODULE | AttackActivity.prototype.rollAttack unavailable; starship attack firing-crew wrapper not registered.");
+		return;
+	}
+
+	try {
+		libWrapper.register(
+			getModuleId(),
+			STARSHIP_ATTACK_ROLL_ATTACK_TARGET,
+			wrapStarshipAttackActivityRollAttack,
+			"WRAPPER"
+		);
+		starshipAttackRollWrapperRegistered = true;
+	} catch ( err ) {
+		console.warn("SW5E MODULE | Failed to register starship attack firing-crew rollAttack wrapper.", err);
+	}
+}
+
+/**
+ * Ensure registration: try immediately (init), then one Foundry `ready` retry if
+ * needed. If `ready` already fired (hot reload / late call), retry immediately —
+ * do not subscribe late to an event that will never fire again.
+ */
+function ensureStarshipAttackCrewPbRollAttackWrapper() {
+	registerStarshipAttackCrewPbRollAttackWrapper();
+	if ( starshipAttackRollWrapperRegistered ) return;
+	const retry = () => registerStarshipAttackCrewPbRollAttackWrapper();
+	if ( globalThis.game?.ready ) retry();
+	else Hooks.once("ready", retry);
 }
 
 function onStarshipWeaponPreRollDamage(config) {
@@ -237,5 +436,7 @@ function onStarshipWeaponPreRollDamage(config) {
 /** Register global Starship weapon attack/damage parity hooks. */
 export function registerStarshipWeaponRollHooks() {
 	Hooks.on("dnd5e.preRollAttack", onStarshipWeaponPreRollAttack);
+	Hooks.on("dnd5e.postBuildAttackRollConfig", onStarshipWeaponPostBuildAttackRollConfig);
 	Hooks.on("dnd5e.preRollDamage", onStarshipWeaponPreRollDamage);
+	ensureStarshipAttackCrewPbRollAttackWrapper();
 }

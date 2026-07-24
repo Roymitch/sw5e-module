@@ -1,0 +1,13 @@
+<section class="sw5e-starship-attack-crew-picker-content">
+	<div class="form-group">
+		<label>{{responsibleCrewLabel}}</label>
+		<div class="form-fields">
+			<select name="responsibleCrewUuid">
+				<option value="">{{placeholderLabel}}</option>
+				{{#each candidates}}
+				<option value="{{actorUuid}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+				{{/each}}
+			</select>
+		</div>
+	</div>
+</section>

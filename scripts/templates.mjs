@@ -27,7 +27,8 @@ async function preloadHandlebarsTemplates() {
 		getModulePath("templates/starship-sidebar-destruction-saves.hbs"),
 		getModulePath("templates/starship-sidebar-movement.hbs"),
 		getModulePath("templates/starship-sidebar-damage-reduction.hbs"),
-		getModulePath("templates/starship-warnings-dialog.hbs")
+		getModulePath("templates/starship-warnings-dialog.hbs"),
+		getModulePath("templates/starship-attack-crew-picker.hbs")
 	];
 
 	const paths = {};

@@ -1720,6 +1720,349 @@ export function registerStarshipSavePilotPbHooks() {
 	Hooks.on("dnd5e.preRollSavingThrow", injectStarshipSavePilotPbIntoRollConfig);
 }
 
+/** Roll-config marker / formula key: firing-crew attack PB (Bug 29 attack slice). */
+export const STARSHIP_ATTACK_CREW_PB_INJECTED_KEY = "sw5eCrewAttackPbInjected";
+export const STARSHIP_ATTACK_CREW_PB_DATA_KEY = "sw5eCrewAttackProf";
+export const STARSHIP_ATTACK_CREW_PB_PART = `@${STARSHIP_ATTACK_CREW_PB_DATA_KEY}`;
+/** Process-config key: firing crew prepared for this attack roll only. */
+export const STARSHIP_ATTACK_FIRING_CREW_PREPARED_KEY = "sw5eAttackFiringCrewPrepared";
+export const STARSHIP_ATTACK_FIRING_CREW_PB_KEY = "sw5eAttackFiringCrewPb";
+export const STARSHIP_ATTACK_FIRING_CREW_UUID_KEY = "sw5eAttackFiringCrewActorUuid";
+/** Unique per-attack invocation id correlating wrapper prep → postBuild inject. */
+export const STARSHIP_ATTACK_INVOCATION_ID_KEY = "sw5eAttackInvocationId";
+const STARSHIP_ATTACK_NONZERO_PROF_WARNED_KEY = "sw5eCrewAttackPbNonzeroProfWarned";
+
+/**
+ * Roll-scoped firing-crew state. Keyed by invocation id — never Actor/User/Item flags.
+ * @type {Map<string, { actorUuid: string, proficiencyBonus: number, source: string, selectionMode: string }>}
+ */
+const starshipAttackFiringCrewByInvocation = new Map();
+
+/**
+ * @returns {string}
+ */
+export function createStarshipAttackInvocationId() {
+	return `sw5e-atk-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+/**
+ * @param {string} invocationId
+ * @param {{ actorUuid?: string, proficiencyBonus?: number, source?: string, selectionMode?: string }} state
+ */
+export function storeStarshipAttackFiringCrewState(invocationId, state={}) {
+	const id = String(invocationId ?? "").trim();
+	if ( !id ) return;
+	starshipAttackFiringCrewByInvocation.set(id, {
+		actorUuid: String(state.actorUuid ?? "").trim(),
+		proficiencyBonus: Number.isFinite(Number(state.proficiencyBonus)) ? Number(state.proficiencyBonus) : 0,
+		source: String(state.source ?? "none"),
+		selectionMode: String(state.selectionMode ?? "none")
+	});
+}
+
+/**
+ * @param {string} invocationId
+ * @returns {{ actorUuid: string, proficiencyBonus: number, source: string, selectionMode: string }|null}
+ */
+export function peekStarshipAttackFiringCrewState(invocationId) {
+	const id = String(invocationId ?? "").trim();
+	if ( !id ) return null;
+	return starshipAttackFiringCrewByInvocation.get(id) ?? null;
+}
+
+/**
+ * @param {string} invocationId
+ */
+export function clearStarshipAttackFiringCrewState(invocationId) {
+	const id = String(invocationId ?? "").trim();
+	if ( !id ) return;
+	starshipAttackFiringCrewByInvocation.delete(id);
+}
+/**
+ * Classify whether firing-crew PB may be injected onto a built attack roll config.
+ * Safe contract: exactly one crew proficiency contribution; never silently discard nonzero `@prof`.
+ *
+ * @param {{
+ *   parts?: string[],
+ *   data?: object,
+ *   crewProficiency?: number|null,
+ *   hasResolvedFiringCrew?: boolean,
+ *   actorProf?: number|null
+ * }} args
+ * @returns {{
+ *   decision: "inject"|"skip-already-present"|"skip-nonzero-stock-prof"|"skip-no-crew"|"skip-no-finite-pb",
+ *   stockProfValue: number,
+ *   stockProfIsZero: boolean,
+ *   hasDedicatedCrewPart: boolean,
+ *   reason: string
+ * }}
+ */
+export function classifyStarshipAttackCrewPbInjection({
+	parts=[],
+	data={},
+	crewProficiency=null,
+	hasResolvedFiringCrew=false,
+	actorProf=0
+}={}) {
+	const partList = Array.isArray(parts) ? parts.map(part => String(part ?? "")) : [];
+	const hasDedicatedCrewPart = partList.includes(STARSHIP_ATTACK_CREW_PB_PART)
+		|| Number.isFinite(Number(data?.[STARSHIP_ATTACK_CREW_PB_DATA_KEY]));
+	const stockProfValue = Number(data?.prof);
+	const normalizedStockProf = Number.isFinite(stockProfValue) ? stockProfValue : 0;
+	const stockProfIsZero = normalizedStockProf === 0;
+	const actorProfValue = Number(actorProf);
+	const base = {
+		stockProfValue: normalizedStockProf,
+		stockProfIsZero,
+		hasDedicatedCrewPart,
+		actorProf: Number.isFinite(actorProfValue) ? actorProfValue : 0
+	};
+
+	if ( hasDedicatedCrewPart ) {
+		return {
+			...base,
+			decision: "skip-already-present",
+			reason: "dedicated firing-crew PB part or data key already present"
+		};
+	}
+	if ( !hasResolvedFiringCrew ) {
+		return {
+			...base,
+			decision: "skip-no-crew",
+			reason: "no resolved firing crew Actor"
+		};
+	}
+	const pb = Number(crewProficiency);
+	if ( !Number.isFinite(pb) ) {
+		return {
+			...base,
+			decision: "skip-no-finite-pb",
+			reason: "firing crew PB is not finite"
+		};
+	}
+	if ( !stockProfIsZero ) {
+		return {
+			...base,
+			decision: "skip-nonzero-stock-prof",
+			reason: "stock @prof is unexpectedly nonzero; investigate before mutate"
+		};
+	}
+	return {
+		...base,
+		decision: "inject",
+		reason: "stock @prof is zero; inject dedicated firing-crew PB once"
+	};
+}
+
+/**
+ * Apply classified firing-crew PB onto a per-roll attack config (postBuild).
+ * Does not strip stock `@prof`. Soft-warns once per process when nonzero `@prof` blocks inject.
+ *
+ * @param {object} processConfig
+ * @param {object} rollConfig
+ * @returns {{ injected: boolean, decision: string, classification: object|null }}
+ */
+export function applyStarshipAttackCrewPbInjection(processConfig, rollConfig) {
+	if ( !processConfig || !rollConfig ) {
+		return { injected: false, decision: "skip-no-config", classification: null };
+	}
+	if ( !(processConfig.hookNames ?? []).some(name => /^attack$/i.test(String(name ?? ""))) ) {
+		return { injected: false, decision: "skip-not-attack", classification: null };
+	}
+
+	const invocationId = String(processConfig[STARSHIP_ATTACK_INVOCATION_ID_KEY] ?? "").trim();
+	const stored = invocationId ? peekStarshipAttackFiringCrewState(invocationId) : null;
+
+	let firingUuid = String(processConfig[STARSHIP_ATTACK_FIRING_CREW_UUID_KEY] ?? "").trim();
+	let crewPb = Number(processConfig[STARSHIP_ATTACK_FIRING_CREW_PB_KEY]);
+	if ( !firingUuid && stored?.actorUuid ) {
+		firingUuid = stored.actorUuid;
+		crewPb = stored.proficiencyBonus;
+		processConfig[STARSHIP_ATTACK_FIRING_CREW_UUID_KEY] = firingUuid;
+		processConfig[STARSHIP_ATTACK_FIRING_CREW_PB_KEY] = crewPb;
+	}
+
+	const subject = processConfig.subject;
+	const actor = subject?.actor
+		?? (subject?.documentName === "Actor" ? subject : null)
+		?? subject?.item?.actor
+		?? null;
+	const actorProf = toFiniteNumber(actor?.system?.attributes?.prof, 0) ?? 0;
+
+	rollConfig.parts = Array.isArray(rollConfig.parts) ? [...rollConfig.parts] : [];
+	rollConfig.data = foundry.utils.mergeObject({}, rollConfig.data ?? {}, { inplace: false });
+
+	const classification = classifyStarshipAttackCrewPbInjection({
+		parts: rollConfig.parts,
+		data: rollConfig.data,
+		crewProficiency: crewPb,
+		hasResolvedFiringCrew: Boolean(firingUuid),
+		actorProf
+	});
+
+	if ( classification.decision === "skip-nonzero-stock-prof" ) {
+		if ( !processConfig[STARSHIP_ATTACK_NONZERO_PROF_WARNED_KEY] ) {
+			processConfig[STARSHIP_ATTACK_NONZERO_PROF_WARNED_KEY] = true;
+			const title = globalThis.game?.i18n?.localize?.("SW5E.Starship.Attack.NonzeroStockProfTitle")
+				?? "Starship attack";
+			const body = globalThis.game?.i18n?.localize?.("SW5E.Starship.Attack.NonzeroStockProfWarning")
+				?? "Stock proficiency (@prof) is unexpectedly nonzero; firing-crew PB was not added. Investigate before changing roll parts.";
+			console.warn(`SW5E MODULE | ${title}: ${body}`, {
+				stockProfValue: classification.stockProfValue,
+				actorProf: classification.actorProf,
+				parts: rollConfig.parts
+			});
+			globalThis.ui?.notifications?.warn?.(`${title}: ${body}`);
+		}
+		return { injected: false, decision: classification.decision, classification };
+	}
+
+	if ( classification.decision !== "inject" ) {
+		return { injected: false, decision: classification.decision, classification };
+	}
+
+	rollConfig.parts.push(STARSHIP_ATTACK_CREW_PB_PART);
+	rollConfig.data[STARSHIP_ATTACK_CREW_PB_DATA_KEY] = crewPb;
+	processConfig[STARSHIP_ATTACK_CREW_PB_INJECTED_KEY] = true;
+	return { injected: true, decision: "inject", classification };
+}
+
+/**
+ * Resolve firing crew for a starship attack (29A + 29E-P). Feeds `explicitActor` — no second resolver.
+ *
+ * @param {{
+ *   starshipActor: Actor,
+ *   event?: Event|null,
+ *   user?: User,
+ *   explicitActor?: Actor|null
+ * }} args
+ * @returns {Promise<{
+ *   cancelled: boolean,
+ *   explicitActor: Actor|null,
+ *   source: string,
+ *   proficiencyBonus: number,
+ *   selectionMode: "none"|"automatic"|"picker"
+ * }>}
+ */
+export async function prepareStarshipAttackFiringCrew({
+	starshipActor,
+	event=null,
+	user=globalThis.game?.user,
+	explicitActor=null
+}={}) {
+	const empty = {
+		cancelled: false,
+		explicitActor: null,
+		source: "none",
+		proficiencyBonus: 0,
+		selectionMode: "none"
+	};
+	if ( !isStarshipFlagVehicle(starshipActor) || !user ) return empty;
+
+	const candidatePack = buildStarshipResponsibleCrewCandidates({
+		starshipActor,
+		user
+	});
+	const priorSource = resolveStarshipResponsibleCrewActor(starshipActor, user, {
+		mode: "roll",
+		explicitActor: explicitActor ?? null
+	});
+	const priorUuid = priorSource?.actor?.uuid ?? "";
+	const priorPermitted = Boolean(
+		priorUuid && candidatePack.candidates.some(candidate => candidate.actorUuid === priorUuid)
+	);
+	const preselectedResponsibleCrewUuid = priorPermitted ? priorUuid : "";
+
+	let selectedExplicitActor = null;
+	if ( candidatePack.selectionMode === "automatic" ) {
+		const autoUuid = candidatePack.automaticActor?.uuid ?? candidatePack.candidates[0]?.actorUuid ?? "";
+		selectedExplicitActor = resolveValidatedResponsibleCrewActor({
+			starshipActor,
+			user,
+			actorUuid: autoUuid
+		});
+	} else if ( candidatePack.selectionMode === "none" ) {
+		selectedExplicitActor = null;
+	} else if ( explicitActor ) {
+		selectedExplicitActor = resolveValidatedResponsibleCrewActor({
+			starshipActor,
+			user,
+			actorUuid: explicitActor?.uuid ?? ""
+		});
+	}
+
+	const needsPicker = candidatePack.selectionMode === "picker";
+
+	if ( needsPicker ) {
+		const dialogSafeCandidates = toDialogSafeResponsibleCrewCandidates(candidatePack.candidates);
+		const { promptStarshipAttackCrewPicker } = await import("./starship-attack-crew-picker.mjs");
+		const dialogSelection = await promptStarshipAttackCrewPicker({
+			actor: starshipActor,
+			responsibleCrewCandidates: dialogSafeCandidates,
+			preselectedResponsibleCrewUuid
+		});
+		if ( !dialogSelection ) {
+			return {
+				cancelled: true,
+				explicitActor: null,
+				source: "none",
+				proficiencyBonus: 0,
+				selectionMode: "picker"
+			};
+		}
+		selectedExplicitActor = resolveValidatedResponsibleCrewActor({
+			starshipActor,
+			user,
+			actorUuid: dialogSelection.responsibleCrewUuid
+		});
+		if ( !selectedExplicitActor ) {
+			const warnTitle = globalThis.game?.i18n?.localize?.("SW5E.Starship.Attack.NoCrewPBTitle")
+				?? "Starship attack";
+			const warnBody = globalThis.game?.i18n?.localize?.("SW5E.Starship.Roll.NoCrewPBNotSelected")
+				?? "No qualified crew member was selected for this roll.";
+			globalThis.ui?.notifications?.warn?.(`${warnTitle}: ${warnBody}`);
+			return {
+				cancelled: true,
+				explicitActor: null,
+				source: "none",
+				proficiencyBonus: 0,
+				selectionMode: "picker"
+			};
+		}
+	}
+
+	const crewPbSource = resolveStarshipResponsibleCrewActor(starshipActor, user, {
+		mode: "roll",
+		explicitActor: selectedExplicitActor
+	});
+	const deployed = crewPbSource.actor;
+	if ( selectedExplicitActor && deployed?.uuid !== selectedExplicitActor.uuid ) {
+		const warnTitle = globalThis.game?.i18n?.localize?.("SW5E.Starship.Attack.NoCrewPBTitle")
+			?? "Starship attack";
+		const warnBody = globalThis.game?.i18n?.localize?.("SW5E.Starship.Roll.NoCrewPBNotSelected")
+			?? "No qualified crew member was selected for this roll.";
+		globalThis.ui?.notifications?.warn?.(`${warnTitle}: ${warnBody}`);
+		return {
+			cancelled: true,
+			explicitActor: null,
+			source: "none",
+			proficiencyBonus: 0,
+			selectionMode: candidatePack.selectionMode
+		};
+	}
+
+	const proficiencyBonus = deployed
+		? (toFiniteNumber(deployed.system?.attributes?.prof, NaN) ?? NaN)
+		: NaN;
+	return {
+		cancelled: false,
+		explicitActor: deployed,
+		source: crewPbSource.source,
+		proficiencyBonus: Number.isFinite(proficiencyBonus) ? proficiencyBonus : 0,
+		selectionMode: candidatePack.selectionMode
+	};
+}
+
 /**
  * Exactly one canvas-controlled Token Actor that qualifies (local client selection only).
  * @param {Actor} starshipActor
@@ -1994,7 +2337,7 @@ function getStarshipAdvantageMode(event) {
 	return normal;
 }
 
-function isStarshipFastForward(event) {
+export function isStarshipFastForward(event) {
 	return Boolean(event?.shiftKey || event?.altKey || event?.ctrlKey || event?.metaKey);
 }
 
