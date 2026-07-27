@@ -1166,11 +1166,12 @@ function registerStarshipVehiclePartContextWrapper() {
 }
 
 /**
- * Phase 1A Bug 1: SW5E starship Actor drops deploy via deployStarshipCrew (role crew).
+ * Phase 1A Bug 1 + 1A′: SW5E starship Actor drops deploy via deployStarshipCrew (role crew).
  * Consumes the Actor already resolved by Foundry ActorSheet._onDrop → fromDropData.
  * Registered as MIXED because SW5E starships intentionally short-circuit stock (no wrapped call);
  * non-starship vehicles still chain via wrapped(...). WRAPPER is invalid for that pattern.
- * Alt→hidden membership is deferred to Phase 1A′ / Bug 6 (no runtime Alt handling here).
+ * Phase 1A′: GM Alt+drop passes `{ hidden: true }` into the storage-abstracted deploy API
+ * (no direct crewProfiles writes here). Non-GM Alt+drop matches plain visible drop.
  */
 function registerStarshipCrewDropWrapper() {
 	if ( starshipCrewDropWrapped ) return;
@@ -1188,7 +1189,13 @@ function registerStarshipCrewDropWrapper() {
 				return;
 			}
 
-			const ok = await deployStarshipCrew(starship, actor, "crew");
+			const hiddenIntent = event?.altKey === true && globalThis.game?.user?.isGM === true;
+			const ok = await deployStarshipCrew(
+				starship,
+				actor,
+				"crew",
+				hiddenIntent ? { hidden: true } : undefined
+			);
 			if ( ok !== true ) warnStarshipActorUpdateDenied();
 		}, "MIXED");
 	} catch ( err ) {

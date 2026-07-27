@@ -400,13 +400,14 @@ function buildMembershipHiddenTargetProfile(shapes, hidden) {
 }
 
 /**
- * Persist `crewProfiles.*.hidden` for one Actor UUID (preserve customRole + siblings).
+ * Compose a membership-hidden write without touching Actor documents.
+ * Callers merge `narrow` updates into a larger starship.update payload when possible.
  * @param {Actor} starship
  * @param {string} actorUuid
  * @param {boolean} hidden
- * @returns {Promise<{ ok: true }|{ ok: false, reason: string }>}
+ * @returns {{ mode: "noop" }|{ mode: "narrow", update: object }|{ mode: "replace", cleaned: Record<string, object> }}
  */
-async function persistCrewMembershipHidden(starship, actorUuid, hidden) {
+function composeCrewMembershipHiddenWrite(starship, actorUuid, hidden) {
 	const rawProfiles = cloneDeep(starship?.flags?.sw5e?.starship?.crewProfiles ?? {});
 	const shapes = locateCrewProfileShapes(rawProfiles, actorUuid);
 	const storageKey = toCrewProfileStorageKey(actorUuid);
@@ -422,8 +423,7 @@ async function persistCrewMembershipHidden(starship, actorUuid, hidden) {
 		});
 		if ( hasContent ) cleaned[storageKey] = targetProfile;
 		else delete cleaned[storageKey];
-		const replaced = await replaceCrewProfilesMap(starship, cleaned);
-		return replaced ? { ok: true } : { ok: false, reason: "update" };
+		return { mode: "replace", cleaned };
 	}
 
 	const update = {};
@@ -438,9 +438,26 @@ async function persistCrewMembershipHidden(starship, actorUuid, hidden) {
 		update[`flags.sw5e.starship.crewProfiles.Actor.-=${shapes.actorId}`] = null;
 	}
 
-	if ( !Object.keys(update).length ) return { ok: true };
+	if ( !Object.keys(update).length ) return { mode: "noop" };
+	return { mode: "narrow", update };
+}
+
+/**
+ * Persist `crewProfiles.*.hidden` for one Actor UUID (preserve customRole + siblings).
+ * @param {Actor} starship
+ * @param {string} actorUuid
+ * @param {boolean} hidden
+ * @returns {Promise<{ ok: true }|{ ok: false, reason: string }>}
+ */
+async function persistCrewMembershipHidden(starship, actorUuid, hidden) {
+	const composed = composeCrewMembershipHiddenWrite(starship, actorUuid, hidden);
+	if ( composed.mode === "noop" ) return { ok: true };
+	if ( composed.mode === "replace" ) {
+		const replaced = await replaceCrewProfilesMap(starship, composed.cleaned);
+		return replaced ? { ok: true } : { ok: false, reason: "update" };
+	}
 	try {
-		await starship.update(update);
+		await starship.update(composed.update);
 	} catch ( _err ) {
 		return { ok: false, reason: "update" };
 	}
@@ -1067,13 +1084,35 @@ export async function undeployStarshipCrew(starshipSubject, crewSubject, roles =
 	return true;
 }
 
-export async function deployStarshipCrew(starshipSubject, crewSubject, role) {
+/**
+ * Deploy a crew Actor to a Starship role.
+ * Optional `options.hidden === true` requests Bug 6 membership concealment via the
+ * storage-abstracted profile writer (GM-only). Non-GM hidden intent is ignored
+ * (visible deploy still proceeds when otherwise authorized).
+ * Already-deployed + GM hidden: hide in place without role duplication.
+ * New deploy + GM hidden: prefer one starship.update covering membership + profile.
+ * @param {Actor|string} starshipSubject
+ * @param {Actor|string} crewSubject
+ * @param {string} role
+ * @param {{ hidden?: boolean }} [options]
+ * @returns {Promise<boolean>}
+ */
+export async function deployStarshipCrew(starshipSubject, crewSubject, role, options={}) {
 	const starship = resolveActorDocument(starshipSubject);
 	const crewActor = resolveActorDocument(crewSubject);
 	if ( !STARSHIP_DEPLOYMENT_ROLES.includes(role) ) throw new Error(`Unsupported crew deployment role: ${role}`);
 
 	const writeSet = resolveDeployWriteSet(starship, crewActor, role);
 	if ( !writeSet.ok || !canUpdateAllActors(writeSet.actors) ) return false;
+
+	const crewUuid = crewActor.uuid;
+	const applyHidden = options?.hidden === true && globalThis.game?.user?.isGM === true;
+
+	// Phase 1A′: already aboard + GM hidden intent → hide existing membership only.
+	if ( applyHidden && isStarshipCrewMemberUuid(starship, crewUuid) ) {
+		const hideResult = await setStarshipCrewMembershipHidden(starship, crewUuid, true);
+		return hideResult?.ok === true;
+	}
 
 	const priorAssignment = getCrewDeploymentFlag(crewActor);
 	if ( priorAssignment?.starshipUuid && (priorAssignment.starshipUuid !== starship.uuid) ) {
@@ -1084,7 +1123,6 @@ export async function deployStarshipCrew(starshipSubject, crewSubject, role) {
 	}
 
 	const deployment = cloneStarshipDeployment(starship);
-	const crewUuid = crewActor.uuid;
 	const displacedPilotUuid = (role === "pilot" && deployment.pilot.value && (deployment.pilot.value !== crewUuid))
 		? deployment.pilot.value
 		: null;
@@ -1093,7 +1131,24 @@ export async function deployStarshipCrew(starshipSubject, crewSubject, role) {
 	if ( role === "crew" || role === "pilot" ) deployment.crew.items.add(crewUuid);
 	if ( role === "passenger" ) deployment.passenger.items.add(crewUuid);
 
-	await starship.update(buildDeploymentUpdateData(deployment));
+	const updateData = buildDeploymentUpdateData(deployment);
+	let pendingProfileReplace = null;
+	if ( applyHidden ) {
+		const composed = composeCrewMembershipHiddenWrite(starship, crewUuid, true);
+		if ( composed.mode === "narrow" ) Object.assign(updateData, composed.update);
+		else if ( composed.mode === "replace" ) pendingProfileReplace = composed.cleaned;
+	}
+
+	await starship.update(updateData);
+	if ( pendingProfileReplace ) {
+		const replaced = await replaceCrewProfilesMap(starship, pendingProfileReplace);
+		if ( !replaced ) return false;
+	}
+	if ( applyHidden && getStarshipCrewMembershipHidden(starship, crewUuid) !== true ) {
+		console.debug("SW5E MODULE | Deploy-with-hidden readback failed", { actorUuid: crewUuid });
+		return false;
+	}
+
 	await updateCrewDeploymentFlag(crewActor, starship, getDeploymentRolesForUuid(deployment, crewUuid));
 
 	if ( displacedPilotUuid && (displacedPilotUuid !== crewUuid) ) {
