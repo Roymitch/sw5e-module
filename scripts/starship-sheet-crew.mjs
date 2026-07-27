@@ -9,15 +9,20 @@ import {
 	buildVehicleStarshipCrewContext,
 	canCurrentUserDeployStarshipCrewRole,
 	canCurrentUserUndeployStarshipCrew,
+	adjustStarshipCrewMembershipQuantity,
 	deployStarshipCrew,
 	deployStarshipCrewBatch,
+	findStarshipCrewMembership,
 	getStarshipCrewCustomRole,
+	getStarshipCrewCustomRoleForMembership,
 	getStarshipCrewMembershipHidden,
 	isStarshipCrewMemberUuid,
 	partitionCrewRosterGroups,
+	resolveStarshipCrewMemberships,
 	setStarshipCrewCustomRole,
 	setStarshipCrewMembershipHidden,
-	undeployStarshipCrew
+	undeployStarshipCrew,
+	undeployStarshipCrewMembership
 } from "./starship-character.mjs";
 import {
 	getCharacterDeploymentSummary,
@@ -393,13 +398,16 @@ export function enrichCrewContextForSheetSearch(crewContext, { collapseMap = nul
 	const enrichedRoster = roster.map(record => {
 		const actor = resolveCrewActorFromUuid(record?.uuid);
 		const deploymentAssignmentLabel = resolveDeploymentAssignmentLabel(actor);
-		const customRole = ship && record?.uuid ? getStarshipCrewCustomRole(ship, record.uuid) : "";
+		const customRole = ship && record?.membershipId
+			? getStarshipCrewCustomRoleForMembership(ship, record.membershipId, record.uuid)
+			: (ship && record?.uuid ? getStarshipCrewCustomRole(ship, record.uuid) : "");
 		const assignmentSubtitle = deploymentAssignmentLabel || customRole || "";
 		const enriched = {
 			...record,
 			deploymentAssignmentLabel,
 			customRole,
 			assignmentSubtitle,
+			showQuantity: record?.kind === "aggregate" || Number(record?.quantity) > 1,
 			...deriveCrewRosterSortFields({
 				...record,
 				deploymentAssignmentLabel
@@ -685,12 +693,21 @@ export async function openStarshipCrewCustomRoleDialog({ starshipActor, actorUui
 		notifyStarshipCrewCustomRoleFailure("permission");
 		return { ok: false, reason: "permission" };
 	}
-	if ( !isStarshipCrewMemberUuid(starshipActor, uuid) ) {
+	const membership = findStarshipCrewMembership(starshipActor, uuid)
+		?? resolveStarshipCrewMemberships(starshipActor).find(m => m.sourceActorUuid === uuid);
+	if ( !membership && !isStarshipCrewMemberUuid(starshipActor, uuid) ) {
 		notifyStarshipCrewCustomRoleFailure("membership");
 		return { ok: false, reason: "membership" };
 	}
 
-	const current = getStarshipCrewCustomRole(starshipActor, uuid);
+	const writeRef = membership?.membershipId ?? uuid;
+	const current = membership
+		? getStarshipCrewCustomRoleForMembership(
+			starshipActor,
+			membership.membershipId,
+			membership.sourceActorUuid
+		)
+		: getStarshipCrewCustomRole(starshipActor, uuid);
 	const title = localizeOrFallback("SW5E.StarshipCrewCustomRoleDialogTitle", "Custom Role");
 	const fieldLabel = localizeOrFallback("SW5E.StarshipCrewCustomRoleLabel", "Custom Role");
 	const content = `
@@ -725,12 +742,13 @@ export async function openStarshipCrewCustomRoleDialog({ starshipActor, actorUui
 						notifyStarshipCrewCustomRoleFailure("permission");
 						return { ok: false, reason: "permission" };
 					}
-					if ( !isStarshipCrewMemberUuid(starshipActor, uuid) ) {
+					const sourceUuid = membership?.sourceActorUuid ?? uuid;
+					if ( !isStarshipCrewMemberUuid(starshipActor, sourceUuid) ) {
 						notifyStarshipCrewCustomRoleFailure("membership");
 						return { ok: false, reason: "membership" };
 					}
 
-					const writeResult = await setStarshipCrewCustomRole(starshipActor, uuid, input.value);
+					const writeResult = await setStarshipCrewCustomRole(starshipActor, writeRef, input.value);
 					if ( writeResult?.ok !== true ) {
 						const reason = writeResult?.ok === false ? writeResult.reason : "update";
 						notifyStarshipCrewCustomRoleFailure(reason);
@@ -750,12 +768,13 @@ export async function openStarshipCrewCustomRoleDialog({ starshipActor, actorUui
 						notifyStarshipCrewCustomRoleFailure("permission");
 						return { ok: false, reason: "permission" };
 					}
-					if ( !isStarshipCrewMemberUuid(starshipActor, uuid) ) {
+					const sourceUuid = membership?.sourceActorUuid ?? uuid;
+					if ( !isStarshipCrewMemberUuid(starshipActor, sourceUuid) ) {
 						notifyStarshipCrewCustomRoleFailure("membership");
 						return { ok: false, reason: "membership" };
 					}
 
-					const writeResult = await setStarshipCrewCustomRole(starshipActor, uuid, "");
+					const writeResult = await setStarshipCrewCustomRole(starshipActor, writeRef, "");
 					if ( writeResult?.ok !== true ) {
 						const reason = writeResult?.ok === false ? writeResult.reason : "update";
 						notifyStarshipCrewCustomRoleFailure(reason);
@@ -791,6 +810,10 @@ export async function openStarshipCrewCustomRoleDialog({ starshipActor, actorUui
 export function prepareStarshipCrewRosterContextMenu(element, app) {
 	const row = element?.closest?.(".sw5e-starship-crew-row[data-actor-uuid]") ?? element;
 	const uuid = row?.getAttribute?.("data-actor-uuid") || row?.dataset?.actorUuid || "";
+	const membershipId = row?.getAttribute?.("data-membership-id")
+		|| row?.dataset?.membershipId
+		|| "";
+	const membershipRef = membershipId || uuid;
 	const actor = resolveCrewActorFromUuid(uuid);
 	const sheetEditMode = isStarshipSheetEditMode(app);
 	const canObserve = canCurrentUserObserveActor(actor);
@@ -829,13 +852,16 @@ export function prepareStarshipCrewRosterContextMenu(element, app) {
 					warnStarshipActorUpdateDenied();
 					return;
 				}
-				await openStarshipCrewCustomRoleDialog({ starshipActor, actorUuid: uuid });
+				await openStarshipCrewCustomRoleDialog({ starshipActor, actorUuid: membershipRef });
 			},
 			group: "action"
 		});
 
 		// Visibility from raw stored customRole only (not assignmentSubtitle / Deployment label).
-		const hasStoredCustomRole = Boolean(getStarshipCrewCustomRole(app.actor, uuid));
+		const hasStoredCustomRole = Boolean(
+			getStarshipCrewCustomRoleForMembership(app.actor, membershipId, uuid)
+			|| getStarshipCrewCustomRole(app.actor, uuid)
+		);
 		if ( hasStoredCustomRole ) {
 			options.push({
 				name: localizeOrFallback("SW5E.StarshipCrewContextClearCustomRole", "Clear Custom Role"),
@@ -843,7 +869,10 @@ export function prepareStarshipCrewRosterContextMenu(element, app) {
 				condition: () => app?.isEditable !== false
 					&& canCurrentUserUpdateStarshipActor(app?.actor)
 					&& isStarshipCrewMemberUuid(app?.actor, uuid)
-					&& Boolean(getStarshipCrewCustomRole(app?.actor, uuid)),
+					&& Boolean(
+						getStarshipCrewCustomRoleForMembership(app?.actor, membershipId, uuid)
+						|| getStarshipCrewCustomRole(app?.actor, uuid)
+					),
 				callback: async () => {
 					const starshipActor = app.actor;
 					if ( app?.isEditable === false || !canCurrentUserUpdateStarshipActor(starshipActor) ) {
@@ -854,10 +883,14 @@ export function prepareStarshipCrewRosterContextMenu(element, app) {
 						notifyStarshipCrewCustomRoleFailure("membership");
 						return;
 					}
-					// Already empty: no-op (do not invent a profile).
-					if ( !getStarshipCrewCustomRole(starshipActor, uuid) ) return;
+					const currentRole = getStarshipCrewCustomRoleForMembership(
+						starshipActor,
+						membershipId,
+						uuid
+					) || getStarshipCrewCustomRole(starshipActor, uuid);
+					if ( !currentRole ) return;
 
-					const writeResult = await setStarshipCrewCustomRole(starshipActor, uuid, "");
+					const writeResult = await setStarshipCrewCustomRole(starshipActor, membershipRef, "");
 					if ( writeResult?.ok !== true ) {
 						notifyStarshipCrewCustomRoleFailure(
 							writeResult?.ok === false ? writeResult.reason : "update"
@@ -873,7 +906,7 @@ export function prepareStarshipCrewRosterContextMenu(element, app) {
 		&& globalThis.game?.user?.isGM === true
 		&& isStarshipCrewMemberUuid(app?.actor, uuid);
 	if ( canToggleMembershipHidden ) {
-		const isHidden = getStarshipCrewMembershipHidden(app.actor, uuid);
+		const isHidden = getStarshipCrewMembershipHidden(app.actor, membershipRef, uuid);
 		options.push({
 			name: isHidden
 				? localizeOrFallback("SW5E.StarshipCrewContextRevealMembership", "Reveal Crew Member")
@@ -892,10 +925,10 @@ export function prepareStarshipCrewRosterContextMenu(element, app) {
 					warnStarshipActorUpdateDenied();
 					return;
 				}
-				const currentlyHidden = getStarshipCrewMembershipHidden(starshipActor, uuid);
+				const currentlyHidden = getStarshipCrewMembershipHidden(starshipActor, membershipRef, uuid);
 				const writeResult = await setStarshipCrewMembershipHidden(
 					starshipActor,
-					uuid,
+					membershipRef,
 					!currentlyHidden
 				);
 				if ( writeResult?.ok !== true ) {
@@ -924,7 +957,9 @@ export function prepareStarshipCrewRosterContextMenu(element, app) {
 					warnStarshipActorUpdateDenied();
 					return;
 				}
-				const ok = await undeployStarshipCrew(app.actor, uuid);
+				const ok = membershipId
+					? await undeployStarshipCrewMembership(app.actor, membershipId)
+					: await undeployStarshipCrew(app.actor, uuid);
 				if ( ok !== true ) warnStarshipActorUpdateDenied();
 			},
 			group: "action"

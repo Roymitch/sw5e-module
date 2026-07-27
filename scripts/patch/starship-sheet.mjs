@@ -14,7 +14,9 @@ import {
 	buildVehicleStarshipCrewContext,
 	canCurrentUserDeployStarshipCrewRole,
 	deployStarshipCrew,
-	undeployStarshipCrew
+	undeployStarshipCrew,
+	undeployStarshipCrewMembership,
+	adjustStarshipCrewMembershipQuantity
 } from "../starship-character.mjs";
 import { getExpandedProficiencyHoverLabel } from "./proficiency.mjs";
 import {
@@ -415,7 +417,8 @@ function ensureStarshipCoreInteractions(wrapper, app, actor) {
 			return;
 		}
 		const command = btn.dataset.sw5eCrewCommand;
-		if ( (command === "remove" || command === "set-pilot" || command === "undeploy-pilot")
+		if ( (command === "remove" || command === "set-pilot" || command === "undeploy-pilot"
+			|| command === "quantity-inc" || command === "quantity-dec")
 			&& !isStarshipSheetEditMode(app) ) {
 			warnStarshipActorUpdateDenied();
 			return;
@@ -423,6 +426,7 @@ function ensureStarshipCoreInteractions(wrapper, app, actor) {
 		btn.disabled = true;
 		try {
 			const uuid = btn.dataset.actorUuid;
+			const membershipId = btn.dataset.membershipId || "";
 			if ( command === "open-add-crew" ) {
 				await openAddCrewDialog(actor);
 				return;
@@ -430,9 +434,23 @@ function ensureStarshipCoreInteractions(wrapper, app, actor) {
 
 			let ok = false;
 			if ( command === "deploy" ) ok = await deployStarshipCrew(actor, uuid, btn.dataset.deployRole);
-			else if ( command === "remove" ) ok = await undeployStarshipCrew(actor, uuid);
+			else if ( command === "remove" ) {
+				ok = membershipId
+					? await undeployStarshipCrewMembership(actor, membershipId)
+					: await undeployStarshipCrew(actor, uuid);
+			}
 			else if ( command === "set-pilot" ) ok = await deployStarshipCrew(actor, uuid, "pilot");
 			else if ( command === "undeploy-pilot" ) ok = await undeployStarshipCrew(actor, uuid, ["pilot"]);
+			else if ( command === "quantity-inc" || command === "quantity-dec" ) {
+				if ( !membershipId ) {
+					warnStarshipActorUpdateDenied();
+					return;
+				}
+				const delta = command === "quantity-inc" ? 1 : -1;
+				const result = await adjustStarshipCrewMembershipQuantity(actor, membershipId, delta);
+				ok = result?.ok === true;
+				if ( ok && app?.rendered ) await app.render(false);
+			}
 			else return; // including stale toggle-active: no write
 
 			if ( ok !== true ) warnStarshipActorUpdateDenied();

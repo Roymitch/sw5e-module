@@ -586,6 +586,9 @@ export function signaturePayloadCoreCrew(meta = {}) {
 		crew: {
 			roster: (meta.crew?.roster ?? []).map(entry => ({
 				uuid: entry?.uuid ?? "",
+				membershipId: entry?.membershipId ?? "",
+				kind: entry?.kind ?? "individual",
+				quantity: entry?.quantity ?? 1,
 				name: entry?.name ?? "",
 				img: entry?.img ?? "",
 				searchText: entry?.searchText ?? "",
@@ -599,8 +602,12 @@ export function signaturePayloadCoreCrew(meta = {}) {
 				canUndeployPilot: Boolean(entry?.canUndeployPilot),
 				canSetPilot: Boolean(entry?.canSetPilot),
 				canToggleActive: Boolean(entry?.canToggleActive),
-				canRemove: Boolean(entry?.canRemove)
-			}))
+				canRemove: Boolean(entry?.canRemove),
+				canAdjustQuantity: Boolean(entry?.canAdjustQuantity),
+				canQuantityIncrement: Boolean(entry?.canQuantityIncrement),
+				canQuantityDecrement: Boolean(entry?.canQuantityDecrement)
+			})),
+			visibleQuantitySum: meta.crew?.visibleQuantitySum ?? null
 		},
 		crewRoleGroups: (meta.crewRoleGroups ?? []).map(group => ({
 			groupKey: group?.groupKey ?? "",

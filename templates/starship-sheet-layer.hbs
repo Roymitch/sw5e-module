@@ -116,6 +116,8 @@
               class="sw5e-starship-item-row sw5e-starship-crew-row{{#unless @root.sotgSheetEditMode}} sw5e-crew-row--play{{/unless}}{{#if membershipHidden}} sw5e-crew-row--membership-hidden{{/if}}"
               data-search="{{searchText}}"
               data-actor-uuid="{{uuid}}"
+              data-membership-id="{{membershipId}}"
+              data-membership-kind="{{kind}}"
             >
               <div class="sw5e-starship-item-main">
                 <img
@@ -149,17 +151,47 @@
                       {{/if}}
                     </div>
                     {{/if}}
+                    {{#if showQuantity}}
+                      <span class="sw5e-starship-crew-quantity" aria-label="{{ localize "SW5E.StarshipCrewQuantity" }}">×{{quantity}}</span>
+                    {{/if}}
                   </div>
                 </div>
               </div>
               <div class="sw5e-starship-item-actions sw5e-starship-crew-row-actions">
                 {{#if @root.sotgSheetEditMode}}
+                {{#if canAdjustQuantity}}
+                  <button
+                    type="button"
+                    class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
+                    data-sw5e-crew-command="quantity-dec"
+                    data-actor-uuid="{{uuid}}"
+                    data-membership-id="{{membershipId}}"
+                    title="{{ localize "SW5E.StarshipCrewQuantityDecrease" }}"
+                    aria-label="{{ localize "SW5E.StarshipCrewQuantityDecrease" }}"
+                    {{#unless canQuantityDecrement}}disabled{{/unless}}
+                  >
+                    <i class="fa-solid fa-minus" inert></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
+                    data-sw5e-crew-command="quantity-inc"
+                    data-actor-uuid="{{uuid}}"
+                    data-membership-id="{{membershipId}}"
+                    title="{{ localize "SW5E.StarshipCrewQuantityIncrease" }}"
+                    aria-label="{{ localize "SW5E.StarshipCrewQuantityIncrease" }}"
+                    {{#unless canQuantityIncrement}}disabled{{/unless}}
+                  >
+                    <i class="fa-solid fa-plus" inert></i>
+                  </button>
+                {{/if}}
                 {{#if isPilot}}
                   <button
                     type="button"
                     class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
                     data-sw5e-crew-command="undeploy-pilot"
                     data-actor-uuid="{{uuid}}"
+                    data-membership-id="{{membershipId}}"
                     title="{{ localize "SW5E.StarshipCrewClearPilot" }}"
                     aria-label="{{ localize "SW5E.StarshipCrewClearPilot" }}"
                     {{#unless canUndeployPilot}}disabled{{/unless}}
@@ -172,6 +204,7 @@
                     class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
                     data-sw5e-crew-command="set-pilot"
                     data-actor-uuid="{{uuid}}"
+                    data-membership-id="{{membershipId}}"
                     title="{{ localize "SW5E.StarshipCrewSetPilot" }}"
                     aria-label="{{ localize "SW5E.StarshipCrewSetPilot" }}"
                     {{#unless canSetPilot}}disabled{{/unless}}
@@ -186,6 +219,7 @@
                   class="sw5e-starship-item-button sw5e-starship-crew-icon-button sw5e-starship-item-button-danger"
                   data-sw5e-crew-command="remove"
                   data-actor-uuid="{{uuid}}"
+                  data-membership-id="{{membershipId}}"
                   title="{{ localize "SW5E.StarshipCrewRemove" }}"
                   aria-label="{{ localize "SW5E.StarshipCrewRemove" }}"
                   {{#unless canRemove}}disabled{{/unless}}
@@ -667,7 +701,7 @@
                   <div class="sw5e-starship-core-crew-heading sw5e-starship-core-collapsible-heading">
                     <h2 class="sw5e-starship-systems-field-heading sw5e-starship-core-panel-heading sw5e-starship-crew-panel-heading" aria-live="polite">
                       <span class="sw5e-starship-crew-panel-title">{{ localize "SW5E.StarshipCrewPanelTitle" }}</span>
-                      <span class="sw5e-starship-crew-panel-count">({{crew.roster.length}})</span>
+                      <span class="sw5e-starship-crew-panel-count">({{crew.visibleQuantitySum}})</span>
                     </h2>
                   </div>
                   <div class="sw5e-starship-core-collapsible-header-actions">

@@ -236,7 +236,7 @@ test("Crew panel header consolidates title+count; Assigned Crew bar removed", ()
 	);
 	assert.match(
 		CREW_LAYER_HBS,
-		/sw5e-starship-crew-panel-count[^>]*>\(\{\{crew\.roster\.length\}\}\)/
+		/sw5e-starship-crew-panel-count[^>]*>\(\{\{crew\.visibleQuantitySum\}\}\)/
 	);
 	assert.match(CREW_LAYER_HBS, /data-sw5e-crew-command="open-add-crew"/);
 	assert.match(CREW_LAYER_HBS, /data-core-panel="crew"/);

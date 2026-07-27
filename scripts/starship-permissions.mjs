@@ -77,22 +77,35 @@ function resolveCrewMembershipUuid(crewActorOrUuid) {
 }
 
 /**
- * Whether a user may see a deployment membership on this starship (Bug 6).
- * When `hidden === true`: GM only. Starship update permission and crew Actor ownership
- * do not bypass concealment. When not hidden: visible under normal sheet access.
+ * Whether a user may see a deployment membership on this starship (Bug 6 / Bug 28).
+ * When `hidden === true`: GM only. Accepts Actor UUID string, Actor, or
+ * `{ membershipId, uuid|sourceActorUuid }`.
  *
  * @param {Actor|null|undefined} starship
- * @param {Actor|string|null|undefined} crewActorOrUuid
+ * @param {Actor|string|{ membershipId?: string, uuid?: string, sourceActorUuid?: string }|null|undefined} crewActorOrUuid
  * @param {User|null|undefined} [user]
  * @returns {boolean}
  */
 export function isStarshipCrewMembershipVisibleToUser(starship, crewActorOrUuid, user = globalThis.game?.user) {
 	if ( !starship || !user ) return true;
-	const uuid = resolveCrewMembershipUuid(crewActorOrUuid);
-	if ( !uuid ) return true;
 
-	if ( !readStarshipCrewMembershipHiddenFlag(starship, uuid) ) return true;
-	return user.isGM === true;
+	let membershipId = "";
+	let uuid = "";
+	if ( crewActorOrUuid && typeof crewActorOrUuid === "object" && !crewActorOrUuid.documentName ) {
+		membershipId = String(crewActorOrUuid.membershipId ?? "").trim();
+		uuid = String(crewActorOrUuid.uuid ?? crewActorOrUuid.sourceActorUuid ?? "").trim();
+	} else {
+		uuid = resolveCrewMembershipUuid(crewActorOrUuid);
+	}
+	if ( !membershipId && !uuid ) return true;
+
+	if ( membershipId && readStarshipCrewMembershipHiddenFlag(starship, membershipId) ) {
+		return user.isGM === true;
+	}
+	if ( uuid && readStarshipCrewMembershipHiddenFlag(starship, uuid) ) {
+		return user.isGM === true;
+	}
+	return true;
 }
 
 /**

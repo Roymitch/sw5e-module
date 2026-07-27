@@ -130,6 +130,198 @@ function fromCrewProfileStorageKey(key) {
 	return String(key ?? "").replaceAll(CREW_PROFILE_KEY_DOT, ".");
 }
 
+/** Bug 28: ship-owned membership records (aggregates + optional persisted individuals). */
+const CREW_MEMBERSHIPS_PATH = "flags.sw5e.starship.crewMemberships";
+
+/**
+ * Deterministic membershipId for dual-read individual rows (no render writes).
+ * @param {string} actorUuid
+ * @returns {string}
+ */
+export function toDeterministicIndividualMembershipId(actorUuid) {
+	return `indiv_${toCrewProfileStorageKey(actorUuid)}`;
+}
+
+/**
+ * @returns {string}
+ */
+function createAggregateMembershipId() {
+	const id = globalThis.foundry?.utils?.randomID?.()
+		?? (typeof globalThis.crypto?.randomUUID === "function"
+			? globalThis.crypto.randomUUID().replaceAll("-", "")
+			: `r${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`);
+	return `agg_${id}`;
+}
+
+/**
+ * @param {Actor|null|undefined} starship
+ * @returns {Record<string, object>}
+ */
+function getWrittenCrewMembershipsMap(starship) {
+	const raw = starship?.flags?.sw5e?.starship?.crewMemberships;
+	if ( !raw || typeof raw !== "object" || Array.isArray(raw) ) return {};
+	const out = {};
+	for ( const [key, value] of Object.entries(raw) ) {
+		if ( !key || !value || typeof value !== "object" || Array.isArray(value) ) continue;
+		out[key] = value;
+	}
+	return out;
+}
+
+/**
+ * Resolve Hybrid D memberships: written records + dual-read UUID Sets as qty-1 individuals.
+ * Read-only — never writes Actor data.
+ * @param {Actor|null|undefined} starship
+ * @param {ReturnType<typeof getDeploymentState>} [deployment]
+ * @returns {Array<{
+ *   membershipId: string,
+ *   sourceActorUuid: string,
+ *   kind: "individual"|"aggregate",
+ *   quantity: number,
+ *   roles: string[],
+ *   written: boolean
+ * }>}
+ */
+export function resolveStarshipCrewMemberships(starship, deployment = null) {
+	if ( !starship || !isLegacyVehicleStarship(starship) ) return [];
+	const dep = deployment ?? cloneStarshipDeployment(starship);
+	const written = getWrittenCrewMembershipsMap(starship);
+	const referencedSources = new Set();
+	const memberships = [];
+
+	for ( const [membershipId, record] of Object.entries(written) ) {
+		const sourceActorUuid = String(record?.sourceActorUuid ?? "").trim();
+		if ( !sourceActorUuid ) continue;
+		const kind = record?.kind === "aggregate" ? "aggregate" : "individual";
+		const quantity = kind === "aggregate"
+			? Math.max(1, Math.floor(Number(record?.quantity) || 1))
+			: 1;
+		const roles = Array.isArray(record?.roles)
+			? record.roles.filter(r => STARSHIP_DEPLOYMENT_ROLES.includes(r))
+			: getDeploymentRolesForUuid(dep, sourceActorUuid);
+		referencedSources.add(sourceActorUuid);
+		memberships.push({
+			membershipId,
+			sourceActorUuid,
+			kind,
+			quantity,
+			roles: roles.length ? roles : getDeploymentRolesForUuid(dep, sourceActorUuid),
+			written: true
+		});
+	}
+
+	for ( const uuid of collectDeploymentUuids(dep) ) {
+		if ( referencedSources.has(uuid) ) continue;
+		memberships.push({
+			membershipId: toDeterministicIndividualMembershipId(uuid),
+			sourceActorUuid: uuid,
+			kind: "individual",
+			quantity: 1,
+			roles: getDeploymentRolesForUuid(dep, uuid),
+			written: false
+		});
+	}
+
+	return memberships;
+}
+
+/**
+ * @param {Actor|null|undefined} starship
+ * @param {string} membershipId
+ * @returns {ReturnType<typeof resolveStarshipCrewMemberships>[number]|null}
+ */
+export function findStarshipCrewMembership(starship, membershipId) {
+	const id = String(membershipId ?? "").trim();
+	if ( !id ) return null;
+	return resolveStarshipCrewMemberships(starship).find(m => m.membershipId === id) ?? null;
+}
+
+/**
+ * Profile identity for a membership: prefer membershipId key, fall back to source Actor UUID.
+ * @param {Actor|null|undefined} starship
+ * @param {string} membershipId
+ * @param {string} [sourceActorUuid]
+ * @returns {boolean}
+ */
+function readMembershipHiddenFlag(starship, membershipId, sourceActorUuid="") {
+	if ( membershipId && getStarshipCrewMembershipHiddenForIdentity(starship, membershipId) ) return true;
+	if ( sourceActorUuid && getStarshipCrewMembershipHiddenForIdentity(starship, sourceActorUuid) ) return true;
+	return false;
+}
+
+/**
+ * Hidden flag for one profile identity key (membershipId or Actor UUID).
+ * @param {Actor|null|undefined} starship
+ * @param {string} identity
+ * @returns {boolean}
+ */
+function getStarshipCrewMembershipHiddenForIdentity(starship, identity) {
+	if ( !starship || !identity ) return false;
+	const shapes = locateCrewProfileShapes(starship?.flags?.sw5e?.starship?.crewProfiles, identity);
+	if ( shapes.hasCanonical ) return shapes.canonicalProfile?.hidden === true;
+	for ( const profile of [shapes.rawUuidProfile, shapes.nestedLegacyProfile] ) {
+		if ( isCrewProfileObject(profile) && profile.hidden === true ) return true;
+	}
+	return false;
+}
+
+/**
+ * Custom role for membershipId with UUID dual-read fallback.
+ * @param {Actor|null|undefined} starship
+ * @param {string} membershipId
+ * @param {string} [sourceActorUuid]
+ * @returns {string}
+ */
+export function getStarshipCrewCustomRoleForMembership(starship, membershipId, sourceActorUuid="") {
+	if ( !starship ) return "";
+	if ( membershipId ) {
+		const shapes = locateCrewProfileShapes(starship?.flags?.sw5e?.starship?.crewProfiles, membershipId);
+		const role = resolveCustomRoleFromShapes(shapes);
+		if ( role ) return role;
+	}
+	if ( sourceActorUuid ) return getStarshipCrewCustomRole(starship, sourceActorUuid);
+	return "";
+}
+
+/**
+ * Count of sourceActorUuid references among resolved memberships.
+ * @param {Actor|null|undefined} starship
+ * @param {string} sourceActorUuid
+ * @param {string} [exceptMembershipId]
+ * @returns {number}
+ */
+function countMembershipsForSourceActor(starship, sourceActorUuid, exceptMembershipId="") {
+	const uuid = String(sourceActorUuid ?? "");
+	if ( !uuid ) return 0;
+	return resolveStarshipCrewMemberships(starship)
+		.filter(m => m.sourceActorUuid === uuid && m.membershipId !== exceptMembershipId)
+		.length;
+}
+
+/**
+ * Copy complete profile object for re-key (preserve hidden, customRole, unknown siblings).
+ * @param {Actor} starship
+ * @param {string} fromIdentity
+ * @returns {object}
+ */
+function cloneCompleteCrewProfileForIdentity(starship, fromIdentity) {
+	const shapes = locateCrewProfileShapes(starship?.flags?.sw5e?.starship?.crewProfiles, fromIdentity);
+	const siblings = mergeCrewProfileSiblings(
+		shapes.nestedLegacyProfile,
+		shapes.rawUuidProfile,
+		shapes.canonicalProfile
+	);
+	const role = resolveCustomRoleFromShapes(shapes);
+	const target = { ...siblings };
+	if ( role ) target.customRole = role;
+	if ( shapes.canonicalProfile?.hidden === true
+		|| shapes.rawUuidProfile?.hidden === true
+		|| shapes.nestedLegacyProfile?.hidden === true ) {
+		target.hidden = true;
+	}
+	return target;
+}
+
 /**
  * @param {unknown} value
  * @returns {boolean}
@@ -609,61 +801,82 @@ export function getStarshipCrewCustomRole(starship, uuid) {
 }
 
 /**
- * Ship-owned membership concealment flag for a crew UUID (Bug 6).
- * Canonical encoded profile wins; otherwise raw UUID then nested Actor→id.
- * Missing / malformed → visible (`false`).
+ * Ship-owned membership concealment flag (Bug 6 / Bug 28).
+ * Prefers membershipId profile key; falls back to source Actor UUID legacy keys.
  * @param {Actor|null|undefined} starship
- * @param {string} uuid
+ * @param {string} membershipIdOrUuid membershipId preferred; Actor UUID still accepted
+ * @param {string} [sourceActorUuid]
  * @returns {boolean}
  */
-export function getStarshipCrewMembershipHidden(starship, uuid) {
-	if ( !starship || !uuid ) return false;
-	const shapes = locateCrewProfileShapes(starship?.flags?.sw5e?.starship?.crewProfiles, uuid);
-	if ( shapes.hasCanonical ) return shapes.canonicalProfile?.hidden === true;
-	for ( const profile of [shapes.rawUuidProfile, shapes.nestedLegacyProfile] ) {
-		if ( isCrewProfileObject(profile) && profile.hidden === true ) return true;
+export function getStarshipCrewMembershipHidden(starship, membershipIdOrUuid, sourceActorUuid="") {
+	if ( !starship || !membershipIdOrUuid ) return false;
+	const membership = findStarshipCrewMembership(starship, membershipIdOrUuid);
+	if ( membership ) {
+		return readMembershipHiddenFlag(starship, membership.membershipId, membership.sourceActorUuid);
 	}
-	return false;
+	if ( sourceActorUuid ) {
+		return readMembershipHiddenFlag(starship, membershipIdOrUuid, sourceActorUuid);
+	}
+	// Legacy: treat arg as Actor UUID (and also try as membershipId key).
+	return readMembershipHiddenFlag(starship, membershipIdOrUuid, membershipIdOrUuid);
 }
 
 /**
- * Set or clear ship-owned membership concealment for a deployed crew UUID.
- * Preserves customRole and other sibling profile fields. Empty `{hidden:true}`-only
- * profiles are removed on Reveal.
+ * Set or clear ship-owned membership concealment (Bug 6 / Bug 28).
+ * Prefer membershipId: aggregates write the membershipId profile key; individuals keep UUID key.
  * @param {Actor|string} starshipSubject
- * @param {string} crewUuid
+ * @param {string} membershipIdOrCrewUuid
  * @param {boolean} hidden
- * @returns {Promise<{ ok: true, actorUuid: string, hidden: boolean }|{ ok: false, reason: string }>}
+ * @returns {Promise<{ ok: true, actorUuid: string, membershipId: string, hidden: boolean }|{ ok: false, reason: string }>}
  */
-export async function setStarshipCrewMembershipHidden(starshipSubject, crewUuid, hidden) {
+export async function setStarshipCrewMembershipHidden(starshipSubject, membershipIdOrCrewUuid, hidden) {
 	const starship = resolveActorDocument(starshipSubject);
-	const uuid = typeof crewUuid === "string" ? crewUuid : "";
-	if ( !uuid ) return { ok: false, reason: "no-uuid" };
+	const ref = typeof membershipIdOrCrewUuid === "string" ? membershipIdOrCrewUuid : "";
+	if ( !ref ) return { ok: false, reason: "no-uuid" };
 	if ( !starship || !isLegacyVehicleStarship(starship) ) return { ok: false, reason: "not-starship" };
-	// Hide/Reveal is GM-only (Bug 6 privacy correction) — Starship update alone does not authorize.
 	if ( globalThis.game?.user?.isGM !== true ) return { ok: false, reason: "permission" };
-	if ( !isStarshipCrewMemberUuid(starship, uuid) ) return { ok: false, reason: "membership" };
 
+	const membership = findStarshipCrewMembership(starship, ref)
+		?? resolveStarshipCrewMemberships(starship).find(m => m.sourceActorUuid === ref)
+		?? null;
+	if ( !membership ) return { ok: false, reason: "membership" };
+
+	const profileIdentity = membership.kind === "aggregate"
+		? membership.membershipId
+		: membership.sourceActorUuid;
 	const nextHidden = hidden === true;
-	// No-op when already in the requested state (do not invent a profile to Reveal).
-	if ( getStarshipCrewMembershipHidden(starship, uuid) === nextHidden ) {
-		return { ok: true, actorUuid: uuid, hidden: nextHidden };
+	if ( getStarshipCrewMembershipHidden(starship, membership.membershipId, membership.sourceActorUuid) === nextHidden ) {
+		return {
+			ok: true,
+			actorUuid: membership.sourceActorUuid,
+			membershipId: membership.membershipId,
+			hidden: nextHidden
+		};
 	}
 
-	const persist = await persistCrewMembershipHidden(starship, uuid, nextHidden);
+	const persist = await persistCrewMembershipHidden(starship, profileIdentity, nextHidden);
 	if ( persist.ok !== true ) return persist;
 
-	const readback = getStarshipCrewMembershipHidden(starship, uuid);
+	const readback = getStarshipCrewMembershipHidden(
+		starship,
+		membership.membershipId,
+		membership.sourceActorUuid
+	);
 	if ( readback !== nextHidden ) {
 		console.debug("SW5E MODULE | Membership hidden readback failed", {
-			actorUuid: uuid,
+			membershipId: membership.membershipId,
 			expected: nextHidden,
 			readback
 		});
 		return { ok: false, reason: "readback" };
 	}
 
-	return { ok: true, actorUuid: uuid, hidden: nextHidden };
+	return {
+		ok: true,
+		actorUuid: membership.sourceActorUuid,
+		membershipId: membership.membershipId,
+		hidden: nextHidden
+	};
 }
 
 /**
@@ -679,37 +892,43 @@ function normalizeCustomRoleText(value) {
 }
 
 /**
- * Set or clear ship-owned custom role for a deployed crew UUID.
- * Canonical encoded key is authoritative for new writes.
- * Proven legacy shapes (raw UUID / nested Actor) are removed on successful Set/Clear.
- * Immediate equality readback; empty===empty is success for intentional clear.
+ * Set or clear ship-owned custom role (Bug 28: membershipId for aggregates).
  * @param {Actor|string} starshipSubject
- * @param {string} crewUuid
+ * @param {string} membershipIdOrCrewUuid
  * @param {unknown} roleText
- * @returns {Promise<{ ok: true, actorUuid: string, customRole: string }|{ ok: false, reason: string }>}
+ * @returns {Promise<{ ok: true, actorUuid: string, membershipId: string, customRole: string }|{ ok: false, reason: string }>}
  */
-export async function setStarshipCrewCustomRole(starshipSubject, crewUuid, roleText) {
+export async function setStarshipCrewCustomRole(starshipSubject, membershipIdOrCrewUuid, roleText) {
 	const starship = resolveActorDocument(starshipSubject);
-	const uuid = typeof crewUuid === "string" ? crewUuid : "";
-	if ( !uuid ) return { ok: false, reason: "no-uuid" };
+	const ref = typeof membershipIdOrCrewUuid === "string" ? membershipIdOrCrewUuid : "";
+	if ( !ref ) return { ok: false, reason: "no-uuid" };
 	if ( !starship || !isLegacyVehicleStarship(starship) ) return { ok: false, reason: "not-starship" };
 	if ( !canCurrentUserUpdateStarshipActor(starship) ) return { ok: false, reason: "permission" };
-	if ( !isStarshipCrewMemberUuid(starship, uuid) ) return { ok: false, reason: "membership" };
 
-	const storageKey = toCrewProfileStorageKey(uuid);
+	const membership = findStarshipCrewMembership(starship, ref)
+		?? resolveStarshipCrewMemberships(starship).find(m => m.sourceActorUuid === ref)
+		?? null;
+	if ( !membership ) return { ok: false, reason: "membership" };
+
+	const profileIdentity = membership.kind === "aggregate"
+		? membership.membershipId
+		: membership.sourceActorUuid;
+	const storageKey = toCrewProfileStorageKey(profileIdentity);
 	const nextRole = normalizeCustomRoleText(roleText);
 
-	const persist = await persistCanonicalCrewProfile(starship, uuid, nextRole, false);
+	const persist = await persistCanonicalCrewProfile(starship, profileIdentity, nextRole, false);
 	if ( persist.ok !== true ) return persist;
 
-	// Strict equality only — empty readback is success when nextRole is also "".
-	const readback = getStarshipCrewCustomRole(starship, uuid);
+	const readback = membership.kind === "aggregate"
+		? getStarshipCrewCustomRoleForMembership(starship, membership.membershipId, membership.sourceActorUuid)
+		: getStarshipCrewCustomRole(starship, membership.sourceActorUuid);
 	if ( readback !== nextRole ) {
 		const stored = starship?.flags?.sw5e?.starship?.crewProfiles;
 		const storedKeys = stored && typeof stored === "object" ? Object.keys(stored) : [];
-		const shapes = locateCrewProfileShapes(stored, uuid);
+		const shapes = locateCrewProfileShapes(stored, profileIdentity);
 		console.debug("SW5E MODULE | Custom Role readback failed", {
-			actorUuid: uuid,
+			actorUuid: membership.sourceActorUuid,
+			membershipId: membership.membershipId,
 			storageKey,
 			expected: nextRole,
 			readback,
@@ -721,7 +940,12 @@ export async function setStarshipCrewCustomRole(starshipSubject, crewUuid, roleT
 		return { ok: false, reason: "readback" };
 	}
 
-	return { ok: true, actorUuid: uuid, customRole: nextRole };
+	return {
+		ok: true,
+		actorUuid: membership.sourceActorUuid,
+		membershipId: membership.membershipId,
+		customRole: nextRole
+	};
 }
 
 function syncDeploymentActiveFlags(deployment) {
@@ -947,16 +1171,31 @@ export function preflightDeployStarshipCrewBatch(starshipSubject, subjects, role
 	};
 }
 
-function buildResolvedCrewRecord(deployment, uuid, starship, { sheetEditable = true } = {}) {
+function buildResolvedCrewRecordFromMembership(deployment, membership, starship, { sheetEditable = true } = {}) {
+	const uuid = membership.sourceActorUuid;
 	const actor = resolveActorDocument(uuid);
-	const roles = getDeploymentRolesForUuid(deployment, uuid);
+	const roles = membership.roles?.length
+		? membership.roles
+		: getDeploymentRolesForUuid(deployment, uuid);
 	const canShip = canCurrentUserUpdateStarshipActor(starship);
 	const canCrew = Boolean(actor) && canCurrentUserUpdateStarshipActor(actor);
 	const canMutateAssignment = sheetEditable && canShip && canCrew;
 	const canSetPilot = sheetEditable && Boolean(actor)
 		&& canCurrentUserDeployStarshipCrewRole(starship, actor, "pilot");
+	const kind = membership.kind === "aggregate" ? "aggregate" : "individual";
+	const quantity = kind === "aggregate"
+		? Math.max(1, Math.floor(Number(membership.quantity) || 1))
+		: 1;
+	const canPromote = kind === "individual" && actor?.type === "npc";
+	const canAdjustQuantity = Boolean(
+		sheetEditable && canShip && (kind === "aggregate" || canPromote)
+	);
 	return {
+		membershipId: membership.membershipId,
 		uuid,
+		sourceActorUuid: uuid,
+		kind,
+		quantity,
 		name: actor?.name ?? "Unknown Crew",
 		img: actor?.img || "icons/svg/mystery-man.svg",
 		type: actor?.type ?? "",
@@ -968,7 +1207,10 @@ function buildResolvedCrewRecord(deployment, uuid, starship, { sheetEditable = t
 		pilotSkill: toNumber(actor?.system?.skills?.pil?.value, 0),
 		canRemove: canMutateAssignment,
 		canUndeployPilot: canMutateAssignment && roles.includes("pilot"),
-		canSetPilot
+		canSetPilot,
+		canAdjustQuantity,
+		canQuantityIncrement: canAdjustQuantity,
+		canQuantityDecrement: canAdjustQuantity && kind === "aggregate" && quantity > 1
 	};
 }
 
@@ -979,8 +1221,8 @@ function compareCrewRecords(left, right) {
 }
 
 function buildResolvedCrewRoster(deployment, starship, options = {}) {
-	return Array.from(collectDeploymentUuids(deployment))
-		.map(uuid => buildResolvedCrewRecord(deployment, uuid, starship, options))
+	return resolveStarshipCrewMemberships(starship, deployment)
+		.map(membership => buildResolvedCrewRecordFromMembership(deployment, membership, starship, options))
 		.sort(compareCrewRecords);
 }
 
@@ -1035,6 +1277,206 @@ export function buildAvailableStarshipCrewChoices(starship) {
 	return choices.sort(compareAvailableCrewChoices);
 }
 
+/**
+ * Adjust aggregate quantity or promote individual NPC → aggregate (EDIT +).
+ * @param {Actor|string} starshipSubject
+ * @param {string} membershipId
+ * @param {number} delta
+ * @returns {Promise<{ ok: true, membershipId: string, quantity: number, kind: string }|{ ok: false, reason: string }>}
+ */
+export async function adjustStarshipCrewMembershipQuantity(starshipSubject, membershipId, delta) {
+	const starship = resolveActorDocument(starshipSubject);
+	const id = String(membershipId ?? "").trim();
+	const step = Math.trunc(Number(delta) || 0);
+	if ( !id || !step ) return { ok: false, reason: "invalid" };
+	if ( !starship || !isLegacyVehicleStarship(starship) ) return { ok: false, reason: "not-starship" };
+	if ( !canCurrentUserUpdateStarshipActor(starship) ) return { ok: false, reason: "permission" };
+
+	const membership = findStarshipCrewMembership(starship, id);
+	if ( !membership ) return { ok: false, reason: "membership" };
+
+	const sourceActor = resolveActorDocument(membership.sourceActorUuid);
+	if ( !sourceActor ) return { ok: false, reason: "no-actor" };
+
+	// Already aggregate: increment/decrement only (min 1).
+	if ( membership.kind === "aggregate" ) {
+		const nextQty = Math.max(1, membership.quantity + step);
+		if ( nextQty === membership.quantity ) {
+			return {
+				ok: true,
+				membershipId: membership.membershipId,
+				quantity: membership.quantity,
+				kind: "aggregate"
+			};
+		}
+		const update = {
+			[`${CREW_MEMBERSHIPS_PATH}.${membership.membershipId}`]: {
+				sourceActorUuid: membership.sourceActorUuid,
+				kind: "aggregate",
+				quantity: nextQty,
+				roles: membership.roles
+			}
+		};
+		try {
+			await starship.update(update);
+		} catch ( _err ) {
+			return { ok: false, reason: "update" };
+		}
+		return {
+			ok: true,
+			membershipId: membership.membershipId,
+			quantity: nextQty,
+			kind: "aggregate"
+		};
+	}
+
+	// Individual: only + promotes NPC → aggregate qty 2 (or increments existing aggregate for same source).
+	if ( step < 0 ) return { ok: false, reason: "individual" };
+	if ( sourceActor.type !== "npc" ) return { ok: false, reason: "pc" };
+
+	const existingAgg = resolveStarshipCrewMemberships(starship)
+		.find(m => m.kind === "aggregate" && m.sourceActorUuid === membership.sourceActorUuid);
+	if ( existingAgg ) {
+		return adjustStarshipCrewMembershipQuantity(starship, existingAgg.membershipId, step);
+	}
+
+	const newId = createAggregateMembershipId();
+	const roles = membership.roles.length
+		? membership.roles
+		: getDeploymentRolesForUuid(cloneStarshipDeployment(starship), membership.sourceActorUuid);
+	const profile = cloneCompleteCrewProfileForIdentity(starship, membership.sourceActorUuid);
+	const memKey = `${CREW_MEMBERSHIPS_PATH}.${newId}`;
+	const profileKey = `flags.sw5e.starship.crewProfiles.${toCrewProfileStorageKey(newId)}`;
+	const update = {
+		[memKey]: {
+			sourceActorUuid: membership.sourceActorUuid,
+			kind: "aggregate",
+			quantity: 2,
+			roles
+		},
+		[profileKey]: profile
+	};
+
+	// Atomic with membershipId profile: remove legacy UUID profile keys in the same update.
+	const legacyShapes = locateCrewProfileShapes(
+		starship?.flags?.sw5e?.starship?.crewProfiles,
+		membership.sourceActorUuid
+	);
+	if ( legacyShapes.hasCanonical ) {
+		update[`flags.sw5e.starship.crewProfiles.-=${legacyShapes.storageKey}`] = null;
+	}
+	if ( legacyShapes.hasRawUuid ) {
+		// Raw UUID keys need map replace — fall back to two-step after membershipId profile lands.
+	}
+	if ( legacyShapes.hasNested && legacyShapes.actorId ) {
+		update[`flags.sw5e.starship.crewProfiles.Actor.-=${legacyShapes.actorId}`] = null;
+	}
+
+	try {
+		await starship.update(update);
+	} catch ( _err ) {
+		return { ok: false, reason: "update" };
+	}
+
+	// Verify membershipId profile exists before considering legacy cleanup complete.
+	const memShapes = locateCrewProfileShapes(starship?.flags?.sw5e?.starship?.crewProfiles, newId);
+	if ( !memShapes.hasCanonical && Object.keys(profile).length > 0 ) {
+		return { ok: false, reason: "profile-readback" };
+	}
+
+	if ( legacyShapes.hasRawUuid ) {
+		const rawProfiles = cloneDeep(starship?.flags?.sw5e?.starship?.crewProfiles ?? {});
+		const cleaned = canonicalizeCrewProfilesForActor({
+			rawProfiles,
+			actorUuid: membership.sourceActorUuid,
+			nextRole: "",
+			removeTarget: true
+		});
+		// Preserve the new membershipId profile in cleaned map.
+		const enc = toCrewProfileStorageKey(newId);
+		if ( memShapes.hasCanonical ) cleaned[enc] = memShapes.canonicalProfile;
+		const replaced = await replaceCrewProfilesMap(starship, cleaned);
+		if ( !replaced ) return { ok: false, reason: "update" };
+	}
+
+	return { ok: true, membershipId: newId, quantity: 2, kind: "aggregate" };
+}
+
+/**
+ * Undeploy one membership by membershipId (Remove).
+ * Removes source UUID from role Sets only when no remaining membership references it.
+ * @param {Actor|string} starshipSubject
+ * @param {string} membershipId
+ * @returns {Promise<boolean>}
+ */
+export async function undeployStarshipCrewMembership(starshipSubject, membershipId) {
+	const starship = resolveActorDocument(starshipSubject);
+	const id = String(membershipId ?? "").trim();
+	if ( !starship || !id ) return false;
+	const membership = findStarshipCrewMembership(starship, id);
+	if ( !membership ) return false;
+
+	const crewActor = resolveActorDocument(membership.sourceActorUuid);
+	if ( !crewActor ) return false;
+	if ( !canUpdateAllActors([starship, crewActor]) ) return false;
+
+	const deployment = cloneStarshipDeployment(starship);
+	const remainingRefs = countMembershipsForSourceActor(starship, membership.sourceActorUuid, id);
+	const updateData = {};
+
+	if ( membership.written ) {
+		updateData[`${CREW_MEMBERSHIPS_PATH}.-=${membership.membershipId}`] = null;
+		updateData[`flags.sw5e.starship.crewProfiles.-=${toCrewProfileStorageKey(membership.membershipId)}`] = null;
+	}
+
+	if ( remainingRefs === 0 ) {
+		if ( deployment.pilot.value === membership.sourceActorUuid ) deployment.pilot.value = null;
+		deployment.crew.items.delete(membership.sourceActorUuid);
+		deployment.passenger.items.delete(membership.sourceActorUuid);
+		Object.assign(updateData, buildDeploymentUpdateData(deployment));
+
+		const rawProfiles = cloneDeep(starship?.flags?.sw5e?.starship?.crewProfiles ?? {});
+		const shapes = locateCrewProfileShapes(rawProfiles, membership.sourceActorUuid);
+		if ( shapes.hasCanonical || shapes.hasRawUuid || shapes.hasNested ) {
+			if ( shapes.hasRawUuid ) {
+				await starship.update(updateData);
+				const cleaned = canonicalizeCrewProfilesForActor({
+					rawProfiles,
+					actorUuid: membership.sourceActorUuid,
+					nextRole: "",
+					removeTarget: true
+				});
+				const replaced = await replaceCrewProfilesMap(starship, cleaned);
+				if ( !replaced ) return false;
+				await updateCrewDeploymentFlag(
+					crewActor,
+					starship,
+					getDeploymentRolesForUuid(cloneStarshipDeployment(starship), membership.sourceActorUuid)
+				);
+				return true;
+			}
+			if ( shapes.hasCanonical ) {
+				updateData[`flags.sw5e.starship.crewProfiles.-=${shapes.storageKey}`] = null;
+			}
+			if ( shapes.hasNested && shapes.actorId ) {
+				updateData[`flags.sw5e.starship.crewProfiles.Actor.-=${shapes.actorId}`] = null;
+			}
+		}
+	}
+
+	if ( !Object.keys(updateData).length ) return true;
+	try {
+		await starship.update(updateData);
+	} catch ( _err ) {
+		return false;
+	}
+	const nextRoles = remainingRefs === 0
+		? []
+		: getDeploymentRolesForUuid(cloneStarshipDeployment(starship), membership.sourceActorUuid);
+	await updateCrewDeploymentFlag(crewActor, starship, nextRoles);
+	return true;
+}
+
 export async function undeployStarshipCrew(starshipSubject, crewSubject, roles = STARSHIP_DEPLOYMENT_ROLES) {
 	const starship = resolveActorDocument(starshipSubject);
 	const crewActor = resolveActorDocument(crewSubject);
@@ -1054,6 +1496,12 @@ export async function undeployStarshipCrew(starshipSubject, crewSubject, roles =
 	const updateData = buildDeploymentUpdateData(deployment);
 	// Clear ship-owned profile only when membership fully ends — same owner as Custom Role cleanup.
 	if ( !getDeploymentRolesForUuid(deployment, crewUuid).length ) {
+		// Bug 28: remove written membership records for this source Actor.
+		for ( const m of resolveStarshipCrewMemberships(starship) ) {
+			if ( m.sourceActorUuid !== crewUuid || !m.written ) continue;
+			updateData[`${CREW_MEMBERSHIPS_PATH}.-=${m.membershipId}`] = null;
+			updateData[`flags.sw5e.starship.crewProfiles.-=${toCrewProfileStorageKey(m.membershipId)}`] = null;
+		}
 		const rawProfiles = cloneDeep(starship?.flags?.sw5e?.starship?.crewProfiles ?? {});
 		const shapes = locateCrewProfileShapes(rawProfiles, crewUuid);
 		if ( shapes.hasCanonical || shapes.hasRawUuid || shapes.hasNested ) {
@@ -1273,12 +1721,23 @@ export function buildVehicleStarshipCrewContext(actor, { sheetEditable = true } 
 	syncDeploymentActiveFlags(deployment);
 	const user = globalThis.game?.user;
 	const roster = buildResolvedCrewRoster(deployment, actor, { sheetEditable })
-		.filter(row => isStarshipCrewMembershipVisibleToUser(actor, row?.uuid, user))
+		.filter(row => isStarshipCrewMembershipVisibleToUser(actor, {
+			membershipId: row?.membershipId,
+			uuid: row?.uuid
+		}, user))
 		.map(row => ({
 			...row,
-			membershipHidden: getStarshipCrewMembershipHidden(actor, row?.uuid) === true
+			membershipHidden: getStarshipCrewMembershipHidden(
+				actor,
+				row?.membershipId,
+				row?.uuid
+			) === true
 		}));
-	return { roster };
+	const visibleQuantitySum = roster.reduce(
+		(sum, row) => sum + Math.max(1, Math.floor(Number(row?.quantity) || 1)),
+		0
+	);
+	return { roster, visibleQuantitySum };
 }
 
 export function buildVehicleAvailableActors(actor) {
