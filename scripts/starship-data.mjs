@@ -969,6 +969,37 @@ const STARSHIP_SIZE_PROFILES = {
 const ACTOR_SIZE_TO_IDENTIFIER = { tiny: "tiny", sm: "small", med: "medium", lg: "large", huge: "huge", grg: "gargantuan" };
 
 /**
+ * Hull/Shield dice gained per Tier Upgrade (Bug 9 / Phase 2A).
+ * Tiny–Large and unknown/homebrew sizes → 1; Huge/Gargantuan → 2.
+ * Does not hard-block unknown sizes. Does not invent settings.
+ * @param {string} [sizeIdentifier]
+ * @returns {1|2}
+ */
+export function getStarshipHullShieldDicePerTierGain(sizeIdentifier) {
+	const key = String(sizeIdentifier ?? "").trim().toLowerCase();
+	if ( key === "huge" || key === "gargantuan" ) return 2;
+	return 1;
+}
+
+/**
+ * Resolve Starship size identifier for pool derivation (same identity path as size profiles).
+ * @param {object} actor
+ * @param {object} [sizeSystem]
+ * @param {object|null} [liveSizeItem]
+ * @returns {string}
+ */
+function resolveStarshipSizeIdentifierForPools(actor, sizeSystem={}, liveSizeItem=null) {
+	const fromItem = String(
+		liveSizeItem?.system?.identifier
+		?? sizeSystem?.identifier
+		?? ""
+	).trim().toLowerCase();
+	if ( fromItem ) return fromItem;
+	const actorSize = actor?.system?.traits?.size ?? "";
+	return ACTOR_SIZE_TO_IDENTIFIER[actorSize] ?? "";
+}
+
+/**
  * Resolve the size-item system snapshot used for pool/tier derivation.
  * Prefer post-migration legacy flags, then raw source system, then live fallbacks / size profiles.
  * @param {object} actor
@@ -1022,20 +1053,22 @@ export function deriveStarshipPools(actor) {
 	// For mods/equipment (standard dnd5e types), live items have accessible system data.
 	const items = liveItems.length ? liveItems : sourceItems;
 
-	const { sizeSystem } = resolveStarshipSizeSystemForPools(actor);
+	const { sizeSystem, liveSizeItem } = resolveStarshipSizeSystemForPools(actor);
 	const tier = getStarshipEffectiveTier(actor);
+	const sizeIdentifier = resolveStarshipSizeIdentifierForPools(actor, sizeSystem, liveSizeItem);
+	const dicePerTier = getStarshipHullShieldDicePerTierGain(sizeIdentifier);
 
-	// Hull dice pool
+	// Hull dice pool — max = start + (size-aware gain × tier); used is never rewritten here.
 	const hullDie = sizeSystem.hullDice ?? "";
 	const hullDiceStart = toFiniteNumber(sizeSystem.hullDiceStart, 0);
 	const hullDiceUsed = toFiniteNumber(sizeSystem.hullDiceUsed, 0);
-	const hullDiceMax = hullDiceStart + (2 * tier);
+	const hullDiceMax = hullDiceStart + (dicePerTier * tier);
 
-	// Shield dice pool
+	// Shield dice pool — same per-tier gain as hull.
 	const shldDie = sizeSystem.shldDice ?? "";
 	const shldDiceStart = toFiniteNumber(sizeSystem.shldDiceStart, 0);
 	const shldDiceUsed = toFiniteNumber(sizeSystem.shldDiceUsed, 0);
-	const shldDiceMax = shldDiceStart + (2 * tier);
+	const shldDiceMax = shldDiceStart + (dicePerTier * tier);
 
 	// Power coupling — find the equipped powerc item for zone capacities.
 	// Equipment items are standard dnd5e type so item.system is accessible normally.

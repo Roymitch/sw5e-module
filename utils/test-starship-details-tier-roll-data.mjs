@@ -120,8 +120,9 @@ test("deriveStarshipPools uses shared helper and preserves pool math", () => {
 	const pools = deriveStarshipPools(actor);
 	assert.equal(pools.tier, 2);
 	assert.equal(pools.tier, getStarshipEffectiveTier(actor));
-	assert.equal(pools.hull.max, 3 + (2 * 2));
-	assert.equal(pools.shld.max, 3 + (2 * 2));
+	// Small size: +1 hull/shield die per tier (Bug 9), not universal +2.
+	assert.equal(pools.hull.max, 3 + (1 * 2));
+	assert.equal(pools.shld.max, 3 + (1 * 2));
 	assert.equal(pools.power.die, "d6");
 });
 
