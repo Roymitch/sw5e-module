@@ -19,6 +19,7 @@ import { patchStarshipArmorClassConfig } from "./patch/starship-armor-class-conf
 import { registerStarshipMovementReadyHooks } from "./patch/starship-movement.mjs";
 import { patchStarshipMovementSensesConfig } from "./starship-movement-config.mjs";
 import { patchStarshipSheet } from "./patch/starship-sheet.mjs";
+import { patchStarshipFeatureRecoveryLabels } from "./patch/starship-feature-recovery-labels.mjs";
 import { patchStarshipActivityConfigUi } from "./patch/starship-activity.mjs";
 import { registerStarshipSystemDamageRollHooks } from "./starship-system-damage.mjs";
 import { registerStarshipSavePilotPbHooks } from "./starship-data.mjs";
@@ -121,6 +122,7 @@ Hooks.once('init', async function() {
 	registerStarshipLauncherAmmoBridgeHooks();
 	registerStarshipDestructionSaveHooks();
 	patchStarshipSheet();
+	patchStarshipFeatureRecoveryLabels();
 	patchAugmentationsSheet();
 	patchDroidCustomizationsSheet();
 	patchVariantRules();

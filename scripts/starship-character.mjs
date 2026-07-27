@@ -1,5 +1,8 @@
 import { getLegacyStarshipActorSystem } from "./starship-data.mjs";
-import { canCurrentUserUpdateStarshipActor } from "./starship-permissions.mjs";
+import {
+	canCurrentUserUpdateStarshipActor,
+	isStarshipCrewMembershipVisibleToUser
+} from "./starship-permissions.mjs";
 
 export const STARSHIP_CREW_DEPLOYMENT_FLAG = "starshipDeployment";
 
@@ -377,6 +380,74 @@ function profileHasSiblings(profile) {
 }
 
 /**
+ * Build the canonical profile object for a membership-hidden write while preserving customRole.
+ * @param {ReturnType<typeof locateCrewProfileShapes>} shapes
+ * @param {boolean} hidden
+ * @returns {object}
+ */
+function buildMembershipHiddenTargetProfile(shapes, hidden) {
+	const siblings = mergeCrewProfileSiblings(
+		shapes.nestedLegacyProfile,
+		shapes.rawUuidProfile,
+		shapes.canonicalProfile
+	);
+	delete siblings.hidden;
+	const role = resolveCustomRoleFromShapes(shapes);
+	const target = { ...siblings };
+	if ( role ) target.customRole = role;
+	if ( hidden ) target.hidden = true;
+	return target;
+}
+
+/**
+ * Persist `crewProfiles.*.hidden` for one Actor UUID (preserve customRole + siblings).
+ * @param {Actor} starship
+ * @param {string} actorUuid
+ * @param {boolean} hidden
+ * @returns {Promise<{ ok: true }|{ ok: false, reason: string }>}
+ */
+async function persistCrewMembershipHidden(starship, actorUuid, hidden) {
+	const rawProfiles = cloneDeep(starship?.flags?.sw5e?.starship?.crewProfiles ?? {});
+	const shapes = locateCrewProfileShapes(rawProfiles, actorUuid);
+	const storageKey = toCrewProfileStorageKey(actorUuid);
+	const targetProfile = buildMembershipHiddenTargetProfile(shapes, hidden);
+	const hasContent = Object.keys(targetProfile).length > 0;
+
+	if ( shapes.hasRawUuid ) {
+		const cleaned = canonicalizeCrewProfilesForActor({
+			rawProfiles,
+			actorUuid,
+			nextRole: resolveCustomRoleFromShapes(shapes),
+			removeTarget: !hasContent
+		});
+		if ( hasContent ) cleaned[storageKey] = targetProfile;
+		else delete cleaned[storageKey];
+		const replaced = await replaceCrewProfilesMap(starship, cleaned);
+		return replaced ? { ok: true } : { ok: false, reason: "update" };
+	}
+
+	const update = {};
+	if ( hasContent ) {
+		update[`flags.sw5e.starship.crewProfiles.${storageKey}`] = targetProfile;
+	} else if ( shapes.hasCanonical ) {
+		update[`flags.sw5e.starship.crewProfiles.-=${storageKey}`] = null;
+	}
+
+	// Drop nested Actor→id legacy for this UUID so encoded key remains authoritative.
+	if ( shapes.hasNested && shapes.actorId ) {
+		update[`flags.sw5e.starship.crewProfiles.Actor.-=${shapes.actorId}`] = null;
+	}
+
+	if ( !Object.keys(update).length ) return { ok: true };
+	try {
+		await starship.update(update);
+	} catch ( _err ) {
+		return { ok: false, reason: "update" };
+	}
+	return { ok: true };
+}
+
+/**
  * Persist cleaned profiles when a raw dotted UUID key exists (non-atomic two-step).
  * @param {Actor} starship
  * @param {Record<string, object>} cleanedProfiles
@@ -518,6 +589,64 @@ export function getStarshipCrewCustomRole(starship, uuid) {
 	if ( !starship || !uuid ) return "";
 	const shapes = locateCrewProfileShapes(starship?.flags?.sw5e?.starship?.crewProfiles, uuid);
 	return resolveCustomRoleFromShapes(shapes);
+}
+
+/**
+ * Ship-owned membership concealment flag for a crew UUID (Bug 6).
+ * Canonical encoded profile wins; otherwise raw UUID then nested Actor→id.
+ * Missing / malformed → visible (`false`).
+ * @param {Actor|null|undefined} starship
+ * @param {string} uuid
+ * @returns {boolean}
+ */
+export function getStarshipCrewMembershipHidden(starship, uuid) {
+	if ( !starship || !uuid ) return false;
+	const shapes = locateCrewProfileShapes(starship?.flags?.sw5e?.starship?.crewProfiles, uuid);
+	if ( shapes.hasCanonical ) return shapes.canonicalProfile?.hidden === true;
+	for ( const profile of [shapes.rawUuidProfile, shapes.nestedLegacyProfile] ) {
+		if ( isCrewProfileObject(profile) && profile.hidden === true ) return true;
+	}
+	return false;
+}
+
+/**
+ * Set or clear ship-owned membership concealment for a deployed crew UUID.
+ * Preserves customRole and other sibling profile fields. Empty `{hidden:true}`-only
+ * profiles are removed on Reveal.
+ * @param {Actor|string} starshipSubject
+ * @param {string} crewUuid
+ * @param {boolean} hidden
+ * @returns {Promise<{ ok: true, actorUuid: string, hidden: boolean }|{ ok: false, reason: string }>}
+ */
+export async function setStarshipCrewMembershipHidden(starshipSubject, crewUuid, hidden) {
+	const starship = resolveActorDocument(starshipSubject);
+	const uuid = typeof crewUuid === "string" ? crewUuid : "";
+	if ( !uuid ) return { ok: false, reason: "no-uuid" };
+	if ( !starship || !isLegacyVehicleStarship(starship) ) return { ok: false, reason: "not-starship" };
+	// Hide/Reveal is GM-only (Bug 6 privacy correction) — Starship update alone does not authorize.
+	if ( globalThis.game?.user?.isGM !== true ) return { ok: false, reason: "permission" };
+	if ( !isStarshipCrewMemberUuid(starship, uuid) ) return { ok: false, reason: "membership" };
+
+	const nextHidden = hidden === true;
+	// No-op when already in the requested state (do not invent a profile to Reveal).
+	if ( getStarshipCrewMembershipHidden(starship, uuid) === nextHidden ) {
+		return { ok: true, actorUuid: uuid, hidden: nextHidden };
+	}
+
+	const persist = await persistCrewMembershipHidden(starship, uuid, nextHidden);
+	if ( persist.ok !== true ) return persist;
+
+	const readback = getStarshipCrewMembershipHidden(starship, uuid);
+	if ( readback !== nextHidden ) {
+		console.debug("SW5E MODULE | Membership hidden readback failed", {
+			actorUuid: uuid,
+			expected: nextHidden,
+			readback
+		});
+		return { ok: false, reason: "readback" };
+	}
+
+	return { ok: true, actorUuid: uuid, hidden: nextHidden };
 }
 
 /**
@@ -1087,9 +1216,14 @@ export function buildVehicleStarshipCrewContext(actor, { sheetEditable = true } 
 	const legacySystem = getLegacyStarshipActorSystem(actor) ?? {};
 	const deployment = getDeploymentState(legacySystem.attributes?.deployment);
 	syncDeploymentActiveFlags(deployment);
-	return {
-		roster: buildResolvedCrewRoster(deployment, actor, { sheetEditable })
-	};
+	const user = globalThis.game?.user;
+	const roster = buildResolvedCrewRoster(deployment, actor, { sheetEditable })
+		.filter(row => isStarshipCrewMembershipVisibleToUser(actor, row?.uuid, user))
+		.map(row => ({
+			...row,
+			membershipHidden: getStarshipCrewMembershipHidden(actor, row?.uuid) === true
+		}));
+	return { roster };
 }
 
 export function buildVehicleAvailableActors(actor) {

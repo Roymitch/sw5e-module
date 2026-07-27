@@ -313,7 +313,7 @@ export function ensureStarshipLegacyRoutingDelegate(root, app) {
 
 /**
  * Advanced Power panel — collapse toggle (persist UI flag) and per-slot Roll/Spend in Play mode.
- * Also handles Crew & Passengers and Fuel core panel collapse toggles.
+ * Also handles Flight Manifest and Fuel core panel collapse toggles.
  */
 export function resolveStarshipCoreCollapseToggle(target) {
 	if ( !(target instanceof Element) ) return null;
@@ -348,7 +348,9 @@ export async function toggleStarshipCorePanelCollapse(toggle, app) {
 		? "advancedPowerCollapsed"
 		: panelKey === "crew"
 			? "crewCollapsed"
-			: "fuelCollapsed";
+			: panelKey === "routing"
+				? "routingCollapsed"
+				: "fuelCollapsed";
 	try {
 		await act.update({ [`flags.sw5e.starship.ui.${flagKey}`]: willCollapse });
 	} catch ( err ) {

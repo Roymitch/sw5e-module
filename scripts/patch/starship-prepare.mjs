@@ -2,6 +2,8 @@ import { getModuleId, HOOKS_NAMESPACE } from "../module-support.mjs";
 import {
 	getDerivedStarshipRuntime,
 	getLegacyStarshipActorSystem,
+	getStarshipEffectiveTier,
+	isStarshipFlagVehicle,
 	mergeVehicleAbilityValues
 } from "../starship-data.mjs";
 
@@ -36,8 +38,28 @@ function getLiveActorFromModel(model) {
 	return null;
 }
 
+/**
+ * Ensure rollData.details exists without replacing an existing details object, then set details.tier.
+ * @param {object} rollData
+ * @param {number} tier
+ */
+function injectStarshipDetailsTier(rollData, tier) {
+	if ( !rollData || (typeof rollData !== "object") ) return rollData;
+	if ( rollData.details == null || typeof rollData.details !== "object" || Array.isArray(rollData.details) ) {
+		rollData.details = {};
+	}
+	rollData.details.tier = tier;
+	return rollData;
+}
+
 export function patchStarshipPrepare() {
 	try {
+		libWrapper.register(getModuleId(), "dnd5e.documents.Actor5e.prototype.getRollData", function(wrapped, ...args) {
+			const rollData = wrapped(...args);
+			if ( !isStarshipFlagVehicle(this) ) return rollData;
+			return injectStarshipDetailsTier(rollData, getStarshipEffectiveTier(this));
+		}, "WRAPPER");
+
 		libWrapper.register(getModuleId(), "dnd5e.dataModels.actor.VehicleData.prototype.prepareAbilities", function(wrapped, ...args) {
 			const actorSource = getActorSource(this);
 			const isStarship = actorSource?.flags?.sw5e?.legacyStarshipActor?.type === "starship";

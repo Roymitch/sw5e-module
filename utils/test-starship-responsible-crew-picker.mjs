@@ -162,8 +162,85 @@ test("shared proficiency points math", () => {
 	assert.equal(computeStarshipSkillCrewProficiencyPoints(1, NaN), 0);
 });
 
-test("Bug 6 visibility stub defaults true", () => {
-	assert.equal(isStarshipCrewMembershipVisibleToUser({}, {}, {}), true);
+test("Bug 6 visibility: hidden is GM-only (Starship update does not bypass)", () => {
+	const uuid = "Actor.stow";
+	const storageKey = uuid.replaceAll(".", "\uFF0E");
+	const starship = {
+		flags: {
+			sw5e: {
+				starship: {
+					crewProfiles: {
+						[storageKey]: { hidden: true, customRole: "Stowaway" }
+					}
+				}
+			}
+		},
+		canUserModify(user, action) {
+			return (user?.id === "updater" || user?.id === "owner") && action === "update";
+		}
+	};
+	const crew = { uuid, documentName: "Actor" };
+	const gm = { id: "gm", isGM: true };
+	const updater = { id: "updater", isGM: false };
+	const owner = { id: "owner", isGM: false };
+	const observer = { id: "observer", isGM: false };
+	const limited = { id: "limited", isGM: false };
+	const none = { id: "none", isGM: false };
+	const crewOwner = { id: "crewOwner", isGM: false };
+
+	assert.equal(isStarshipCrewMembershipVisibleToUser(starship, crew, gm), true);
+	assert.equal(isStarshipCrewMembershipVisibleToUser(starship, uuid, updater), false);
+	assert.equal(isStarshipCrewMembershipVisibleToUser(starship, uuid, owner), false);
+	assert.equal(isStarshipCrewMembershipVisibleToUser(starship, uuid, observer), false);
+	assert.equal(isStarshipCrewMembershipVisibleToUser(starship, uuid, limited), false);
+	assert.equal(isStarshipCrewMembershipVisibleToUser(starship, uuid, none), false);
+	// Crew Actor ownership alone does not reveal.
+	assert.equal(isStarshipCrewMembershipVisibleToUser(starship, crew, crewOwner), false);
+
+	// Missing / empty / false hidden → visible under normal contract.
+	assert.equal(isStarshipCrewMembershipVisibleToUser({}, {}, none), true);
+	assert.equal(isStarshipCrewMembershipVisibleToUser({
+		flags: { sw5e: { starship: { crewProfiles: { [storageKey]: {} } } } }
+	}, uuid, none), true);
+	assert.equal(isStarshipCrewMembershipVisibleToUser({
+		flags: { sw5e: { starship: { crewProfiles: { [storageKey]: { hidden: false } } } } }
+	}, uuid, updater), true);
+	// Encoded key lookup still works for GM.
+	assert.equal(isStarshipCrewMembershipVisibleToUser(starship, uuid, gm), true);
+});
+
+test("Bug 29: non-GM Starship owner omits hidden qualified crew; GM retains", () => {
+	const visible = makeCrewActor({ uuid: "Actor.visible", name: "Visible", prof: 4, rank: 2, ownedBy: "owner" });
+	const hidden = makeCrewActor({ uuid: "Actor.hidden", name: "Hidden", prof: 5, rank: 2, ownedBy: "owner" });
+	const storageKey = hidden.uuid.replaceAll(".", "\uFF0E");
+	const restore = installActorResolver(new Map([
+		[visible.uuid, visible],
+		[hidden.uuid, hidden]
+	]));
+	try {
+		const starship = makeStarship({ crewUuids: [visible.uuid, hidden.uuid] });
+		starship.flags.sw5e.starship = {
+			crewProfiles: {
+				[storageKey]: { hidden: true }
+			}
+		};
+		starship.canUserModify = (user, action) => user?.id === "owner" && action === "update";
+
+		const owner = { id: "owner", isGM: false };
+		const ownerResult = buildStarshipResponsibleCrewCandidates({ starshipActor: starship, user: owner });
+		assert.equal(ownerResult.candidates.length, 1);
+		assert.equal(ownerResult.candidates[0].actorUuid, visible.uuid);
+
+		const gm = { id: "gm", isGM: true };
+		const gmResult = buildStarshipResponsibleCrewCandidates({ starshipActor: starship, user: gm });
+		assert.equal(gmResult.candidates.length, 2);
+		assert.equal(
+			gmResult.candidates.some(c => c.actorUuid === hidden.uuid),
+			true
+		);
+	} finally {
+		restore();
+	}
 });
 
 test("public chat audit rejects name/uuid in flavor/flags", () => {

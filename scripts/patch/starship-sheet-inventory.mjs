@@ -20,6 +20,10 @@ import {
 } from "../starship-sheet-categorize.mjs";
 import { localizeOrFallback } from "../starship-sheet-html.mjs";
 import { isSw5eStarshipActor, STARSHIP_FEATURES_TAB_ID } from "../starship-sheet-ids.mjs";
+import {
+	applyStarshipFeatureRecoveryRowContext,
+	getStarshipFeaturesFeatColumns
+} from "./starship-feature-recovery-labels.mjs";
 
 let vehicleSheetPrepareContextWrapped = false;
 let vehicleSheetStarshipCargoInventoryWrapped = false;
@@ -131,6 +135,11 @@ export function filterPreparedInventoryEntries(entries, hiddenIds) {
 	return entries;
 }
 
+/**
+ * Remove hidden Items from Stations/Inventory/Features *list* collections only.
+ * Preserve sheet-wide `context.itemContext`: Stations and Inventory PARTs run before
+ * `sw5e-starship-features`, and `#dnd5e-itemContext` needs those entries for Uses/Recovery.
+ */
 export function filterStarshipCargoContext(context, hiddenIds) {
 	if ( !context || typeof context !== "object" ) return context;
 
@@ -147,16 +156,13 @@ export function filterStarshipCargoContext(context, hiddenIds) {
 		for ( const section of getIterableValues(category) ) filterPreparedInventoryEntries(section?.items, hiddenIds);
 	}
 
-	const itemContext = context.itemContext;
-	if ( itemContext && typeof itemContext === "object" ) {
-		for ( const itemId of hiddenIds ) delete itemContext[itemId];
-	}
-
 	return context;
 }
 
 export const STARSHIP_CARGO_INVENTORY_COLUMNS = ["price", "weight", "quantity", "charges", "controls"];
+/** @deprecated Prefer getStarshipFeaturesFeatColumns() — kept for offline tests expecting the export. */
 export const STARSHIP_FEATURES_FEAT_COLUMNS = [{ id: "uses", order: 200 }, "recovery", "controls"];
+export { getStarshipFeaturesFeatColumns };
 
 export const STARSHIP_INVENTORY_SECTION_DEFS = [
 	{ key: "weapons", id: "sw5e-weapons", labelKey: "SW5E.Weapon", fallback: "Weapons", order: 50 },
@@ -447,7 +453,7 @@ export function buildStarshipGroupedSections(sheet, context, sectionDefs, {
 		?? (isInventoryTab ? getStarshipInventoryManagedItemIds(actor, groups) : getStarshipFeaturesManagedItemIds(actor, groups));
 
 	const inventoryColumns = Inventory.mapColumns(STARSHIP_CARGO_INVENTORY_COLUMNS);
-	const featColumns = Inventory.mapColumns(STARSHIP_FEATURES_FEAT_COLUMNS);
+	const featColumns = Inventory.mapColumns(getStarshipFeaturesFeatColumns());
 	const rawSections = [];
 
 	for ( const def of sectionDefs ) {
@@ -533,6 +539,7 @@ export function registerStarshipCargoInventoryWrappers() {
 			if ( !group ) return;
 			if ( group === "weapons" || group === "equipment" || group === "modifications" ) ctx.groups = { sw5eInventory: group };
 			else ctx.groups = { sw5eFeatures: group };
+			applyStarshipFeatureRecoveryRowContext(item, ctx);
 		}, "WRAPPER");
 	} catch ( err ) {
 		console.warn("SW5E MODULE | Could not wrap VehicleActorSheet _prepareItemFeature for starship cargo grouping.", err);

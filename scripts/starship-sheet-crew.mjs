@@ -12,9 +12,11 @@ import {
 	deployStarshipCrew,
 	deployStarshipCrewBatch,
 	getStarshipCrewCustomRole,
+	getStarshipCrewMembershipHidden,
 	isStarshipCrewMemberUuid,
 	partitionCrewRosterGroups,
 	setStarshipCrewCustomRole,
+	setStarshipCrewMembershipHidden,
 	undeployStarshipCrew
 } from "./starship-character.mjs";
 import {
@@ -865,6 +867,47 @@ export function prepareStarshipCrewRosterContextMenu(element, app) {
 				group: "action"
 			});
 		}
+	}
+
+	const canToggleMembershipHidden = app?.isEditable !== false
+		&& globalThis.game?.user?.isGM === true
+		&& isStarshipCrewMemberUuid(app?.actor, uuid);
+	if ( canToggleMembershipHidden ) {
+		const isHidden = getStarshipCrewMembershipHidden(app.actor, uuid);
+		options.push({
+			name: isHidden
+				? localizeOrFallback("SW5E.StarshipCrewContextRevealMembership", "Reveal Crew Member")
+				: localizeOrFallback("SW5E.StarshipCrewContextHideMembership", "Hide Crew Member"),
+			icon: isHidden
+				? '<i class="fa-solid fa-eye fa-fw"></i>'
+				: '<i class="fa-solid fa-eye-slash fa-fw"></i>',
+			condition: () => app?.isEditable !== false
+				&& globalThis.game?.user?.isGM === true
+				&& isStarshipCrewMemberUuid(app?.actor, uuid),
+			callback: async () => {
+				const starshipActor = app.actor;
+				if ( app?.isEditable === false
+					|| globalThis.game?.user?.isGM !== true
+					|| !isStarshipCrewMemberUuid(starshipActor, uuid) ) {
+					warnStarshipActorUpdateDenied();
+					return;
+				}
+				const currentlyHidden = getStarshipCrewMembershipHidden(starshipActor, uuid);
+				const writeResult = await setStarshipCrewMembershipHidden(
+					starshipActor,
+					uuid,
+					!currentlyHidden
+				);
+				if ( writeResult?.ok !== true ) {
+					warnStarshipActorUpdateDenied();
+					return;
+				}
+				// Rebuild Core roster via the sheet's established PARTIAL/STOCK pipeline so
+				// membershipHidden class state matches persisted flags (Bug 6 refresh).
+				if ( app?.rendered ) await app.render(false);
+			},
+			group: "action"
+		});
 	}
 
 	const canRemove = app?.isEditable !== false

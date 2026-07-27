@@ -136,19 +136,27 @@ export function getStarshipFeaturesTabLabel() {
 
 export function registerStarshipFeaturesTabPart() {
 	const VAS = globalThis.dnd5e?.applications?.actor?.VehicleActorSheet;
-	if ( !VAS?.PARTS || VAS._sw5eStarshipFeaturesTabRegistered ) return;
+	if ( !VAS?.PARTS ) return;
 
+	const recoveryColumnTemplate = getModulePath("templates/inventory/columns/starship-recovery.hbs");
 	if ( !VAS.PARTS[STARSHIP_FEATURES_TAB_ID] ) {
 		VAS.PARTS[STARSHIP_FEATURES_TAB_ID] = {
 			container: { classes: ["tab-body"], id: "tabs" },
 			template: "systems/dnd5e/templates/actors/tabs/actor-features.hbs",
 			templates: [
 				"systems/dnd5e/templates/inventory/inventory.hbs",
-				"systems/dnd5e/templates/inventory/activity.hbs"
+				"systems/dnd5e/templates/inventory/activity.hbs",
+				recoveryColumnTemplate
 			],
 			scrollable: [""]
 		};
+	} else {
+		const part = VAS.PARTS[STARSHIP_FEATURES_TAB_ID];
+		part.templates ??= [];
+		if ( !part.templates.includes(recoveryColumnTemplate) ) part.templates.push(recoveryColumnTemplate);
 	}
+
+	if ( VAS._sw5eStarshipFeaturesTabRegistered ) return;
 
 	if ( !Array.isArray(VAS.TABS) ) VAS.TABS = [];
 	if ( !VAS.TABS.some(tab => tab.tab === STARSHIP_FEATURES_TAB_ID) ) {

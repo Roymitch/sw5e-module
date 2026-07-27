@@ -1,0 +1,120 @@
+#!/usr/bin/env node
+/**
+ * Offline gate: approved ship-rest recovery-period source ledger + Superior Firepower contract.
+ */
+import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import yaml from "js-yaml";
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const SCRIPT = path.join(ROOT, "utils/apply-starship-recovery-period-source-correction.mjs");
+
+let passed = 0;
+function test(name, fn) {
+	fn();
+	passed += 1;
+	console.log(`ok - ${name}`);
+}
+
+function parseJsonObjects(stdout) {
+	const objs = [];
+	const text = String(stdout);
+	let depth = 0;
+	let start = -1;
+	for ( let i = 0; i < text.length; i++ ) {
+		const ch = text[i];
+		if ( ch === "{" ) {
+			if ( depth === 0 ) start = i;
+			depth += 1;
+		} else if ( ch === "}" ) {
+			depth -= 1;
+			if ( depth === 0 && start >= 0 ) {
+				objs.push(JSON.parse(text.slice(start, i + 1)));
+				start = -1;
+			}
+		}
+	}
+	return objs;
+}
+
+function runValidate() {
+	const r = spawnSync(process.execPath, [SCRIPT, "--validate"], {
+		cwd: ROOT,
+		encoding: "utf8"
+	});
+	assert.equal(r.status, 0, r.stderr || r.stdout);
+	const objs = parseJsonObjects(r.stdout);
+	assert.ok(objs.length >= 2, "expected summary + validated JSON");
+	return { summary: objs[0], last: objs[objs.length - 1] };
+}
+
+test("validate reports approved 103/65 with 58 sr and 45 lr", () => {
+	const { summary, last } = runValidate();
+	assert.equal(summary.approvedRows, 103);
+	assert.equal(summary.files, 65);
+	assert.equal(summary.toSr, 58);
+	assert.equal(summary.toLr, 45);
+	assert.equal(summary.standaloneSr, 5);
+	assert.equal(summary.drakeSr, 53);
+	assert.equal(summary.standaloneLr, 5);
+	assert.equal(summary.drakeLr, 40);
+	assert.equal(summary.correctionRowsPending, 0);
+	assert.equal(last.validated, true);
+	assert.equal(last.sr, 58);
+	assert.equal(last.lr, 45);
+	assert.equal(last.ambiguousUntouched, 8);
+});
+
+test("Superior Firepower Drake embed uses per:sr and @details.tier*3", () => {
+	const file = path.join(ROOT, "packs/_source/drakes-shipyard/executor-i-class-star-dreadnought.yml");
+	const doc = yaml.load(fs.readFileSync(file, "utf8"));
+	const item = (doc.items ?? []).find(i => i._id === "4aQwn3RVsQ4e5xss");
+	assert.ok(item, "Superior Firepower embed must exist");
+	assert.equal(item.name, "Superior Firepower");
+	assert.equal(item.system.uses.per, "sr");
+	assert.equal(item.system.uses.recovery, "");
+	assert.equal(item.system.uses.max, "@details.tier*3");
+	assert.notEqual(item.system.uses.per, "recharge");
+});
+
+test("ambiguous Hold Together / Citadel / Paragon still use legacy per values", () => {
+	const citadel = yaml.load(fs.readFileSync(
+		path.join(ROOT, "packs/_source/starships/starship-features/gargantuan/citadel.yml"),
+		"utf8"
+	));
+	assert.equal(citadel.system.uses.per, "recharge");
+
+	const paragon = yaml.load(fs.readFileSync(
+		path.join(ROOT, "packs/_source/starships/starship-features/gargantuan/paragon-dreadnought.yml"),
+		"utf8"
+	));
+	assert.equal(paragon.system.uses.per, "recharge");
+
+	const holdStandalone = path.join(ROOT, "packs/_source/starships/starship-features/medium/hold-together.yml");
+	const ht = yaml.load(fs.readFileSync(holdStandalone, "utf8"));
+	assert.equal(ht.system.uses.per, "refitting");
+});
+
+test("canonical YAML does not introduce modern recovery[] arrays for Superior Firepower", () => {
+	const file = path.join(ROOT, "packs/_source/drakes-shipyard/executor-i-class-star-dreadnought.yml");
+	const src = fs.readFileSync(file, "utf8");
+	const doc = yaml.load(src);
+	const item = (doc.items ?? []).find(i => i._id === "4aQwn3RVsQ4e5xss");
+	assert.equal(item.system.uses.per, "sr");
+	assert.equal(item.system.uses.recovery, "");
+	assert.equal(typeof item.system.uses.recovery, "string");
+	assert.ok(!Array.isArray(item.system.uses.recovery));
+
+	// Text-level: recovery remains a quoted empty string near uses.max, not a list.
+	const usesBlock = src.match(
+		/- _id: 4aQwn3RVsQ4e5xss[\s\S]*?(?=\n  - _id:|\nflags:|\nz:|\n_id:|\n$)/
+	)?.[0] ?? "";
+	assert.match(usesBlock, /per:\s*sr/);
+	assert.match(usesBlock, /recovery:\s*(''|\"\")/);
+	assert.doesNotMatch(usesBlock, /recovery:\s*\r?\n\s*-\s*period:/);
+});
+
+console.log(`\n${passed} passed`);

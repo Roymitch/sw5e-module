@@ -284,9 +284,15 @@ function getStarshipCrewState(actor, legacySystem = {}) {
 	const pilotUuid = deployment.pilot?.value ?? deployment.pilot ?? null;
 	const crewUuids = getDeploymentUuidList(deployment.crew);
 	const passengerUuids = getDeploymentUuidList(deployment.passenger);
-	const pilotActor = resolveActorDocument(pilotUuid);
+	const user = globalThis.game?.user;
+	const isMembershipVisible = uuid => isStarshipCrewMembershipVisibleToUser(actor, uuid, user);
+	const visiblePilotUuid = pilotUuid && isMembershipVisible(pilotUuid) ? pilotUuid : null;
+	const visibleCrewUuids = crewUuids.filter(isMembershipVisible);
+	const visiblePassengerUuids = passengerUuids.filter(isMembershipVisible);
+	const pilotActor = resolveActorDocument(visiblePilotUuid);
 	// Bug 29D: deployed/stealth set is membership-only (Pilot + Crew + Passenger).
 	// Ignore deployment.active.value so stale Active cannot uniquely affect stealth pace.
+	// Stealth remains mechanical (includes hidden members); display fields are Layer-1 filtered.
 	const deployedActors = Array.from(new Set([pilotUuid, ...crewUuids, ...passengerUuids]))
 		.map(resolveActorDocument)
 		.filter(Boolean);
@@ -296,11 +302,11 @@ function getStarshipCrewState(actor, legacySystem = {}) {
 	});
 
 	return {
-		pilotAssigned: Boolean(pilotUuid),
+		pilotAssigned: Boolean(visiblePilotUuid),
 		pilotName: pilotActor?.name ?? "",
 		activeCrewName: "",
-		crewCount: crewUuids.length,
-		passengerCount: passengerUuids.length,
+		crewCount: visibleCrewUuids.length,
+		passengerCount: visiblePassengerUuids.length,
 		pilotSkill: toFiniteNumber(pilotActor?.system?.skills?.pil?.value, 0) ?? 0,
 		stealthPace: canStealthAtNormalPace ? "normal" : "slow"
 	};
@@ -962,25 +968,23 @@ const STARSHIP_SIZE_PROFILES = {
 // Map dnd5e actor size keys → identifier
 const ACTOR_SIZE_TO_IDENTIFIER = { tiny: "tiny", sm: "small", med: "medium", lg: "large", huge: "huge", grg: "gargantuan" };
 
-export function deriveStarshipPools(actor) {
+/**
+ * Resolve the size-item system snapshot used for pool/tier derivation.
+ * Prefer post-migration legacy flags, then raw source system, then live fallbacks / size profiles.
+ * @param {object} actor
+ * @returns {{ sizeSystem: object, liveSizeItem: object|null }}
+ */
+function resolveStarshipSizeSystemForPools(actor) {
 	const liveItems = actor?.items?.contents ?? [];
 	const sourceItems = actor?._source?.items ?? [];
-	// For mods/equipment (standard dnd5e types), live items have accessible system data.
-	const items = liveItems.length ? liveItems : sourceItems;
-
-	// Size item system: live items of unknown type (e.g. "starshipsize") run through DataModel
-	// which discards custom fields. actor._source.items are plain objects where item.system
-	// always contains all stored fields. Prefer flag data (post-migration), then raw source system.
 	const liveSizeItem = getLegacyStarshipSize(liveItems);
 	const sourceSizeItem = getLegacyStarshipSize(sourceItems)
 		?? (liveSizeItem ? sourceItems.find(i => i._id === liveSizeItem.id) : null);
-	let sizeSystem = liveSizeItem?.flags?.sw5e?.legacyStarshipSize  // post-migration
-		?? sourceSizeItem?.system                                        // pre-migration (raw plain object)
-		?? getLegacySizeSystem(liveSizeItem)                             // character-backed fallback
+	let sizeSystem = liveSizeItem?.flags?.sw5e?.legacyStarshipSize
+		?? sourceSizeItem?.system
+		?? getLegacySizeSystem(liveSizeItem)
 		?? {};
 
-	// New-format size items (feat + HullPoints advancement, identifier-based) lack custom system fields.
-	// Fall back to the static size profile keyed by identifier or actor traits.size.
 	if ( !sizeSystem.hullDice ) {
 		const identifier = liveSizeItem?.system?.identifier ?? sourceSizeItem?.system?.identifier ?? "";
 		const actorSize = actor?.system?.traits?.size ?? "";
@@ -988,14 +992,38 @@ export function deriveStarshipPools(actor) {
 		if ( profile ) sizeSystem = { ...sizeSystem, ...profile };
 	}
 
-	// Tier: actor details first, then size item, then HullPoints advancement max key.
+	return { sizeSystem, liveSizeItem };
+}
+
+/**
+ * Canonical Starship effective tier for pools and formula roll data (`@details.tier`).
+ * Precedence: legacy actor flag tier → size-item tier → HullPoints advancement max key → 0.
+ * Does not persist tier or mutate actor data. Zero is a valid result.
+ * @param {object} actor
+ * @returns {number}
+ */
+export function getStarshipEffectiveTier(actor) {
 	const legacyActorSystem = getLegacyStarshipActorSystem(actor) ?? {};
-	let tier = toFiniteNumber(legacyActorSystem.details?.tier ?? sizeSystem.tier, null);
-	if ( tier === null ) {
-		const hullAdv = liveSizeItem?.system?.advancement?.find?.(a => a.type === "HullPoints");
-		const advKeys = hullAdv?.value ? Object.keys(hullAdv.value).map(Number).filter(Number.isFinite) : [];
-		tier = advKeys.length ? Math.max(0, ...advKeys) : 0;
-	}
+	const fromLegacy = toFiniteNumber(legacyActorSystem.details?.tier, null);
+	if ( fromLegacy !== null ) return fromLegacy;
+
+	const { sizeSystem, liveSizeItem } = resolveStarshipSizeSystemForPools(actor);
+	const fromSize = toFiniteNumber(sizeSystem?.tier, null);
+	if ( fromSize !== null ) return fromSize;
+
+	const hullAdv = liveSizeItem?.system?.advancement?.find?.(a => a.type === "HullPoints");
+	const advKeys = hullAdv?.value ? Object.keys(hullAdv.value).map(Number).filter(Number.isFinite) : [];
+	return advKeys.length ? Math.max(0, ...advKeys) : 0;
+}
+
+export function deriveStarshipPools(actor) {
+	const liveItems = actor?.items?.contents ?? [];
+	const sourceItems = actor?._source?.items ?? [];
+	// For mods/equipment (standard dnd5e types), live items have accessible system data.
+	const items = liveItems.length ? liveItems : sourceItems;
+
+	const { sizeSystem } = resolveStarshipSizeSystemForPools(actor);
+	const tier = getStarshipEffectiveTier(actor);
 
 	// Hull dice pool
 	const hullDie = sizeSystem.hullDice ?? "";

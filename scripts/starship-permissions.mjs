@@ -13,23 +13,91 @@ export function canCurrentUserUpdateStarshipActor(actor) {
 	return actor?.canUserModify?.(user, "update") === true;
 }
 
+/** Fullwidth full stop — mirrors `starship-character.mjs` crewProfiles key encoding. */
+const CREW_PROFILE_KEY_DOT = "\uFF0E";
+
 /**
- * Bug 6 membership-visibility integration point for starship crew (responsible-crew picker + attribution).
- * Until Bug 6 hidden-membership APIs exist, all memberships are treated as visible.
- *
- * @param {Actor|null|undefined} _starship
- * @param {Actor|null|undefined} _crewActor
- * @param {User|null|undefined} _user
+ * @param {string} uuid
+ * @returns {string}
+ */
+function toCrewProfileStorageKey(uuid) {
+	return String(uuid ?? "").replaceAll(".", CREW_PROFILE_KEY_DOT);
+}
+
+/**
+ * @param {unknown} value
  * @returns {boolean}
  */
-export function isStarshipCrewMembershipVisibleToUser(_starship, _crewActor, _user) {
-	// Bug 6: return false when membership is hidden from this user.
-	return true;
+function isCrewProfileObject(value) {
+	return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+/**
+ * Read ship-owned `crewProfiles.*.hidden` for one Actor UUID (encoded / raw / nested shapes).
+ * Defaults visible when missing or malformed.
+ * @param {Actor|null|undefined} starship
+ * @param {string} actorUuid
+ * @returns {boolean}
+ */
+function readStarshipCrewMembershipHiddenFlag(starship, actorUuid) {
+	const uuid = String(actorUuid ?? "");
+	if ( !uuid || !starship ) return false;
+	const raw = starship?.flags?.sw5e?.starship?.crewProfiles;
+	if ( !isCrewProfileObject(raw) ) return false;
+
+	const storageKey = toCrewProfileStorageKey(uuid);
+	if ( Object.prototype.hasOwnProperty.call(raw, storageKey) ) {
+		return isCrewProfileObject(raw[storageKey]) && raw[storageKey].hidden === true;
+	}
+	if ( uuid.includes(".") && Object.prototype.hasOwnProperty.call(raw, uuid) ) {
+		return isCrewProfileObject(raw[uuid]) && raw[uuid].hidden === true;
+	}
+	const actorId = uuid.startsWith("Actor.") ? uuid.slice("Actor.".length) : null;
+	if ( actorId && isCrewProfileObject(raw.Actor)
+		&& !Object.prototype.hasOwnProperty.call(raw.Actor, "customRole")
+		&& !Object.prototype.hasOwnProperty.call(raw.Actor, "hidden")
+		&& Object.prototype.hasOwnProperty.call(raw.Actor, actorId) ) {
+		const nested = raw.Actor[actorId];
+		return isCrewProfileObject(nested) && nested.hidden === true;
+	}
+	return false;
+}
+
+/**
+ * Resolve a crew Actor UUID from an Actor document or UUID string.
+ * @param {Actor|string|null|undefined} crewActorOrUuid
+ * @returns {string}
+ */
+function resolveCrewMembershipUuid(crewActorOrUuid) {
+	if ( typeof crewActorOrUuid === "string" ) return crewActorOrUuid.trim();
+	if ( crewActorOrUuid?.documentName === "Actor" || crewActorOrUuid?.uuid ) {
+		return String(crewActorOrUuid.uuid ?? "").trim();
+	}
+	return "";
+}
+
+/**
+ * Whether a user may see a deployment membership on this starship (Bug 6).
+ * When `hidden === true`: GM only. Starship update permission and crew Actor ownership
+ * do not bypass concealment. When not hidden: visible under normal sheet access.
+ *
+ * @param {Actor|null|undefined} starship
+ * @param {Actor|string|null|undefined} crewActorOrUuid
+ * @param {User|null|undefined} [user]
+ * @returns {boolean}
+ */
+export function isStarshipCrewMembershipVisibleToUser(starship, crewActorOrUuid, user = globalThis.game?.user) {
+	if ( !starship || !user ) return true;
+	const uuid = resolveCrewMembershipUuid(crewActorOrUuid);
+	if ( !uuid ) return true;
+
+	if ( !readStarshipCrewMembershipHiddenFlag(starship, uuid) ) return true;
+	return user.isGM === true;
 }
 
 /**
  * Whether the user may see a named crew attribution for Starship skill PB (Bug 29E).
- * Entitled: GM or starship update permission. Also requires membership visible (Bug 6 stub).
+ * Entitled: GM or starship update permission. Also requires membership visible (Bug 6).
  *
  * @param {Actor|null|undefined} starship
  * @param {Actor|null|undefined} crewActor Actor that would be named (required for a name)

@@ -27,6 +27,55 @@
   gap: 0.22rem;
 }
 
+/* Recharge / Refitting / Regen — compact sidebar icon row above Hull Points */
+.sw5e-starship-sidebar-vitals .sw5e-starship-sidebar-repair-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 0.35rem;
+  width: 100%;
+  margin: 0 0 0.28rem;
+  min-width: 0;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-sidebar-repair-action {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--sw5e-line-color, #3d9fd4) 34%, transparent);
+  background: color-mix(in srgb, var(--sw5e-theme-surface-strong, #1c2430) 78%, transparent);
+  color: var(--sw5e-theme-text, inherit);
+  cursor: pointer;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-sidebar-repair-action > i {
+  font-size: 0.8125rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-sidebar-repair-action:is(:hover, :focus-visible) {
+  border-color: color-mix(in srgb, var(--sw5e-line-color, #3d9fd4) 55%, transparent);
+  background: color-mix(in srgb, var(--sw5e-line-color, #3d9fd4) 16%, transparent);
+  outline: none;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-sidebar-repair-action:focus-visible {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--sw5e-line-color, #3d9fd4) 45%, transparent);
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-sidebar-repair-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter > .label {
   display: flex;
   align-items: center;

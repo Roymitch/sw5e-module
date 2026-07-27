@@ -79,13 +79,6 @@
 {{/inline}}
 
 {{#*inline "sw5e-starship-crew-management"}}
-<div class="sw5e-starship-crew-command">
-  <div class="sw5e-starship-crew-status" aria-live="polite">
-    <span class="sw5e-starship-crew-status-label">{{ localize "SW5E.StarshipCrewAssignedLabel" }}</span>
-    <strong class="sw5e-starship-crew-status-value">{{crew.roster.length}}</strong>
-  </div>
-</div>
-
 <div class="sw5e-starship-crew-operations">
   {{#if crew.roster.length}}
     <div class="form-group sw5e-starship-crew-assigned-search-wrap">
@@ -120,7 +113,7 @@
           <div class="sw5e-starship-crew-group-body" id="{{bodyId}}" role="group" aria-labelledby="{{bodyId}}-label">
           {{#each rows}}
             <article
-              class="sw5e-starship-item-row sw5e-starship-crew-row{{#unless @root.sotgSheetEditMode}} sw5e-crew-row--play{{/unless}}"
+              class="sw5e-starship-item-row sw5e-starship-crew-row{{#unless @root.sotgSheetEditMode}} sw5e-crew-row--play{{/unless}}{{#if membershipHidden}} sw5e-crew-row--membership-hidden{{/if}}"
               data-search="{{searchText}}"
               data-actor-uuid="{{uuid}}"
             >
@@ -276,47 +269,39 @@
 {{/if}}
 {{/inline}}
 
-{{#*inline "sw5e-starship-core-repair"}}
-<section class="sw5e-starship-core-repair-panel" aria-label="{{localize "SW5E.StarshipSheet.RepairActionsAria"}}">
-  <div class="sw5e-starship-core-repair-actions">
-    <button
-      type="button"
-      class="sw5e-starship-repair-action"
-      data-sw5e-repair-action="recharge"
-      title="{{localize "SW5E.RechargeRepair"}}"
-      aria-label="{{localize "SW5E.RechargeRepair"}}"
-    >{{localize "SW5E.Recharge"}}</button>
-    <button
-      type="button"
-      class="sw5e-starship-repair-action"
-      data-sw5e-repair-action="refitting"
-      title="{{localize "SW5E.RefittingRepair"}}"
-      aria-label="{{localize "SW5E.RefittingRepair"}}"
-    >{{localize "SW5E.Refitting"}}</button>
-    <button
-      type="button"
-      class="sw5e-starship-repair-action"
-      data-sw5e-repair-action="regen"
-      title="{{localize "SW5E.RegenRepair"}}"
-      aria-label="{{localize "SW5E.RegenRepair"}}"
-    >{{localize "SW5E.Regen"}}</button>
-  </div>
-</section>
-{{/inline}}
-
 {{#*inline "sw5e-starship-core-routing"}}
-<section class="sw5e-starship-core-routing-panel sw5e-starship-system-path-scope" aria-label="{{systemsCore.labels.powerRouting}}">
-  <div class="sw5e-starship-systems-field sw5e-starship-systems-field--routing-primary{{#unless @root.systemsRoutingEditable}} sw5e-starship-systems-field--locked{{/unless}}">
-    <div class="sw5e-starship-systems-routing-heading">
-      <label class="sw5e-starship-systems-routing-title" for="sw5e-core-routing">{{systemsCore.labels.powerRouting}}</label>
-      <span class="sw5e-starship-systems-routing-badge" title="{{systemsCore.powerRoutingLegacyBadge}}">{{systemsCore.powerRoutingLegacyBadge}}</span>
+<section
+  class="sw5e-starship-core-routing-panel sw5e-starship-system-path-scope{{#if systemsCore.coreCollapse.routing}} is-collapsed{{/if}}"
+  aria-label="{{systemsCore.labels.powerRouting}}"
+  data-sw5e-core-panel="routing"
+>
+  <header class="sw5e-starship-core-routing-header sw5e-starship-core-collapsible-header">
+    <div class="sw5e-starship-core-routing-heading sw5e-starship-core-collapsible-heading">
+      <h2 id="sw5e-core-routing-heading" class="sw5e-starship-systems-field-heading sw5e-starship-core-panel-heading">{{systemsCore.labels.powerRouting}}</h2>
     </div>
-    <p class="notes sw5e-starship-systems-routing-hint">{{systemsCore.powerRoutingHint}}</p>
+    <button
+      type="button"
+      class="sw5e-starship-core-routing-collapse sw5e-starship-core-collapsible-toggle"
+      data-sw5e-advanced-power-action="toggle-collapse"
+      data-sw5e-core-collapse-action="toggle"
+      data-core-panel="routing"
+      data-expand-label="{{systemsCore.coreCollapseLabels.routing.expand}}"
+      data-collapse-label="{{systemsCore.coreCollapseLabels.routing.collapse}}"
+      aria-expanded="{{#if systemsCore.coreCollapse.routing}}false{{else}}true{{/if}}"
+      title="{{#if systemsCore.coreCollapse.routing}}{{systemsCore.coreCollapseLabels.routing.expand}}{{else}}{{systemsCore.coreCollapseLabels.routing.collapse}}{{/if}}"
+      aria-label="{{#if systemsCore.coreCollapse.routing}}{{systemsCore.coreCollapseLabels.routing.expand}}{{else}}{{systemsCore.coreCollapseLabels.routing.collapse}}{{/if}}"
+    >
+      <i class="fas fa-chevron-down" aria-hidden="true"></i>
+    </button>
+  </header>
+
+  <div class="sw5e-starship-core-collapsible-body">
     <select
       id="sw5e-core-routing"
       class="sw5e-starship-systems-select sw5e-starship-systems-routing-select"
       name="system.attributes.power.routing"
       data-dtype="String"
+      aria-labelledby="sw5e-core-routing-heading"
       {{#unless @root.systemsRoutingEditable}}disabled{{/unless}}
     >
       {{#each systemsCore.routingOptions}}
@@ -335,7 +320,7 @@
 >
   <header class="sw5e-starship-core-fuel-header sw5e-starship-core-collapsible-header">
     <div class="sw5e-starship-core-fuel-heading sw5e-starship-core-collapsible-heading">
-      <span class="sw5e-starship-systems-field-heading">{{systemsCore.labels.fuel}}</span>
+      <h2 class="sw5e-starship-systems-field-heading sw5e-starship-core-panel-heading">{{systemsCore.labels.fuel}}</h2>
     </div>
     <button
       type="button"
@@ -441,7 +426,7 @@
 >
   <header class="sw5e-starship-core-advanced-power-header sw5e-starship-core-collapsible-header">
     <div class="sw5e-starship-core-advanced-power-heading sw5e-starship-core-collapsible-heading">
-      <span class="sw5e-starship-systems-field-heading">{{systemsCore.advancedPower.title}}</span>
+      <h2 class="sw5e-starship-systems-field-heading sw5e-starship-core-panel-heading">{{systemsCore.advancedPower.title}}</h2>
     </div>
     <button
       type="button"
@@ -672,7 +657,6 @@
             {{/if}}
 
             <div class="sw5e-starship-overview-operations">
-              {{> sw5e-starship-core-repair}}
               {{#if crew}}
               <section
                 class="sw5e-starship-crew-panel{{#if systemsCore.coreCollapse.crew}} is-collapsed{{/if}}"
@@ -681,7 +665,10 @@
               >
                 <header class="sw5e-starship-core-crew-header sw5e-starship-core-collapsible-header">
                   <div class="sw5e-starship-core-crew-heading sw5e-starship-core-collapsible-heading">
-                    <span class="sw5e-starship-systems-field-heading">{{ localize "SW5E.StarshipCrewPanelTitle" }}</span>
+                    <h2 class="sw5e-starship-systems-field-heading sw5e-starship-core-panel-heading sw5e-starship-crew-panel-heading" aria-live="polite">
+                      <span class="sw5e-starship-crew-panel-title">{{ localize "SW5E.StarshipCrewPanelTitle" }}</span>
+                      <span class="sw5e-starship-crew-panel-count">({{crew.roster.length}})</span>
+                    </h2>
                   </div>
                   <div class="sw5e-starship-core-collapsible-header-actions">
                     <button

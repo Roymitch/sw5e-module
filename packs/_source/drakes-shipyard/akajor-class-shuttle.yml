@@ -183,8 +183,8 @@ items:
         value: starshipAction
         subtype: crew
       recharge:
-        value: 1
-        charged: true
+        value: null
+        charged: false
       attributes:
         speed:
           space: null
@@ -276,8 +276,8 @@ items:
         value: starshipAction
         subtype: crew
       recharge:
-        value: 1
-        charged: true
+        value: null
+        charged: false
       attributes:
         speed:
           space: null
@@ -371,8 +371,8 @@ items:
         value: starshipAction
         subtype: crew
       recharge:
-        value: 1
-        charged: true
+        value: null
+        charged: false
       attributes:
         speed:
           space: null
@@ -1371,8 +1371,8 @@ items:
         value: starshipAction
         subtype: crew
       recharge:
-        value: 1
-        charged: true
+        value: null
+        charged: false
       attributes:
         speed:
           space: null
@@ -1678,8 +1678,8 @@ items:
         value: starshipAction
         subtype: crew
       recharge:
-        value: 1
-        charged: true
+        value: null
+        charged: false
       attributes:
         speed:
           space: null
@@ -1773,8 +1773,8 @@ items:
         value: starshipAction
         subtype: crew
       recharge:
-        value: 1
-        charged: true
+        value: null
+        charged: false
       attributes:
         speed:
           space: null
@@ -2217,8 +2217,8 @@ items:
         units: ''
       uses:
         value: null
-        max: ''
-        per: null
+        max: '@details.tier'
+        per: sr
         recovery: ''
         prompt: true
       consume:
@@ -2458,7 +2458,7 @@ items:
       uses:
         value: 1
         max: '1'
-        per: recharge
+        per: sr
         recovery: ''
         prompt: true
       consume:

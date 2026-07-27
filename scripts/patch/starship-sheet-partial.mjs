@@ -506,8 +506,6 @@ export function signaturePayloadCoreSystemsRouting(meta = {}) {
 				fuelCap: systemsCore.labels?.fuelCap ?? "",
 				fuelCost: systemsCore.labels?.fuelCost ?? ""
 			},
-			powerRoutingLegacyBadge: systemsCore.powerRoutingLegacyBadge ?? "",
-			powerRoutingHint: systemsCore.powerRoutingHint ?? "",
 			routingOptions: (systemsCore.routingOptions ?? []).map(option => ({
 				value: option?.value ?? "",
 				label: option?.label ?? "",
@@ -515,9 +513,14 @@ export function signaturePayloadCoreSystemsRouting(meta = {}) {
 				selected: Boolean(option?.selected)
 			})),
 			coreCollapse: {
+				routing: Boolean(systemsCore.coreCollapse?.routing),
 				fuel: Boolean(systemsCore.coreCollapse?.fuel)
 			},
 			coreCollapseLabels: {
+				routing: {
+					expand: systemsCore.coreCollapseLabels?.routing?.expand ?? "",
+					collapse: systemsCore.coreCollapseLabels?.routing?.collapse ?? ""
+				},
 				fuel: {
 					expand: systemsCore.coreCollapseLabels?.fuel?.expand ?? "",
 					collapse: systemsCore.coreCollapseLabels?.fuel?.collapse ?? ""
@@ -588,6 +591,7 @@ export function signaturePayloadCoreCrew(meta = {}) {
 				searchText: entry?.searchText ?? "",
 				assignmentSubtitle: entry?.assignmentSubtitle ?? "",
 				customRole: entry?.customRole ?? "",
+				membershipHidden: Boolean(entry?.membershipHidden),
 				active: Boolean(entry?.active),
 				isPilot: Boolean(entry?.isPilot),
 				isCrew: Boolean(entry?.isCrew),
@@ -780,13 +784,6 @@ export async function tryApplyStarshipCorePartialUpdates(existingWrapper, render
 			dirty: crewSig.dirty,
 			selector: 'section.sw5e-starship-crew-panel[data-sw5e-core-panel="crew"]',
 			expectedCount: hasCrew ? 1 : 0
-		},
-		{
-			id: STARSHIP_SECTION.CORE_SYSTEMS_ROUTING,
-			signature: systemsSig.signature,
-			dirty: systemsSig.dirty,
-			selector: "section.sw5e-starship-core-repair-panel",
-			expectedCount: 1
 		},
 		{
 			id: STARSHIP_SECTION.CORE_SYSTEMS_ROUTING,

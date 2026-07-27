@@ -1,4 +1,38 @@
 <div class="sw5e-starship-sidebar-vitals-inner">
+  <div
+    class="sw5e-starship-sidebar-repair-actions"
+    role="group"
+    aria-label="{{localize "SW5E.StarshipSheet.RepairActionsAria"}}"
+  >
+    <button
+      type="button"
+      class="sw5e-starship-sidebar-repair-action"
+      data-sw5e-repair-action="recharge"
+      title="{{localize "SW5E.Recharge"}}"
+      aria-label="{{localize "SW5E.Recharge"}}"
+    >
+      <i class="fa-solid fa-screwdriver-wrench" inert></i>
+    </button>
+    <button
+      type="button"
+      class="sw5e-starship-sidebar-repair-action"
+      data-sw5e-repair-action="refitting"
+      title="{{localize "SW5E.Refitting"}}"
+      aria-label="{{localize "SW5E.Refitting"}}"
+    >
+      <i class="fa-solid fa-anchor" inert></i>
+    </button>
+    <button
+      type="button"
+      class="sw5e-starship-sidebar-repair-action"
+      data-sw5e-repair-action="regen"
+      title="{{localize "SW5E.Regen"}}"
+      aria-label="{{localize "SW5E.Regen"}}"
+    >
+      <i class="fa-solid fa-shield-plus" inert></i>
+    </button>
+  </div>
+
   {{!-- Hull Points — primary/tall meter --}}
   <div class="meter-group sw5e-starship-vital-meter sw5e-starship-vital-meter--primary">
     <div class="label roboto-condensed-upper">

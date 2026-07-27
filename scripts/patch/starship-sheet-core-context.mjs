@@ -162,14 +162,6 @@ export function buildSystemsCoreContext(actor, { runtime } = {}) {
 			"Tier, size, hull, shields, and dice pools are edited from the sidebar. Power routing and fuel are on the Core tab."
 		),
 		sectionOperationsKicker: localizeOrFallback("SW5E.StarshipSheet.SystemsSectionOperationsKicker", "Operations"),
-		powerRoutingHint: localizeOrFallback(
-			"SW5E.StarshipSheet.PowerRoutingSystemsHint",
-			"Choose which subsystem receives boosted reactor output during play. This is a legacy routing shortcut—not the SotG Boost action or power die allocation workflow."
-		),
-		powerRoutingLegacyBadge: localizeOrFallback(
-			"SW5E.StarshipSheet.PowerRoutingLegacyBadge",
-			"Legacy / Reroute Power"
-		),
 		sectionSupportingKicker: localizeOrFallback("SW5E.StarshipSheet.SystemsSectionSupportingKicker", "Power state & kinematics"),
 		systemsLivePlayBadge: localizeOrFallback("SW5E.StarshipSheet.SystemsLivePlayBadge", "Usable in Play mode"),
 		systemsSupportingSetupHint: localizeOrFallback(
@@ -179,7 +171,7 @@ export function buildSystemsCoreContext(actor, { runtime } = {}) {
 		labels: {
 			turningSpeed: localizeOrFallback("SW5E.TurnSpeed", "Turning speed"),
 			spaceSpeed: localizeOrFallback("SW5E.SpeedSpace", "Space speed"),
-			powerRouting: localizeOrFallback("SW5E.PowerRouting", "Power routing"),
+			powerRouting: localizeOrFallback("SW5E.PowerRouting", "Power Routing"),
 			hullCurrent: localizeOrFallback("SW5E.StarshipHullFieldCurrent", "Current hull points"),
 			hullMax: localizeOrFallback("SW5E.StarshipHullFieldMax", "Maximum hull points"),
 			shieldCurrent: localizeOrFallback("SW5E.StarshipShieldFieldCurrent", "Current shield points"),
@@ -197,12 +189,17 @@ export function buildSystemsCoreContext(actor, { runtime } = {}) {
 		},
 		coreCollapse: {
 			crew: starshipUi.crewCollapsed === true,
+			routing: starshipUi.routingCollapsed === true,
 			fuel: starshipUi.fuelCollapsed === true
 		},
 		coreCollapseLabels: {
 			crew: {
-				expand: localizeOrFallback("SW5E.StarshipSheet.CoreCrewExpand", "Expand Crew & Passengers"),
-				collapse: localizeOrFallback("SW5E.StarshipSheet.CoreCrewCollapse", "Collapse Crew & Passengers")
+				expand: localizeOrFallback("SW5E.StarshipSheet.CoreCrewExpand", "Expand Flight Manifest"),
+				collapse: localizeOrFallback("SW5E.StarshipSheet.CoreCrewCollapse", "Collapse Flight Manifest")
+			},
+			routing: {
+				expand: localizeOrFallback("SW5E.StarshipSheet.CoreRoutingExpand", "Expand Power Routing"),
+				collapse: localizeOrFallback("SW5E.StarshipSheet.CoreRoutingCollapse", "Collapse Power Routing")
 			},
 			fuel: {
 				expand: localizeOrFallback("SW5E.StarshipSheet.CoreFuelExpand", "Expand Fuel"),

@@ -163,8 +163,8 @@ items:
         value: starshipAction
         subtype: crew
       recharge:
-        value: 1
-        charged: true
+        value: null
+        charged: false
       attributes:
         speed:
           space: null
@@ -256,8 +256,8 @@ items:
         value: starshipAction
         subtype: crew
       recharge:
-        value: 1
-        charged: true
+        value: null
+        charged: false
       attributes:
         speed:
           space: null
@@ -351,8 +351,8 @@ items:
         value: starshipAction
         subtype: crew
       recharge:
-        value: 1
-        charged: true
+        value: null
+        charged: false
       attributes:
         speed:
           space: null
@@ -1340,8 +1340,8 @@ items:
         value: starshipAction
         subtype: crew
       recharge:
-        value: 1
-        charged: true
+        value: null
+        charged: false
       attributes:
         speed:
           space: null
@@ -1647,8 +1647,8 @@ items:
         value: starshipAction
         subtype: crew
       recharge:
-        value: 1
-        charged: true
+        value: null
+        charged: false
       attributes:
         speed:
           space: null
@@ -1742,8 +1742,8 @@ items:
         value: starshipAction
         subtype: crew
       recharge:
-        value: 1
-        charged: true
+        value: null
+        charged: false
       attributes:
         speed:
           space: null
@@ -2308,7 +2308,7 @@ items:
       uses:
         value: null
         max: '@details.tier*3'
-        per: recharge
+        per: sr
         recovery: ''
         prompt: true
       consume:
@@ -2553,7 +2553,7 @@ items:
       uses:
         value: 1
         max: '1'
-        per: recharge
+        per: sr
         recovery: ''
         prompt: true
       consume:
@@ -2654,7 +2654,7 @@ items:
       uses:
         value: null
         max: '@details.tier*2'
-        per: recharge
+        per: sr
         recovery: ''
         prompt: true
       consume:
@@ -2757,7 +2757,7 @@ items:
       uses:
         value: 1
         max: '1'
-        per: recharge
+        per: sr
         recovery: ''
         prompt: true
       consume:

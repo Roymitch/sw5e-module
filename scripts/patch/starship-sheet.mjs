@@ -988,7 +988,6 @@ function markStarshipCoreSectionOwnership(root, { showPowerRouting }) {
 		[".sw5e-starship-overview-abilities-row", STARSHIP_SECTION.CORE_ABILITIES],
 		["section.sw5e-starship-overview-skills", STARSHIP_SECTION.CORE_SKILLS],
 		['section.sw5e-starship-crew-panel[data-sw5e-core-panel="crew"]', STARSHIP_SECTION.CORE_CREW],
-		["section.sw5e-starship-core-repair-panel", STARSHIP_SECTION.CORE_SYSTEMS_ROUTING],
 		['section.sw5e-starship-core-advanced-power-panel[data-sw5e-core-panel="advancedPower"]', STARSHIP_SECTION.CORE_SYSTEMS_ROUTING],
 		['section.sw5e-starship-core-fuel-panel[data-sw5e-core-panel="fuel"]', STARSHIP_SECTION.CORE_SYSTEMS_ROUTING]
 	];
