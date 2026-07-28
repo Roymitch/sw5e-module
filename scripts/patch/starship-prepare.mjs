@@ -1,5 +1,6 @@
 import { getModuleId, HOOKS_NAMESPACE } from "../module-support.mjs";
 import {
+	applyStarshipTravelFromUnslowedCombatBase,
 	getDerivedStarshipRuntime,
 	getLegacyStarshipActorSystem,
 	getStarshipEffectiveTier,
@@ -96,11 +97,22 @@ export function patchStarshipPrepare() {
 				);
 				const movement = runtime.movement ?? {};
 				if ( this.attributes?.movement && (typeof this.attributes.movement === "object") ) {
+					// Live values only: Role AE / underlying base → routing → Slowed.
+					// Do not persist routing or Slowed into Actor underlying movement.
 					this.attributes.movement.space = movement.space;
 					this.attributes.movement.turn = movement.turn;
 					this.attributes.movement.walk = 0;
 					this.attributes.movement.fly = 0;
 					if ( movement.units ) this.attributes.movement.units = movement.units;
+				}
+				if ( liveActor && Array.isArray(movement.roleWarnings) && movement.roleWarnings.length ) {
+					liveActor._preparationWarnings ??= [];
+					for ( const warning of movement.roleWarnings ) {
+						const message = warning?.message ?? String(warning);
+						if ( message && !liveActor._preparationWarnings.includes(message) ) {
+							liveActor._preparationWarnings.push(message);
+						}
+					}
 				}
 				// Ensure vehicle type is always "space" — existing world actors may have "air" stored
 				// from before buildVehicleSystem set details.type correctly.
@@ -125,6 +137,20 @@ export function patchStarshipPrepare() {
 				this.attributes.ac.motionless = this.attributes.ac.value
 					- Math.max(0, this.abilities?.dex?.mod ?? 0);
 			}
+			// Travel from unslowed combat Space — never from Slowed prepared Space/Turn.
+			const liveActor = getLiveActorFromModel(this);
+			const runtime = getDerivedStarshipRuntime(
+				liveActor ?? {
+					_source: actorSource,
+					flags: actorSource.flags,
+					items: { contents: actorSource.items ?? [] },
+					system: {
+						abilities: this.abilities ?? actorSource.system?.abilities ?? {},
+						attributes: { movement: this.attributes?.movement ?? {} }
+					}
+				}
+			);
+			applyStarshipTravelFromUnslowedCombatBase(this, liveActor, runtime.movement ?? {});
 			return result;
 		}, "WRAPPER");
 	} catch ( err ) {

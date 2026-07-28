@@ -1,43 +1,22 @@
 import { getModuleId } from "./module-support.mjs";
 import {
-	getLegacyStarshipActorSystem,
-	getStarshipBaseDerivedMovement,
-	getStarshipMovementOverrides
+	getStarshipMovementFieldControllers,
+	getStarshipUnderlyingMovement,
+	resolveStarshipMovementSourceUpdate
 } from "./starship-data.mjs";
 import { isSw5eStarshipActor, STARSHIP_MOVEMENT_TYPE_KEYS } from "./patch/starship-movement.mjs";
 
-const MOVEMENT_OVERRIDE_FLAG_BASE = "flags.sw5e.legacyStarshipActor.system.attributes.movementOverrides";
-const TRAVEL_SPEED_PATH = "system.attributes.travel.speeds.air";
-const TRAVEL_PACE_PATH = "system.attributes.travel.paces.air";
 const STARSHIP_MOVEMENT_TYPE_SET = new Set(STARSHIP_MOVEMENT_TYPE_KEYS);
 const STARSHIP_BRIDGED_MOVEMENT_KEYS = Object.freeze(["space", "turn", "walk", "fly", "units"]);
 const STARSHIP_FIXED_ZERO_MOVEMENT_KEYS = Object.freeze(["walk", "fly"]);
 const STARSHIP_BRIDGED_MOVEMENT_KEY_SET = new Set(STARSHIP_BRIDGED_MOVEMENT_KEYS);
 const STARSHIP_PENDING_MOVEMENT_EDITS = new Map();
-const USE_DERIVED_ACTION = "sw5e-reset-derived";
 
 const { MovementSensesConfig } = dnd5e.applications.shared;
 
 function localizeOrFallback(key, fallback) {
 	const localized = game.i18n.localize(key);
 	return localized && localized !== key ? localized : fallback;
-}
-
-function parseMovementInput(value, fallback = null) {
-	const text = String(value ?? "").trim();
-	if ( !text ) return fallback;
-	const numeric = Number(text);
-	return Number.isFinite(numeric) ? Math.max(0, Math.round(numeric)) : fallback;
-}
-
-function resolveOverrideInput(raw, baseValue) {
-	const text = String(raw ?? "").trim();
-	if ( !text ) return null;
-	const parsed = parseMovementInput(text, null);
-	if ( parsed === null ) return null;
-	const base = Number.isFinite(Number(baseValue)) ? Math.round(Number(baseValue)) : null;
-	if ( base !== null && parsed === base ) return null;
-	return parsed;
 }
 
 /**
@@ -89,14 +68,18 @@ function consumePendingStarshipMovementEdits(actor) {
 }
 
 /**
- * Prepared starship movement lives on `actor.system`; stock MovementSensesConfig reads `_source`.
- * Sync starship-only display values without altering the stock field list or layout.
+ * Dialog fields show underlying Actor movement (homebrew storage), not prepared live
+ * (Role OVERRIDE / routing / Slowed).
  */
-function getStarshipBridgedMovementValue(actor, key) {
-	const movement = actor.system?.attributes?.movement ?? {};
+function getStarshipDialogMovementValue(actor, key) {
 	if ( key === "walk" || key === "fly" ) return 0;
-	if ( key === "units" ) return movement.units ?? "ft";
-	return movement[key];
+	const underlying = getStarshipUnderlyingMovement(actor);
+	if ( key === "units" ) return underlying.units ?? "ft";
+	if ( key === "space" || key === "turn" ) {
+		const value = underlying[key];
+		return value === null ? "" : value;
+	}
+	return underlying[key];
 }
 
 function applyStarshipMovementDisplayValues(actor, context, orderedKeys) {
@@ -107,11 +90,12 @@ function applyStarshipMovementDisplayValues(actor, context, orderedKeys) {
 		if ( !key ) continue;
 		if ( STARSHIP_MOVEMENT_TYPE_SET.has(key) ) ensureStarshipMovementEntryName(entry, key);
 		if ( !STARSHIP_BRIDGED_MOVEMENT_KEY_SET.has(key) ) continue;
-		const live = getStarshipBridgedMovementValue(actor, key);
-		if ( live !== undefined && live !== null && live !== "" ) entry.value = live;
+		const value = getStarshipDialogMovementValue(actor, key);
+		if ( value !== undefined && value !== null && value !== "" ) entry.value = value;
+		else if ( key === "space" || key === "turn" ) entry.value = value;
 	}
 	if ( context.data && (typeof context.data === "object") ) {
-		const units = getStarshipBridgedMovementValue(actor, "units");
+		const units = getStarshipDialogMovementValue(actor, "units");
 		if ( units !== undefined && units !== null && units !== "" ) context.data.units = units;
 	}
 	return context;
@@ -124,22 +108,6 @@ function filterNonStarshipMovementContext(context, orderedKeys) {
 		return !key || !STARSHIP_MOVEMENT_TYPE_SET.has(key);
 	});
 	return context;
-}
-
-function stripStarshipOverrideMovementWrites(movement = {}) {
-	for ( const key of STARSHIP_MOVEMENT_TYPE_KEYS ) {
-		delete movement[key];
-	}
-	return movement;
-}
-
-function stripUntouchedStarshipBridgeMovementWrites(movement = {}, pendingKeys = null) {
-	if ( !(movement && typeof movement === "object") ) return movement;
-	for ( const key of STARSHIP_BRIDGED_MOVEMENT_KEYS ) {
-		if ( pendingKeys?.has(key) ) continue;
-		delete movement[key];
-	}
-	return movement;
 }
 
 function getMovementConfigRoot(app, html) {
@@ -160,41 +128,9 @@ function getMovementConfigRoot(app, html) {
 	return el?.closest?.(".application") ?? null;
 }
 
-/**
- * Inject a stock `dialog-button` into the Combat Speed fieldset (before units `<hr>`).
- * Starship MovementSensesConfig only; does not alter template or dialog chrome.
- */
-function bindStarshipUseDerivedButton(app, html) {
-	if ( !isSw5eStarshipActor(app?.document) || app?.options?.type !== "movement" ) return;
-
-	const part = getMovementConfigRoot(app, html)?.querySelector("[data-application-part=\"config\"]");
-	const fieldset = part?.querySelector("fieldset.card");
-	if ( !fieldset || fieldset.dataset.sw5eUseDerivedBound === "true" ) return;
-
-	const group = document.createElement("div");
-	group.className = "form-group";
-	const button = document.createElement("button");
-	button.type = "button";
-	button.className = "dialog-button";
-	button.dataset.action = USE_DERIVED_ACTION;
-	button.textContent = localizeOrFallback("SW5E.StarshipSheet.MovementResetDerived", "Use Derived");
-	group.append(button);
-
-	const hr = fieldset.querySelector("hr");
-	fieldset.insertBefore(group, hr ?? null);
-	fieldset.dataset.sw5eUseDerivedBound = "true";
-	button.addEventListener("click", event => {
-		event.preventDefault();
-		void resetStarshipMovementDerived(app);
-	});
-}
-
-function scheduleBindStarshipUseDerivedButton(app, html) {
+function scheduleBindStarshipMovementFieldTracking(app, html) {
 	if ( app?.constructor !== MovementSensesConfig ) return;
-	const run = () => {
-		bindStarshipUseDerivedButton(app, html);
-		bindStarshipMovementFieldTracking(app, html);
-	};
+	const run = () => bindStarshipMovementFieldTracking(app, html);
 	queueMicrotask(run);
 	requestAnimationFrame(run);
 }
@@ -216,66 +152,38 @@ function bindStarshipMovementFieldTracking(app, html) {
 	root.addEventListener("change", remember, true);
 }
 
-async function resetStarshipMovementDerived(app) {
-	const actor = app?.document;
-	if ( !actor?.isOwner ) return;
-	consumePendingStarshipMovementEdits(actor);
-
-	await actor.update({
-		[`${MOVEMENT_OVERRIDE_FLAG_BASE}.-=space`]: null,
-		[`${MOVEMENT_OVERRIDE_FLAG_BASE}.-=turn`]: null,
-		[TRAVEL_SPEED_PATH]: "",
-		[TRAVEL_PACE_PATH]: ""
-	});
-
-	if ( typeof app?.render === "function" ) await app.render(false);
-	if ( actor.sheet?.rendered ) await actor.sheet.render(false);
-}
-
 function onStarshipMovementConfigPreUpdate(doc, changed) {
 	if ( !isSw5eStarshipActor(doc) ) return;
 
 	const movement = foundry.utils.getProperty(changed, "system.attributes.movement");
-	if ( movement && typeof movement === "object" ) {
-		const hasTrackedSession = !!doc?.id && STARSHIP_PENDING_MOVEMENT_EDITS.has(doc.id);
-		const pendingKeys = hasTrackedSession ? (consumePendingStarshipMovementEdits(doc) ?? new Set()) : null;
-		if ( pendingKeys ) {
-			stripUntouchedStarshipBridgeMovementWrites(movement, pendingKeys);
-		}
-		for ( const key of STARSHIP_FIXED_ZERO_MOVEMENT_KEYS ) {
-			if ( key in movement ) delete movement[key];
-		}
-		const base = getStarshipBaseDerivedMovement(doc);
-		const overrideUpdate = {};
-		let hasOverrideChange = false;
+	if ( !(movement && typeof movement === "object") ) return;
 
-		for ( const key of STARSHIP_MOVEMENT_TYPE_KEYS ) {
-			if ( !(key in movement) ) continue;
-			hasOverrideChange = true;
-			const override = resolveOverrideInput(movement[key], base[key]);
-			if ( override === null ) overrideUpdate[`${MOVEMENT_OVERRIDE_FLAG_BASE}.-=${key}`] = null;
-			else overrideUpdate[`${MOVEMENT_OVERRIDE_FLAG_BASE}.${key}`] = override;
-		}
+	const hasTrackedSession = !!doc?.id && STARSHIP_PENDING_MOVEMENT_EDITS.has(doc.id);
+	const pendingKeys = hasTrackedSession ? (consumePendingStarshipMovementEdits(doc) ?? new Set()) : null;
+	const controllers = getStarshipMovementFieldControllers(doc);
+	const underlying = getStarshipUnderlyingMovement(doc);
+	const resolved = resolveStarshipMovementSourceUpdate({
+		underlying,
+		proposedMovement: movement,
+		pendingKeys,
+		fieldControllers: controllers
+	});
 
-		if ( hasOverrideChange ) {
-			const currentOverrides = getStarshipMovementOverrides(getLegacyStarshipActorSystem(doc));
-			const nextSpace = "space" in movement
-				? resolveOverrideInput(movement.space, base.space)
-				: currentOverrides.space;
-			let nextTurn = "turn" in movement
-				? resolveOverrideInput(movement.turn, base.turn)
-				: currentOverrides.turn;
-			if ( nextSpace !== null && nextTurn !== null && nextTurn > nextSpace ) {
-				nextTurn = nextSpace;
-				overrideUpdate[`${MOVEMENT_OVERRIDE_FLAG_BASE}.turn`] = nextTurn;
-			}
-			foundry.utils.mergeObject(changed, overrideUpdate);
-		}
+	for ( const key of Object.keys(movement) ) {
+		if ( !(key in resolved.movement) ) delete movement[key];
+	}
+	Object.assign(movement, resolved.movement);
 
-		stripStarshipOverrideMovementWrites(movement);
-		if ( !Object.keys(movement).length ) {
-			foundry.utils.deleteProperty(changed, "system.attributes.movement");
-		}
+	for ( const key of STARSHIP_FIXED_ZERO_MOVEMENT_KEYS ) {
+		if ( key in movement ) delete movement[key];
+	}
+
+	if ( resolved.warning ) {
+		ui.notifications?.warn?.(resolved.warning);
+	}
+
+	if ( !Object.keys(movement).length ) {
+		foundry.utils.deleteProperty(changed, "system.attributes.movement");
 	}
 }
 
@@ -304,7 +212,7 @@ export function patchStarshipMovementSensesConfig() {
 	Hooks.on("preUpdateActor", onStarshipMovementConfigPreUpdate);
 
 	Hooks.on("renderApplicationV2", (app, html) => {
-		scheduleBindStarshipUseDerivedButton(app, html);
+		scheduleBindStarshipMovementFieldTracking(app, html);
 	});
 }
 

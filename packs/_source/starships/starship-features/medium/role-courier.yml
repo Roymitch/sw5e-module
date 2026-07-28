@@ -11,6 +11,15 @@ effects:
         mode: 2
         value: '1'
         priority: 1
+      - key: system.attributes.movement.space
+        mode: 5
+        value: '400'
+        priority: 20
+      - key: system.attributes.movement.turn
+        mode: 5
+        value: '250'
+        priority: 20
+
     disabled: false
     duration:
       startTime: null
@@ -105,8 +114,8 @@ system:
     charged: false
   attributes:
     speed:
-      space: 300
-      turn: 150
+      space: 400
+      turn: 250
   attack:
     bonus: ''
     flat: false

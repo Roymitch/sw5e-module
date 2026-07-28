@@ -195,36 +195,10 @@ function getItemDescriptionText(item) {
 	return stripHtml(system?.description?.value ?? system?.description ?? "");
 }
 
-function getItemSpeedProfile(item) {
-	const speed = getLegacyItemSystem(item)?.attributes?.speed ?? item?.system?.attributes?.speed ?? {};
-	const space = toFiniteNumber(speed?.space, null);
-	const turn = toFiniteNumber(speed?.turn, null);
-	if ( space === null && turn === null ) return null;
-	return { space, turn };
-}
-
 function isRoleSpeedProfileItem(item) {
 	if ( !item ) return false;
 	const subtype = item.system?.type?.subtype ?? getLegacyItemSystem(item)?.type?.subtype ?? "";
 	return subtype === "role";
-}
-
-function getMovementProfile(items = [], sizeSystem = {}) {
-	const roleItem = items.find(item => isRoleSpeedProfileItem(item) && getItemSpeedProfile(item));
-	if ( roleItem ) {
-		const speed = getItemSpeedProfile(roleItem);
-		return {
-			space: speed?.space ?? toFiniteNumber(sizeSystem?.baseSpaceSpeed, null),
-			turn: speed?.turn ?? toFiniteNumber(sizeSystem?.baseTurnSpeed, null),
-			source: roleItem.name ?? "Role Profile"
-		};
-	}
-
-	return {
-		space: toFiniteNumber(sizeSystem?.baseSpaceSpeed, null),
-		turn: toFiniteNumber(sizeSystem?.baseTurnSpeed, null),
-		source: null
-	};
 }
 
 function getRoutingMultiplier(selected, zone) {
@@ -783,12 +757,171 @@ function getMovementBaseValue(value) {
 	return toFiniteNumber(value, null);
 }
 
-export function getStarshipMovementOverrides(legacySystem = {}) {
-	const raw = legacySystem?.attributes?.movementOverrides ?? {};
+/** Canonical Actor paths for Role published movement (OVERRIDE Active Effects). */
+export const STARSHIP_ROLE_MOVEMENT_SPACE_KEY = "system.attributes.movement.space";
+export const STARSHIP_ROLE_MOVEMENT_TURN_KEY = "system.attributes.movement.turn";
+export const STARSHIP_ACTIVE_EFFECT_MODE_OVERRIDE = 5;
+
+function normalizeMovementEffectKey(key) {
+	return String(key ?? "").trim();
+}
+
+function isCanonicalRoleMovementOverrideChange(change) {
+	const key = normalizeMovementEffectKey(change?.key);
+	const mode = Number(change?.mode);
+	if ( mode !== STARSHIP_ACTIVE_EFFECT_MODE_OVERRIDE ) return false;
+	return key === STARSHIP_ROLE_MOVEMENT_SPACE_KEY || key === STARSHIP_ROLE_MOVEMENT_TURN_KEY;
+}
+
+/**
+ * Published Role movement from item Active Effect OVERRIDE changes (correct keys only).
+ * Does not read prepared Actor movement (avoids routed/Slowed circularity).
+ */
+export function getRolePublishedMovementFromItems(items = []) {
+	const roles = (items ?? []).filter(item => isRoleSpeedProfileItem(item));
+	let space = null;
+	let turn = null;
+	let source = null;
+	for ( const item of roles ) {
+		const effects = item.effects?.contents ?? item.effects ?? [];
+		for ( const effect of effects ) {
+			if ( effect?.disabled ) continue;
+			for ( const change of effect.changes ?? [] ) {
+				if ( !isCanonicalRoleMovementOverrideChange(change) ) continue;
+				const key = normalizeMovementEffectKey(change.key);
+				const value = toFiniteNumber(change.value, null);
+				if ( value === null ) continue;
+				if ( key === STARSHIP_ROLE_MOVEMENT_SPACE_KEY ) space = value;
+				if ( key === STARSHIP_ROLE_MOVEMENT_TURN_KEY ) turn = value;
+			}
+		}
+		if ( space !== null || turn !== null ) {
+			source = item.name ?? "Role";
+			break;
+		}
+	}
 	return {
-		space: toFiniteNumber(raw.space, null),
-		turn: toFiniteNumber(raw.turn, null)
+		space,
+		turn,
+		source,
+		hasPublishedEffect: space !== null || turn !== null,
+		roleCount: roles.length
 	};
+}
+
+/**
+ * Soft validation only — never blocks. Presentation may be deferred to sheet warnings.
+ * @returns {{ code: string, message: string }[]}
+ */
+export function getStarshipRoleMovementValidationWarnings(items = [], sizeSystem = null) {
+	const warnings = [];
+	const roles = (items ?? []).filter(item => isRoleSpeedProfileItem(item));
+	if ( roles.length > 1 ) {
+		warnings.push({
+			code: "duplicate-roles",
+			message: "Multiple Role items are present; only the first Role movement source is used."
+		});
+	}
+	const sizeId = String(sizeSystem?.identifier ?? sizeSystem?.id ?? "").toLowerCase();
+	if ( sizeId && roles.length ) {
+		for ( const role of roles ) {
+			const req = String(role.system?.requirements ?? getLegacyItemSystem(role)?.requirements ?? "").toLowerCase();
+			if ( !req ) continue;
+			const sizeWord = sizeId === "gargantuan" ? "gargantuan" : sizeId;
+			if ( req.includes("starship") && !req.includes(sizeWord) ) {
+				warnings.push({
+					code: "role-size-mismatch",
+					message: `Role "${role.name ?? "Role"}" may not match starship size ${sizeId}.`
+				});
+			}
+		}
+	}
+	return warnings;
+}
+
+/**
+ * Resolve prepared combat movement base before routing/Slowed.
+ *
+ * Authority (no Size / Role-item-speed fallback; no soft recovery from live 0):
+ * - Enabled Override controllers → published Role OVERRIDE values from item AEs
+ * - Else underlying Actor `_source` movement (homebrew)
+ * - Plus enabled Add-mode deltas on canonical paths (e.g. Combat Thrusters)
+ *
+ * Never use already Slowed/routed prepared live values as the base (prevents double Slowed
+ * when sheet code re-calls derive after prepare wrote Slowed results).
+ */
+function resolveStarshipMovementBase({
+	items = [],
+	liveMovement = {},
+	legacyMovement = {},
+	fieldControllers = null,
+	actor = null,
+	addDeltas = null
+} = {}) {
+	const published = getRolePublishedMovementFromItems(items);
+	const underlying = actor
+		? getStarshipUnderlyingMovement(actor)
+		: {
+			space: getMovementBaseValue(legacyMovement.space),
+			turn: getMovementBaseValue(legacyMovement.turn)
+		};
+	const deltas = addDeltas ?? (actor ? getStarshipMovementAddDeltas(actor) : { space: 0, turn: 0 });
+
+	const pick = (field) => {
+		const controlled = !!fieldControllers?.[field]?.controlled;
+		let base = null;
+		if ( controlled && published[field] !== null ) base = published[field];
+		else if ( underlying[field] !== null && underlying[field] !== undefined ) base = underlying[field];
+		else base = getMovementBaseValue(liveMovement?.[field]);
+		if ( base === null ) base = getMovementBaseValue(legacyMovement?.[field]) ?? 0;
+		return base + (Number(deltas[field]) || 0);
+	};
+
+	const space = pick("space");
+	const turn = pick("turn");
+
+	let profileSource = "Actor";
+	if ( fieldControllers?.space?.controlled || fieldControllers?.turn?.controlled ) {
+		profileSource = published.source ?? "Role AE";
+	}
+
+	return {
+		space,
+		turn,
+		baseSpaceSpeed: published.space,
+		baseTurnSpeed: published.turn,
+		profileSource,
+		published,
+		fallbackSpace: underlying.space ?? 0,
+		fallbackTurn: underlying.turn ?? underlying.space ?? 0
+	};
+}
+
+/** Foundry ActiveEffect mode Add. */
+const STARSHIP_ACTIVE_EFFECT_MODE_ADD = 2;
+
+/**
+ * Sum enabled Add-mode deltas on canonical movement paths (not Override).
+ */
+export function getStarshipMovementAddDeltas(actor) {
+	const deltas = { space: 0, turn: 0 };
+	if ( !actor ) return deltas;
+	const effects = typeof actor.allApplicableEffects === "function"
+		? [...actor.allApplicableEffects()]
+		: (actor.appliedEffects ?? actor.effects?.contents ?? actor.effects ?? []);
+	for ( const effect of effects ) {
+		if ( !effect || effect.disabled ) continue;
+		for ( const change of effect.changes ?? [] ) {
+			const mode = Number(change?.mode);
+			if ( mode !== STARSHIP_ACTIVE_EFFECT_MODE_ADD ) continue;
+			const key = normalizeMovementEffectKey(change.key);
+			const value = toFiniteNumber(change.value, null);
+			if ( value === null ) continue;
+			if ( key === STARSHIP_ROLE_MOVEMENT_SPACE_KEY ) deltas.space += value;
+			else if ( key === STARSHIP_ROLE_MOVEMENT_TURN_KEY ) deltas.turn += value;
+		}
+	}
+	return deltas;
 }
 
 export function getStarshipTravelPaceOptions() {
@@ -799,6 +932,169 @@ export function getStarshipTravelPaceOptions() {
 	];
 }
 
+/**
+ * Enabled Active Effects that OVERRIDE canonical starship movement base fields.
+ * Add-mode deltas (Combat Thrusters), disabled effects, and malformed keys are ignored.
+ * @param {Actor} actor
+ * @param {{ includeDisabled?: boolean }} [options]
+ * @returns {{
+ *   space: { controlled: boolean, ambiguous: boolean, effectNames: string[] },
+ *   turn: { controlled: boolean, ambiguous: boolean, effectNames: string[] }
+ * }}
+ */
+export function getStarshipMovementFieldControllers(actor, { includeDisabled = false } = {}) {
+	const empty = () => ({ controlled: false, ambiguous: false, effectNames: [] });
+	const result = { space: empty(), turn: empty() };
+	if ( !actor ) return result;
+
+	const byField = { space: new Map(), turn: new Map() };
+	const effects = typeof actor.allApplicableEffects === "function"
+		? [...actor.allApplicableEffects()]
+		: (actor.appliedEffects ?? actor.effects?.contents ?? actor.effects ?? []);
+	for ( const effect of effects ) {
+		if ( !effect ) continue;
+		if ( !includeDisabled && effect.disabled ) continue;
+		if ( includeDisabled && !effect.disabled ) continue;
+		for ( const change of effect.changes ?? [] ) {
+			if ( !isCanonicalRoleMovementOverrideChange(change) ) continue;
+			const key = normalizeMovementEffectKey(change.key);
+			const field = key === STARSHIP_ROLE_MOVEMENT_SPACE_KEY ? "space" : "turn";
+			const id = effect.id ?? effect._id ?? `${effect.name}:${field}`;
+			if ( !byField[field].has(id) ) {
+				byField[field].set(id, effect.name ?? "Active Effect");
+			}
+		}
+	}
+
+	for ( const field of ["space", "turn"] ) {
+		const names = [...byField[field].values()];
+		result[field] = {
+			controlled: names.length > 0,
+			ambiguous: names.length > 1,
+			effectNames: names
+		};
+	}
+	return result;
+}
+
+/**
+ * Soft warning when multiple enabled Override effects control the same movement field.
+ */
+export function getStarshipMovementControllerAmbiguityWarnings(fieldControllers = {}) {
+	const warnings = [];
+	for ( const field of ["space", "turn"] ) {
+		const info = fieldControllers[field];
+		if ( !info?.ambiguous ) continue;
+		const label = field === "space" ? "Space" : "Turn";
+		warnings.push({
+			code: `duplicate-movement-override-${field}`,
+			message: `Multiple enabled Override Active Effects control ${label} movement; disable or delete extras from the Effects tab.`
+		});
+	}
+	return warnings;
+}
+
+/**
+ * Warning when the user tries to edit an underlying field controlled by an enabled Override AE.
+ * Never hard-codes an effect name — only uses names from detected controllers.
+ */
+export function buildStarshipMovementControlWarning(fieldControllers = {}, blockedFields = []) {
+	const fields = (blockedFields ?? []).filter(field => fieldControllers[field]?.controlled);
+	if ( !fields.length ) return null;
+
+	const labels = fields.map(field => (field === "space" ? "Space" : "Turn"));
+	const labelText = labels.join(" and ");
+	const names = [...new Set(fields.flatMap(field => fieldControllers[field]?.effectNames ?? []))];
+	const ambiguous = fields.some(field => fieldControllers[field]?.ambiguous);
+
+	if ( names.length === 1 && !ambiguous ) {
+		const verb = fields.length === 1 ? "is" : "are";
+		return `${labelText} ${verb} currently overridden by '${names[0]}.' Disable or delete that effect from the Effects tab before setting homebrew movement values.`;
+	}
+
+	if ( fields.length === 2 ) {
+		return "Space and/or Turn is currently overridden by an enabled Active Effect. Disable or delete the applicable effect from the Effects tab before setting a homebrew movement value.";
+	}
+	return `${labelText} is currently overridden by an enabled Active Effect. Disable or delete the applicable effect from the Effects tab before setting a homebrew movement value.`;
+}
+
+/**
+ * Resolve Movement dialog saves against underlying Actor values + controlling Override effects.
+ * Controlled changed fields are stripped (not saved). Uncontrolled changed fields persist normally.
+ * @returns {{ movement: object, blockedFields: string[], warning: string|null, savedFields: string[] }}
+ */
+export function resolveStarshipMovementSourceUpdate({
+	underlying = {},
+	proposedMovement = {},
+	pendingKeys = null,
+	fieldControllers = null
+} = {}) {
+	const movement = { ...(proposedMovement ?? {}) };
+	const controllers = fieldControllers ?? { space: { controlled: false }, turn: { controlled: false } };
+	const blockedFields = [];
+	const savedFields = [];
+
+	if ( pendingKeys ) {
+		for ( const key of ["space", "turn", "walk", "fly", "units"] ) {
+			if ( pendingKeys.has(key) ) continue;
+			delete movement[key];
+		}
+	}
+
+	for ( const key of ["walk", "fly"] ) {
+		if ( key in movement ) delete movement[key];
+	}
+
+	for ( const key of ["space", "turn"] ) {
+		if ( !(key in movement) ) continue;
+		const next = toFiniteNumber(movement[key], null);
+		if ( next === null ) {
+			delete movement[key];
+			continue;
+		}
+		const rounded = Math.max(0, Math.round(next));
+		movement[key] = rounded;
+		const prior = toFiniteNumber(underlying[key], null);
+		const changed = prior === null ? true : rounded !== Math.round(prior);
+		if ( !changed ) {
+			delete movement[key];
+			continue;
+		}
+		if ( controllers[key]?.controlled ) {
+			delete movement[key];
+			blockedFields.push(key);
+			continue;
+		}
+		savedFields.push(key);
+	}
+
+	return {
+		movement,
+		blockedFields,
+		savedFields,
+		warning: buildStarshipMovementControlWarning(controllers, blockedFields)
+	};
+}
+
+/**
+ * Underlying stored Actor movement (homebrew / editable source), not prepared live.
+ */
+export function getStarshipUnderlyingMovement(actor) {
+	const src = actor?._source?.system?.attributes?.movement
+		?? actor?.system?.attributes?.movement
+		?? {};
+	return {
+		space: toFiniteNumber(src.space, null),
+		turn: toFiniteNumber(src.turn, null),
+		units: src.units ?? "ft"
+	};
+}
+
+/**
+ * Starship combat movement (Bug 11 / Phase 2B — Role AE authority):
+ * Underlying / AE-prepared live base → Power Routing on space → Slowed.
+ * No movementOverrides, Role item speed runtime fallback, or Size movement fallback.
+ */
 export function deriveStarshipMovementData({
 	legacySystem = {},
 	items = [],
@@ -806,25 +1102,30 @@ export function deriveStarshipMovementData({
 	liveMovement = {},
 	sizeSystem = null,
 	routingState = null,
-	ignoreOverrides = false,
 	slowedLevel = 0,
-	spaceStationFixed = false
+	spaceStationFixed = false,
+	applyRouting = true,
+	fieldControllers = null,
+	actor = null
 } = {}) {
+	void liveAbilities;
 	const resolvedSizeSystem = sizeSystem ?? getLegacySizeSystem(getLegacyStarshipSize(items));
-	const movementProfile = getMovementProfile(items, resolvedSizeSystem);
 	const legacyMovement = legacySystem.attributes?.movement ?? {};
-	const legacyAbilities = legacySystem.abilities ?? {};
 	const routing = routingState ?? getPowerRoutingState(legacySystem);
-	const baseSpaceSpeed = getMovementBaseValue(movementProfile.space);
-	const baseTurnSpeed = getMovementBaseValue(movementProfile.turn);
-	const fallbackSpace = getMovementBaseValue(legacyMovement.space)
-		?? getMovementBaseValue(liveMovement.fly)
-		?? 0;
-	const fallbackTurn = getMovementBaseValue(legacyMovement.turn)
-		?? fallbackSpace;
+	const controllers = fieldControllers ?? (actor ? getStarshipMovementFieldControllers(actor) : null);
+	const resolved = resolveStarshipMovementBase({
+		items,
+		liveMovement,
+		legacyMovement,
+		fieldControllers: controllers,
+		actor
+	});
 	const units = liveMovement.units ?? legacyMovement.units ?? "ft";
+	const roleWarnings = [
+		...getStarshipRoleMovementValidationWarnings(items, resolvedSizeSystem),
+		...getStarshipMovementControllerAmbiguityWarnings(controllers ?? {})
+	];
 
-	// Space Station variant: flying 50 / turning 100; ignore bonuses, routing, overrides, Slowed.
 	if ( spaceStationFixed ) {
 		const { space, turn } = getSpaceStationFixedMovement();
 		return {
@@ -838,35 +1139,18 @@ export function deriveStarshipMovementData({
 			slowedLevel: 0,
 			spaceBeforeSlowed: space,
 			turnBeforeSlowed: turn,
-			spaceStationFixed: true
+			spaceStationFixed: true,
+			roleWarnings: []
 		};
 	}
 
-	const strengthMod = getAbilityModifier(liveAbilities, legacyAbilities, "str");
-	const dexterityMod = getAbilityModifier(liveAbilities, legacyAbilities, "dex");
-	const constitutionMod = getAbilityModifier(liveAbilities, legacyAbilities, "con");
+	let space = toFiniteNumber(resolved.space, resolved.fallbackSpace) ?? resolved.fallbackSpace;
+	let turn = toFiniteNumber(resolved.turn, resolved.fallbackTurn) ?? resolved.fallbackTurn;
 
-	let space = baseSpaceSpeed ?? fallbackSpace;
-	if ( baseSpaceSpeed !== null ) {
-		space = Math.max(50, baseSpaceSpeed + (50 * (strengthMod - constitutionMod)));
+	const enginesMultiplier = applyRouting ? routing.enginesMultiplier : 1;
+	if ( enginesMultiplier !== 1 ) {
+		space = Math.floor(space * enginesMultiplier);
 	}
-
-	let turn = baseTurnSpeed ?? fallbackTurn;
-	if ( baseTurnSpeed !== null ) {
-		turn = Math.max(50, baseTurnSpeed - (50 * (dexterityMod - constitutionMod)));
-	}
-
-	if ( routing.enginesMultiplier !== 1 ) {
-		space = Math.max(50, Math.floor((toFiniteNumber(space, fallbackSpace) ?? fallbackSpace) * routing.enginesMultiplier));
-	}
-
-	if ( !ignoreOverrides ) {
-		const overrides = getStarshipMovementOverrides(legacySystem);
-		if ( overrides.space !== null ) space = overrides.space;
-		if ( overrides.turn !== null ) turn = overrides.turn;
-	}
-
-	if ( Number.isFinite(space) && Number.isFinite(turn) && (turn > space) ) turn = space;
 
 	const resolvedSlowedLevel = Math.max(0, Math.trunc(Number(slowedLevel)) || 0);
 	const spaceBeforeSlowed = space;
@@ -874,36 +1158,22 @@ export function deriveStarshipMovementData({
 	if ( resolvedSlowedLevel > 0 ) {
 		space = applyStarshipSlowedToSpeed(space, resolvedSlowedLevel);
 		turn = applyStarshipSlowedToSpeed(turn, resolvedSlowedLevel);
-		if ( Number.isFinite(space) && Number.isFinite(turn) && (turn > space) ) turn = space;
 	}
 
 	return {
-		space: toFiniteNumber(space, fallbackSpace) ?? fallbackSpace,
-		turn: toFiniteNumber(turn, fallbackTurn) ?? fallbackTurn,
+		space: toFiniteNumber(space, resolved.fallbackSpace) ?? resolved.fallbackSpace,
+		turn: toFiniteNumber(turn, resolved.fallbackTurn) ?? resolved.fallbackTurn,
 		units,
-		baseSpaceSpeed,
-		baseTurnSpeed,
-		profileSource: movementProfile.source,
-		enginesMultiplier: routing.enginesMultiplier,
+		baseSpaceSpeed: resolved.baseSpaceSpeed,
+		baseTurnSpeed: resolved.baseTurnSpeed,
+		profileSource: resolved.profileSource,
+		enginesMultiplier,
 		slowedLevel: resolvedSlowedLevel,
-		spaceBeforeSlowed: toFiniteNumber(spaceBeforeSlowed, fallbackSpace) ?? fallbackSpace,
-		turnBeforeSlowed: toFiniteNumber(turnBeforeSlowed, fallbackTurn) ?? fallbackTurn,
-		spaceStationFixed: false
+		spaceBeforeSlowed: toFiniteNumber(spaceBeforeSlowed, resolved.fallbackSpace) ?? resolved.fallbackSpace,
+		turnBeforeSlowed: toFiniteNumber(turnBeforeSlowed, resolved.fallbackTurn) ?? resolved.fallbackTurn,
+		spaceStationFixed: false,
+		roleWarnings
 	};
-}
-
-/** Derived movement without optional manual overrides (for dialog hints / reset). */
-export function getStarshipBaseDerivedMovement(actor) {
-	const legacySystem = getLegacyStarshipActorSystem(actor);
-	const items = actor?.items?.contents ?? actor?._source?.items ?? [];
-	return deriveStarshipMovementData({
-		legacySystem,
-		items,
-		liveAbilities: actor?.system?.abilities ?? {},
-		liveMovement: actor?.system?.attributes?.movement ?? {},
-		ignoreOverrides: true,
-		spaceStationFixed: isActiveSpaceStationActor(actor)
-	});
 }
 
 export function applyDerivedStarshipMovement(legacySystem = {}, movement = {}) {
@@ -941,7 +1211,8 @@ export function getDerivedStarshipRuntime(actor, { liveAbilities, liveMovement, 
 		liveMovement: liveMovement ?? actor?.system?.attributes?.movement ?? {},
 		routingState: routing,
 		slowedLevel,
-		spaceStationFixed
+		spaceStationFixed,
+		actor
 	});
 	const travel = deriveStarshipTravelData({ legacySystem, items, crewState: crew });
 	travel.hyperspaceTimeMultiplier = getSpaceStationHyperspaceTravelTimeMultiplier(actor);
@@ -950,6 +1221,64 @@ export function getDerivedStarshipRuntime(actor, { liveAbilities, liveMovement, 
 
 export function getDerivedStarshipMovement(actor) {
 	return getDerivedStarshipRuntime(actor).movement;
+}
+
+/**
+ * Whether a travel formula field is blank in Actor source (empty → may auto-fill from unslowed Space).
+ */
+export function isStarshipTravelFieldBlank(value) {
+	if ( value === undefined || value === null ) return true;
+	return String(value).trim() === "";
+}
+
+/**
+ * Fill blank starship Travel Speed/Pace from the unslowed routed combat Space base.
+ * Slowed must not change travel. Explicitly stored travel values are preserved.
+ * @param {object} model  VehicleData model (`this` during prepare)
+ * @param {Actor|object|null} actor
+ * @param {object} movement  deriveStarshipMovementData result
+ */
+export function applyStarshipTravelFromUnslowedCombatBase(model, actor, movement = {}) {
+	const travel = model?.attributes?.travel;
+	if ( !travel || (typeof travel !== "object") ) return;
+
+	const sourceTravel = actor?._source?.system?.attributes?.travel ?? {};
+	const spaceBefore = toFiniteNumber(movement.spaceBeforeSlowed, null);
+	if ( spaceBefore === null ) return;
+
+	const movementUnits = model.attributes?.movement?.units ?? "ft";
+	const travelUnits = travel.units ?? null;
+	const convert = globalThis.dnd5e?.data?.fields?.TravelField?.convertMovementToTravel
+		?? globalThis.dnd5e?.dataModels?.fields?.TravelField?.convertMovementToTravel
+		?? null;
+	let speed = convert
+		? Number(convert(spaceBefore, movementUnits, travelUnits))
+		: spaceBefore / 10;
+	if ( !Number.isFinite(speed) ) return;
+	speed = Math.max(0, speed);
+
+	if ( isStarshipTravelFieldBlank(sourceTravel.speeds?.air) ) {
+		travel.speeds ??= {};
+		travel.speeds.air = speed;
+		if ( speed > (travel.speeds.max ?? 0) ) travel.speeds.max = speed;
+	}
+
+	if ( isStarshipTravelFieldBlank(sourceTravel.paces?.air) ) {
+		const time = toFiniteNumber(travel.time, 24) ?? 24;
+		let pace = speed * time;
+		const paceMode = travel.pace;
+		const applyPace = globalThis.dnd5e?.data?.fields?.TravelField?.applyPaceMultiplier
+			?? globalThis.dnd5e?.dataModels?.fields?.TravelField?.applyPaceMultiplier
+			?? null;
+		const unitType = globalThis.CONFIG?.DND5E?.travelUnits?.[travelUnits]?.type
+			?? globalThis.CONFIG?.DND5E?.movementUnits?.[movementUnits]?.type;
+		if ( applyPace && paceMode ) {
+			pace = Number(applyPace(pace, paceMode, unitType)) || pace;
+		}
+		travel.paces ??= {};
+		travel.paces.air = Math.max(0, pace);
+		if ( pace > (travel.paces.max ?? 0) ) travel.paces.max = pace;
+	}
 }
 
 const POWER_DIE_BY_TIER = { 1: "d4", 2: "d6", 3: "d8", 4: "d10", 5: "d12" };

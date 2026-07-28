@@ -11,6 +11,7 @@
 - **Starship Add Crew multi-select:** deploy multiple distinct Actors from the Add Crew dialog in one Crew or Passenger action (Pilot requires exactly one selection). Aggregate NPC quantity is not included.
 
 ### Changed
+- **Starship Role movement Active Effects:** All 36 Role records publish canonical Override Active Effects on `system.attributes.movement.space` and `.turn` (Medium Courier corrected to 400/250). Role item speed fields remain metadata/validation only and are not a runtime movement fallback. Existing world Role items may need refresh from the rebuilt Role compendium to receive those effects.
 - **Starship skill crew PB attribution:** GM and starship-update users see a local named crew PB source on the starship skill sheet and skill roll dialog when a qualifying source exists. Public skill chat remains nameless (ship speaker; no crew Actor name/UUID in public flavor).
 - **Starship Core assigned roster sort:** Within each Player Characters / NPCs / Other group, assigned rows sort as Pilot, then Pilot/Crew with a Deployment assignment, then Pilot/Crew without Deployment, then passengers (Actor name tie-break). Custom Role alone does not count as a Deployment for sorting.
 - **Starship Core membership pills:** Pilot shows a compact `P` pill (existing Pilot colors) and Crew shows `C`; Passenger-only members show no membership pill. Accessible Pilot/Crew names remain on the visible pills.
@@ -33,6 +34,7 @@
 - **Repository hygiene:** HGTTG PDF art cache is gitignored and untracked; dormant legacy reload subsystem and CheckboxSelect app/template were removed.
 
 ### Fixed
+- **Starship Space/Turn movement (Bug 11):** Starship combat Space and Turn speeds use Role Override Active Effects as the prepared baseline, then apply Power Routing once and Slowed once. Slowed no longer compounds on sheet re-derivation and does not change Travel Speed or Travel Pace. Size is not a movement-value authority. Homebrew uses underlying Actor Space/Turn after disabling or deleting the applicable movement Override effect; effect-controlled edits warn and do not save ineffective changes. Add-mode movement effects do not trigger the base-control warning. Character, NPC, and ordinary Vehicle movement are unchanged.
 - **Starship Hull/Shield dice by size and tier:** Hull and Shield die maxima now gain dice per Tier Upgrade by size band — Tiny through Large gain 1 of each per tier; Huge and Gargantuan gain 2 of each per tier. Tier 0 adds none. Unknown/homebrew sizes default to gain 1 without blocking play. Die denominations, tier-0 starting counts, and spent (`hullDiceUsed` / `shldDiceUsed`) are preserved; available remains maximum minus used. Hull Points and Shield Points are not auto-recalculated. Character, NPC, and ordinary Vehicle behavior is unchanged.
 - **Starship aggregate NPC crew quantity:** EDIT +/− on the Flight Manifest promotes an eligible NPC membership to an aggregate with quantity 2 and adjusts quantity (minimum 1). Legacy UUID memberships dual-read as quantity-1 individuals without render-time writes. Drop, Add Crew, and redeploy do not increment or reset aggregate quantity. The Flight Manifest count uses the sum of quantity for viewer-visible memberships (hidden aggregates remain GM-only). Hide/Reveal, Custom Role, Remove, and quantity controls use membership identity; crew profiles re-key to that identity while preserving hidden, custom role, and sibling fields. Bug 29 still resolves the source Actor once regardless of quantity. PCs cannot promote; no Actor clones.
 - **Starship Alt-drop hidden crew membership:** As GM, Alt+dragging a PC or NPC onto a SW5E starship sheet deploys them as hidden Crew (or hides an already-deployed member without duplication). Non-GM Alt+drop matches plain visible drop. Hidden intent goes through the storage-abstracted deploy API (same Bug 6 GM-only privacy); the drop handler does not write `crewProfiles` paths directly.
@@ -62,6 +64,9 @@
 - **Maneuver Item Details:** Source Class uses identifier/label options (no `[object Object]`); activation, range, and duration selects use localized option arrays matching Power sheet shapes.
 - **Maneuver Item Effects:** Maneuver Item sheets expose the stock Effects tab (`metadata.hasEffects`), reusing the dnd5e Effects PART without custom editors or pack changes.
 - **Maneuver Description summary:** Maneuver Description tabs show a compact Activation Time / Range / Target / Duration summary from prepared Item labels (empty rows omitted; Power-only fields excluded).
+
+### Removed
+- **Starship movementOverrides / Use Derived / Clear Override:** The parallel `movementOverrides` flag layer and Movement dialog **Use Derived** / **Clear Override** controls are gone. Stale world `movementOverrides` flags may remain but are ignored. Size and Role item-speed runtime fallbacks for Space/Turn are also gone.
 
 ### Migration
 - Bumped `needsMigrationVersion` to **1.3.2** (Species pack image remaps), **1.3.3** (legacy companion icon folder remap), **1.3.4** (orphan PHB currency → Galactic Credits), and **1.3.5** (obsolete embedded Maneuver heal/temphp formulas → `1d@superiority.die + @mod`).

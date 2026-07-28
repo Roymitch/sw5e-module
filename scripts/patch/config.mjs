@@ -19,12 +19,12 @@ const SW5E_CHARACTER_SKILL_KEYS = [
 export function applySw5eStarshipMovementTypes(config = CONFIG.DND5E) {
 	config.movementTypes ??= {};
 	config.movementTypes.space = {
-		label: "SW5E.MovementSpace",
-		travel: "air"
+		label: "SW5E.MovementSpace"
+		// Intentionally no travel: "air" — combat Space must not drive Travel Speed/Pace (Bug 11 Slowed).
 	};
 	config.movementTypes.turn = {
-		label: "SW5E.MovementTurn",
-		travel: "air"
+		label: "SW5E.MovementTurn"
+		// Intentionally no travel mapping — Turning is not a travel mode.
 	};
 }
 
