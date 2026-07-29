@@ -16311,6 +16311,10 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e
   font: inherit;
   font-weight: 700;
 }
+/* Starship sidebar Max Fires/Round — spacing only; value uses stock `.counter` (margin-left: auto). */
+.dnd5e2.sheet.actor.sw5e-starship-sheet :is(.sheet-sidebar, [data-application-part="sidebar"]) .sw5e-starship-sidebar-max-fires {
+  margin-bottom: 0.28rem;
+}
 /* Character/NPC (and stock starship) Effects condition hover — beats parchment-as-text remap */
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor .tab[data-tab="effects"] .conditions-list .condition:not(.sw5e-starship-effects-condition) {
   --dnd5e-condition-hover: var(--sw5e-light-hover-tint);

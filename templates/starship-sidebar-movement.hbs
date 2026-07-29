@@ -30,7 +30,11 @@
 
       {{/if}}
 
+      {{#if showMovementCounters}}
+
       <span class="counter">{{spaceSpeedDisplay}}</span>
+
+      {{/if}}
 
     </h3>
 
@@ -58,7 +62,11 @@
 
       <span class="roboto-upper">{{travelSpeedLabel}}</span>
 
+      {{#if showMovementCounters}}
+
       <span class="counter">{{travelSpeedDisplay}}</span>
+
+      {{/if}}
 
     </h3>
 
@@ -72,11 +80,14 @@
 
       <span class="roboto-upper">{{travelPaceLabel}}</span>
 
+      {{#if showMovementCounters}}
+
       <span class="counter">{{travelPaceDisplay}}</span>
+
+      {{/if}}
 
     </h3>
 
   </div>
 
 </div>
-

@@ -11,6 +11,7 @@ export const STARSHIP_SECTION = Object.freeze({
 	SIDEBAR_DESTRUCTION: "sidebarDestruction",
 	SIDEBAR_MOVEMENT: "sidebarMovement",
 	SIDEBAR_DAMAGE_REDUCTION: "sidebarDamageReduction",
+	SIDEBAR_MAX_FIRES: "sidebarMaxFires",
 	CORE_SUMMARY: "coreSummary",
 	CORE_SYSTEMS_ROUTING: "coreSystemsRouting",
 	CORE_CREW: "coreCrew",
@@ -454,6 +455,7 @@ export function signaturePayloadSidebarMovement(ctx) {
 		travelSpeedDisplay: ctx?.travelSpeedDisplay ?? "",
 		travelPaceLabel: ctx?.travelPaceLabel ?? "",
 		travelPaceDisplay: ctx?.travelPaceDisplay ?? "",
+		showMovementCounters: Boolean(ctx?.showMovementCounters),
 		showMovementConfig: Boolean(ctx?.showMovementConfig),
 		movementConfigLabel: ctx?.movementConfigLabel ?? ""
 	};
@@ -468,6 +470,15 @@ export function signaturePayloadSidebarDamageReduction(ctx) {
 		playDisplay: ctx?.playDisplay ?? "",
 		inputValue: ctx?.inputValue ?? "",
 		placeholder: ctx?.placeholder ?? ""
+	};
+}
+
+export function signaturePayloadSidebarMaxFires(ctx) {
+	return {
+		show: Boolean(ctx?.show),
+		label: ctx?.label ?? "",
+		value: ctx?.value ?? null,
+		ariaLabel: ctx?.ariaLabel ?? ""
 	};
 }
 

@@ -11,6 +11,7 @@ import {
 	persistStarshipLegacyAttributePath
 } from "../starship-data.mjs";
 import { openStarshipMovementConfig } from "../starship-movement-config.mjs";
+import { resolveStarshipSidebarMovementVisibility } from "../starship-sidebar-movement-visibility.mjs";
 import {
 	buildDestructionSaveSidebarContext
 } from "../starship-destruction-saves.mjs";
@@ -25,6 +26,7 @@ import {
 	getStarshipFlatDamageReductionManual,
 	persistStarshipFlatDamageReductionManual
 } from "../starship-damage-reduction.mjs";
+import { buildStarshipMaxFiresDisplayContext } from "../starship-max-fires.mjs";
 import { canCurrentUserUpdateStarshipActor, warnStarshipActorUpdateDenied } from "../starship-permissions.mjs";
 import { openStarshipVitalConfig } from "../starship-vital-config.mjs";
 import { localizeOrFallback } from "../starship-sheet-html.mjs";
@@ -46,6 +48,7 @@ import {
 	setStarshipSectionSignature,
 	signaturePayloadSidebarDamageReduction,
 	signaturePayloadSidebarDestruction,
+	signaturePayloadSidebarMaxFires,
 	signaturePayloadSidebarMovement,
 	signaturePayloadSidebarSystemDamage,
 	signaturePayloadSidebarVitals,
@@ -129,6 +132,7 @@ export function buildStarshipSidebarMovementContext(actor, app = null, { runtime
 	const units = movement.units ?? actor.system?.attributes?.movement?.units ?? "ft";
 	const space = Number(movement.space);
 	const turn = Number(movement.turn);
+	const { showMovementCounters, showMovementConfig } = resolveStarshipSidebarMovementVisibility(app, actor);
 	return {
 		movementAriaLabel: localizeOrFallback("SW5E.Movement", "Movement"),
 		spaceSpeedLabel: localizeOrFallback("SW5E.SpeedSpace", "Space speed"),
@@ -139,7 +143,8 @@ export function buildStarshipSidebarMovementContext(actor, app = null, { runtime
 		travelSpeedDisplay: formatStarshipSidebarTravelSpeed(actor),
 		travelPaceLabel: localizeOrFallback("DND5E.TravelPace", "Travel Pace"),
 		travelPaceDisplay: formatStarshipSidebarTravelPace(actor),
-		showMovementConfig: isStarshipSheetEditMode(app) && app?.isEditable !== false && actor?.isOwner,
+		showMovementCounters,
+		showMovementConfig,
 		movementConfigLabel: localizeOrFallback("SW5E.StarshipSheet.MovementConfigLabel", "Configure Starship Movement")
 	};
 }
@@ -149,7 +154,8 @@ const STARSHIP_SIDEBAR_SURFACE_ORDER = Object.freeze([
 	STARSHIP_SECTION.SIDEBAR_SYSTEM_DAMAGE,
 	STARSHIP_SECTION.SIDEBAR_DESTRUCTION,
 	STARSHIP_SECTION.SIDEBAR_MOVEMENT,
-	STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION
+	STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION,
+	STARSHIP_SECTION.SIDEBAR_MAX_FIRES
 ]);
 
 function normalizeSidebarSurfaceIds(surfaces) {
@@ -174,6 +180,7 @@ function getSidebarSurfaceSelector(sectionId) {
 		case STARSHIP_SECTION.SIDEBAR_DESTRUCTION: return ".sw5e-starship-destruction-tray";
 		case STARSHIP_SECTION.SIDEBAR_MOVEMENT: return ".sw5e-starship-sidebar-movement";
 		case STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION: return ".sw5e-starship-sidebar-damage-reduction";
+		case STARSHIP_SECTION.SIDEBAR_MAX_FIRES: return ".sw5e-starship-sidebar-max-fires";
 		default: return null;
 	}
 }
@@ -342,6 +349,11 @@ export async function renderStarshipSidebarSections(root, actor, app = null, { r
 		const compare = compareStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION, signaturePayloadSidebarDamageReduction(ctx));
 		entries.push({ id: STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION, ctx, dirty: compare.dirty, signature: compare.signature });
 	}
+	if ( requested.includes(STARSHIP_SECTION.SIDEBAR_MAX_FIRES) ) {
+		const ctx = buildStarshipSidebarMaxFiresContext(actor);
+		const compare = compareStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_MAX_FIRES, signaturePayloadSidebarMaxFires(ctx));
+		entries.push({ id: STARSHIP_SECTION.SIDEBAR_MAX_FIRES, ctx, dirty: compare.dirty, signature: compare.signature });
+	}
 
 	if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
 
@@ -358,6 +370,20 @@ export async function renderStarshipSidebarSections(root, actor, app = null, { r
 		for ( const entry of entries ) {
 			if ( entry.id === STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION ) {
 				const shouldExist = entry.ctx.sheetEditMode || entry.ctx.showInPlay;
+				const check = validateStarshipSectionTarget({
+					root: shell,
+					sectionId: entry.id,
+					fallbackSelector: getSidebarSurfaceSelector(entry.id),
+					expectedCount: shouldExist ? 1 : 0
+				});
+				if ( !check.ok ) {
+					canPartial = false;
+					break;
+				}
+				continue;
+			}
+			if ( entry.id === STARSHIP_SECTION.SIDEBAR_MAX_FIRES ) {
+				const shouldExist = Boolean(entry.ctx.show);
 				const check = validateStarshipSectionTarget({
 					root: shell,
 					sectionId: entry.id,
@@ -396,6 +422,9 @@ export async function renderStarshipSidebarSections(root, actor, app = null, { r
 					break;
 				case STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION:
 					await renderStarshipSidebarDamageReductionFull(root, actor, app, entry.ctx, entry.signature, renderGen);
+					break;
+				case STARSHIP_SECTION.SIDEBAR_MAX_FIRES:
+					await renderStarshipSidebarMaxFiresFull(root, actor, app, entry.ctx, entry.signature, renderGen);
 					break;
 			}
 		}
@@ -481,6 +510,19 @@ export async function renderStarshipSidebarSections(root, actor, app = null, { r
 				if ( !(block instanceof HTMLElement) ) throw new Error("Invalid damage reduction render.");
 				applyStableSidebarSubtree(existing, block, entry.id);
 				bindStarshipSidebarDamageReduction(existing, actor, app);
+			} else if ( entry.id === STARSHIP_SECTION.SIDEBAR_MAX_FIRES ) {
+				if ( !entry.ctx.show ) continue;
+				const existing = getSidebarSurfaceExisting(shell, entry.id).elements[0];
+				const rendered = await foundry.applications.handlebars.renderTemplate(
+					getModulePath("templates/starship-sidebar-max-fires.hbs"),
+					entry.ctx
+				);
+				if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return "skipped";
+				const mount = document.createElement("div");
+				mount.innerHTML = rendered.trim();
+				const block = mount.firstElementChild;
+				if ( !(block instanceof HTMLElement) ) throw new Error("Invalid max fires render.");
+				applyStableSidebarSubtree(existing, block, entry.id);
 			}
 		}
 
@@ -644,6 +686,92 @@ export async function renderStarshipSidebarDamageReduction(root, actor, app = nu
 	return renderStarshipSidebarSections(root, actor, app, {
 		renderGen,
 		surfaces: [STARSHIP_SECTION.SIDEBAR_DAMAGE_REDUCTION],
+		allowPartial
+	});
+}
+
+/**
+ * Display-only Max Fires per Round sidebar context (Bug 8).
+ * Live-derived from prepared Strength mod + RAW size multipliers; never persisted.
+ * @param {object|null|undefined} actor
+ * @returns {{ show: boolean, label: string, value: number|null, ariaLabel: string }}
+ */
+export function buildStarshipSidebarMaxFiresContext(actor) {
+	const label = localizeOrFallback("SW5E.StarshipSheet.MaxFiresPerRound", "Max Fires/Round");
+	return buildStarshipMaxFiresDisplayContext(actor, { label });
+}
+
+function findStarshipSidebarResistancesInsertBefore(shell) {
+	const resistancesLabel = (() => {
+		try {
+			return game.i18n.localize("DND5E.Resistances");
+		} catch {
+			return "Resistances";
+		}
+	})();
+	const immunitiesLabel = (() => {
+		try {
+			return game.i18n.localize("DND5E.Immunities");
+		} catch {
+			return "Immunities";
+		}
+	})();
+	return findStarshipSidebarPillsGroup(shell, resistancesLabel)
+		?? findStarshipSidebarPillsGroup(shell, "Resistances")
+		?? findStarshipSidebarPillsGroup(shell, immunitiesLabel)
+		?? findStarshipSidebarPillsGroup(shell, "Immunities")
+		?? shell.querySelector(
+			".sheet-sidebar .pills-group, [data-application-part='sidebar'] .pills-group, .sidebar .pills-group"
+		);
+}
+
+async function renderStarshipSidebarMaxFiresFull(root, actor, app = null, ctx = null, signature = null, renderGen = null) {
+	const shell = getStarshipSidebarShell(root, app);
+	if ( !(shell instanceof HTMLElement) ) return;
+
+	const resolvedCtx = ctx ?? buildStarshipSidebarMaxFiresContext(actor);
+	if ( !resolvedCtx.show ) {
+		shell.querySelectorAll(".sw5e-starship-sidebar-max-fires").forEach(node => node.remove());
+		if ( signature ) setStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_MAX_FIRES, signature);
+		return;
+	}
+
+	const drBlock = shell.querySelector(".sw5e-starship-sidebar-damage-reduction");
+	const insertBefore = drBlock?.nextSibling
+		? null
+		: findStarshipSidebarResistancesInsertBefore(shell);
+	const insertParent = drBlock?.parentElement
+		?? insertBefore?.parentElement
+		?? getStarshipSidebarAside(shell);
+	if ( !insertParent ) return;
+
+	const rendered = await foundry.applications.handlebars.renderTemplate(
+		getModulePath("templates/starship-sidebar-max-fires.hbs"),
+		resolvedCtx
+	);
+	if ( renderGen != null && !isStarshipSheetRenderCurrent(app, renderGen) ) return;
+	shell.querySelectorAll(".sw5e-starship-sidebar-max-fires").forEach(node => node.remove());
+	const mount = document.createElement("div");
+	mount.innerHTML = rendered.trim();
+	const maxFiresBlock = mount.firstElementChild;
+	if ( !(maxFiresBlock instanceof HTMLElement) ) return;
+	markStarshipSectionElement(maxFiresBlock, STARSHIP_SECTION.SIDEBAR_MAX_FIRES);
+
+	if ( drBlock?.parentElement === insertParent ) {
+		drBlock.after(maxFiresBlock);
+	} else if ( insertBefore?.parentElement === insertParent ) {
+		insertParent.insertBefore(maxFiresBlock, insertBefore);
+	} else {
+		insertParent.append(maxFiresBlock);
+	}
+
+	if ( signature ) setStarshipSectionSignature(app, STARSHIP_SECTION.SIDEBAR_MAX_FIRES, signature);
+}
+
+export async function renderStarshipSidebarMaxFires(root, actor, app = null, { renderGen, allowPartial } = {}) {
+	return renderStarshipSidebarSections(root, actor, app, {
+		renderGen,
+		surfaces: [STARSHIP_SECTION.SIDEBAR_MAX_FIRES],
 		allowPartial
 	});
 }

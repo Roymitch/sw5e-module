@@ -57,7 +57,7 @@ export function getStarshipSidebarScrollTopFromEditTarget(shell, editTarget) {
 	const hostFromTarget = (() => {
 		if ( !(editTarget instanceof HTMLElement) ) return null;
 		const scope = editTarget.closest(
-			".sw5e-starship-sidebar-vitals, .sw5e-starship-sidebar-movement, .sw5e-starship-sidebar-damage-reduction, .sw5e-starship-destruction-tray, .sw5e-starship-sidebar-system-damage"
+			".sw5e-starship-sidebar-vitals, .sw5e-starship-sidebar-movement, .sw5e-starship-sidebar-damage-reduction, .sw5e-starship-sidebar-max-fires, .sw5e-starship-destruction-tray, .sw5e-starship-sidebar-system-damage"
 		);
 		if ( !scope || !shell.contains(scope) ) return null;
 		let el = scope.parentElement;
