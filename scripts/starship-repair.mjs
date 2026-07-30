@@ -746,7 +746,9 @@ export async function applyRegenRepair(actor, { useShieldDie = false, chat = tru
 	const powerBeforeTotal = sumPowerSlotValues(slotsBefore);
 	let powerDiceRecovered = 0;
 
-	const powerRecovered = await recoverStarshipPowerDice(actor);
+	const powerRecovered = await recoverStarshipPowerDice(actor, {
+		notifyFullCapacity: false
+	});
 	if ( powerRecovered ) {
 		const slotsAfter = getStarshipPowerRecoverySlots(actor);
 		powerDiceRecovered = Math.max(0, sumPowerSlotValues(slotsAfter) - powerBeforeTotal);

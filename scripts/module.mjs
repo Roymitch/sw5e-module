@@ -28,6 +28,7 @@ import { registerStarshipWeaponRollHooks } from "./starship-weapon-rolls.mjs";
 import { registerStarshipLauncherAmmoBridgeHooks } from "./starship-launcher-ammo.mjs";
 import { registerSw5eActivityTriggerHooks } from "./sw5e-activity-trigger.mjs";
 import { registerStarshipDestructionSaveHooks } from "./starship-destruction-saves.mjs";
+import { registerStarshipTokenResourceHooks } from "./starship-token-resources.mjs";
 import { patchAugmentationsSheet } from "./patch/augmentations-sheet.mjs";
 import { patchDroidCustomizationsSheet } from "./patch/droid-customizations-sheet.mjs";
 import * as migrations from "./migration.mjs";
@@ -121,6 +122,7 @@ Hooks.once('init', async function() {
 	registerSw5eActivityTriggerHooks();
 	registerStarshipLauncherAmmoBridgeHooks();
 	registerStarshipDestructionSaveHooks();
+	registerStarshipTokenResourceHooks();
 	patchStarshipSheet();
 	patchStarshipFeatureRecoveryLabels();
 	patchAugmentationsSheet();

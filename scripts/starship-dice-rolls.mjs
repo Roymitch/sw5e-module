@@ -352,13 +352,60 @@ function buildNaturalShieldDieRollData(actor, { denomination, regenMult } = {}) 
 }
 
 /**
- * Roll natural shield regen without persisting (upstream `rollShieldDie({ natural: true })` formula).
- * @returns {Promise<{ roll: Roll, spGain: number, total: number, die: string }|{ error: string }|null>}
+ * Truncate passive (natural) shield-regen gain to a whole number.
+ * Uses Math.trunc on the post-multiplication raw total — does not round the coefficient.
+ * @param {number} rawTotal
+ * @returns {number}
  */
-export async function previewStarshipNaturalShieldDieRoll(actor) {
+export function truncateStarshipPassiveShieldRegenGain(rawTotal) {
+	const n = Number(rawTotal);
+	if ( !Number.isFinite(n) || n <= 0 ) return 0;
+	return Math.trunc(n);
+}
+
+/**
+ * Final applied passive shield-regen gain: trunc(raw) then cap by headroom.
+ * @param {number} rawTotal
+ * @param {number} headroom
+ * @returns {number}
+ */
+export function resolveStarshipPassiveShieldRegenGain(rawTotal, headroom) {
+	const truncated = truncateStarshipPassiveShieldRegenGain(rawTotal);
+	const room = Number(headroom);
+	const safeRoom = Number.isFinite(room) ? Math.max(0, Math.trunc(room)) : 0;
+	return Math.min(safeRoom, truncated);
+}
+
+/**
+ * Align a evaluated Roll's displayed total with the applied integer gain for chat parity.
+ * @param {Roll} roll
+ * @param {number} appliedGain
+ */
+export function syncStarshipPassiveShieldRegenRollTotal(roll, appliedGain) {
+	const gain = Math.max(0, Math.trunc(Number(appliedGain) || 0));
+	if ( !roll || typeof roll !== "object" ) return gain;
+	if ( Object.prototype.hasOwnProperty.call(roll, "_total") ) roll._total = gain;
+	else {
+		try {
+			roll._total = gain;
+		} catch {
+			// Best-effort only; callers still use appliedGain for persistence.
+		}
+	}
+	return gain;
+}
+
+/**
+ * Roll natural shield regen without persisting (upstream `rollShieldDie({ natural: true })` formula).
+ * @param {Actor} actor
+ * @param {object} [options]
+ * @param {number} [options.effectiveRegenMult] Pre-resolved effective multiplier (skips lookup).
+ * @returns {Promise<{ roll: Roll, spGain: number, total: number, rawTotal: number, die: string }|{ error: string }|null>}
+ */
+export async function previewStarshipNaturalShieldDieRoll(actor, { effectiveRegenMult } = {}) {
 	if ( getStarshipShieldExpendDisabledReason(actor) ) return null;
 
-	const regenMult = getStarshipEffectiveShieldRegenRateMult(
+	const regenMult = effectiveRegenMult ?? getStarshipEffectiveShieldRegenRateMult(
 		actor,
 		await getStarshipShieldRegenRateMult(actor)
 	);
@@ -376,22 +423,38 @@ export async function previewStarshipNaturalShieldDieRoll(actor) {
 	if ( headroom <= 0 ) return null;
 
 	const roll = await new Roll(rollConfig.formula, rollConfig.rollData).evaluate();
-	const spGain = Math.min(headroom, Math.max(0, Math.trunc(roll.total)));
-	return { roll, spGain, total: roll.total, die: rollConfig.die };
+	const rawTotal = Number(roll.total);
+	const spGain = resolveStarshipPassiveShieldRegenGain(rawTotal, headroom);
+	syncStarshipPassiveShieldRegenRollTotal(roll, spGain);
+	return { roll, spGain, total: spGain, rawTotal, die: rollConfig.die };
 }
 
-/** Spend one shield die and recover shield points using the natural regen formula. */
+/**
+ * Spend one shield die and recover shield points using the natural regen formula.
+ *
+ * Atomicity note: `system.attributes.hp.temp` is owned by the Actor document;
+ * `shldDiceUsed` lives on the Size Item (`flags.sw5e.legacyStarshipSize`).
+ * Those cannot be combined into one Actor update without an unsafe cross-document write.
+ * Shield points update first; die spend follows only after a successful roll/result.
+ *
+ * @param {Actor} actor
+ * @param {object} [options]
+ * @param {boolean} [options.chat=true]
+ * @returns {Promise<object|null>}
+ */
 export async function applyStarshipNaturalShieldDieRoll(actor, { chat = true } = {}) {
 	const disabledReason = getStarshipShieldExpendDisabledReason(actor);
 	if ( disabledReason ) {
 		ui.notifications?.warn?.(disabledReason);
 		return null;
 	}
-	const regenMult = getStarshipEffectiveShieldRegenRateMult(
+
+	// Resolve regen multiplier once per submission (avoid duplicate async lookups).
+	const effectiveRegenMult = getStarshipEffectiveShieldRegenRateMult(
 		actor,
 		await getStarshipShieldRegenRateMult(actor)
 	);
-	if ( !regenMult ) {
+	if ( !effectiveRegenMult ) {
 		ui.notifications?.warn?.(localizeOrFallback(
 			"SW5E.StarshipSheet.RegenNoShieldRegenData",
 			"Shield regeneration data is unavailable — equip a shield with a regeneration coefficient."
@@ -399,7 +462,7 @@ export async function applyStarshipNaturalShieldDieRoll(actor, { chat = true } =
 		return { error: "noRegenMult" };
 	}
 
-	const preview = await previewStarshipNaturalShieldDieRoll(actor);
+	const preview = await previewStarshipNaturalShieldDieRoll(actor, { effectiveRegenMult });
 	if ( !preview || preview.error || preview.spGain <= 0 ) return preview;
 
 	const hp = getStarshipLiveHp(actor);
@@ -408,13 +471,25 @@ export async function applyStarshipNaturalShieldDieRoll(actor, { chat = true } =
 		effectiveMax > 0 ? effectiveMax : Number.MAX_SAFE_INTEGER,
 		Math.max(0, Number(hp.temp) || 0) + preview.spGain
 	);
+
+	// Actor-owned shield current.
 	await actor.update({ "system.attributes.hp.temp": newTemp });
 
+	// Size-Item-owned die spend — separate document; only after successful regen result.
 	const itemUpdates = buildStarshipShieldDiceSpendItemUpdate(actor, 1);
-	if ( itemUpdates.length ) await actor.updateEmbeddedDocuments("Item", itemUpdates);
+	if ( itemUpdates.length ) {
+		await actor.updateEmbeddedDocuments("Item", itemUpdates);
+	} else {
+		// Shield points already updated; surface incomplete spend rather than silent full success.
+		ui.notifications?.warn?.(localizeOrFallback(
+			"SW5E.StarshipSheet.RegenShieldDieSpendFailed",
+			"Shield points were recovered, but no Size item was available to expend a Shield Die."
+		));
+	}
 
 	if ( chat ) {
 		const flavor = localizeOrFallback("SW5E.ShieldDiceRoll", "Roll Shield Dice");
+		syncStarshipPassiveShieldRegenRollTotal(preview.roll, preview.spGain);
 		await preview.roll.toMessage({
 			speaker: ChatMessage.getSpeaker({ actor }),
 			flavor: `${flavor}: ${actor?.name ?? ""}`.trim(),

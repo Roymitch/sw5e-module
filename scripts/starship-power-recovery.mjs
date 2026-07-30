@@ -6,6 +6,9 @@ import {
 	getStarshipPowerRecoverySummary,
 	recordStarshipPowerSlotPeak
 } from "./starship-data.mjs";
+import { notifyOrSkipStarshipPowerRecoveryFullCapacity } from "./starship-power-recovery-notify.mjs";
+
+export { notifyOrSkipStarshipPowerRecoveryFullCapacity } from "./starship-power-recovery-notify.mjs";
 
 const DialogV2 = foundry.applications.api.DialogV2;
 
@@ -225,16 +228,14 @@ async function applyPowerDiceRecovery(actor, recoveredAmount) {
 	return true;
 }
 
-export async function recoverStarshipPowerDice(actor) {
+export async function recoverStarshipPowerDice(actor, {
+	notifyFullCapacity = true
+} = {}) {
 	if ( !actor ) return false;
 
 	const { totalMissing } = getStarshipPowerRecoverySummary(actor);
 	if ( totalMissing <= 0 ) {
-		ui.notifications?.warn?.(localizeOrFallback(
-			"SW5E.StarshipSheet.AdvancedPowerRecoveryFull",
-			"All power die pools are already at capacity."
-		));
-		return false;
+		return notifyOrSkipStarshipPowerRecoveryFullCapacity({ notifyFullCapacity });
 	}
 
 	const formula = await getStarshipPowerRecoveryFormula(actor);
