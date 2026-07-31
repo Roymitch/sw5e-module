@@ -31,6 +31,11 @@ import {
 	STARSHIP_INTEGER_HP_PATHS
 } from "../starship-sheet-preupdate.mjs";
 import {
+	notifyStarshipFuelOverBurn,
+	promptStarshipFuelBurnAmount,
+	resolveStarshipFuelBurn
+} from "../starship-fuel-burn.mjs";
+import {
 	STARSHIP_POWER_DIE_OPTIONS,
 	STARSHIP_ROUTING_KEYS_VISIBLE
 } from "./starship-sheet-core-context.mjs";
@@ -219,7 +224,8 @@ export function ensureStarshipTrustedSystemPathDelegate(root, app) {
 }
 
 /**
- * Core fuel quick actions — Burn (−1) and Refuel (to cap). Usable whenever the actor is editable (Play or Edit).
+ * Core fuel quick actions — Burn (amount dialog) and Refuel (to cap).
+ * Usable whenever the actor is editable (Play or Edit).
  */
 export function ensureStarshipFuelActionsDelegate(root, app) {
 	if ( !root || root.dataset.sw5eFuelActionsDelegate === "1" ) return;
@@ -238,7 +244,13 @@ export function ensureStarshipFuelActionsDelegate(root, app) {
 
 		let newValue;
 		if ( action === "burn" ) {
-			newValue = Math.max(0, current - 1);
+			if ( current <= 0 ) return;
+			const requested = await promptStarshipFuelBurnAmount();
+			if ( requested === null ) return;
+			const resolved = resolveStarshipFuelBurn(current, requested);
+			if ( !resolved || resolved.applied <= 0 ) return;
+			if ( resolved.overBurn ) notifyStarshipFuelOverBurn(resolved.requested, resolved.applied);
+			newValue = resolved.newValue;
 		} else if ( action === "refuel" ) {
 			if ( cap <= 0 ) {
 				ui.notifications.warn(localizeOrFallback(

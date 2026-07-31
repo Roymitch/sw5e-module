@@ -10,10 +10,11 @@
   </h3>
 </div>
 {{else if showInPlay}}
-<div class="pills-group empty sw5e-starship-sidebar-damage-reduction sw5e-starship-sidebar-damage-reduction--play" aria-label="{{playDisplay}}">
+<div class="pills-group empty sw5e-starship-sidebar-damage-reduction sw5e-starship-sidebar-damage-reduction--play" aria-label="{{ariaLabel}}">
   <h3 class="icon">
     <i class="fa-solid fa-shield-halved fa-fw" inert></i>
-    <span class="roboto-upper">{{playDisplay}}</span>
+    <span class="roboto-upper">{{label}}</span>
+    <span class="counter">{{value}}</span>
   </h3>
 </div>
 {{/if}}

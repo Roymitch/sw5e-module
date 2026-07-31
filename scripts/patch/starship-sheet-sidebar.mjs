@@ -591,7 +591,8 @@ export function buildStarshipSidebarDamageReductionContext(actor, app = null) {
 		editable: sheetEditMode && actor?.isOwner !== false,
 		showInPlay: !sheetEditMode && value > 0,
 		label,
-		playDisplay: `${label}: ${value}`,
+		value,
+		ariaLabel: `${label} ${value}`,
 		inputValue: manual !== null ? String(manual) : "",
 		placeholder: String(equipment)
 	};

@@ -467,7 +467,8 @@ export function signaturePayloadSidebarDamageReduction(ctx) {
 		editable: Boolean(ctx?.editable),
 		showInPlay: Boolean(ctx?.showInPlay),
 		label: ctx?.label ?? "",
-		playDisplay: ctx?.playDisplay ?? "",
+		value: ctx?.value ?? null,
+		ariaLabel: ctx?.ariaLabel ?? "",
 		inputValue: ctx?.inputValue ?? "",
 		placeholder: ctx?.placeholder ?? ""
 	};

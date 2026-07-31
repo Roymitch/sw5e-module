@@ -183,7 +183,7 @@ export function buildSystemsCoreContext(actor, { runtime } = {}) {
 			fuelCapacity: localizeOrFallback("SW5E.FuelCapacity", "Fuel capacity"),
 			burnFuel: localizeOrFallback("SW5E.BurnFuel", "Burn"),
 			refuel: localizeOrFallback("SW5E.Refuel", "Refuel"),
-			burnFuelTooltip: localizeOrFallback("SW5E.StarshipSheet.BurnFuelTooltip", "Burn 1 fuel unit"),
+			burnFuelTooltip: localizeOrFallback("SW5E.StarshipSheet.BurnFuelTooltip", "Burn fuel"),
 			refuelTooltip: localizeOrFallback("SW5E.StarshipSheet.RefuelTooltip", "Refuel to capacity"),
 			derived: localizeOrFallback("SW5E.Derived", "Derived")
 		},

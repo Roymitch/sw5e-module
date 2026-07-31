@@ -9,6 +9,7 @@ import { SETTINGS_NAMESPACE } from "../module-support.mjs";
 import { localizeOrFallback } from "../starship-sheet-html.mjs";
 import { isSw5eStarshipActor, STARSHIP_TIER_OPTIONS } from "../starship-sheet-ids.mjs";
 import { formatStarshipInitiativeTotal } from "../starship-initiative-display.mjs";
+import { isStockVehicleArmorClassPillsGroup } from "../starship-sidebar-ac-suppress.mjs";
 import { getStarshipSidebarNameBlock } from "./starship-sheet-scroll.mjs";
 import { buildSystemsCoreContext } from "./starship-sheet-core-context.mjs";
 import {
@@ -21,6 +22,7 @@ import {
 } from "./starship-sheet-sidebar.mjs";
 
 export { formatStarshipInitiativeTotal, getStarshipInitiativeDisplayTotal } from "../starship-initiative-display.mjs";
+export { isStockVehicleArmorClassPillsGroup } from "../starship-sidebar-ac-suppress.mjs";
 
 function getSheetForm(root, app) {
 	return app?.form
@@ -165,6 +167,7 @@ export function suppressStockVehicleHpMeterForStarship(root, actor, app = null) 
 
 /**
  * Hide stock vehicle Armor Class trait-line once the portrait AC badge is authoritative.
+ * Covers EDIT (config cog) and PLAY (label + counter) stock `actor-trait-line` markup.
  * @param {HTMLElement} root
  * @param {Actor} actor
  * @param {Application} [app]
@@ -176,12 +179,8 @@ export function suppressStockVehicleArmorClassForStarship(root, actor, app = nul
 		?? root;
 	if ( !(shell instanceof HTMLElement) ) return;
 
-	for ( const btn of shell.querySelectorAll("[data-action=\"showConfiguration\"][data-config=\"armorClass\"]") ) {
-		if ( !(btn instanceof HTMLElement) ) continue;
-		if ( btn.closest(".sw5e-starship-ac-badge, .portrait .ac-badge") ) continue;
-		const group = btn.closest(".pills-group");
-		if ( !(group instanceof HTMLElement) ) continue;
-		if ( group.closest(".portrait") ) continue;
+	for ( const group of shell.querySelectorAll(".pills-group") ) {
+		if ( !isStockVehicleArmorClassPillsGroup(group) ) continue;
 		group.classList.add("sw5e-starship-suppress-stock-ac");
 		group.setAttribute("hidden", "");
 		group.setAttribute("aria-hidden", "true");
