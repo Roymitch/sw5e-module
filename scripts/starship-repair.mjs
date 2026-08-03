@@ -747,7 +747,9 @@ export async function applyRegenRepair(actor, { useShieldDie = false, chat = tru
 	let powerDiceRecovered = 0;
 
 	const powerRecovered = await recoverStarshipPowerDice(actor, {
-		notifyFullCapacity: false
+		notifyFullCapacity: false,
+		// Regen keeps historical Central-first allocation; explicit Recover uses prompt.
+		allocationMode: "legacyCentralFirst"
 	});
 	if ( powerRecovered ) {
 		const slotsAfter = getStarshipPowerRecoverySlots(actor);

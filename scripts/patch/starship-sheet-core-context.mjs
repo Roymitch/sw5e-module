@@ -239,6 +239,10 @@ export function buildSystemsCoreContext(actor, { runtime, costConfigEditable=fal
 			fuel: localizeOrFallback("SW5E.Fuel", "Fuel"),
 			fuelAndSupplies: localizeOrFallback("SW5E.StarshipSheet.ShipsStores", "Ship’s Stores"),
 			shipsStores: localizeOrFallback("SW5E.StarshipSheet.ShipsStores", "Ship’s Stores"),
+			shipsStoresConfigure: localizeOrFallback(
+				"SW5E.StarshipSheet.ConfigureShipsStores",
+				"Configure Ship’s Stores"
+			),
 			fuelCurrent: localizeOrFallback("SW5E.StarshipFuelFieldCurrent", "Current fuel"),
 			fuelCap: localizeOrFallback("SW5E.FuelCap", "Fuel cap"),
 			fuelCost: localizeOrFallback("SW5E.FuelCost", "Regeneration cost"),

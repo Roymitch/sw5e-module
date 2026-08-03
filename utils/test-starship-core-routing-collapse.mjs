@@ -14,7 +14,7 @@ const LAYER = fs.readFileSync(path.join(ROOT, "templates/starship-sheet-layer.hb
 const VITALS = fs.readFileSync(path.join(ROOT, "templates/starship-sidebar-vitals.hbs"), "utf8");
 const CONTEXT = fs.readFileSync(path.join(ROOT, "scripts/patch/starship-sheet-core-context.mjs"), "utf8");
 const DELEGATES = fs.readFileSync(path.join(ROOT, "scripts/patch/starship-sheet-delegates.mjs"), "utf8");
-const THEME = fs.readFileSync(path.join(ROOT, "styles/less/theme-overrides.less"), "utf8");
+const CORE_PANELS = fs.readFileSync(path.join(ROOT, "styles/less/starship-core-panels.less"), "utf8");
 
 let passed = 0;
 function test(name, fn) {
@@ -24,14 +24,14 @@ function test(name, fn) {
 }
 
 test("Skills/Flight Manifest alignment uses zero panel margin-top (no transform offset)", () => {
-	const panelRule = THEME.match(
-		/\.sw5e-theme-root\.dnd5e2\.sheet\.actor\.sw5e-starship-sheet :is\(\s*\.sw5e-starship-core-advanced-power-panel,[\s\S]*?\.sw5e-starship-crew-panel\s*\)\s*\{([\s\S]*?)\}/
+	const panelRule = CORE_PANELS.match(
+		/\.dnd5e2\.sheet\.actor\.sw5e-starship-sheet \.sw5e-starship-tab :is\(\s*\.sw5e-starship-core-advanced-power-panel,[\s\S]*?\.sw5e-starship-crew-panel\s*\)\s*\{([\s\S]*?)\}/
 	)?.[1];
-	assert.ok(panelRule, "expected shared Core collapsible panel theme rule");
+	assert.ok(panelRule, "expected shared Core collapsible panel layout rule");
 	assert.match(panelRule, /margin-top:\s*0;/);
 	assert.doesNotMatch(panelRule, /margin-top:\s*0\.65rem/);
-	assert.doesNotMatch(THEME, /sw5e-starship-overview-operations[\s\S]{0,200}transform:\s*translateY\(/);
-	assert.doesNotMatch(THEME, /sw5e-starship-crew-panel[\s\S]{0,120}position:\s*relative;\s*top:\s*-/);
+	assert.doesNotMatch(CORE_PANELS, /sw5e-starship-overview-operations[\s\S]{0,200}transform:\s*translateY\(/);
+	assert.doesNotMatch(CORE_PANELS, /sw5e-starship-crew-panel[\s\S]{0,120}position:\s*relative;\s*top:\s*-/);
 	assert.match(LAYER, /sw5e-starship-overview-skills/);
 	assert.match(LAYER, /sw5e-starship-overview-operations/);
 	assert.match(LAYER, /sw5e-starship-crew-panel/);

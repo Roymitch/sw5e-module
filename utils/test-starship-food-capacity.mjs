@@ -31,6 +31,10 @@ import { resolveStarshipFoodCapacity } from "../scripts/starship-replenish-math.
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const layerHbs = readFileSync(join(__dirname, "..", "templates", "starship-sheet-layer.hbs"), "utf8");
+const shipsStoresConfigHbs = readFileSync(
+	join(__dirname, "..", "templates", "apps", "starship-ships-stores-config.hbs"),
+	"utf8"
+);
 
 let passed = 0;
 function test(name, fn) {
@@ -371,51 +375,43 @@ test("Capacity display and Food bar maximum use the same effective capacity", ()
 	assert.equal(snap.capacity.effectiveCapacity, capacity.effectiveCapacity);
 });
 
-test("panel template: three Food fields; Fuel container parity; shared Ship’s Stores actions", () => {
+test("panel template: Ship’s Stores bars + shared actions; settings owned by config dialog", () => {
 	assert.match(layerHbs, /\{\{systemsCore\.labels\.shipsStores\}\}/);
 	assert.match(layerHbs, /data-sw5e-core-panel="fuel"/);
 	assert.match(layerHbs, /sw5e-starship-systems-field--fuel sw5e-starship-systems-field--food/);
-	assert.match(layerHbs, /sw5e-starship-core-fuel-grid sw5e-starship-core-food-grid/);
-	assert.match(layerHbs, /system\.attributes\.food\.value/);
-	assert.match(layerHbs, /system\.attributes\.food\.cost/);
-	assert.match(layerHbs, /systemsCore\.food\.effectiveCapacityFormatted/);
-	assert.match(layerHbs, /systemsCore\.food\.capacityTooltip/);
-	assert.match(layerHbs, /data-sw5e-food-cap-source/);
-	assert.match(layerHbs, /data-sw5e-replenish-cost-mode="food"/);
-	assert.match(layerHbs, /sw5e-core-food-effective-cap/);
+	assert.match(layerHbs, /sw5e-starship-food-fill/);
+	assert.match(layerHbs, /systemsCore\.food\.pct/);
+	assert.match(layerHbs, /systemsCore\.food\.barLabel/);
+	assert.equal(/sw5e-starship-core-fuel-grid/.test(layerHbs), false);
+	assert.equal(/data-sw5e-food-cap-source/.test(layerHbs), false);
+	assert.equal(/data-sw5e-replenish-cost-mode="food"/.test(layerHbs), false);
+	assert.equal(/sw5e-core-food-effective-cap/.test(layerHbs), false);
 	assert.equal(/name="system\.attributes\.food\.foodCap"/.test(layerHbs), false);
 	assert.equal(/name="system\.attributes\.food\.foodCapMod"/.test(layerHbs), false);
 	assert.equal(/foodCapacityModifier|FoodCapacityModifier|Capacity Modifier/.test(layerHbs), false);
-	assert.equal(/foodEffectiveCapacity|FoodEffectiveCapacity|Effective Capacity/.test(layerHbs), false);
 	assert.equal(/sw5e-starship-core-food-meta/.test(layerHbs), false);
 	assert.equal(/data-sw5e-food-action="consume"|data-sw5e-food-action="restock"/i.test(layerHbs), false);
 	assert.equal(/data-sw5e-fuel-action="burn"|data-sw5e-fuel-action="refuel"/.test(layerHbs), false);
 	assert.match(layerHbs, /data-sw5e-supplies-action="consume"/);
 	assert.match(layerHbs, /data-sw5e-supplies-action="restock"/);
-	// Capacity cog gated to EDIT; Restock Cost cog uses replenishCostMode.configEditable
-	assert.match(layerHbs, /\{\{#if @root\.systemsSetupEditable\}\}[\s\S]*data-sw5e-food-cap-source/);
+	assert.match(layerHbs, /data-sw5e-ships-stores-config/);
+	assert.equal((layerHbs.match(/data-sw5e-ships-stores-config/g) || []).length, 1);
+
+	assert.match(shipsStoresConfigHbs, /name="system\.attributes\.food\.value"/);
+	assert.match(shipsStoresConfigHbs, /name="system\.attributes\.food\.foodCap"/);
+	assert.match(shipsStoresConfigHbs, /name="system\.attributes\.food\.cost"/);
+	assert.match(shipsStoresConfigHbs, /id="sw5e-ships-stores-food-cost-mode"/);
+	assert.match(shipsStoresConfigHbs, /id="sw5e-ships-stores-fuel-cost-mode"/);
 });
 
-test("Food Capacity uses centered display-only text contract (formatted)", () => {
-	const foodCapMatch = layerHbs.match(
-		/<input[^>]*id="sw5e-core-food-effective-cap"[\s\S]*?>/
-	);
-	assert.ok(foodCapMatch, "Capacity input present");
-	const foodCap = foodCapMatch[0];
-	assert.match(foodCap, /type="text"/);
-	assert.match(foodCap, /class="[^"]*sw5e-starship-systems-input/);
-	assert.match(foodCap, /\breadonly\b/);
-	assert.match(foodCap, /\bdisabled\b/);
-	assert.equal(/\bname=/.test(foodCap), false);
-	assert.equal(/type="number"/.test(foodCap), false);
-	assert.match(foodCap, /data-tooltip="\{\{systemsCore\.food\.capacityTooltip\}\}"/);
-	// EDIT Current + Restock Cost remain number inputs; PLAY uses formatted text
-	assert.match(layerHbs, /id="sw5e-core-food-value"[\s\S]*?type="number"/);
-	assert.match(layerHbs, /id="sw5e-core-food-cost"[\s\S]*?type="number"/);
-	assert.match(layerHbs, /id="sw5e-core-fuel-cap"[\s\S]*?type="number"/);
-	assert.match(layerHbs, /systemsCore\.food\.valueFormatted/);
-	assert.match(layerHbs, /systemsCore\.food\.costFormatted/);
-	// Grid-level centering applies in EDIT and PLAY (no mode gate on the rule)
+test("Ship’s Stores config dialog Food fields are editable number inputs (no inline sheet grids)", () => {
+	assert.match(shipsStoresConfigHbs, /id="sw5e-ships-stores-food-value"[\s\S]*?type="number"/);
+	assert.match(shipsStoresConfigHbs, /id="sw5e-ships-stores-food-cap"[\s\S]*?type="number"/);
+	assert.match(shipsStoresConfigHbs, /id="sw5e-ships-stores-food-cost"[\s\S]*?type="number"/);
+	assert.match(shipsStoresConfigHbs, /id="sw5e-ships-stores-fuel-cap"[\s\S]*?type="number"/);
+	assert.equal(/id="sw5e-core-food-effective-cap"/.test(layerHbs), false);
+	assert.equal(/id="sw5e-core-food-value"/.test(layerHbs), false);
+	assert.equal(/id="sw5e-core-food-cost"/.test(layerHbs), false);
 	const foodLess = readFileSync(join(__dirname, "..", "styles", "less", "starship-food-capacity.less"), "utf8");
 	assert.match(foodLess, /\.sw5e-starship-core-fuel-grid[\s\S]*?\.sw5e-starship-systems-input[\s\S]*?text-align:\s*center/);
 	assert.equal(/sotg--mode-edit|systemsSetupEditable/.test(foodLess), false);

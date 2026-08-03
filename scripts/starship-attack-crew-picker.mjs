@@ -3,7 +3,6 @@
  * Dialog-safe candidate DTOs only — no live Actor documents in Application context.
  */
 import { getModulePath } from "./module-support.mjs";
-import { applySw5eThemeScope } from "./theme.mjs";
 
 const Dialog5e = dnd5e.applications.api.Dialog5e;
 
@@ -119,7 +118,6 @@ export class StarshipAttackCrewPickerApp extends Dialog5e {
 
 	async _onRender(context, options) {
 		await super._onRender(context, options);
-		applySw5eThemeScope(this.element);
 		const select = this.element?.querySelector?.('select[name="responsibleCrewUuid"]');
 		if ( select ) {
 			select.addEventListener("change", event => {

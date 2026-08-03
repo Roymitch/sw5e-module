@@ -36,6 +36,7 @@ import {
 	persistStarshipFoodAttributePath,
 	readStarshipFoodCapOverride
 } from "../starship-food.mjs";
+import { openStarshipShipsStoresConfig } from "../starship-ships-stores-config.mjs";
 import { runStarshipSuppliesConsume } from "../starship-supplies-consume.mjs";
 import { runStarshipSuppliesRestock } from "../starship-supplies-restock.mjs";
 import { normalizeStarshipNonNegativeInt, normalizeStarshipSignedInt } from "../starship-replenish-math.mjs";
@@ -76,6 +77,28 @@ export function ensureStarshipVitalsDelegate(root, app) {
 		event.preventDefault();
 		event.stopPropagation();
 		openStarshipVitalConfig(act, configBtn.dataset.sw5eVitalConfig);
+	});
+}
+
+/**
+ * EDIT-only Ship’s Stores configuration cog (combined Fuel + Food dialog).
+ */
+export function ensureStarshipShipsStoresConfigDelegate(root, app) {
+	if ( !root || root.dataset.sw5eShipsStoresConfigDelegate === "1" ) return;
+	root.dataset.sw5eShipsStoresConfigDelegate = "1";
+	root.addEventListener("click", event => {
+		const configBtn = event.target.closest("[data-sw5e-ships-stores-config]");
+		if ( !configBtn || configBtn.disabled ) return;
+		const act = app?.actor;
+		if ( !act || app?.isEditable === false ) return;
+		if ( !isStarshipSheetEditMode(app) ) return;
+		if ( !canCurrentUserUpdateStarshipActor(act) ) {
+			warnStarshipActorUpdateDenied();
+			return;
+		}
+		event.preventDefault();
+		event.stopPropagation();
+		openStarshipShipsStoresConfig(act);
 	});
 }
 

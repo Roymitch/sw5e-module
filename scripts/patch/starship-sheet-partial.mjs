@@ -574,6 +574,8 @@ export function signaturePayloadCoreSystemsRouting(meta = {}) {
 			labels: {
 				fuel: systemsCore.labels?.fuel ?? "",
 				fuelAndSupplies: systemsCore.labels?.fuelAndSupplies ?? "",
+				shipsStores: systemsCore.labels?.shipsStores ?? "",
+				shipsStoresConfigure: systemsCore.labels?.shipsStoresConfigure ?? "",
 				food: systemsCore.labels?.food ?? ""
 			},
 			advancedPower: {
@@ -605,6 +607,7 @@ export function signaturePayloadCoreSystemsRouting(meta = {}) {
 					maxDisplayHint: slot?.maxDisplayHint ?? "",
 					displayValue: slot?.displayValue ?? null,
 					displayMax: slot?.displayMax ?? null,
+					pct: slot?.pct ?? 0,
 					canSpend: Boolean(slot?.canSpend)
 				}))
 			}

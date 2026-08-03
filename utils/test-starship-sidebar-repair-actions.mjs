@@ -88,7 +88,7 @@ test("Existing repair delegate remains the single data-sw5e-repair-action router
 
 test("Flight Manifest and Bug 6 membership-hidden markup remain", () => {
 	assert.match(LAYER, /SW5E\.StarshipCrewPanelTitle/);
-	assert.match(LAYER, /sw5e-starship-crew-panel-count[^>]*>\(\{\{crew\.roster\.length\}\}\)/);
+	assert.match(LAYER, /sw5e-starship-crew-panel-count[^>]*>\(\{\{crew\.visibleQuantitySum\}\}\)/);
 	assert.match(LAYER, /sw5e-crew-row--membership-hidden/);
 	assert.doesNotMatch(LAYER, /sw5e-starship-crew-status/);
 });

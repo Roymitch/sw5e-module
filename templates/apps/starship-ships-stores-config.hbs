@@ -1,0 +1,128 @@
+<form class="flexcol sw5e-starship-ships-stores-config-form">
+  <section class="flexcol">
+    <fieldset class="card">
+      <legend>{{labels.fuelLegend}}</legend>
+      <div class="form-group">
+        <label for="sw5e-ships-stores-fuel-value">{{labels.fuelCurrent}}</label>
+        <div class="form-fields">
+          <input
+            id="sw5e-ships-stores-fuel-value"
+            type="number"
+            name="system.attributes.fuel.value"
+            data-dtype="Number"
+            min="0"
+            step="1"
+            inputmode="numeric"
+            value="{{fuel.value}}"
+          >
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="sw5e-ships-stores-fuel-cap">{{labels.fuelCap}}</label>
+        <div class="form-fields">
+          <input
+            id="sw5e-ships-stores-fuel-cap"
+            type="number"
+            name="system.attributes.fuel.fuelCap"
+            data-dtype="Number"
+            min="0"
+            step="1"
+            inputmode="numeric"
+            value="{{fuel.fuelCap}}"
+          >
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="sw5e-ships-stores-fuel-cost">{{labels.fuelCost}}</label>
+        <div class="form-fields">
+          <input
+            id="sw5e-ships-stores-fuel-cost"
+            type="number"
+            name="system.attributes.fuel.cost"
+            data-dtype="Number"
+            min="0"
+            step="1"
+            inputmode="numeric"
+            value="{{fuel.cost}}"
+          >
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="sw5e-ships-stores-fuel-cost-mode">{{labels.fuelCostMode}}</label>
+        <div class="form-fields">
+          <select id="sw5e-ships-stores-fuel-cost-mode" name="{{fuelCostModePath}}">
+            {{#each fuel.costModeOptions}}
+            <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="card">
+      <legend>{{labels.foodLegend}}</legend>
+      <div class="form-group">
+        <label for="sw5e-ships-stores-food-value">{{labels.foodCurrent}}</label>
+        <div class="form-fields">
+          <input
+            id="sw5e-ships-stores-food-value"
+            type="number"
+            name="system.attributes.food.value"
+            data-dtype="Number"
+            min="0"
+            step="1"
+            inputmode="numeric"
+            value="{{food.value}}"
+          >
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="sw5e-ships-stores-food-cap">{{labels.foodCapacity}}</label>
+        <div class="form-fields">
+          <input
+            id="sw5e-ships-stores-food-cap"
+            type="number"
+            name="system.attributes.food.foodCap"
+            data-dtype="Number"
+            min="0"
+            step="1"
+            inputmode="numeric"
+            value="{{food.foodCap}}"
+          >
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="sw5e-ships-stores-food-cost">{{labels.foodRestockCost}}</label>
+        <div class="form-fields">
+          <input
+            id="sw5e-ships-stores-food-cost"
+            type="number"
+            name="system.attributes.food.cost"
+            data-dtype="Number"
+            min="0"
+            step="1"
+            inputmode="numeric"
+            value="{{food.cost}}"
+          >
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="sw5e-ships-stores-food-cost-mode">{{labels.foodCostMode}}</label>
+        <div class="form-fields">
+          <select id="sw5e-ships-stores-food-cost-mode" name="{{foodCostModePath}}">
+            {{#each food.costModeOptions}}
+            <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <footer class="form-footer">
+      <button type="submit" class="dialog-button default" {{#if submitting}}disabled{{/if}}>
+        <i class="fas fa-save" inert></i>
+        <span>{{labels.save}}</span>
+      </button>
+    </footer>
+  </section>
+</form>

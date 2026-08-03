@@ -1,5 +1,4 @@
 import { getExpandedProficiencyMultiplier } from "./patch/proficiency.mjs";
-import { applySw5eThemeScope } from "./theme.mjs";
 
 const Dialog5e = dnd5e.applications.api.Dialog5e;
 
@@ -331,7 +330,6 @@ export class StarshipSkillRollConfigApp extends Dialog5e {
 		if ( !root ) return;
 
 		if ( root.dataset.sw5eBound !== "true" ) {
-			applySw5eThemeScope(root, { scope: "roll-configuration" });
 			root.dataset.sw5eBound = "true";
 		}
 

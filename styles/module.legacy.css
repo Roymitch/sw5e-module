@@ -1,8 +1,7 @@
 /*
  * SW5e legacy stylesheet — inlined first in styles/less/module.less.
- * Serves as unscoped fallback for surfaces not yet covered by scoped theme LESS.
- * Gold/parchment/dark-gradient rules here are intentionally overridden by
- * body[data-sw5e-theme] + .sw5e-theme-root rules loaded later in the cascade.
+ * Theme parchment/chat/application shells gated on data-sw5e-theme / .sw5e-theme-root
+ * have been pruned. Ungated lightsaber sheet headers are retained as core SW5e branding.
  * CSS-4B: prune confirmed-dead blocks (orphaned SotG inner nav, pre-slot-grid chassis,
  * aug-table chrome) after staged QA — do not bulk-delete without template/script audit.
  */
@@ -20,158 +19,18 @@
   text-align: left;
 }
 
-/* Background of sheets */
+/* Core SW5e branding — lightsaber sheet headers (ungated; no theme roots). */
 
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2 {
+.dnd5e2 {
   --dnd5e-character-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
 }
 
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.character:not(.minimized) .window-content::before,
-body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.character:not(.minimized) .window-content::before {
-content: "";
-position: absolute;
-inset: 0 0 auto 0;
-height: 300px;
-border-radius: inherit;
-opacity: 0.5;
-pointer-events: none;
-background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
--webkit-mask-image: linear-gradient(to bottom, black, transparent);
-mask-image: linear-gradient(to bottom, black, transparent);
-}
-
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.encounter:not(.minimized)::before,
-body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.encounter:not(.minimized)::before {
-content: "";
-background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
-opacity: 0.5;
-filter: hue-rotate(315deg);
-}
-
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.group:not(.minimized)::before,
-body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.group:not(.minimized)::before {
-content: "";
-background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
-opacity: 0.5;
-filter: hue-rotate(45deg);
-}
-
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.npc:not(.minimized)::before,
-body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.npc:not(.minimized)::before {
-content: "";
-background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
-opacity: 0.5;
-filter: hue-rotate(135deg);
-}
-
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle:not(.minimized)::before,
-body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.vehicle:not(.minimized)::before {
-content: "";
-background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
-opacity: 0.5;
-filter: hue-rotate(270deg);
-}
-
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.item:not(.minimized)::before,
-body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.item:not(.minimized)::before {
-content: "";
-background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
-opacity: 0.5;
-filter: hue-rotate(225deg);
-}
-
-/*
- * Applications = Light — two domains (Foundry v13):
- * 1) Core/generic apps use .application.theme-light and are not .dnd5e2.
- * 2) dnd5e 5.2.x paints .dnd5e2.application from --dnd5e-application-background; character body is .sheet-body.
- * Cover both dnd5e light-theme paths used by 5.2.x: body.theme-light .dnd5e2 and .themed.theme-light.dnd5e2.
- */
-body[data-sw5e-theme="sw5e-light"] .application.sw5e-theme-root:not(.dnd5e2):not(.dnd5e2-journal) {
-  --sw5e-light-application-background: linear-gradient(
-      180deg,
-      color-mix(in oklab, #ffffff 50%, transparent) 0%,
-      color-mix(in oklab, #ffffff 28%, transparent) 40%,
-      color-mix(in oklab, #ffffff 15%, transparent) 100%
-    ),
-    url("/modules/sw5e-module/assets/ui/parchment.webp");
-  --background: var(--sw5e-light-application-background);
-  background-color: var(--color-canvas-1, #f4f0e8);
-  background-image: var(--sw5e-light-application-background);
-  background-size: 100% 100%, cover;
-  background-position: 0 0, center center;
-  background-repeat: no-repeat, no-repeat;
-}
-
-body[data-sw5e-theme="sw5e-light"] .application.sw5e-theme-root:not(.dnd5e2):not(.dnd5e2-journal) .window-content {
-  background-color: var(--color-canvas-1, #f4f0e8);
-  background-image: var(--sw5e-light-application-background);
-  background-size: 100% 100%, cover;
-  background-position: 0 0, center center;
-  background-repeat: no-repeat, no-repeat;
-}
-
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root:is(.dnd5e2, .dnd5e2-journal).application {
-  --sw5e-light-parchment-color: color-mix(in oklab, #dceaf0 76%, #ffffff);
-  --sw5e-light-parchment-surface: linear-gradient(
-      180deg,
-      color-mix(in oklab, #ffffff 45%, transparent) 0%,
-      color-mix(in oklab, #ffffff 22%, transparent) 40%,
-      color-mix(in oklab, #ffffff 12%, transparent) 100%
-    ),
-    url("/modules/sw5e-module/assets/ui/parchment.webp");
-  --dnd5e-application-background: linear-gradient(
-      180deg,
-      color-mix(in oklab, #ffffff 50%, transparent) 0%,
-      color-mix(in oklab, #ffffff 28%, transparent) 40%,
-      color-mix(in oklab, #ffffff 15%, transparent) 100%
-    ),
-    url("/modules/sw5e-module/assets/ui/parchment.webp");
-  --separated-list-item-background-color: var(--sw5e-light-parchment-color);
-  --item-summary-background: var(--sw5e-light-parchment-color);
-  --filigree-background-color: var(--sw5e-light-parchment-color);
-  --table-background-color: var(--sw5e-light-parchment-color);
-  --multi-select-tag-background: var(--sw5e-light-parchment-color);
-  background-color: var(--color-canvas-1, #f4f0e8);
-  background-size: 100% 100%, cover;
-  background-position: 0 0, center center;
-  background-repeat: no-repeat, no-repeat;
-}
-
-body[data-sw5e-theme="sw5e-light"] .chat-message.sw5e-theme-root.dnd5e2 {
-  --chat-message-background: var(--sw5e-light-chat-message-background);
-  --sw5e-light-parchment-surface: var(--sw5e-light-chat-datapad-panel);
-  --item-summary-background: var(--sw5e-light-chat-datapad-panel);
-  --separated-list-item-background-color: transparent;
-  --filigree-background-color: transparent;
-  --table-background-color: transparent;
-  --multi-select-tag-background: transparent;
-  background-color: var(--sw5e-theme-page-center, var(--color-canvas-1));
-  background-image: var(--sw5e-light-chat-message-background);
-  background-size: auto;
-  background-position: center center;
-  background-repeat: no-repeat;
-}
-
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.character {
-  --dnd5e-character-header-image: transparent;
-  --dnd5e-character-body-image: var(--sw5e-light-parchment-surface);
-}
-
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.character .sheet-body {
-  background-color: var(--color-canvas-1, #f4f0e8);
-  background-image: var(--dnd5e-character-body-image);
-  background-size: 100% 100%, cover;
-  background-position: 0 0, center center;
-  background-repeat: no-repeat, no-repeat;
-}
-
-/* Character: dnd5e 5.2.x — .window-content::before; light apps use content/image vars none/transparent. */
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.character:not(.minimized) .window-content::before {
+.dnd5e2.sheet.actor.character:not(.minimized) .window-content::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
   height: 300px;
-  border-radius: 5px 5px 0 0;
+  border-radius: inherit;
   opacity: 0.5;
   pointer-events: none;
   background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
@@ -179,13 +38,39 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.character
   mask-image: linear-gradient(to bottom, black, transparent);
 }
 
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2 :is(.card, fieldset.card > legend, item-list-controls search, .filter-element search, .pill-lg, .form-group.card, .currency-style button:not(.split-control), .starting-equipment li[data-entry-id][data-depth="1"], .starting-equipment li[data-entry-id][data-depth="2"], .sw5e-chassis-panel, .sw5e-starship-group.items-section.card),
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2 .pills .pill:not(.green):not(.maroon):not(.transparent):not(.pill-sm) {
-  background-color: var(--color-canvas-1, #f4f0e8);
-  background-image: var(--sw5e-light-parchment-surface);
-  background-size: 100% 100%, cover;
-  background-position: 0 0, center center;
-  background-repeat: no-repeat, no-repeat;
+.dnd5e2.sheet.actor.encounter:not(.minimized)::before {
+  content: "";
+  background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
+  opacity: 0.5;
+  filter: hue-rotate(315deg);
+}
+
+.dnd5e2.sheet.actor.group:not(.minimized)::before {
+  content: "";
+  background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
+  opacity: 0.5;
+  filter: hue-rotate(45deg);
+}
+
+.dnd5e2.sheet.actor.npc:not(.minimized)::before {
+  content: "";
+  background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
+  opacity: 0.5;
+  filter: hue-rotate(135deg);
+}
+
+.dnd5e2.sheet.actor.vehicle:not(.minimized)::before {
+  content: "";
+  background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
+  opacity: 0.5;
+  filter: hue-rotate(270deg);
+}
+
+.dnd5e2.sheet.item:not(.minimized)::before {
+  content: "";
+  background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
+  opacity: 0.5;
+  filter: hue-rotate(225deg);
 }
 
 /* Force Point CSS for the main sheet */
@@ -216,7 +101,6 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2 .pills .pill:not(.gre
   position: relative;
   z-index: 1;
 }
-
 
 .dnd5e2.sheet.actor .meter.sw5e-power-points .progress.editing > input {
   width: 100%;
@@ -1823,7 +1707,6 @@ body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2 .pills .pill:not(.gre
     justify-content: start;
   }
 }
-
 
 /* Crew Management Section */
 

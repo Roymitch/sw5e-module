@@ -1,5 +1,4 @@
 import { getModulePath } from "./module-support.mjs";
-import { applySw5eThemeScope } from "./theme.mjs";
 import { deriveStarshipPools, persistStarshipLegacyAttributePath } from "./starship-data.mjs";
 import {
 	canCurrentUserUpdateStarshipActor,
@@ -71,7 +70,6 @@ async function persistStarshipSizeDiceCurrent(actor, poolKey, currentValue) {
 
 function bindConfigForm(app, selector, onSubmit) {
 	const root = app.element instanceof HTMLElement ? app.element : app.element?.[0] ?? null;
-	applySw5eThemeScope(root, { scope: "module-app" });
 	const form = root?.querySelector(selector);
 	if ( !form || form.dataset.sw5eBound === "true" ) return;
 	form.dataset.sw5eBound = "true";

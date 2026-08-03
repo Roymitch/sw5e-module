@@ -12,6 +12,9 @@
 - **Starship Add Crew multi-select:** deploy multiple distinct Actors from the Add Crew dialog in one Crew or Passenger action (Pilot requires exactly one selection). Aggregate NPC quantity is not included.
 
 ### Changed
+- **SW5E appearance model:** Application chrome follows stock Foundry/dnd5e presentation. Selectable SW5E theme modes are removed (see Removed). Core SW5E branding remains: animated Pause display, lightsaber sheet headers, and approved logos/icons. Essential Starship functional/layout CSS remains for AC, Power Dice, Ship’s Stores, System Damage, movement, vitals, and related controls.
+- **Starship Recover Power:** Explicit Recover Power opens one combined multi-pool allocation dialog. Players choose eligible pools and quantities; Current/Maximum are not duplicated in the dialog; allocations are validated against live headroom and persist in one update. Regen keeps its separate legacy allocation caller policy.
+- **Starship Ship’s Stores configuration:** EDIT mode uses one Ship’s Stores settings cog/dialog for Fuel and Food current, capacity, cost, and Per Unit / Per Restock cost modes. Modes preload and persist independently; Cancel does not write. PLAY keeps Fuel/Food bars and actions without the cog.
 - **Starship Regen Power Die and Shield recovery:** Automatic Regen Power Die recovery quietly no-ops when pools are already full (no misleading full-capacity warning), while explicit Advanced Power Recover still warns. Passive Shield regeneration uses whole-number recovery (`Math.trunc`) so chat totals match the applied integer (for example `20 × 0.667` → 13).
 - **Starship EDIT-mode movement/travel sidebar:** Space Speed, Travel Speed, and Travel Pace hide their numeric counters in EDIT mode while Space Speed keeps the existing movement configuration control (Space, Turn, and travel). Turning Speed remains visible in EDIT. PLAY mode still shows all four values. Character, NPC, and ordinary Vehicle sheets are unchanged.
 - **Starship Role movement Active Effects:** All 36 Role records publish canonical Override Active Effects on `system.attributes.movement.space` and `.turn` (Medium Courier corrected to 400/250). Role item speed fields remain metadata/validation only and are not a runtime movement fallback. Existing world Role items may need refresh from the rebuilt Role compendium to receive those effects.
@@ -72,6 +75,7 @@
 - **Maneuver Description summary:** Maneuver Description tabs show a compact Activation Time / Range / Target / Duration summary from prepared Item labels (empty rows omitted; Power-only fields excluded).
 
 ### Removed
+- **Selectable SW5E themes:** SW5E Light, SW5E Dark, and Underworld Alloy theme modes, the theme mode setting, theme runtime/hooks, theme-root injection, and theme-specific LESS/assets are removed to restore normal Foundry/dnd5e presentation and reduce UI overhead. No game-data migration is required; stale world `themeMode` values are ignored. Pause branding and lightsaber headers are preserved (see Changed).
 - **Starship movementOverrides / Use Derived / Clear Override:** The parallel `movementOverrides` flag layer and Movement dialog **Use Derived** / **Clear Override** controls are gone. Stale world `movementOverrides` flags may remain but are ignored. Size and Role item-speed runtime fallbacks for Space/Turn are also gone.
 
 ### Migration

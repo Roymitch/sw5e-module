@@ -1,5 +1,4 @@
 import { getModulePath, localizeOrFallback } from "./module-support.mjs";
-import { applySw5eThemeScope } from "./theme.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -102,7 +101,6 @@ export class PowerPointConfigApp extends HandlebarsApplicationMixin(ApplicationV
 	_onRender(context, options) {
 		super._onRender(context, options);
 		const root = this.element instanceof HTMLElement ? this.element : this.element?.[0] ?? null;
-		applySw5eThemeScope(root, { scope: "module-app" });
 		const form = root?.querySelector("form.sw5e-power-point-config-form");
 		if ( !form || form.dataset.sw5eBound === "true" ) return;
 		form.dataset.sw5eBound = "true";

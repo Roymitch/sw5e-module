@@ -10,8 +10,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const LAYER = fs.readFileSync(path.join(ROOT, "templates/starship-sheet-layer.hbs"), "utf8");
 const CREW_LESS = fs.readFileSync(path.join(ROOT, "styles/less/update/starships/crew.less"), "utf8");
-const FONTS = fs.readFileSync(path.join(ROOT, "styles/less/fonts.less"), "utf8");
-const THEME = fs.readFileSync(path.join(ROOT, "styles/less/theme-overrides.less"), "utf8");
+const CORE_PANELS = fs.readFileSync(path.join(ROOT, "styles/less/starship-core-panels.less"), "utf8");
 const VITALS = fs.readFileSync(path.join(ROOT, "templates/starship-sidebar-vitals.hbs"), "utf8");
 
 let passed = 0;
@@ -70,14 +69,13 @@ test("Power Die Allocation and Fuel retain chevrons", () => {
 
 test("neutral shared heading layout owns flex; no global font override", () => {
 	assert.match(CREW_LESS, /\.sw5e-starship-core-panel-heading\s*\{[\s\S]*?display:\s*flex;/);
-	assert.match(FONTS, /--sw5e-font-heading:\s*"Russo One"/);
 	assert.doesNotMatch(CREW_LESS, /--sw5e-font-heading\s*:/);
 	assert.doesNotMatch(CREW_LESS, /\bh2\s*\{[^}]*font-family/);
 	assert.doesNotMatch(LAYER, /font-family:\s*Inter|font-family:\s*Roboto/);
 });
 
 test("Skills alignment and sidebar repair icons remain intact", () => {
-	assert.match(THEME, /margin-top:\s*0;/);
+	assert.match(CORE_PANELS, /margin-top:\s*0;/);
 	assert.match(LAYER, /sw5e-starship-overview-skills/);
 	assert.match(VITALS, /data-sw5e-repair-action/);
 });

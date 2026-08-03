@@ -1,5 +1,4 @@
 import { getModulePath } from "./module-support.mjs";
-import { applySw5eThemeScope } from "./theme.mjs";
 import { isActorDroidCustomizationHost } from "./droid-customizations.mjs";
 import { pickAugmentationCompendiumUuid } from "./augmentations-browser.mjs";
 import {
@@ -531,7 +530,6 @@ export class AugmentationsApp extends HandlebarsApplicationMixin(ApplicationV2) 
 		super._onRender(context, options);
 		const root = this.element instanceof HTMLElement ? this.element : this.element?.[0] ?? null;
 		if ( !root ) return;
-		applySw5eThemeScope(root, { scope: "cybernetics" });
 
 		const validationEl = root.querySelector("[data-sw5e-aug-validation]");
 		const setValidation = (validation) => {

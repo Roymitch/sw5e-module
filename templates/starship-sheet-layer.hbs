@@ -356,20 +356,34 @@
     <div class="sw5e-starship-core-fuel-heading sw5e-starship-core-collapsible-heading">
       <h2 class="sw5e-starship-systems-field-heading sw5e-starship-core-panel-heading">{{systemsCore.labels.shipsStores}}</h2>
     </div>
-    <button
-      type="button"
-      class="sw5e-starship-core-fuel-collapse sw5e-starship-core-collapsible-toggle"
-      data-sw5e-advanced-power-action="toggle-collapse"
-      data-sw5e-core-collapse-action="toggle"
-      data-core-panel="fuel"
-      data-expand-label="{{systemsCore.coreCollapseLabels.fuel.expand}}"
-      data-collapse-label="{{systemsCore.coreCollapseLabels.fuel.collapse}}"
-      aria-expanded="{{#if systemsCore.coreCollapse.fuel}}false{{else}}true{{/if}}"
-      title="{{#if systemsCore.coreCollapse.fuel}}{{systemsCore.coreCollapseLabels.fuel.expand}}{{else}}{{systemsCore.coreCollapseLabels.fuel.collapse}}{{/if}}"
-      aria-label="{{#if systemsCore.coreCollapse.fuel}}{{systemsCore.coreCollapseLabels.fuel.expand}}{{else}}{{systemsCore.coreCollapseLabels.fuel.collapse}}{{/if}}"
-    >
-      <i class="fas fa-chevron-down" aria-hidden="true"></i>
-    </button>
+    <div class="sw5e-starship-core-fuel-header-actions">
+      {{#if @root.systemsSetupEditable}}
+      <button
+        type="button"
+        class="config-button unbutton sw5e-starship-ships-stores-config"
+        data-sw5e-ships-stores-config
+        data-tooltip="{{systemsCore.labels.shipsStoresConfigure}}"
+        title="{{systemsCore.labels.shipsStoresConfigure}}"
+        aria-label="{{systemsCore.labels.shipsStoresConfigure}}"
+      >
+        <i class="fas fa-cog" inert></i>
+      </button>
+      {{/if}}
+      <button
+        type="button"
+        class="sw5e-starship-core-fuel-collapse sw5e-starship-core-collapsible-toggle"
+        data-sw5e-advanced-power-action="toggle-collapse"
+        data-sw5e-core-collapse-action="toggle"
+        data-core-panel="fuel"
+        data-expand-label="{{systemsCore.coreCollapseLabels.fuel.expand}}"
+        data-collapse-label="{{systemsCore.coreCollapseLabels.fuel.collapse}}"
+        aria-expanded="{{#if systemsCore.coreCollapse.fuel}}false{{else}}true{{/if}}"
+        title="{{#if systemsCore.coreCollapse.fuel}}{{systemsCore.coreCollapseLabels.fuel.expand}}{{else}}{{systemsCore.coreCollapseLabels.fuel.collapse}}{{/if}}"
+        aria-label="{{#if systemsCore.coreCollapse.fuel}}{{systemsCore.coreCollapseLabels.fuel.expand}}{{else}}{{systemsCore.coreCollapseLabels.fuel.collapse}}{{/if}}"
+      >
+        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+      </button>
+    </div>
   </header>
 
   <div class="sw5e-starship-core-collapsible-body">
@@ -386,98 +400,6 @@
       </div>
       <span class="sw5e-starship-fuel-label">{{systemsCore.fuelBarLabel}}</span>
     </div>
-
-    <div class="sw5e-starship-systems-inline sw5e-starship-systems-inline--triple sw5e-starship-core-fuel-grid">
-      <div class="sw5e-starship-systems-subfield">
-        <label class="sw5e-starship-systems-label" for="sw5e-core-fuel-value">{{systemsCore.labels.fuelCurrent}}</label>
-        {{#if @root.systemsSetupEditable}}
-        <input
-          id="sw5e-core-fuel-value"
-          class="sw5e-starship-systems-input"
-          type="number"
-          name="system.attributes.fuel.value"
-          value="{{systemsCore.fuelValue}}"
-          min="0"
-          step="1"
-          data-dtype="Number"
-        />
-        {{else}}
-        <input
-          id="sw5e-core-fuel-value"
-          class="sw5e-starship-systems-input"
-          type="text"
-          value="{{systemsCore.fuelValueFormatted}}"
-          readonly
-          disabled
-          tabindex="-1"
-        />
-        {{/if}}
-      </div>
-      <div class="sw5e-starship-systems-subfield">
-        <label class="sw5e-starship-systems-label" for="sw5e-core-fuel-cap">{{systemsCore.labels.fuelCap}}</label>
-        {{#if @root.systemsSetupEditable}}
-        <input
-          id="sw5e-core-fuel-cap"
-          class="sw5e-starship-systems-input"
-          type="number"
-          name="system.attributes.fuel.fuelCap"
-          value="{{systemsCore.fuelCap}}"
-          min="0"
-          step="1"
-          data-dtype="Number"
-        />
-        {{else}}
-        <input
-          id="sw5e-core-fuel-cap"
-          class="sw5e-starship-systems-input"
-          type="text"
-          value="{{systemsCore.fuelCapFormatted}}"
-          readonly
-          disabled
-          tabindex="-1"
-        />
-        {{/if}}
-      </div>
-      <div class="sw5e-starship-systems-subfield">
-        <div class="sw5e-starship-systems-label-with-config">
-          <label class="sw5e-starship-systems-label" for="sw5e-core-fuel-cost">{{systemsCore.labels.fuelCost}}</label>
-          {{#if systemsCore.fuelReplenishCostMode.configEditable}}
-          <button
-            type="button"
-            class="config-button unbutton sw5e-starship-fuel-cost-mode-config"
-            data-sw5e-replenish-cost-mode="fuel"
-            data-tooltip="{{systemsCore.fuelReplenishCostMode.configureLabel}}"
-            title="{{systemsCore.fuelReplenishCostMode.configureLabel}}"
-            aria-label="{{systemsCore.fuelReplenishCostMode.configureLabel}}"
-          >
-            <i class="fas fa-cog" inert></i>
-          </button>
-          {{/if}}
-        </div>
-        {{#if @root.systemsSetupEditable}}
-        <input
-          id="sw5e-core-fuel-cost"
-          class="sw5e-starship-systems-input"
-          type="number"
-          name="system.attributes.fuel.cost"
-          value="{{systemsCore.fuelCost}}"
-          min="0"
-          step="1"
-          data-dtype="Number"
-        />
-        {{else}}
-        <input
-          id="sw5e-core-fuel-cost"
-          class="sw5e-starship-systems-input"
-          type="text"
-          value="{{systemsCore.fuelCostFormatted}}"
-          readonly
-          disabled
-          tabindex="-1"
-        />
-        {{/if}}
-      </div>
-    </div>
   </div>
 
   <div class="sw5e-starship-systems-field sw5e-starship-systems-field--fuel sw5e-starship-systems-field--food{{#unless @root.systemsSetupEditable}} sw5e-starship-systems-field--locked{{/unless}}">
@@ -492,107 +414,6 @@
         <span class="sw5e-starship-fuel-breakpoint" data-pct="80" aria-hidden="true"></span>
       </div>
       <span class="sw5e-starship-fuel-label">{{systemsCore.food.barLabel}}</span>
-    </div>
-
-    <div class="sw5e-starship-systems-inline sw5e-starship-systems-inline--triple sw5e-starship-core-fuel-grid sw5e-starship-core-food-grid">
-      <div class="sw5e-starship-systems-subfield">
-        <label class="sw5e-starship-systems-label" for="sw5e-core-food-value">{{systemsCore.labels.foodCurrent}}</label>
-        {{#if @root.systemsSetupEditable}}
-        <input
-          id="sw5e-core-food-value"
-          class="sw5e-starship-systems-input"
-          type="number"
-          name="system.attributes.food.value"
-          value="{{systemsCore.food.value}}"
-          min="0"
-          step="1"
-          data-dtype="Number"
-        />
-        {{else}}
-        <input
-          id="sw5e-core-food-value"
-          class="sw5e-starship-systems-input"
-          type="text"
-          value="{{systemsCore.food.valueFormatted}}"
-          readonly
-          disabled
-          tabindex="-1"
-        />
-        {{/if}}
-      </div>
-      <div class="sw5e-starship-systems-subfield">
-        <div class="sw5e-starship-systems-label-with-config">
-          <label
-            class="sw5e-starship-systems-label"
-            for="sw5e-core-food-effective-cap"
-            data-tooltip="{{systemsCore.food.capacityTooltip}}"
-            title="{{systemsCore.food.capacityTooltip}}"
-          >{{systemsCore.labels.foodCapacity}}</label>
-          {{#if @root.systemsSetupEditable}}
-          <button
-            type="button"
-            class="config-button unbutton sw5e-starship-food-cap-source-config"
-            data-sw5e-food-cap-source
-            data-tooltip="{{systemsCore.food.configureCapacityLabel}}"
-            title="{{systemsCore.food.configureCapacityLabel}}"
-            aria-label="{{systemsCore.food.configureCapacityLabel}}"
-          >
-            <i class="fas fa-cog" inert></i>
-          </button>
-          {{/if}}
-        </div>
-        <input
-          id="sw5e-core-food-effective-cap"
-          class="sw5e-starship-systems-input"
-          type="text"
-          value="{{#unless systemsCore.food.effectiveUnavailable}}{{systemsCore.food.effectiveCapacityFormatted}}{{/unless}}"
-          placeholder="—"
-          data-tooltip="{{systemsCore.food.capacityTooltip}}"
-          title="{{systemsCore.food.capacityTooltip}}"
-          readonly
-          disabled
-          tabindex="-1"
-        />
-      </div>
-      <div class="sw5e-starship-systems-subfield">
-        <div class="sw5e-starship-systems-label-with-config">
-          <label class="sw5e-starship-systems-label" for="sw5e-core-food-cost">{{systemsCore.labels.foodRestockCost}}</label>
-          {{#if systemsCore.food.replenishCostMode.configEditable}}
-          <button
-            type="button"
-            class="config-button unbutton sw5e-starship-food-cost-mode-config"
-            data-sw5e-replenish-cost-mode="food"
-            data-tooltip="{{systemsCore.food.replenishCostMode.configureLabel}}"
-            title="{{systemsCore.food.replenishCostMode.configureLabel}}"
-            aria-label="{{systemsCore.food.replenishCostMode.configureLabel}}"
-          >
-            <i class="fas fa-cog" inert></i>
-          </button>
-          {{/if}}
-        </div>
-        {{#if @root.systemsSetupEditable}}
-        <input
-          id="sw5e-core-food-cost"
-          class="sw5e-starship-systems-input"
-          type="number"
-          name="system.attributes.food.cost"
-          value="{{systemsCore.food.cost}}"
-          min="0"
-          step="1"
-          data-dtype="Number"
-        />
-        {{else}}
-        <input
-          id="sw5e-core-food-cost"
-          class="sw5e-starship-systems-input"
-          type="text"
-          value="{{systemsCore.food.costFormatted}}"
-          readonly
-          disabled
-          tabindex="-1"
-        />
-        {{/if}}
-      </div>
     </div>
   </div>
 
@@ -708,7 +529,12 @@
         <span class="sw5e-starship-advanced-power-max-hint" role="note">{{maxDisplayHint}}</span>
         {{/if}}
         {{else}}
-        <span class="sw5e-starship-advanced-power-slot-value">{{displayValue}} / {{displayMax}}</span>
+        <div class="sw5e-starship-advanced-power-slot-meter" aria-hidden="true">
+          <div class="sw5e-starship-advanced-power-slot-track">
+            <span class="sw5e-starship-advanced-power-slot-fill" style="width: {{pct}}%;"></span>
+          </div>
+          <span class="sw5e-starship-advanced-power-slot-value">{{displayValue}} / {{displayMax}}</span>
+        </div>
         <div class="sw5e-starship-core-advanced-power-actions sw5e-starship-core-advanced-power-actions--slot{{#unless @root.systemsRoutingEditable}} sw5e-starship-core-advanced-power-actions--locked{{/unless}}">
           <button
             type="button"

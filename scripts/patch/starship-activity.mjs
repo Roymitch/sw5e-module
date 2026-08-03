@@ -60,15 +60,6 @@ export function isDnd5eActivityConfigApp(app, element) {
 	return DND5E_ACTIVITY_CONFIG_SHEETS.has(app?.constructor?.name ?? "");
 }
 
-/**
- * @param {Application} app
- * @returns {"starship-activity-config"|"activity-config"}
- */
-export function resolveActivityConfigThemeScope(app) {
-	const item = app?.item ?? app?.document;
-	return isStarshipActivityConfigItem(item) ? "starship-activity-config" : "activity-config";
-}
-
 function getHtmlRoot(html, app) {
 	if ( html instanceof HTMLElement ) return html;
 	return html?.[0] ?? app?.element?.[0] ?? null;

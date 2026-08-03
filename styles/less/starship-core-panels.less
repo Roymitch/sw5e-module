@@ -1,0 +1,125 @@
+/* Starship Core — collapsible panels (crew, routing, fuel, advanced power).
+   Ungated functional layout — no data-sw5e-theme / sw5e-theme-root. */
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet label.sw5e-starship-legacy-routing-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab :is(
+  .sw5e-starship-core-advanced-power-panel,
+  .sw5e-starship-core-fuel-panel,
+  .sw5e-starship-core-routing-panel,
+  .sw5e-starship-crew-panel
+) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sw5e-starship-space-sm, 0.5rem);
+  min-width: 0;
+  /* Skills/Flight Manifest top alignment — keep margin-top at 0. */
+  margin-top: 0;
+  padding: 0.75rem 0.85rem;
+  border-radius: 6px;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab :is(
+  .sw5e-starship-core-advanced-power-header,
+  .sw5e-starship-core-fuel-header,
+  .sw5e-starship-core-routing-header,
+  .sw5e-starship-core-crew-header,
+  .sw5e-starship-core-collapsible-header
+) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-core-collapsible-header .sw5e-starship-crew-heading {
+  display: block;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab :is(
+  .sw5e-starship-core-advanced-power-heading,
+  .sw5e-starship-core-fuel-heading,
+  .sw5e-starship-core-routing-heading,
+  .sw5e-starship-core-crew-heading,
+  .sw5e-starship-core-collapsible-heading
+) {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-core-collapsible-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab :is(
+  .sw5e-starship-core-advanced-power-collapse,
+  .sw5e-starship-core-fuel-collapse,
+  .sw5e-starship-core-routing-collapse,
+  .sw5e-starship-core-crew-collapse,
+  .sw5e-starship-core-collapsible-toggle
+) {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab :is(
+  .sw5e-starship-core-advanced-power-panel,
+  .sw5e-starship-core-fuel-panel,
+  .sw5e-starship-crew-panel
+).is-collapsed :is(
+  .sw5e-starship-core-advanced-power-body,
+  .sw5e-starship-core-collapsible-body
+) {
+  display: none;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-roles .sw5e-starship-group.is-collapsed .sw5e-starship-crew-role-group-body {
+  display: none;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-roles .sw5e-starship-group-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-roles .sw5e-starship-crew-role-collapse {
+  flex: 0 0 auto;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab :is(
+  .sw5e-starship-core-advanced-power-panel,
+  .sw5e-starship-core-fuel-panel,
+  .sw5e-starship-core-routing-panel,
+  .sw5e-starship-crew-panel
+).is-collapsed :is(
+  .sw5e-starship-core-advanced-power-collapse,
+  .sw5e-starship-core-fuel-collapse,
+  .sw5e-starship-core-routing-collapse,
+  .sw5e-starship-core-crew-collapse,
+  .sw5e-starship-core-collapsible-toggle
+) .fa-chevron-down,
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-roles .sw5e-starship-group.is-collapsed .sw5e-starship-crew-role-collapse .fa-chevron-down {
+  transform: rotate(-90deg);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-panel.is-collapsed .sw5e-starship-core-collapsible-header-actions .sw5e-starship-crew-add {
+  display: none;
+}

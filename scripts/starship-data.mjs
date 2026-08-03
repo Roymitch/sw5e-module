@@ -1669,6 +1669,7 @@ export function getStarshipAdvancedPowerContext(actor) {
 			derivedCap,
 			displayValue,
 			displayMax,
+			pct: displayMax > 0 ? Math.max(0, Math.min(100, (displayValue / displayMax) * 100)) : 0,
 			allocationMax: resolveStarshipPowerSlotAllocationMax(actor, slotKey, power, pools),
 			maxDisplayDiffers,
 			maxDisplayHint,

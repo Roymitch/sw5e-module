@@ -142,6 +142,7 @@ import {
 	ensureStarshipRepairDelegate,
 	ensureStarshipReplenishCostModeDelegate,
 	ensureStarshipFoodCapSourceDelegate,
+	ensureStarshipShipsStoresConfigDelegate,
 	ensureStarshipSystemDamageDelegate,
 	ensureStarshipTrustedSystemPathDelegate,
 	ensureStarshipVitalsDelegate
@@ -1262,6 +1263,7 @@ async function renderStarshipLayer(app, html, data, options) {
 		ensureStarshipTrustedSystemPathDelegate(root, app);
 		ensureStarshipVitalsDelegate(root, app);
 		ensureStarshipFuelActionsDelegate(root, app);
+		ensureStarshipShipsStoresConfigDelegate(root, app);
 		ensureStarshipReplenishCostModeDelegate(root, app);
 		ensureStarshipFoodCapSourceDelegate(root, app);
 		ensureStarshipRepairDelegate(root, app);

@@ -234,89 +234,38 @@
   background: linear-gradient(to right, var(--sw5e-starship-hull-dice-fill-1) 0%, var(--sw5e-starship-hull-dice-fill-2) 100%);
 }
 
-/* SW5E Light — vital track shell parity with character sidebar meters */
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals {
-  --sw5e-starship-vital-track: color-mix(in srgb, rgba(18, 28, 36, 0.88) 72%, var(--sw5e-light-muted-control-border));
-}
-
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .progress,
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .meter.hit-dice.progress {
-  border-color: var(--sw5e-light-meter-shell-border);
-  box-shadow: inset 0 0 14px rgba(137, 158, 171, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.52);
-}
-
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .sw5e-starship-vital-play-meter--interactive:is(:hover, :focus-within),
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .meter.hit-dice.progress.sw5e-starship-vital-play-meter--interactive:is(:hover, :focus-within) {
-  border-color: color-mix(in srgb, var(--sw5e-light-active-control-border) 58%, transparent);
-}
-
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-inline-input {
-  color: var(--sw5e-theme-text);
-  background: rgba(255, 255, 255, 0.92);
-  border-color: var(--sw5e-light-muted-control-border);
-}
-
-body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-inline-input:is(:hover, :focus, :focus-visible) {
-  box-shadow: 0 0 0 1px var(--sw5e-light-active-control-border), 0 0 8px color-mix(in srgb, var(--sw5e-light-active-control-border) 24%, transparent);
-  outline: none;
-}
-
-/* SW5E Dark */
-body[data-sw5e-theme="sw5e-dark"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals {
-  --sw5e-starship-vital-track: rgba(12, 14, 18, 0.72);
-}
-
-/* Underworld */
-body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals {
-  --sw5e-starship-vital-track: color-mix(in srgb, var(--sw5e-underworld-panel) 82%, black);
-  --sw5e-starship-shield-fill-1: color-mix(in srgb, var(--sw5e-underworld-neon-cyan) 28%, #023491);
-  --sw5e-starship-shield-fill-2: var(--sw5e-underworld-neon-cyan, #1f78a8);
-  --sw5e-starship-shield-dice-fill-1: color-mix(in srgb, var(--sw5e-underworld-neon-cyan) 22%, #023491);
-  --sw5e-starship-shield-dice-fill-2: color-mix(in srgb, var(--sw5e-underworld-neon-cyan) 72%, #1f78a8);
-}
-
-body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .progress,
-body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .meter.hit-dice.progress {
-  border-color: var(--sw5e-underworld-muted-control-border);
-}
-
 /* Portrait tier badge */
-.sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-tier-badge {
+.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-tier-badge {
   cursor: default;
 }
 
-/* Portrait AC badge — character-parity shield; bottom-left to clear init (TR) + tier (BR). */
-.sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-ac-badge {
+/* Portrait AC badge — stock dnd5e ac-badge.webp shield (NPC-parity), bottom-left. */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-ac-badge {
   position: absolute;
   z-index: 2;
   left: 0;
   bottom: 0;
-  width: 2.65rem;
-  height: 2.65rem;
-  min-width: 2.65rem;
-  min-height: 2.65rem;
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
   margin: 0 !important;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   text-align: center;
-  line-height: 1;
-  font-size: var(--font-size-16, 1rem);
+  line-height: 48px;
+  font-size: var(--font-size-18, 1.125rem);
   font-weight: 700;
-  background-image: none !important;
-  background: none !important;
-  place-content: center;
-  isolation: isolate;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+  /* Keep stock .ac-badge background-image: url("ui/ac-badge.webp") from dnd5e. */
+  place-content: unset;
+  filter: drop-shadow(0 0 6px var(--color-shadow-dark, rgba(0, 0, 0, 0.45)));
 }
 
-.sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-ac-badge > * {
+.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-ac-badge > * {
   position: relative;
   z-index: 1;
-  line-height: 1;
+  line-height: inherit;
 }
 
-.sw5e-theme-root.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-ac-badge .config-button {
+.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-ac-badge .config-button {
   width: 100%;
   height: 100%;
   display: inline-flex;
@@ -324,6 +273,7 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e
   justify-content: center;
   color: inherit;
   font-size: inherit;
+  line-height: 1;
 }
 
 .sw5e-starship-suppress-stock-quality,

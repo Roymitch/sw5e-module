@@ -90,12 +90,17 @@ test("coefficient is not pre-rounded; formula multiplies then truncates gain", (
 });
 
 // —— Notify policy ——
-test("source: Regen passes notifyFullCapacity false; Advanced Power keeps default warn", () => {
+test("source: Regen passes notifyFullCapacity false + legacyCentralFirst; Advanced Power defaults prompt", () => {
 	assert.match(REPAIR, /recoverStarshipPowerDice\(actor,\s*\{[\s\S]*notifyFullCapacity:\s*false/);
+	assert.match(REPAIR, /allocationMode:\s*"legacyCentralFirst"/);
 	assert.match(POWER, /notifyFullCapacity\s*=\s*true/);
+	assert.match(POWER, /allocationMode\s*=\s*STARSHIP_POWER_RECOVERY_ALLOCATION_MODE_PROMPT/);
+	assert.match(POWER, /STARSHIP_POWER_RECOVERY_ALLOCATION_MODE_PROMPT\s*=\s*"prompt"/);
+	assert.match(POWER, /STARSHIP_POWER_RECOVERY_ALLOCATION_MODE_LEGACY\s*=\s*"legacyCentralFirst"/);
 	assert.match(POWER, /notifyOrSkipStarshipPowerRecoveryFullCapacity/);
 	assert.match(DELEGATES, /recoverStarshipPowerDice\(act\)/);
 	assert.doesNotMatch(DELEGATES, /notifyFullCapacity:\s*false/);
+	assert.doesNotMatch(DELEGATES, /allocationMode:\s*"legacyCentralFirst"/);
 });
 
 test("automatic full-capacity recovery is quiet", () => {

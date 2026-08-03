@@ -1,5 +1,4 @@
 import { getModuleId } from "./module-support.mjs";
-import { applySw5eThemeScope } from "./theme.mjs";
 
 const DialogV2 = foundry.applications.api.DialogV2;
 
@@ -388,7 +387,6 @@ export async function openCharacterImportDialog() {
 		position: { width: 720 },
 		content,
 		render: (_event, dialog) => {
-			applySw5eThemeScope(dialog?.element, { scope: "module-app" });
 			bindImportDialog(dialog);
 		},
 		buttons: [

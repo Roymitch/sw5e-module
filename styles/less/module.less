@@ -1,29 +1,13 @@
 /* SW5e module stylesheet entry — compile via `npm run build:styles`.
- * Cascade: later imports win at equal specificity. Do not reorder phase files
- * without checking override dependencies (especially css-2* journal stack). */
+ * Post-theme-subsystem: stock Foundry/dnd5e appearance + core branding + functional layout. */
 
-/* —— Base tokens / legacy core —— */
-@import "fonts.less";
-@import "tokens.less";
+/* —— Legacy functional core (powercasting, chassis structure, neutralized lightsaber headers) —— */
 @import (inline) "../module.legacy.css";
 
-/* —— Theme overrides (Light/Dark + Underworld split) —— */
-@import "theme-overrides.less";
-@import "underworld-overrides.less";
+/* —— Core SW5e branding (Pause) —— */
 @import "update/components/pause-overlay.less";
 
-/* —— Scoped dialog / app themes —— */
-@import "mixins/sw5e-dialog-shell-base.less";
-@import "update/dialogs/cybernetics.less";
-@import "update/dialogs/rest-activity.less";
-@import "update/dialogs/advancement-manager.less";
-@import "update/dialogs/active-effect-config.less";
-@import "update/dialogs/module-apps.less";
-@import "update/dialogs/prompts.less";
-@import "update/dialogs/activity-type-chooser.less";
-@import "update/components/context-menus.less";
-
-/* —— Starship-specific —— */
+/* —— Starship-specific (functional / layout) —— */
 @import "starship-sidebar-vitals.less";
 @import "starship-sidebar-system-damage.less";
 @import "starship-sidebar-damage-reduction.less";
@@ -31,36 +15,12 @@
 @import "starship-fuel-replenish-cost-mode.less";
 @import "starship-food-capacity.less";
 @import "starship-effects-conditions.less";
+@import "starship-core-panels.less";
+@import "starship-core-resources.less";
+@import "starship-power-recovery-dialog.less";
 @import "update/starships/crew.less";
-
-/* —— CSS-1 manual smoke fixes —— */
-@import "css-1b-manual-smoke-fixes.less";
-@import "update/actors/npc-badges.less";
-@import "css-1c-manual-smoke-fixes.less";
-
-/* —— Item / manager surfaces —— */
-@import "chassis-panel-theme.less";
-@import "droid-customizations-theme.less";
-@import "update/chat/reload.less";
-
-/* —— Scoped Compendium Browser themes —— */
-@import "mixins/sw5e-compendium-browser-theme.less";
-@import "droid-customizations-browser-theme.less";
-@import "augmentations-browser-theme.less";
-
-/* —— Chat polish (loads before css-2 so css-2 journal stack retains precedence) —— */
-@import "update/chat/cards.less";
-@import "css-select-dropdown-groups.less";
-
-/* —— CSS-2 theme cleanup phases (ordered cascade: 2 → 2b → 2c → 2d → 2f → 2g) —— */
-@import "css-2-theme-cleanup.less";
-@import "css-2b-screenshot-corrections.less";
-@import "css-2c-journal-style-parity.less";
-@import "css-2d-journal-light-polish.less";
-@import "css-2f-button-icon-contrast.less";
-@import "css-2f-underworld-button-icon-contrast.less";
-@import "css-2g-underworld-vertical-tabs.less";
-@import "css-2g-journal-icon-rendering-and-scrollbar-fix.less";
+@import "update/starships/destruction-tray.less";
 
 /* —— Feature misc —— */
+@import "update/chat/reload.less";
 @import "update/chat/mastery-reroll.less";
