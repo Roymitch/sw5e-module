@@ -3,66 +3,68 @@
 ```text
 Date: 2026-08-03
 Branch: cursor/snv-monster-parity-aaed
-SHA: 25766c729
-Authorization: Investigation only (Slice 0)
+SHA: 9c52bb348
+Authorization: Investigation only (Slice 0) — AUTHORITATIVE authentic SnV_Final.md rerun
 Pack mutations: none
+Note: Supersedes the provisional 346-creature recovered-source census as input authority.
 ```
 
 ## Provenance
 
-- SnV source file: `ai/SnV_Final.md`
-- SnV heading count: **346**
+- SnV source file: `ai/SnV_Final.md` (authentic maintainer-local; gitignored)
+- SnV heading count: **509**
 - Pack NPC count: **272**
-- Recovery note: ai/SnV_Final.md is a recovered GM Binder substitute (maintainer-local gitignored original was absent). Prior planning counted 509 headings in the authentic file.
-
+- Authentic markers verified: `SNVcover`, 000 Series `lawful dark` / `natural armor` / `23 tech points`
 ## Classification counts
 
 | Class | Count |
 |---|---:|
-| exact-match | 233 |
-| alias-match | 28 |
-| missing | 80 |
+| exact-match | 236 |
+| alias-match | 24 |
+| missing | 244 |
 | ambiguous | 5 |
-| pack-only | 11 |
-| matched with zero diffs | 3 |
-| matched with diffs | 258 |
+| pack-only | 12 |
+| matched with zero diffs | 0 |
+| matched with diffs | 260 |
 
 ## Missing by section
 
-- Beasts: 39
-- Aberrations: 17
-- Humanoids: 16
-- Uncategorized: 3
-- Humanoids (Force Users): 3
-- Plants: 2
+- Humanoids: 96
+- Humanoids (Force Users): 61
+- Beasts: 44
+- Aberrations: 22
+- Droids: 10
+- Constructs/Vehicles: 7
+- Undead: 3
+- YUUZHAN VONG: 1
 
 ## Top mismatched matched actors
 
-- Cyborg Khagan ↔ Cyborg Khagan: 27 diffs
-- AT-ST ↔ AT-ST: 22 diffs
+- Imperial Guard Champion ↔ Imperial Guard Champion: 43 diffs
+- Cyborg Khagan ↔ Cyborg Khagan: 28 diffs
+- Mistryl Prime ↔ Mistryl Prime: 28 diffs
+- Emperor's Hand ↔ Emperor's Hand: 26 diffs
+- Mistryl Master ↔ Mistryl Master: 24 diffs
+- AT-ST ↔ AT-ST: 23 diffs
+- Hutt Crime Lord ↔ Hutt Crime Lord: 23 diffs
+- AT-AT ↔ AT-AT: 22 diffs
+- Sarlacc, Adult ↔ Sarlacc, Adult: 22 diffs
+- Imperial Shadow Guard ↔ Imperial Shadow Guard: 22 diffs
+- Krayt Dragon, Greater ↔ Krayt Dragon, Greater: 21 diffs
 - Flesh Raider Berserker ↔ Flesh Raider Berserker: 21 diffs
-- Emperor's Hand ↔ Emperor's Hand: 20 diffs
-- Imperial Guard Champion ↔ Imperial Guard Champion: 20 diffs
-- Imperial Shadow Guard ↔ Imperial Shadow Guard: 20 diffs
-- HK-Series, HK-47 ↔ HK Series, HK-47: 19 diffs
+- Grand Admiral ↔ Grand Admiral: 21 diffs
+- Dark Lord Spirit ↔ Dark Lord Spirit: 21 diffs
+- Manifestation of Abeloth ↔ Manifestation of Abeloth: 21 diffs
+- IG-100 Magnaguard ↔ IG-100 Series: 20 diffs
+- AT-TE ↔ AT-TE: 19 diffs
 - Imperial Guard Sentinel ↔ Imperial Guard Sentinel: 19 diffs
-- AT-AT ↔ AT-AT: 18 diffs
-- Grand Admiral ↔ Grand Admiral: 18 diffs
-- Hutt Crime Lord ↔ Hutt Crime Lord: 18 diffs
-- Imperial Royal Guard ↔ Imperial Royal Guard: 18 diffs
-- IG-100 Magnaguard ↔ IG-100 Series: 17 diffs
-- Krayt Dragon, Greater ↔ Krayt Dragon, Greater: 17 diffs
-- Vessel of Abeloth ↔ Vessel of Abeloth: 16 diffs
-- Sarlacc, Adult ↔ Sarlacc, Adult: 16 diffs
-- Acklay, Adult ↔ Acklay, Adult: 15 diffs
-- Sando Aqua Monster ↔ Sando Aqua Monster: 15 diffs
-- Trandoshan T'Doshok ↔ Trandoshan T'doshok: 15 diffs
-- Manifestation of Abeloth ↔ Manifestation of Abeloth: 15 diffs
-- Dark Lord Spirit ↔ Dark Lord Spirit: 15 diffs
-- Flesh Raider Apprentice ↔ Flesh Raider Apprentice: 15 diffs
-- IG-Series, Model 88 ↔ IG Series, Model 88: 14 diffs
-- Mistryl Prime ↔ Mistryl Prime: 14 diffs
-- Trandoshan Huntmaster ↔ Trandoshan Huntmaster: 14 diffs
+- Imperial Royal Guard ↔ Imperial Royal Guard: 19 diffs
+- Acklay, Adult ↔ Acklay, Adult: 18 diffs
+- Inquisitor, Grand ↔ Inquisitor, Grand: 18 diffs
+- Inquisitor, Knight ↔ Inquisitor, Knight: 18 diffs
+- Vessel of Abeloth ↔ Vessel of Abeloth: 18 diffs
+- DSD1 Dwarf Spider Droid ↔ DSD1 Dwarf Spider Droid: 17 diffs
+- KX-Series Security Droid ↔ KX-Series Security Droid: 17 diffs
 
 ## Spot checks
 
@@ -70,61 +72,65 @@ Pack mutations: none
 
 - Classification: exact-match
 - Pack: 000 Series Protocol Droid
-- Diff count: 9
+- Diff count: 10
 - `abilities.int`: expected `16`, actual `14`
 - `cr`: expected `"1"`, actual `2`
+- `techPoints`: expected `23`, actual `22`
 - `techLevel`: expected `5`, actual `2`
 - `skills.ins`: expected `3`, actual `1`
 - `skills.itm`: expected `4`, actual `2`
 - `skills.lor`: expected `5`, actual `null`
 - `items.trait`: expected `"Circuitry"`, actual `null`
-- `items.trait`: expected `"Targeting Systems"`, actual `null`
 
 ### Gonk Droid
 
 - Classification: exact-match
 - Pack: Gonk Droid
-- Diff count: 6
+- Diff count: 8
+- `abilities.int`: expected `8`, actual `9`
+- `abilities.wis`: expected `6`, actual `7`
 - `cr`: expected `"1/2"`, actual `0`
 - `senses.darkvision`: expected `60`, actual `null`
 - `damageVulnerabilities`: expected `["ion"]`, actual `["ion","lightning"]`
 - `items.trait`: expected `"Explosive Retribution"`, actual `null`
-- `items.actions`: expected `"Charging Port (2/Day)"`, actual `null`
 - `items.actions`: expected `"Self-Destruct"`, actual `null`
+- `items.actions`: expected `"Charging Port (2/Day)"`, actual `null`
 
 ### Acklay, Adolescent
 
 - Classification: exact-match
 - Pack: Acklay, Adolescent
-- Diff count: 10
-- `abilities.str`: expected `19`, actual `22`
+- Diff count: 15
+- `abilities.str`: expected `18`, actual `22`
+- `abilities.dex`: expected `8`, actual `9`
+- `abilities.con`: expected `16`, actual `17`
+- `abilities.int`: expected `2`, actual `3`
+- `abilities.wis`: expected `10`, actual `11`
+- `abilities.cha`: expected `4`, actual `5`
 - `speed.swim`: expected `40`, actual `0`
 - `cr`: expected `"3"`, actual `5`
-- `skills.ath`: expected `6`, actual `null`
-- `skills.prc`: expected `2`, actual `null`
-- `saves.str`: expected `6`, actual `null`
-- `saves.con`: expected `5`, actual `null`
-- `senses.darkvision`: expected `120`, actual `null`
 
 ### B'omarr BT-16 Brain Walker
 
 - Classification: alias-match
 - Pack: B'omarr Brain Walker
-- Diff count: 13
+- Diff count: 16
+- `abilities.str`: expected `2`, actual `1`
+- `abilities.dex`: expected `10`, actual `11`
+- `abilities.con`: expected `14`, actual `15`
 - `hp.average`: expected `52`, actual `54`
-- `skills.dec`: expected `6`, actual `null`
-- `skills.lor`: expected `6`, actual `null`
-- `skills.prc`: expected `4`, actual `null`
-- `skills.per`: expected `6`, actual `null`
-- `saves.int`: expected `6`, actual `null`
-- `saves.wis`: expected `4`, actual `null`
-- `saves.cha`: expected `6`, actual `null`
+- `skills.dec`: expected `5`, actual `null`
+- `skills.lor`: expected `5`, actual `null`
+- `skills.prc`: expected `3`, actual `null`
+- `skills.per`: expected `5`, actual `null`
 
 ### 3P0 Series Droid
 
 - Classification: alias-match
 - Pack: 3P0 Series
-- Diff count: 4
+- Diff count: 6
+- `abilities.con`: expected `10`, actual `11`
+- `abilities.cha`: expected `10`, actual `11`
 - `skills.lor`: expected `4`, actual `null`
 - `skills.per`: expected `2`, actual `0`
 - `damageVulnerabilities`: expected `["ion"]`, actual `["ion","lightning"]`
@@ -134,14 +140,15 @@ Pack mutations: none
 
 - Classification: exact-match
 - Pack: Bantha, Adult
-- Diff count: 7
+- Diff count: 10
 - `abilities.str`: expected `22`, actual `24`
-- `abilities.con`: expected `17`, actual `21`
+- `abilities.dex`: expected `8`, actual `9`
+- `abilities.con`: expected `16`, actual `21`
+- `abilities.int`: expected `2`, actual `3`
+- `abilities.wis`: expected `10`, actual `11`
 - `ac.value`: expected `12`, actual `13`
 - `hp.average`: expected `76`, actual `126`
 - `hp.formula`: expected `"8d12+24"`, actual `"11d12+55"`
-- `cr`: expected `"4"`, actual `6`
-- `items.actions`: expected `"Stomp"`, actual `null`
 
 ## Next authorization gate
 
