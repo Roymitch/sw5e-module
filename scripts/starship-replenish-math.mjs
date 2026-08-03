@@ -43,6 +43,25 @@ export function normalizeStarshipNonNegativeInt(raw) {
 }
 
 /**
+ * Signed whole-number normalization for Food capacity modifiers (and similar ADD AE fields).
+ * Truncates toward zero. Invalid / action strings / non-finite → 0 (never null).
+ *
+ * @param {unknown} raw
+ * @returns {number}
+ */
+export function normalizeStarshipSignedInt(raw) {
+	if ( raw === undefined || raw === null ) return 0;
+	if ( typeof raw === "string" ) {
+		const trimmed = raw.trim();
+		if ( trimmed === "" ) return 0;
+		if ( !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(trimmed) ) return 0;
+	}
+	const n = Number(raw);
+	if ( !Number.isFinite(n) ) return 0;
+	return Math.trunc(n);
+}
+
+/**
  * Positive whole-number quantity for burn/consume/add requests.
  * Zero, negative, non-numeric, and DialogV2 action strings → null.
  *
@@ -157,33 +176,64 @@ export function resolveStarshipReplenishConsume(requested, current) {
 }
 
 /**
- * Food capacity resolution from Size RAW baseline + optional actor override.
- * Does not infer ship size from the capacity number.
+ * Food capacity resolution: Size RAW base OR custom base + signed prepared modifier.
+ * Does not infer ship size from the capacity number. Does not mutate current Food.
+ *
+ * Safe-integer policy: when `selectedBase + modifier` is outside Number.isSafeInteger,
+ * `safeInteger` is false and `effectiveCapacity` still uses `max(0, unclamped)` from the
+ * IEEE sum so callers can refuse to display an exact unsafe total. Stored bases/mods
+ * are never rewritten by this helper.
+ *
+ * outsideRaw uses custom base vs Size RAW only — modifiers do not set outsideRaw.
  *
  * @param {unknown} rawSizeFoodCap
  * @param {unknown} actorFoodCap
  * @param {unknown} overrideActive
+ * @param {unknown} [foodCapMod=0]
  * @returns {{
+ *   normalizedRawBase: number,
+ *   normalizedCustomBase: number,
  *   rawCap: number,
  *   actorCap: number,
- *   effectiveCap: number,
  *   overrideActive: boolean,
+ *   selectedBase: number,
+ *   normalizedModifier: number,
+ *   unclampedEffectiveCapacity: number,
+ *   effectiveCapacity: number,
+ *   effectiveCap: number,
+ *   safeInteger: boolean,
  *   outsideRaw: boolean,
+ *   tinyPositiveCustom: boolean,
  *   tinyPositiveOverride: boolean
  * }}
  */
-export function resolveStarshipFoodCapacity(rawSizeFoodCap, actorFoodCap, overrideActive) {
-	const rawCap = normalizeStarshipNonNegativeInt(rawSizeFoodCap) ?? 0;
-	const actorCap = normalizeStarshipNonNegativeInt(actorFoodCap) ?? 0;
+export function resolveStarshipFoodCapacity(rawSizeFoodCap, actorFoodCap, overrideActive, foodCapMod=0) {
+	const rawBase = normalizeStarshipNonNegativeInt(rawSizeFoodCap) ?? 0;
+	const customBase = normalizeStarshipNonNegativeInt(actorFoodCap) ?? 0;
 	const active = overrideActive === true || overrideActive === "true" || overrideActive === 1;
-	const effectiveCap = active ? actorCap : rawCap;
+	const selectedBase = active ? customBase : rawBase;
+	const modifier = normalizeStarshipSignedInt(foodCapMod);
+	const unclamped = selectedBase + modifier;
+	const safeInteger = Number.isSafeInteger(selectedBase)
+		&& Number.isSafeInteger(modifier)
+		&& Number.isSafeInteger(unclamped);
+	const effective = Math.max(0, unclamped);
+	const tinyPositiveCustom = active && rawBase === 0 && customBase > 0;
 	return {
-		rawCap,
-		actorCap,
-		effectiveCap,
+		normalizedRawBase: rawBase,
+		normalizedCustomBase: customBase,
+		rawCap: rawBase,
+		actorCap: customBase,
 		overrideActive: active,
-		outsideRaw: active && effectiveCap !== rawCap,
-		tinyPositiveOverride: active && rawCap === 0 && effectiveCap > 0
+		selectedBase,
+		normalizedModifier: modifier,
+		unclampedEffectiveCapacity: unclamped,
+		effectiveCapacity: effective,
+		effectiveCap: effective,
+		safeInteger,
+		outsideRaw: active && customBase !== rawBase,
+		tinyPositiveCustom,
+		tinyPositiveOverride: tinyPositiveCustom
 	};
 }
 

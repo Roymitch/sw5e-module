@@ -1,0 +1,31 @@
+/* Starship Core — Food resource container within Fuel & Supplies (Fuel parity). */
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-overview-operations
+  .sw5e-starship-systems-field--fuel.sw5e-starship-systems-field--food {
+  margin-top: 0.75rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-systems-subheading {
+  margin: 0 0 0.35rem;
+  font-size: var(--font-size-14, 0.875rem);
+  font-weight: 600;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-food-cap-source-config,
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-food-cost-mode-config {
+  flex: 0 0 auto;
+}
+
+/*
+ * Fuel / Food triple-grid resource values share one centering contract.
+ * Capacity is display-only (type=text formatted); Current/Cost use type=number
+ * in EDIT and type=text formatted display in PLAY. Center all grid inputs.
+ */
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  [data-sw5e-sotg-panel="overview"]
+  .sw5e-starship-core-fuel-grid
+  .sw5e-starship-systems-input {
+  text-align: center;
+}

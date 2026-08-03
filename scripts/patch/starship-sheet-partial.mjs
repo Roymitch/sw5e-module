@@ -549,6 +549,33 @@ export function signaturePayloadCoreSystemsRouting(meta = {}) {
 				configEditable: Boolean(systemsCore.fuelReplenishCostMode?.configEditable),
 				configureLabel: systemsCore.fuelReplenishCostMode?.configureLabel ?? ""
 			},
+			food: {
+				value: systemsCore.food?.value ?? 0,
+				rawBase: systemsCore.food?.rawBase ?? 0,
+				customBase: systemsCore.food?.customBase ?? 0,
+				selectedBase: systemsCore.food?.selectedBase ?? 0,
+				sourceModifier: systemsCore.food?.sourceModifier ?? 0,
+				preparedModifier: systemsCore.food?.preparedModifier ?? 0,
+				effectiveCapacity: systemsCore.food?.effectiveCapacity ?? 0,
+				effectiveUnavailable: Boolean(systemsCore.food?.effectiveUnavailable),
+				cost: systemsCore.food?.cost ?? 0,
+				overrideActive: Boolean(systemsCore.food?.overrideActive),
+				capBaseEditable: Boolean(systemsCore.food?.capBaseEditable),
+				outsideRaw: Boolean(systemsCore.food?.outsideRaw),
+				pct: systemsCore.food?.pct ?? 0,
+				barLabel: systemsCore.food?.barLabel ?? "",
+				replenishCostMode: {
+					mode: systemsCore.food?.replenishCostMode?.mode ?? "perRestock",
+					modeLabel: systemsCore.food?.replenishCostMode?.modeLabel ?? "",
+					configEditable: Boolean(systemsCore.food?.replenishCostMode?.configEditable),
+					configureLabel: systemsCore.food?.replenishCostMode?.configureLabel ?? ""
+				}
+			},
+			labels: {
+				fuel: systemsCore.labels?.fuel ?? "",
+				fuelAndSupplies: systemsCore.labels?.fuelAndSupplies ?? "",
+				food: systemsCore.labels?.food ?? ""
+			},
 			advancedPower: {
 				collapsed: Boolean(advancedPower.collapsed),
 				panelAria: advancedPower.panelAria ?? "",

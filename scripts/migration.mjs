@@ -24,6 +24,15 @@ import {
 	normalizeSwPriceDenomination
 } from "./currencies.mjs";
 import { applyManeuverFormulaMigration } from "./maneuver-formula-migration.mjs";
+import {
+	applyStarshipFoodCurrentMigration,
+	auditStarshipFoodCurrent,
+	beginStarshipFoodCurrentMigrationReport,
+	endStarshipFoodCurrentMigrationReport,
+	getActiveStarshipFoodCurrentMigrationReport
+} from "./starship-food-value-migration.mjs";
+
+export { auditStarshipFoodCurrent };
 
 const MIGRATABLE_COMPENDIUM_DOCUMENTS = ["Actor", "Item", "Scene", "JournalEntry", "RollTable"];
 
@@ -106,6 +115,20 @@ function _migrateStaleSuperiorityDiceMax(actorData, updateData) {
 	const path = "system.superiority.dice.max";
 	foundry.utils.setProperty(updateData, path, null);
 	foundry.utils.setProperty(actorData, path, null);
+	return updateData;
+}
+
+/**
+ * Initialize / normalize Starship Food current stock (system + legacy mirror).
+ * Idempotent. Skips non-starships and valid integral stock (including explicit 0).
+ * @param {object} actorData
+ * @param {object} updateData
+ * @returns {object}
+ * @private
+ */
+function _migrateStarshipFoodCurrentValue(actorData, updateData) {
+	if ( !isSw5eStarshipActorData(actorData) ) return updateData;
+	applyStarshipFoodCurrentMigration(actorData, updateData);
 	return updateData;
 }
 
@@ -195,7 +218,25 @@ export const migrateWorld = async function() {
 	ui.notifications.info(game.i18n.format("MIGRATION.sw5eBegin", {version}), {permanent: true});
 
 	const migrationData = await getMigrationData();
+	beginStarshipFoodCurrentMigrationReport();
+	try {
+		await _migrateWorldDocuments(migrationData);
+	} finally {
+		endStarshipFoodCurrentMigrationReport();
+	}
 
+	// Set the migration as complete
+	const moduleVersion = getModule()?.version ?? version;
+	if (moduleVersion !== "#{VERSION}#") game.settings.set(SETTINGS_NAMESPACE, "moduleMigrationVersion", moduleVersion);
+	ui.notifications.info(game.i18n.format("MIGRATION.sw5eComplete", { version }), { permanent: true });
+};
+
+/**
+ * Document migration body for migrateWorld (Actors, Items, Scenes, world packs).
+ * @param {object} migrationData
+ * @private
+ */
+async function _migrateWorldDocuments(migrationData) {
 	// Migrate World Actors
 	const actors = game.actors.map(a => [a, true])
 		.concat(Array.from(game.actors.invalidDocumentIds).map(id => [game.actors.getInvalid(id), false]));
@@ -216,6 +257,8 @@ export const migrateWorld = async function() {
 		} catch(err) {
 			err.message = `Failed sw5e module migration for Actor ${actor.name}: ${err.message}`;
 			console.error(err);
+			const foodReport = getActiveStarshipFoodCurrentMigrationReport();
+			if ( foodReport ) foodReport.failures += 1;
 		}
 	}
 
@@ -338,12 +381,7 @@ export const migrateWorld = async function() {
 	if ( leftover.length ) {
 		console.info(`SW5E | Migration left empty legacy-named folders for manual cleanup: ${leftover.join(", ")}`);
 	}
-
-	// Set the migration as complete
-	const moduleVersion = getModule()?.version ?? version;
-	if (moduleVersion !== "#{VERSION}#") game.settings.set(SETTINGS_NAMESPACE, "moduleMigrationVersion", moduleVersion);
-	ui.notifications.info(game.i18n.format("MIGRATION.sw5eComplete", { version }), { permanent: true });
-};
+}
 
 /* -------------------------------------------- */
 
@@ -785,6 +823,7 @@ export const migrateActorData = function(actor, migrationData, flags={}, { actor
 	_migrateStalePowercastingKnownMax(workingActor, updateData);
 	_migrateStaleSuperiorityDiceMax(workingActor, updateData);
 	_migrateOrphanCurrencyWallet(workingActor, updateData);
+	_migrateStarshipFoodCurrentValue(workingActor, updateData);
 
 	// Migrate embedded effects
 	if ( workingActor.effects ) {

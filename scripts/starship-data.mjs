@@ -136,7 +136,7 @@ function isCharacterBackedStarship(data) {
 	return data?.type === "character" && getStarshipCharacterFlag(data)?.enabled;
 }
 
-function getLegacyStarshipSize(items = []) {
+export function getLegacyStarshipSize(items = []) {
 	return items.find(item => item.type === "starshipsize")
 		?? items.find(item => item.flags?.sw5e?.legacyStarshipSize)
 		?? items.find(item => item.flags?.sw5e?.[STARSHIP_CHARACTER_FLAG]?.role === "classification")
@@ -144,7 +144,7 @@ function getLegacyStarshipSize(items = []) {
 		?? items.find(item => item.type === "feat" && item.system?.advancement?.some?.(a => a.type === "HullPoints"));
 }
 
-function getLegacySizeSystem(item) {
+export function getLegacySizeSystem(item) {
 	if ( item?.flags?.sw5e?.legacyStarshipSize ) return item.flags.sw5e.legacyStarshipSize;
 	const classification = item?.flags?.sw5e?.[STARSHIP_CHARACTER_FLAG]?.classification;
 	// item._source is the raw pre-DataModel object; item.system may be a DataModel that hides custom fields
@@ -734,6 +734,22 @@ export function getLegacyStarshipActorSystem(actor) {
 		if ( hasOwnKeys(flagSystem.attributes?.fuel) ) {
 			merged.attributes ??= {};
 			merged.attributes.fuel = mergeStarshipSystemData(merged.attributes.fuel ?? {}, flagSystem.attributes.fuel);
+		}
+		// Food: overlay persisted value/foodCap/cost from flags only.
+		// Never flag-last foodCapMod — prepared AE ADD must remain visible on system.
+		if ( hasOwnKeys(flagSystem.attributes?.food) ) {
+			merged.attributes ??= {};
+			const flagFood = flagSystem.attributes.food;
+			const baseFood = merged.attributes.food ?? {};
+			merged.attributes.food = {
+				...baseFood,
+				...(flagFood.value !== undefined ? { value: flagFood.value } : {}),
+				...(flagFood.foodCap !== undefined ? { foodCap: flagFood.foodCap } : {}),
+				...(flagFood.cost !== undefined ? { cost: flagFood.cost } : {})
+			};
+			if ( baseFood.foodCapMod !== undefined ) {
+				merged.attributes.food.foodCapMod = baseFood.foodCapMod;
+			}
 		}
 		if ( hasOwnKeys(flagSystem.attributes?.power) ) {
 			merged.attributes ??= {};
@@ -1548,6 +1564,12 @@ export function shouldMirrorStarshipLegacyAttributePath(systemPath) {
 	if ( systemPath === "system.attributes.systemDamage" ) return true;
 	if ( systemPath === "system.attributes.hp.value" ) return true;
 	if ( systemPath.startsWith("system.attributes.fuel.") ) return true;
+	// Food: mirror value / foodCap / cost only — never foodCapMod (AE-prepared).
+	if (
+		systemPath === "system.attributes.food.value"
+		|| systemPath === "system.attributes.food.foodCap"
+		|| systemPath === "system.attributes.food.cost"
+	) return true;
 	const slotMatch = systemPath.match(/^system\.attributes\.power\.(\w+)\.(value|max)$/);
 	return Boolean(slotMatch && STARSHIP_POWER_DIE_SLOTS.includes(slotMatch[1]));
 }
@@ -1571,6 +1593,13 @@ export function buildStarshipLegacyAttributeMirrorUpdate(systemPath, value) {
 	} else if ( systemPath.startsWith("system.attributes.fuel.") ) {
 		const tail = systemPath.slice("system.attributes.fuel.".length);
 		update[`${STARSHIP_LEGACY_ATTRIBUTE_FLAG_BASE}.fuel.${tail}`] = value;
+	} else if (
+		systemPath === "system.attributes.food.value"
+		|| systemPath === "system.attributes.food.foodCap"
+		|| systemPath === "system.attributes.food.cost"
+	) {
+		const tail = systemPath.slice("system.attributes.food.".length);
+		update[`${STARSHIP_LEGACY_ATTRIBUTE_FLAG_BASE}.food.${tail}`] = value;
 	} else {
 		const slotMatch = systemPath.match(/^system\.attributes\.power\.(\w+)\.(value|max)$/);
 		if ( slotMatch ) {

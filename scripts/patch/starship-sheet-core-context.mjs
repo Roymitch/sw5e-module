@@ -17,7 +17,16 @@ import {
 } from "../starship-data.mjs";
 import { getExpandedProficiencyHoverLabel } from "./proficiency.mjs";
 import { escapeHtml, localizeOrFallback } from "../starship-sheet-html.mjs";
-import { buildStarshipFuelReplenishCostModeContext } from "../starship-replenish-cost-mode.mjs";
+import { buildStarshipFuelReplenishCostModeContext, buildStarshipFoodReplenishCostModeContext } from "../starship-replenish-cost-mode.mjs";
+import {
+	buildStarshipFoodBarContext,
+	formatStarshipFoodCapacityTooltip,
+	readStarshipFoodResourceSnapshot
+} from "../starship-food.mjs";
+import {
+	buildStarshipFuelBarContext,
+	formatStarshipWholeNumber
+} from "../starship-number-format.mjs";
 import {
 	getCompendiumPack,
 	STARSHIP_ABILITY_KEYS,
@@ -92,15 +101,7 @@ export function buildStarshipRoutingSelectionEffect(routing) {
 	);
 }
 
-export function buildStarshipFuelBarContext(fuelValue, fuelCap) {
-	const value = Number.isFinite(Number(fuelValue)) ? Math.max(0, Math.trunc(Number(fuelValue))) : 0;
-	const cap = Number.isFinite(Number(fuelCap)) ? Math.max(0, Math.trunc(Number(fuelCap))) : 0;
-	const pct = cap > 0
-		? Math.min(100, Math.max(0, Math.round((value / cap) * 100)))
-		: (value > 0 ? 100 : 0);
-	const barLabel = cap > 0 ? `${value} / ${cap} units` : `${value} units`;
-	return { fuelPct: pct, fuelBarLabel: barLabel, fuelHasCap: cap > 0 };
-}
+export { buildStarshipFuelBarContext };
 
 /**
  * Context for the Systems tab core configuration section: existing actor paths only, no invented values.
@@ -126,6 +127,15 @@ export function buildSystemsCoreContext(actor, { runtime, costConfigEditable=fal
 	const fuelReplenishCostMode = buildStarshipFuelReplenishCostModeContext(actor, {
 		costConfigEditable
 	});
+	const foodSnap = readStarshipFoodResourceSnapshot(actor, legacySystem.attributes?.food ?? {});
+	const foodBar = buildStarshipFoodBarContext(foodSnap.value, foodSnap.capacity.effectiveCapacity);
+	const foodReplenishCostMode = buildStarshipFoodReplenishCostModeContext(actor, {
+		costConfigEditable
+	});
+	const foodCapBaseEditable = costConfigEditable && foodSnap.overrideActive;
+	const foodEffectiveDisplay = foodSnap.capacity.safeInteger
+		? foodSnap.capacity.effectiveCapacity
+		: null;
 
 	return {
 		turningSpeedDisplay: Number.isFinite(Number(movement.turn))
@@ -158,10 +168,55 @@ export function buildSystemsCoreContext(actor, { runtime, costConfigEditable=fal
 		fuelValue,
 		fuelCap,
 		fuelCost: Number.isFinite(Number(fuel.cost)) ? Number(fuel.cost) : 0,
+		fuelValueFormatted: fuelBar.fuelValueFormatted,
+		fuelCapFormatted: fuelBar.fuelCapFormatted,
+		fuelCostFormatted: formatStarshipWholeNumber(
+			Number.isFinite(Number(fuel.cost)) ? Number(fuel.cost) : 0
+		),
 		fuelPct: fuelBar.fuelPct,
 		fuelBarLabel: fuelBar.fuelBarLabel,
 		fuelHasCap: fuelBar.fuelHasCap,
 		fuelReplenishCostMode,
+		food: {
+			value: foodSnap.value,
+			valueFormatted: formatStarshipWholeNumber(foodSnap.value),
+			rawBase: foodSnap.rawSizeCap,
+			customBase: foodSnap.customCap,
+			selectedBase: foodSnap.capacity.selectedBase,
+			sourceModifier: foodSnap.sourceModifier,
+			preparedModifier: foodSnap.preparedModifier,
+			effectiveCapacity: foodSnap.capacity.effectiveCapacity,
+			effectiveDisplay: foodEffectiveDisplay,
+			effectiveCapacityFormatted: foodSnap.capacity.safeInteger
+				? formatStarshipWholeNumber(foodSnap.capacity.effectiveCapacity)
+				: null,
+			effectiveUnavailable: !foodSnap.capacity.safeInteger,
+			unclampedEffectiveCapacity: foodSnap.capacity.unclampedEffectiveCapacity,
+			safeInteger: foodSnap.capacity.safeInteger,
+			capacityTooltip: formatStarshipFoodCapacityTooltip({
+				selectedBase: foodSnap.capacity.selectedBase,
+				preparedModifier: foodSnap.preparedModifier,
+				effectiveCapacity: foodSnap.capacity.effectiveCapacity,
+				safeInteger: foodSnap.capacity.safeInteger
+			}),
+			cost: foodSnap.cost,
+			costFormatted: formatStarshipWholeNumber(foodSnap.cost),
+			overrideActive: foodSnap.overrideActive,
+			capBaseEditable: foodCapBaseEditable,
+			outsideRaw: foodSnap.capacity.outsideRaw,
+			tinyPositiveCustom: foodSnap.capacity.tinyPositiveCustom,
+			pct: foodBar.foodPct,
+			barLabel: foodBar.foodBarLabel,
+			hasCap: foodBar.foodHasCap,
+			replenishCostMode: foodReplenishCostMode,
+			configureCapacityLabel: localizeOrFallback(
+				"SW5E.StarshipSheet.ConfigureFoodCapacity",
+				"Configure Food Capacity"
+			),
+			sourceLabel: foodSnap.overrideActive
+				? localizeOrFallback("SW5E.StarshipSheet.FoodUseCustomCapacity", "Use Custom Capacity")
+				: localizeOrFallback("SW5E.StarshipSheet.FoodUseSizeCapacity", "Use Size Capacity")
+		},
 		configSectionLede: localizeOrFallback(
 			"SW5E.StarshipSheet.SystemsConfigSectionLede",
 			"Tier, size, hull, shields, and dice pools are edited from the sidebar. Power routing and fuel are on the Core tab."
@@ -182,6 +237,8 @@ export function buildSystemsCoreContext(actor, { runtime, costConfigEditable=fal
 			shieldCurrent: localizeOrFallback("SW5E.StarshipShieldFieldCurrent", "Current shield points"),
 			shieldMax: localizeOrFallback("SW5E.StarshipShieldFieldMax", "Maximum shield points"),
 			fuel: localizeOrFallback("SW5E.Fuel", "Fuel"),
+			fuelAndSupplies: localizeOrFallback("SW5E.StarshipSheet.ShipsStores", "Ship’s Stores"),
+			shipsStores: localizeOrFallback("SW5E.StarshipSheet.ShipsStores", "Ship’s Stores"),
 			fuelCurrent: localizeOrFallback("SW5E.StarshipFuelFieldCurrent", "Current fuel"),
 			fuelCap: localizeOrFallback("SW5E.FuelCap", "Fuel cap"),
 			fuelCost: localizeOrFallback("SW5E.FuelCost", "Regeneration cost"),
@@ -190,6 +247,22 @@ export function buildSystemsCoreContext(actor, { runtime, costConfigEditable=fal
 			refuel: localizeOrFallback("SW5E.Refuel", "Refuel"),
 			burnFuelTooltip: localizeOrFallback("SW5E.StarshipSheet.BurnFuelTooltip", "Burn fuel"),
 			refuelTooltip: localizeOrFallback("SW5E.StarshipSheet.RefuelTooltip", "Add fuel"),
+			suppliesConsume: localizeOrFallback("SW5E.StarshipSheet.SuppliesConsume", "Consume"),
+			suppliesRestock: localizeOrFallback("SW5E.StarshipSheet.SuppliesRestock", "Restock"),
+			suppliesConsumeTooltip: localizeOrFallback(
+				"SW5E.StarshipSheet.SuppliesConsumeTooltip",
+				"Consume Fuel and/or Food from Ship’s Stores"
+			),
+			suppliesRestockTooltip: localizeOrFallback(
+				"SW5E.StarshipSheet.SuppliesRestockTooltip",
+				"Restock Fuel and/or Food in Ship’s Stores"
+			),
+			food: localizeOrFallback("SW5E.Food", "Food"),
+			foodCurrent: localizeOrFallback("SW5E.StarshipSheet.FoodCurrent", "Current"),
+			foodCapacity: localizeOrFallback("SW5E.StarshipSheet.FoodCapacity", "Capacity"),
+			foodCapacityModifier: localizeOrFallback("SW5E.StarshipSheet.FoodCapacityModifier", "Capacity Modifier"),
+			foodEffectiveCapacity: localizeOrFallback("SW5E.StarshipSheet.FoodEffectiveCapacity", "Effective Capacity"),
+			foodRestockCost: localizeOrFallback("SW5E.StarshipSheet.FoodRestockCost", "Restock Cost"),
 			derived: localizeOrFallback("SW5E.Derived", "Derived")
 		},
 		coreCollapse: {
@@ -207,8 +280,8 @@ export function buildSystemsCoreContext(actor, { runtime, costConfigEditable=fal
 				collapse: localizeOrFallback("SW5E.StarshipSheet.CoreRoutingCollapse", "Collapse Power Routing")
 			},
 			fuel: {
-				expand: localizeOrFallback("SW5E.StarshipSheet.CoreFuelExpand", "Expand Fuel"),
-				collapse: localizeOrFallback("SW5E.StarshipSheet.CoreFuelCollapse", "Collapse Fuel")
+				expand: localizeOrFallback("SW5E.StarshipSheet.CoreFuelExpand", "Expand Ship’s Stores"),
+				collapse: localizeOrFallback("SW5E.StarshipSheet.CoreFuelCollapse", "Collapse Ship’s Stores")
 			}
 		},
 		advancedPower: (() => {

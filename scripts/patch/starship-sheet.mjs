@@ -141,6 +141,7 @@ import {
 	ensureStarshipLegacyRoutingDelegate,
 	ensureStarshipRepairDelegate,
 	ensureStarshipReplenishCostModeDelegate,
+	ensureStarshipFoodCapSourceDelegate,
 	ensureStarshipSystemDamageDelegate,
 	ensureStarshipTrustedSystemPathDelegate,
 	ensureStarshipVitalsDelegate
@@ -502,7 +503,7 @@ function applyCoreOperationsControlState(app, starshipPanel) {
 		routing.closest(".sw5e-starship-systems-field")?.classList.toggle("sw5e-starship-systems-field--locked", !routingEditable);
 	}
 
-	for ( const btn of overview.querySelectorAll("[data-sw5e-fuel-action]") ) {
+	for ( const btn of overview.querySelectorAll("[data-sw5e-supplies-action]") ) {
 		if ( btn instanceof HTMLButtonElement ) btn.disabled = !routingEditable;
 	}
 	for ( const btn of overview.querySelectorAll("[data-sw5e-advanced-power-action='spend']") ) {
@@ -1262,6 +1263,7 @@ async function renderStarshipLayer(app, html, data, options) {
 		ensureStarshipVitalsDelegate(root, app);
 		ensureStarshipFuelActionsDelegate(root, app);
 		ensureStarshipReplenishCostModeDelegate(root, app);
+		ensureStarshipFoodCapSourceDelegate(root, app);
 		ensureStarshipRepairDelegate(root, app);
 		ensureStarshipLegacyRoutingDelegate(root, app);
 		ensureStarshipAdvancedPowerDelegate(root, app);

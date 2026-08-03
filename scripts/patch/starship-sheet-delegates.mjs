@@ -30,21 +30,15 @@ import {
 	coerceStarshipIntegerHpField,
 	STARSHIP_INTEGER_HP_PATHS
 } from "../starship-sheet-preupdate.mjs";
-import {
-	notifyStarshipFuelOverBurn,
-	promptStarshipFuelBurnAmount,
-	resolveStarshipFuelBurn
-} from "../starship-fuel-burn.mjs";
-import {
-	buildStarshipFuelRefuelChatContext,
-	evaluateStarshipFuelRefuelGate,
-	notifyStarshipFuelRefuelOverRequest,
-	postStarshipFuelRefuelChatMessage,
-	promptStarshipFuelRefuelAmount,
-	readStarshipFuelRefuelSnapshot,
-	resolveStarshipFuelRefuel
-} from "../starship-fuel-refuel.mjs";
 import { openStarshipReplenishCostModeConfig } from "../starship-replenish-cost-mode.mjs";
+import {
+	openStarshipFoodCapSourceConfig,
+	persistStarshipFoodAttributePath,
+	readStarshipFoodCapOverride
+} from "../starship-food.mjs";
+import { runStarshipSuppliesConsume } from "../starship-supplies-consume.mjs";
+import { runStarshipSuppliesRestock } from "../starship-supplies-restock.mjs";
+import { normalizeStarshipNonNegativeInt, normalizeStarshipSignedInt } from "../starship-replenish-math.mjs";
 import {
 	STARSHIP_POWER_DIE_OPTIONS,
 	STARSHIP_ROUTING_KEYS_VISIBLE
@@ -86,8 +80,7 @@ export function ensureStarshipVitalsDelegate(root, app) {
 }
 
 /**
- * EDIT-only Fuel Regeneration Cost mode cog (Slice 3B-2).
- * Production opens Fuel only — Food cost-mode UI is not authorized yet.
+ * EDIT-only Fuel / Food replenishment cost-mode cogs (Slice 3B-2 / 3B-4).
  */
 export function ensureStarshipReplenishCostModeDelegate(root, app) {
 	if ( !root || root.dataset.sw5eReplenishCostModeDelegate === "1" ) return;
@@ -99,8 +92,7 @@ export function ensureStarshipReplenishCostModeDelegate(root, app) {
 		if ( !act || app?.isEditable === false ) return;
 		if ( !isStarshipSheetEditMode(app) ) return;
 		const resource = configBtn.dataset.sw5eReplenishCostMode;
-		// Slice 3B-2: only Fuel production path.
-		if ( resource !== "fuel" ) return;
+		if ( resource !== "fuel" && resource !== "food" ) return;
 		if ( !canCurrentUserUpdateStarshipActor(act) ) {
 			warnStarshipActorUpdateDenied();
 			return;
@@ -108,7 +100,7 @@ export function ensureStarshipReplenishCostModeDelegate(root, app) {
 		event.preventDefault();
 		event.stopPropagation();
 		try {
-			await openStarshipReplenishCostModeConfig(act, "fuel");
+			await openStarshipReplenishCostModeConfig(act, resource);
 		} catch ( err ) {
 			console.error("SW5E MODULE | Starship replenish cost mode update failed.", err);
 			ui.notifications?.error?.(
@@ -121,6 +113,36 @@ export function ensureStarshipReplenishCostModeDelegate(root, app) {
 	});
 }
 
+/**
+ * EDIT-only Food capacity source cog (Size vs Custom).
+ */
+export function ensureStarshipFoodCapSourceDelegate(root, app) {
+	if ( !root || root.dataset.sw5eFoodCapSourceDelegate === "1" ) return;
+	root.dataset.sw5eFoodCapSourceDelegate = "1";
+	root.addEventListener("click", async event => {
+		const btn = event.target.closest("[data-sw5e-food-cap-source]");
+		if ( !btn || btn.disabled ) return;
+		const act = app?.actor;
+		if ( !act || app?.isEditable === false ) return;
+		if ( !isStarshipSheetEditMode(app) ) return;
+		if ( !canCurrentUserUpdateStarshipActor(act) ) {
+			warnStarshipActorUpdateDenied();
+			return;
+		}
+		event.preventDefault();
+		event.stopPropagation();
+		try {
+			await openStarshipFoodCapSourceConfig(act);
+		} catch ( err ) {
+			console.error("SW5E MODULE | Starship Food capacity source update failed.", err);
+			ui.notifications?.error?.(localizeOrFallback(
+				"SW5E.StarshipSheet.FoodCapSourceSaveFailed",
+				"Could not save Food capacity source."
+			));
+		}
+	});
+}
+
 /** SoTG Systems subtab: `name=` controls sit inside the vehicle sheet form; persist on `change` via trusted update (see delegate). */
 export const STARSHIP_SYSTEMS_CORE_DIRECT_PATHS = new Set([
 	"system.details.tier",
@@ -129,6 +151,10 @@ export const STARSHIP_SYSTEMS_CORE_DIRECT_PATHS = new Set([
 	"system.attributes.fuel.value",
 	"system.attributes.fuel.fuelCap",
 	"system.attributes.fuel.cost",
+	"system.attributes.food.value",
+	"system.attributes.food.foodCap",
+	"system.attributes.food.foodCapMod",
+	"system.attributes.food.cost",
 	...STARSHIP_POWER_DIE_SLOTS.flatMap(slot => [
 		`system.attributes.power.${slot}.value`,
 		`system.attributes.power.${slot}.max`
@@ -227,6 +253,40 @@ export function ensureStarshipTrustedSystemPathDelegate(root, app) {
 				value = coerceStarshipFuelCapOrCost(act, "fuelCap", el.value);
 			} else if ( path === "system.attributes.fuel.cost" ) {
 				value = coerceStarshipFuelCapOrCost(act, "cost", el.value);
+			} else if ( path === "system.attributes.food.value" ) {
+				value = normalizeStarshipNonNegativeInt(el.value) ?? 0;
+				try {
+					await persistStarshipFoodAttributePath(act, path, value);
+				} catch ( err ) {
+					console.error("SW5E MODULE | Starship Food update failed.", err);
+				}
+				return;
+			} else if ( path === "system.attributes.food.foodCap" ) {
+				if ( !readStarshipFoodCapOverride(act) ) return;
+				value = normalizeStarshipNonNegativeInt(el.value) ?? 0;
+				try {
+					await persistStarshipFoodAttributePath(act, path, value);
+				} catch ( err ) {
+					console.error("SW5E MODULE | Starship Food update failed.", err);
+				}
+				return;
+			} else if ( path === "system.attributes.food.foodCapMod" ) {
+				// Persist source modifier only — never a prepared AE-adjusted value from the input.
+				value = normalizeStarshipSignedInt(el.value);
+				try {
+					await persistStarshipFoodAttributePath(act, path, value);
+				} catch ( err ) {
+					console.error("SW5E MODULE | Starship Food update failed.", err);
+				}
+				return;
+			} else if ( path === "system.attributes.food.cost" ) {
+				value = normalizeStarshipNonNegativeInt(el.value) ?? 0;
+				try {
+					await persistStarshipFoodAttributePath(act, path, value);
+				} catch ( err ) {
+					console.error("SW5E MODULE | Starship Food update failed.", err);
+				}
+				return;
 			} else if ( path === "system.attributes.power.die" ) {
 				value = coerceStarshipPowerDie(el.value);
 			} else if ( path === "system.attributes.death.success" || path === "system.attributes.death.failure" ) {
@@ -270,90 +330,27 @@ export function ensureStarshipTrustedSystemPathDelegate(root, app) {
 }
 
 /**
- * Core fuel quick actions — Burn (amount dialog) and Refuel (partial amount dialog).
- * Usable whenever the actor is editable (Play or Edit).
+ * Ship’s Stores shared actions — Consume / Restock (Fuel + Food).
+ * Usable whenever the actor is editable (Play or Edit). Replaces visible Burn/Refuel.
  */
 export function ensureStarshipFuelActionsDelegate(root, app) {
 	if ( !root || root.dataset.sw5eFuelActionsDelegate === "1" ) return;
 	root.dataset.sw5eFuelActionsDelegate = "1";
 	root.addEventListener("click", async event => {
-		const btn = event.target.closest("[data-sw5e-fuel-action]");
+		const btn = event.target.closest("[data-sw5e-supplies-action]");
 		if ( !btn || btn.disabled ) return;
 		const act = app?.actor;
 		if ( !act || app?.isEditable === false ) return;
 
-		const action = btn.dataset.sw5eFuelAction;
-		const legacySystem = getLegacyStarshipActorSystem(act);
-		const fuel = legacySystem.attributes?.fuel ?? {};
-		const current = Number.isFinite(Number(fuel.value)) ? Math.max(0, Math.trunc(Number(fuel.value))) : 0;
-
-		let newValue;
-		let refuelChatContext = null;
-		if ( action === "burn" ) {
-			if ( current <= 0 ) return;
-			const requested = await promptStarshipFuelBurnAmount();
-			if ( requested === null ) return;
-			const resolved = resolveStarshipFuelBurn(current, requested);
-			if ( !resolved || resolved.applied <= 0 ) return;
-			if ( resolved.overBurn ) notifyStarshipFuelOverBurn(resolved.requested, resolved.applied);
-			newValue = resolved.newValue;
-		} else if ( action === "refuel" ) {
-			const snapshot = readStarshipFuelRefuelSnapshot(act, fuel);
-			if ( !snapshot ) return;
-			const gate = evaluateStarshipFuelRefuelGate(snapshot.current, snapshot.capacity);
-			if ( gate.reason === "no-cap" ) {
-				ui.notifications.warn(localizeOrFallback(
-					"SW5E.StarshipSheet.RefuelNoCapWarning",
-					"Set a fuel capacity before refueling."
-				));
-				return;
-			}
-			if ( gate.reason === "full" || !gate.ok ) return;
-
-			const requested = await promptStarshipFuelRefuelAmount({
-				current: snapshot.current,
-				capacity: snapshot.capacity,
-				room: gate.room,
-				mode: snapshot.mode,
-				configuredCost: snapshot.cost
-			});
-			if ( requested === null ) return;
-
-			const resolved = resolveStarshipFuelRefuel(snapshot.current, snapshot.capacity, requested);
-			if ( !resolved?.shouldUpdate || resolved.applied <= 0 ) return;
-			if ( resolved.overRequest ) {
-				notifyStarshipFuelRefuelOverRequest(resolved.requested, resolved.applied);
-			}
-			newValue = resolved.newValue;
-			refuelChatContext = buildStarshipFuelRefuelChatContext({
-				actorName: act.name,
-				applied: resolved.applied,
-				before: snapshot.current,
-				after: resolved.newValue,
-				capacity: snapshot.capacity,
-				mode: snapshot.mode,
-				configuredCost: snapshot.cost
-			});
-		} else {
-			return;
-		}
-
-		if ( newValue === current ) return;
-
+		const action = btn.dataset.sw5eSuppliesAction;
 		try {
-			await persistStarshipFuelPowerSystemPath(act, "system.attributes.fuel.value", newValue);
+			if ( action === "consume" ) {
+				await runStarshipSuppliesConsume(act);
+			} else if ( action === "restock" ) {
+				await runStarshipSuppliesRestock(act);
+			}
 		} catch ( err ) {
-			console.error("SW5E MODULE | Starship fuel action update failed.", err);
-			ui.notifications?.error?.(localizeOrFallback(
-				"SW5E.StarshipSheet.RefuelSaveFailed",
-				"Could not update fuel."
-			));
-			return;
-		}
-
-		// Chat only after successful Fuel persist. Chat failure must not look like Refuel failure.
-		if ( action === "refuel" && refuelChatContext ) {
-			await postStarshipFuelRefuelChatMessage(act, refuelChatContext);
+			console.error("SW5E MODULE | Starship Supplies action failed.", err);
 		}
 	});
 }
@@ -459,7 +456,7 @@ export function ensureStarshipCorePanelCollapseDelegate(container, app) {
 	if ( container.dataset.sw5eCoreCollapseDelegate === "1" ) return;
 	container.dataset.sw5eCoreCollapseDelegate = "1";
 	container.addEventListener("click", async event => {
-		if ( event.target.closest("[data-sw5e-crew-command], [data-sw5e-fuel-action]") ) return;
+		if ( event.target.closest("[data-sw5e-crew-command], [data-sw5e-fuel-action], [data-sw5e-supplies-action]") ) return;
 		const crewRoleToggle = event.target.closest("[data-sw5e-crew-role-collapse]");
 		if ( crewRoleToggle ) {
 			event.preventDefault();

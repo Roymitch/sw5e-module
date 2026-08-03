@@ -113,10 +113,10 @@ test("Fuel and Food storage paths remain distinct", () => {
 	);
 });
 
-test("Slice 3B-2 writable set is Fuel only", () => {
+test("Slice 3B-4 writable set includes Fuel and Food", () => {
 	assert.equal(isStarshipReplenishCostModeWritable("fuel"), true);
-	assert.equal(isStarshipReplenishCostModeWritable("food"), false);
-	assert.deepEqual([...STARSHIP_REPLENISH_COST_MODE_WRITABLE_RESOURCES], ["fuel"]);
+	assert.equal(isStarshipReplenishCostModeWritable("food"), true);
+	assert.deepEqual([...STARSHIP_REPLENISH_COST_MODE_WRITABLE_RESOURCES].sort(), ["food", "fuel"]);
 });
 
 test("unchanged mode produces no Actor update (including missing → perRestock)", () => {
@@ -158,11 +158,27 @@ test("invalid submitted mode does not write; action strings rejected", () => {
 	assert.equal(coerceStarshipReplenishCostModeDialogResult("perUnit"), "perUnit");
 });
 
-test("Food resource cannot produce a write payload", () => {
-	assert.equal(
-		buildStarshipReplenishCostModeUpdate(mockStarship(undefined, undefined), "food", "perUnit"),
-		null
+test("Food Per Unit writes only the Food mode flag", () => {
+	const planned = buildStarshipReplenishCostModeUpdate(
+		mockStarship(undefined, undefined),
+		"food",
+		"perUnit"
 	);
+	assert.deepEqual(planned, {
+		mode: "perUnit",
+		update: { [STARSHIP_FOOD_REPLENISH_COST_MODE_FLAG]: "perUnit" }
+	});
+	assert.equal(
+		Object.prototype.hasOwnProperty.call(planned.update, STARSHIP_FUEL_REPLENISH_COST_MODE_FLAG),
+		false
+	);
+});
+
+test("Food and Fuel modes remain independent in write payloads", () => {
+	const food = buildStarshipReplenishCostModeUpdate(mockStarship(undefined, "perUnit"), "food", "perRestock");
+	assert.deepEqual(food?.update, { [STARSHIP_FOOD_REPLENISH_COST_MODE_FLAG]: "perRestock" });
+	const fuel = buildStarshipReplenishCostModeUpdate(mockStarship(undefined, "perUnit"), "fuel", "perUnit");
+	assert.deepEqual(fuel?.update, { [STARSHIP_FUEL_REPLENISH_COST_MODE_FLAG]: "perUnit" });
 });
 
 test("non-Starship Actors do not receive Fuel flag update", () => {

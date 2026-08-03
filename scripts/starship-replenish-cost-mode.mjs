@@ -1,9 +1,8 @@
 /**
- * Phase 3B / Bug 12 — Slice 3B-2 Fuel replenishment cost-mode configuration.
+ * Phase 3B / Bug 12 — Slice 3B-2/3B-4 Fuel and Food replenishment cost-mode configuration.
  *
- * Reads/writes only `flags.sw5e.starship.fuel.replenishCostMode` in production.
- * Food path constants exist for future slices / offline tests; production writes
- * to Food are rejected by the writable whitelist.
+ * Reads/writes `flags.sw5e.starship.{fuel|food}.replenishCostMode`.
+ * Modes are independent — Fuel updates never write Food and vice versa.
  *
  * DialogV2.wait contract (Foundry v13): resolve selection from button.callback
  * via button.form — not from config.submit return.
@@ -42,11 +41,10 @@ export const STARSHIP_REPLENISH_COST_MODE_RESOURCES = Object.freeze({
 });
 
 /**
- * Slice 3B-2 production writable set — Fuel only.
- * Food remains documented for later slices.
+ * Slice 3B-4 production writable set — Fuel and Food.
  */
 export const STARSHIP_REPLENISH_COST_MODE_WRITABLE_RESOURCES = Object.freeze(
-	new Set(["fuel"])
+	new Set(["fuel", "food"])
 );
 
 /**
@@ -136,7 +134,7 @@ export function buildStarshipReplenishCostModeUpdate(actor, resourceKey, rawMode
 }
 
 /**
- * Persist a validated mode for a writable resource. Fuel only in Slice 3B-2.
+ * Persist a validated mode for a writable resource (Fuel or Food).
  * @param {Actor} actor
  * @param {unknown} resourceKey
  * @param {unknown} rawMode
@@ -321,6 +319,24 @@ export function localizeStarshipReplenishCostModeLabel(mode) {
  */
 export function buildStarshipFuelReplenishCostModeContext(actor, { costConfigEditable=false } = {}) {
 	const mode = resolveActorStarshipReplenishCostMode(actor, "fuel");
+	return {
+		mode,
+		modeLabel: localizeStarshipReplenishCostModeLabel(mode),
+		configEditable: Boolean(costConfigEditable) && isLegacyStarshipActor(actor),
+		configureLabel: localizeSimple(
+			"SW5E.StarshipSheet.ConfigureReplenishCost",
+			"Configure replenishment cost"
+		)
+	};
+}
+
+/**
+ * Food Restock Cost mode context for Core sheet. Does not write.
+ * @param {Actor} actor
+ * @param {{costConfigEditable?: boolean}} [options]
+ */
+export function buildStarshipFoodReplenishCostModeContext(actor, { costConfigEditable=false } = {}) {
+	const mode = resolveActorStarshipReplenishCostMode(actor, "food");
 	return {
 		mode,
 		modeLabel: localizeStarshipReplenishCostModeLabel(mode),
