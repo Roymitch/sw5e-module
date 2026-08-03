@@ -23,9 +23,9 @@ export function resolveStarshipItemGroup(item) {
 
 	if ( item.flags?.sw5e?.legacyStarshipSize || role === "classification" ) return "systems";
 	if ( item.flags?.sw5e?.legacyStarshipMod || role === "modification" || pack === "starshipmodifications" ) return "modifications";
-	if ( featType === "starshipAction" || pack === "starshipactions" ) return "actions";
+	if ( (item.type === "feat" && featType === "starshipAction") || pack === "starshipactions" ) return "actions";
 	if ( featType === "deployment" || role === "deployment" || role === "venture" || pack === "deployments" || pack === "deploymentfeatures" || pack === "ventures" ) return null;
-	if ( featType === "starship" || pack === "starshipfeatures" ) return "systems";
+	if ( (item.type === "feat" && featType === "starship") || pack === "starshipfeatures" ) return "systems";
 	if ( isStarshipWeapon ) return "weapons";
 	if ( isStarshipEquipment || item.type === "equipment" ) return "equipment";
 	return null;
@@ -51,9 +51,9 @@ export function categorizeStarshipItems(actor) {
 
 		if ( item.flags?.sw5e?.legacyStarshipSize || role === "classification" ) groups.size.items.push(item);
 		else if ( item.flags?.sw5e?.legacyStarshipMod || role === "modification" || pack === "starshipmodifications" ) groups.modifications.items.push(item);
-		else if ( featType === "starshipAction" || pack === "starshipactions" ) groups.actions.items.push(item);
+		else if ( (item.type === "feat" && featType === "starshipAction") || pack === "starshiped" ) groups.actions.items.push(item);
 		else if ( featType === "deployment" || role === "deployment" || role === "venture" || pack === "deployments" || pack === "deploymentfeatures" || pack === "ventures" ) groups.roles.items.push(item);
-		else if ( featType === "starship" || pack === "starshipfeatures" ) groups.features.items.push(item);
+		else if ( (item.type === "feat" && featType === "starship") || pack === "starshipfeatures" ) groups.features.items.push(item);
 		else if ( isStarshipWeapon ) groups.weapons.items.push(item);
 		else if ( isStarshipEquipment || item.type === "equipment" ) groups.equipment.items.push(item);
 	}
