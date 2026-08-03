@@ -140,6 +140,7 @@ import {
 	ensureStarshipFuelActionsDelegate,
 	ensureStarshipLegacyRoutingDelegate,
 	ensureStarshipRepairDelegate,
+	ensureStarshipReplenishCostModeDelegate,
 	ensureStarshipSystemDamageDelegate,
 	ensureStarshipTrustedSystemPathDelegate,
 	ensureStarshipVitalsDelegate
@@ -196,7 +197,10 @@ function buildStarshipCoreRenderData(app, actor, runtime, { integrated = true, s
 		collapseMap: app?._sw5eCrewRosterGroupCollapse,
 		starship: actor
 	});
-	const systemsCore = buildSystemsCoreContext(actor, { runtime });
+	const systemsCore = buildSystemsCoreContext(actor, {
+		runtime,
+		costConfigEditable: sheetEditMode && actorEditable
+	});
 	const overviewAbilities = buildOverviewAbilitiesContext(actor, actorEditable);
 
 	const coreRenderData = {
@@ -1257,6 +1261,7 @@ async function renderStarshipLayer(app, html, data, options) {
 		ensureStarshipTrustedSystemPathDelegate(root, app);
 		ensureStarshipVitalsDelegate(root, app);
 		ensureStarshipFuelActionsDelegate(root, app);
+		ensureStarshipReplenishCostModeDelegate(root, app);
 		ensureStarshipRepairDelegate(root, app);
 		ensureStarshipLegacyRoutingDelegate(root, app);
 		ensureStarshipAdvancedPowerDelegate(root, app);

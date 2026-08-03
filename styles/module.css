@@ -16318,6 +16318,20 @@ body[data-sw5e-theme="sw5e-underworld"] .sw5e-theme-root.dnd5e2.sheet.actor.sw5e
 .dnd5e2.sheet.actor.sw5e-starship-sheet :is(.sheet-sidebar, [data-application-part="sidebar"]) .sw5e-starship-sidebar-max-fires {
   margin-bottom: 0.28rem;
 }
+/* Starship Core — Regeneration Cost label + cost-mode cog. */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-systems-label-with-config {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+}
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-systems-label-with-config > .sw5e-starship-systems-label {
+  margin: 0;
+  min-width: 0;
+}
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-fuel-cost-mode-config {
+  flex: 0 0 auto;
+}
 /* Character/NPC (and stock starship) Effects condition hover — beats parchment-as-text remap */
 body[data-sw5e-theme="sw5e-light"] .sw5e-theme-root.dnd5e2.sheet.actor .tab[data-tab="effects"] .conditions-list .condition:not(.sw5e-starship-effects-condition) {
   --dnd5e-condition-hover: var(--sw5e-light-hover-tint);

@@ -36,6 +36,16 @@ import {
 	resolveStarshipFuelBurn
 } from "../starship-fuel-burn.mjs";
 import {
+	buildStarshipFuelRefuelChatContext,
+	evaluateStarshipFuelRefuelGate,
+	notifyStarshipFuelRefuelOverRequest,
+	postStarshipFuelRefuelChatMessage,
+	promptStarshipFuelRefuelAmount,
+	readStarshipFuelRefuelSnapshot,
+	resolveStarshipFuelRefuel
+} from "../starship-fuel-refuel.mjs";
+import { openStarshipReplenishCostModeConfig } from "../starship-replenish-cost-mode.mjs";
+import {
 	STARSHIP_POWER_DIE_OPTIONS,
 	STARSHIP_ROUTING_KEYS_VISIBLE
 } from "./starship-sheet-core-context.mjs";
@@ -72,6 +82,42 @@ export function ensureStarshipVitalsDelegate(root, app) {
 		event.preventDefault();
 		event.stopPropagation();
 		openStarshipVitalConfig(act, configBtn.dataset.sw5eVitalConfig);
+	});
+}
+
+/**
+ * EDIT-only Fuel Regeneration Cost mode cog (Slice 3B-2).
+ * Production opens Fuel only — Food cost-mode UI is not authorized yet.
+ */
+export function ensureStarshipReplenishCostModeDelegate(root, app) {
+	if ( !root || root.dataset.sw5eReplenishCostModeDelegate === "1" ) return;
+	root.dataset.sw5eReplenishCostModeDelegate = "1";
+	root.addEventListener("click", async event => {
+		const configBtn = event.target.closest("[data-sw5e-replenish-cost-mode]");
+		if ( !configBtn || configBtn.disabled ) return;
+		const act = app?.actor;
+		if ( !act || app?.isEditable === false ) return;
+		if ( !isStarshipSheetEditMode(app) ) return;
+		const resource = configBtn.dataset.sw5eReplenishCostMode;
+		// Slice 3B-2: only Fuel production path.
+		if ( resource !== "fuel" ) return;
+		if ( !canCurrentUserUpdateStarshipActor(act) ) {
+			warnStarshipActorUpdateDenied();
+			return;
+		}
+		event.preventDefault();
+		event.stopPropagation();
+		try {
+			await openStarshipReplenishCostModeConfig(act, "fuel");
+		} catch ( err ) {
+			console.error("SW5E MODULE | Starship replenish cost mode update failed.", err);
+			ui.notifications?.error?.(
+				localizeOrFallback(
+					"SW5E.StarshipSheet.ReplenishCostModeSaveFailed",
+					"Could not save replenishment cost mode."
+				)
+			);
+		}
 	});
 }
 
@@ -224,7 +270,7 @@ export function ensureStarshipTrustedSystemPathDelegate(root, app) {
 }
 
 /**
- * Core fuel quick actions — Burn (amount dialog) and Refuel (to cap).
+ * Core fuel quick actions — Burn (amount dialog) and Refuel (partial amount dialog).
  * Usable whenever the actor is editable (Play or Edit).
  */
 export function ensureStarshipFuelActionsDelegate(root, app) {
@@ -240,9 +286,9 @@ export function ensureStarshipFuelActionsDelegate(root, app) {
 		const legacySystem = getLegacyStarshipActorSystem(act);
 		const fuel = legacySystem.attributes?.fuel ?? {};
 		const current = Number.isFinite(Number(fuel.value)) ? Math.max(0, Math.trunc(Number(fuel.value))) : 0;
-		const cap = Number.isFinite(Number(fuel.fuelCap)) ? Math.max(0, Math.trunc(Number(fuel.fuelCap))) : 0;
 
 		let newValue;
+		let refuelChatContext = null;
 		if ( action === "burn" ) {
 			if ( current <= 0 ) return;
 			const requested = await promptStarshipFuelBurnAmount();
@@ -252,14 +298,42 @@ export function ensureStarshipFuelActionsDelegate(root, app) {
 			if ( resolved.overBurn ) notifyStarshipFuelOverBurn(resolved.requested, resolved.applied);
 			newValue = resolved.newValue;
 		} else if ( action === "refuel" ) {
-			if ( cap <= 0 ) {
+			const snapshot = readStarshipFuelRefuelSnapshot(act, fuel);
+			if ( !snapshot ) return;
+			const gate = evaluateStarshipFuelRefuelGate(snapshot.current, snapshot.capacity);
+			if ( gate.reason === "no-cap" ) {
 				ui.notifications.warn(localizeOrFallback(
 					"SW5E.StarshipSheet.RefuelNoCapWarning",
 					"Set a fuel capacity before refueling."
 				));
 				return;
 			}
-			newValue = cap;
+			if ( gate.reason === "full" || !gate.ok ) return;
+
+			const requested = await promptStarshipFuelRefuelAmount({
+				current: snapshot.current,
+				capacity: snapshot.capacity,
+				room: gate.room,
+				mode: snapshot.mode,
+				configuredCost: snapshot.cost
+			});
+			if ( requested === null ) return;
+
+			const resolved = resolveStarshipFuelRefuel(snapshot.current, snapshot.capacity, requested);
+			if ( !resolved?.shouldUpdate || resolved.applied <= 0 ) return;
+			if ( resolved.overRequest ) {
+				notifyStarshipFuelRefuelOverRequest(resolved.requested, resolved.applied);
+			}
+			newValue = resolved.newValue;
+			refuelChatContext = buildStarshipFuelRefuelChatContext({
+				actorName: act.name,
+				applied: resolved.applied,
+				before: snapshot.current,
+				after: resolved.newValue,
+				capacity: snapshot.capacity,
+				mode: snapshot.mode,
+				configuredCost: snapshot.cost
+			});
 		} else {
 			return;
 		}
@@ -270,6 +344,16 @@ export function ensureStarshipFuelActionsDelegate(root, app) {
 			await persistStarshipFuelPowerSystemPath(act, "system.attributes.fuel.value", newValue);
 		} catch ( err ) {
 			console.error("SW5E MODULE | Starship fuel action update failed.", err);
+			ui.notifications?.error?.(localizeOrFallback(
+				"SW5E.StarshipSheet.RefuelSaveFailed",
+				"Could not update fuel."
+			));
+			return;
+		}
+
+		// Chat only after successful Fuel persist. Chat failure must not look like Refuel failure.
+		if ( action === "refuel" && refuelChatContext ) {
+			await postStarshipFuelRefuelChatMessage(act, refuelChatContext);
 		}
 	});
 }

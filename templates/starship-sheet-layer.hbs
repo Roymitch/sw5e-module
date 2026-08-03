@@ -433,7 +433,21 @@
         />
       </div>
       <div class="sw5e-starship-systems-subfield">
-        <label class="sw5e-starship-systems-label" for="sw5e-core-fuel-cost">{{systemsCore.labels.fuelCost}}</label>
+        <div class="sw5e-starship-systems-label-with-config">
+          <label class="sw5e-starship-systems-label" for="sw5e-core-fuel-cost">{{systemsCore.labels.fuelCost}}</label>
+          {{#if systemsCore.fuelReplenishCostMode.configEditable}}
+          <button
+            type="button"
+            class="config-button unbutton sw5e-starship-fuel-cost-mode-config"
+            data-sw5e-replenish-cost-mode="fuel"
+            data-tooltip="{{systemsCore.fuelReplenishCostMode.configureLabel}}"
+            title="{{systemsCore.fuelReplenishCostMode.configureLabel}}"
+            aria-label="{{systemsCore.fuelReplenishCostMode.configureLabel}}"
+          >
+            <i class="fas fa-cog" inert></i>
+          </button>
+          {{/if}}
+        </div>
         <input
           id="sw5e-core-fuel-cost"
           class="sw5e-starship-systems-input"

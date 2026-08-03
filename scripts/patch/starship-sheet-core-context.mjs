@@ -17,6 +17,7 @@ import {
 } from "../starship-data.mjs";
 import { getExpandedProficiencyHoverLabel } from "./proficiency.mjs";
 import { escapeHtml, localizeOrFallback } from "../starship-sheet-html.mjs";
+import { buildStarshipFuelReplenishCostModeContext } from "../starship-replenish-cost-mode.mjs";
 import {
 	getCompendiumPack,
 	STARSHIP_ABILITY_KEYS,
@@ -105,7 +106,7 @@ export function buildStarshipFuelBarContext(fuelValue, fuelCap) {
  * Context for the Systems tab core configuration section: existing actor paths only, no invented values.
  * See getLegacyStarshipActorSystem / deriveStarshipPools / getDerivedStarshipRuntime in starship-data.mjs.
  */
-export function buildSystemsCoreContext(actor, { runtime } = {}) {
+export function buildSystemsCoreContext(actor, { runtime, costConfigEditable=false } = {}) {
 	const legacySystem = getLegacyStarshipActorSystem(actor);
 	const resolvedRuntime = runtime ?? getDerivedStarshipRuntime(actor);
 	const pools = deriveStarshipPools(actor);
@@ -122,6 +123,9 @@ export function buildSystemsCoreContext(actor, { runtime } = {}) {
 	const tierRaw = legacySystem.details?.tier ?? pools.tier;
 	const resolvedActorSize = resolveValidActorSizeKey(actor, legacySystem);
 	const starshipUi = actor?.flags?.sw5e?.starship?.ui ?? {};
+	const fuelReplenishCostMode = buildStarshipFuelReplenishCostModeContext(actor, {
+		costConfigEditable
+	});
 
 	return {
 		turningSpeedDisplay: Number.isFinite(Number(movement.turn))
@@ -157,6 +161,7 @@ export function buildSystemsCoreContext(actor, { runtime } = {}) {
 		fuelPct: fuelBar.fuelPct,
 		fuelBarLabel: fuelBar.fuelBarLabel,
 		fuelHasCap: fuelBar.fuelHasCap,
+		fuelReplenishCostMode,
 		configSectionLede: localizeOrFallback(
 			"SW5E.StarshipSheet.SystemsConfigSectionLede",
 			"Tier, size, hull, shields, and dice pools are edited from the sidebar. Power routing and fuel are on the Core tab."
@@ -184,7 +189,7 @@ export function buildSystemsCoreContext(actor, { runtime } = {}) {
 			burnFuel: localizeOrFallback("SW5E.BurnFuel", "Burn"),
 			refuel: localizeOrFallback("SW5E.Refuel", "Refuel"),
 			burnFuelTooltip: localizeOrFallback("SW5E.StarshipSheet.BurnFuelTooltip", "Burn fuel"),
-			refuelTooltip: localizeOrFallback("SW5E.StarshipSheet.RefuelTooltip", "Refuel to capacity"),
+			refuelTooltip: localizeOrFallback("SW5E.StarshipSheet.RefuelTooltip", "Add fuel"),
 			derived: localizeOrFallback("SW5E.Derived", "Derived")
 		},
 		coreCollapse: {

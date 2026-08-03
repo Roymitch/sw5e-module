@@ -543,6 +543,12 @@ export function signaturePayloadCoreSystemsRouting(meta = {}) {
 			fuelValue: systemsCore.fuelValue ?? null,
 			fuelCap: systemsCore.fuelCap ?? null,
 			fuelCost: systemsCore.fuelCost ?? null,
+			fuelReplenishCostMode: {
+				mode: systemsCore.fuelReplenishCostMode?.mode ?? "perRestock",
+				modeLabel: systemsCore.fuelReplenishCostMode?.modeLabel ?? "",
+				configEditable: Boolean(systemsCore.fuelReplenishCostMode?.configEditable),
+				configureLabel: systemsCore.fuelReplenishCostMode?.configureLabel ?? ""
+			},
 			advancedPower: {
 				collapsed: Boolean(advancedPower.collapsed),
 				panelAria: advancedPower.panelAria ?? "",
