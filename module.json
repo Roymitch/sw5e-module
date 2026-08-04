@@ -254,6 +254,19 @@
       }
     },
     {
+      "name": "snv-monsters",
+      "label": "Scum and Villainy Monsters",
+      "system": "dnd5e",
+      "path": "packs/snv-monsters",
+      "type": "Actor",
+      "private": false,
+      "flags": {
+        "dnd5e": {
+          "types": ["npc"]
+        }
+      }
+    },
+    {
       "name": "monstertraits",
       "label": "Monster Traits",
       "system": "dnd5e",
@@ -353,7 +366,7 @@
   ],
   "packFolders": [
     {
-      "name": "sw5e System Content",
+      "name": "SW5E System Content",
       "sorting": "m",
       "color": "#cd2c1e",
       "packs": [],
@@ -390,7 +403,8 @@
             "monsters",
             "monstertraits",
             "fistoscodex",
-            "mandaloriancodexnpcs"
+            "mandaloriancodexnpcs",
+            "snv-monsters"
           ]
         },
         {
