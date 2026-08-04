@@ -1,0 +1,795 @@
+{
+  "schemaVersion": "n2-identity-1",
+  "pack": "snv-monsters",
+  "collectionId": "sw5e-module.snv-monsters",
+  "generatedFromCommit": "20bcebe0c68e1dd1d22dee517f1dd8a7fbe22069",
+  "note": "Pinned N1 identities. N2 must not change pinned IDs. N3 extends this map.",
+  "folders": {
+    "snv-folder:Beasts": {
+      "id": "ed7eb55524af7eab",
+      "name": "Beasts",
+      "key": "!folders!ed7eb55524af7eab",
+      "pinned": true,
+      "origin": "n1-committed"
+    },
+    "snv-folder:Constructs and Vehicles": {
+      "id": "9f1a4571a73c2dae",
+      "name": "Constructs and Vehicles",
+      "key": "!folders!9f1a4571a73c2dae",
+      "pinned": true,
+      "origin": "n1-committed"
+    },
+    "snv-folder:Droids": {
+      "id": "16546b69f18516ea",
+      "name": "Droids",
+      "key": "!folders!16546b69f18516ea",
+      "pinned": true,
+      "origin": "n1-committed"
+    },
+    "snv-folder:Humanoids": {
+      "id": "f05d69f927581f63",
+      "name": "Humanoids",
+      "key": "!folders!f05d69f927581f63",
+      "pinned": true,
+      "origin": "n1-committed"
+    },
+    "snv-folder:Humanoids: Force Users": {
+      "id": "b83e569dec185e65",
+      "name": "Humanoids: Force Users",
+      "key": "!folders!b83e569dec185e65",
+      "pinned": true,
+      "origin": "n1-committed"
+    }
+  },
+  "actors": {
+    "snv:Beasts:aiwha": {
+      "id": "42fe8a5de621f18f",
+      "name": "Aiwha",
+      "folderId": "ed7eb55524af7eab",
+      "key": "!actors!42fe8a5de621f18f",
+      "items": {
+        "e0fb47287041c075": {
+          "id": "e0fb47287041c075",
+          "name": "Dive Attack",
+          "type": "feat",
+          "key": "!actors.items!42fe8a5de621f18f.e0fb47287041c075",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "0f0e45d4984c9251": {
+          "id": "0f0e45d4984c9251",
+          "name": "Echolocation",
+          "type": "feat",
+          "key": "!actors.items!42fe8a5de621f18f.0f0e45d4984c9251",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "d91cb223fae9b3b7": {
+          "id": "d91cb223fae9b3b7",
+          "name": "Hold Breath",
+          "type": "feat",
+          "key": "!actors.items!42fe8a5de621f18f.d91cb223fae9b3b7",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "2fcb79e9afe95c21": {
+          "id": "2fcb79e9afe95c21",
+          "name": "Bite",
+          "type": "weapon",
+          "key": "!actors.items!42fe8a5de621f18f.2fcb79e9afe95c21",
+          "activities": {
+            "f583a79cce85fb71": {
+              "id": "f583a79cce85fb71",
+              "pinned": true,
+              "origin": "n1-committed"
+            }
+          },
+          "pinned": true,
+          "origin": "n1-committed"
+        }
+      },
+      "pinned": true,
+      "origin": "n1-committed"
+    },
+    "snv:Beasts:gundark-adult": {
+      "id": "1a3eab067211137e",
+      "name": "Gundark, Adult",
+      "folderId": "ed7eb55524af7eab",
+      "key": "!actors!1a3eab067211137e",
+      "items": {
+        "2c02d55e90026bde": {
+          "id": "2c02d55e90026bde",
+          "name": "Keen Hearing and Smell",
+          "type": "feat",
+          "key": "!actors.items!1a3eab067211137e.2c02d55e90026bde",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "8de24171b66d8295": {
+          "id": "8de24171b66d8295",
+          "name": "Rampage",
+          "type": "feat",
+          "key": "!actors.items!1a3eab067211137e.8de24171b66d8295",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "5d7cb5a3e4285a73": {
+          "id": "5d7cb5a3e4285a73",
+          "name": "Multiattack",
+          "type": "feat",
+          "key": "!actors.items!1a3eab067211137e.5d7cb5a3e4285a73",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "ccc76f05fda329fb": {
+          "id": "ccc76f05fda329fb",
+          "name": "Claw",
+          "type": "weapon",
+          "key": "!actors.items!1a3eab067211137e.ccc76f05fda329fb",
+          "activities": {
+            "ffe69bc2259cba51": {
+              "id": "ffe69bc2259cba51",
+              "pinned": true,
+              "origin": "n1-committed"
+            }
+          },
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "454e1dd8d8f2444a": {
+          "id": "454e1dd8d8f2444a",
+          "name": "Gigantic Claw",
+          "type": "weapon",
+          "key": "!actors.items!1a3eab067211137e.454e1dd8d8f2444a",
+          "activities": {
+            "25606d23c5bbc58b": {
+              "id": "25606d23c5bbc58b",
+              "pinned": true,
+              "origin": "n1-committed"
+            }
+          },
+          "pinned": true,
+          "origin": "n1-committed"
+        }
+      },
+      "pinned": true,
+      "origin": "n1-committed"
+    },
+    "snv:Constructs and Vehicles:ax-108-sentry-gun": {
+      "id": "cd55b977c1c148bf",
+      "name": "AX-108 Sentry Gun",
+      "folderId": "9f1a4571a73c2dae",
+      "key": "!actors!cd55b977c1c148bf",
+      "items": {
+        "41568cb4a348b3a2": {
+          "id": "41568cb4a348b3a2",
+          "name": "Circuitry",
+          "type": "feat",
+          "key": "!actors.items!cd55b977c1c148bf.41568cb4a348b3a2",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "e06568e0177e7784": {
+          "id": "e06568e0177e7784",
+          "name": "Fixed",
+          "type": "feat",
+          "key": "!actors.items!cd55b977c1c148bf.e06568e0177e7784",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "d386ead89e5d2b44": {
+          "id": "d386ead89e5d2b44",
+          "name": "Targeting Systems",
+          "type": "feat",
+          "key": "!actors.items!cd55b977c1c148bf.d386ead89e5d2b44",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "af4137ea2e1baf98": {
+          "id": "af4137ea2e1baf98",
+          "name": "Repeating Blaster Burst",
+          "type": "weapon",
+          "key": "!actors.items!cd55b977c1c148bf.af4137ea2e1baf98",
+          "activities": {
+            "0720913828ac66d9": {
+              "id": "0720913828ac66d9",
+              "pinned": true,
+              "origin": "n1-committed"
+            }
+          },
+          "pinned": true,
+          "origin": "n1-committed"
+        }
+      },
+      "pinned": true,
+      "origin": "n1-committed"
+    },
+    "snv:Droids:b1-battle-droid-b1-a": {
+      "id": "3557e8a7bc4bb620",
+      "name": "B1 Battle Droid, B1-A",
+      "folderId": "16546b69f18516ea",
+      "key": "!actors!3557e8a7bc4bb620",
+      "items": {
+        "debee7292b0d1f40": {
+          "id": "debee7292b0d1f40",
+          "name": "Battle Droid Swarm",
+          "type": "feat",
+          "key": "!actors.items!3557e8a7bc4bb620.debee7292b0d1f40",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "07c98bcb67bbdbaa": {
+          "id": "07c98bcb67bbdbaa",
+          "name": "Circuitry",
+          "type": "feat",
+          "key": "!actors.items!3557e8a7bc4bb620.07c98bcb67bbdbaa",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "a45baf40650e37c7": {
+          "id": "a45baf40650e37c7",
+          "name": "Stock Strike",
+          "type": "weapon",
+          "key": "!actors.items!3557e8a7bc4bb620.a45baf40650e37c7",
+          "activities": {
+            "e8042762e9c6b4bc": {
+              "id": "e8042762e9c6b4bc",
+              "pinned": true,
+              "origin": "n1-committed"
+            }
+          },
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "a31d0f494a326dfc": {
+          "id": "a31d0f494a326dfc",
+          "name": "Blaster Rifle",
+          "type": "weapon",
+          "key": "!actors.items!3557e8a7bc4bb620.a31d0f494a326dfc",
+          "activities": {
+            "16856ea54bbd4516": {
+              "id": "16856ea54bbd4516",
+              "pinned": true,
+              "origin": "n1-committed"
+            }
+          },
+          "pinned": true,
+          "origin": "n1-committed"
+        }
+      },
+      "pinned": true,
+      "origin": "n1-committed"
+    },
+    "snv:Humanoids:isb-infiltrator": {
+      "id": "86b300ca462ff90a",
+      "name": "ISB Infiltrator",
+      "folderId": "f05d69f927581f63",
+      "key": "!actors!86b300ca462ff90a",
+      "items": {
+        "c5bda3ac6607da53": {
+          "id": "c5bda3ac6607da53",
+          "name": "Power cell",
+          "type": "consumable",
+          "key": "!actors.items!86b300ca462ff90a.c5bda3ac6607da53",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "4b343553c74200e2": {
+          "id": "4b343553c74200e2",
+          "name": "Cunning Action",
+          "type": "feat",
+          "key": "!actors.items!86b300ca462ff90a.4b343553c74200e2",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "42467ee3d2651392": {
+          "id": "42467ee3d2651392",
+          "name": "Evasion",
+          "type": "feat",
+          "key": "!actors.items!86b300ca462ff90a.42467ee3d2651392",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "f2d3a3660cfc2d3b": {
+          "id": "f2d3a3660cfc2d3b",
+          "name": "Techcasting",
+          "type": "feat",
+          "key": "!actors.items!86b300ca462ff90a.f2d3a3660cfc2d3b",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "6d4a44b27bab57d4": {
+          "id": "6d4a44b27bab57d4",
+          "name": "Blaster Carbine",
+          "type": "weapon",
+          "key": "!actors.items!86b300ca462ff90a.6d4a44b27bab57d4",
+          "activities": {
+            "sw5e0attack00000": {
+              "id": "sw5e0attack00000",
+              "pinned": true,
+              "origin": "n1-committed"
+            }
+          },
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "158156e4e6374ad9": {
+          "id": "158156e4e6374ad9",
+          "name": "Uncanny Dodge",
+          "type": "feat",
+          "key": "!actors.items!86b300ca462ff90a.158156e4e6374ad9",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "e849cdef0c2ad467": {
+          "id": "e849cdef0c2ad467",
+          "name": "Electrical Burst",
+          "type": "spell",
+          "key": "!actors.items!86b300ca462ff90a.e849cdef0c2ad467",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "907dd84026f1c1c9": {
+          "id": "907dd84026f1c1c9",
+          "name": "Encrypted Message",
+          "type": "spell",
+          "key": "!actors.items!86b300ca462ff90a.907dd84026f1c1c9",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "7c58f52fef5143a2": {
+          "id": "7c58f52fef5143a2",
+          "name": "On/Off",
+          "type": "spell",
+          "key": "!actors.items!86b300ca462ff90a.7c58f52fef5143a2",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "613b02e8a342b866": {
+          "id": "613b02e8a342b866",
+          "name": "Holographic Disguise",
+          "type": "spell",
+          "key": "!actors.items!86b300ca462ff90a.613b02e8a342b866",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "80598ebe5a0de91b": {
+          "id": "80598ebe5a0de91b",
+          "name": "Smoke Cloud",
+          "type": "spell",
+          "key": "!actors.items!86b300ca462ff90a.80598ebe5a0de91b",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "70adc5a2cdccf0a1": {
+          "id": "70adc5a2cdccf0a1",
+          "name": "Tranquilizer",
+          "type": "spell",
+          "key": "!actors.items!86b300ca462ff90a.70adc5a2cdccf0a1",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "50275d4b41f2845b": {
+          "id": "50275d4b41f2845b",
+          "name": "Infiltrate",
+          "type": "spell",
+          "key": "!actors.items!86b300ca462ff90a.50275d4b41f2845b",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "1dd87ba43548a897": {
+          "id": "1dd87ba43548a897",
+          "name": "Shocking Ray",
+          "type": "spell",
+          "key": "!actors.items!86b300ca462ff90a.1dd87ba43548a897",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        }
+      },
+      "pinned": true,
+      "origin": "n1-committed"
+    },
+    "snv:Humanoids:trooper-squad": {
+      "id": "f6c9d44c2e70b8f7",
+      "name": "Trooper Squad",
+      "folderId": "f05d69f927581f63",
+      "key": "!actors!f6c9d44c2e70b8f7",
+      "items": {
+        "1ccb52a07072ca25": {
+          "id": "1ccb52a07072ca25",
+          "name": "Reactive",
+          "type": "feat",
+          "key": "!actors.items!f6c9d44c2e70b8f7.1ccb52a07072ca25",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "72392a6ab6842888": {
+          "id": "72392a6ab6842888",
+          "name": "Squad",
+          "type": "feat",
+          "key": "!actors.items!f6c9d44c2e70b8f7.72392a6ab6842888",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "87d389dd5669435f": {
+          "id": "87d389dd5669435f",
+          "name": "Multiattack",
+          "type": "feat",
+          "key": "!actors.items!f6c9d44c2e70b8f7.87d389dd5669435f",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "ec98a22c57f6d987": {
+          "id": "ec98a22c57f6d987",
+          "name": "Blaster Rifle",
+          "type": "weapon",
+          "key": "!actors.items!f6c9d44c2e70b8f7.ec98a22c57f6d987",
+          "activities": {
+            "sw5e0attack00000": {
+              "id": "sw5e0attack00000",
+              "pinned": true,
+              "origin": "n1-committed"
+            }
+          },
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "4fd5fb79815d5c68": {
+          "id": "4fd5fb79815d5c68",
+          "name": "Massed Fire (Recharge 5-6)",
+          "type": "feat",
+          "key": "!actors.items!f6c9d44c2e70b8f7.4fd5fb79815d5c68",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "253bbfa8c347a73b": {
+          "id": "253bbfa8c347a73b",
+          "name": "Leadership (Recharges after Short or Long Rest)",
+          "type": "feat",
+          "key": "!actors.items!f6c9d44c2e70b8f7.253bbfa8c347a73b",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "9b5ab36ac972f3a2": {
+          "id": "9b5ab36ac972f3a2",
+          "name": "Massed Fire",
+          "type": "feat",
+          "key": "!actors.items!f6c9d44c2e70b8f7.9b5ab36ac972f3a2",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        }
+      },
+      "pinned": true,
+      "origin": "n1-committed"
+    },
+    "snv:Humanoids:trooper": {
+      "id": "fb6aef3ed3570b48",
+      "name": "Trooper",
+      "folderId": "f05d69f927581f63",
+      "key": "!actors!fb6aef3ed3570b48",
+      "items": {
+        "3a86f93f7d8919db": {
+          "id": "3a86f93f7d8919db",
+          "name": "Power cell",
+          "type": "consumable",
+          "key": "!actors.items!fb6aef3ed3570b48.3a86f93f7d8919db",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "4bd0ce298cd8b317": {
+          "id": "4bd0ce298cd8b317",
+          "name": "Stock Strike",
+          "type": "weapon",
+          "key": "!actors.items!fb6aef3ed3570b48.4bd0ce298cd8b317",
+          "activities": {
+            "2148e7ac38742106": {
+              "id": "2148e7ac38742106",
+              "pinned": true,
+              "origin": "n1-committed"
+            }
+          },
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "a59292d92147def2": {
+          "id": "a59292d92147def2",
+          "name": "Blaster Rifle",
+          "type": "weapon",
+          "key": "!actors.items!fb6aef3ed3570b48.a59292d92147def2",
+          "activities": {
+            "sw5e0attack00000": {
+              "id": "sw5e0attack00000",
+              "pinned": true,
+              "origin": "n1-committed"
+            }
+          },
+          "pinned": true,
+          "origin": "n1-committed"
+        }
+      },
+      "pinned": true,
+      "origin": "n1-committed"
+    },
+    "snv:Humanoids: Force Users:inquisitor-grand": {
+      "id": "9eeede64c23161fb",
+      "name": "Inquisitor, Grand",
+      "folderId": "b83e569dec185e65",
+      "key": "!actors!9eeede64c23161fb",
+      "items": {
+        "75bb84fc70594dc9": {
+          "id": "75bb84fc70594dc9",
+          "name": "Forcecasting",
+          "type": "feat",
+          "key": "!actors.items!9eeede64c23161fb.75bb84fc70594dc9",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "b75488ce77a62c17": {
+          "id": "b75488ce77a62c17",
+          "name": "Force Resistance",
+          "type": "feat",
+          "key": "!actors.items!9eeede64c23161fb.b75488ce77a62c17",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "96684c109d6a9500": {
+          "id": "96684c109d6a9500",
+          "name": "Legendary Resistance (3/Day)",
+          "type": "feat",
+          "key": "!actors.items!9eeede64c23161fb.96684c109d6a9500",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "82690c62fde6fff7": {
+          "id": "82690c62fde6fff7",
+          "name": "Training Inquisitorius",
+          "type": "feat",
+          "key": "!actors.items!9eeede64c23161fb.82690c62fde6fff7",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "c49860dc7bc135a3": {
+          "id": "c49860dc7bc135a3",
+          "name": "War Casting",
+          "type": "feat",
+          "key": "!actors.items!9eeede64c23161fb.c49860dc7bc135a3",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "2989ee22ef6025f8": {
+          "id": "2989ee22ef6025f8",
+          "name": "Multiattack",
+          "type": "feat",
+          "key": "!actors.items!9eeede64c23161fb.2989ee22ef6025f8",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "93473bfa8b91492d": {
+          "id": "93473bfa8b91492d",
+          "name": "Spinning Doublesaber",
+          "type": "weapon",
+          "key": "!actors.items!9eeede64c23161fb.93473bfa8b91492d",
+          "activities": {
+            "dfb88c4f2534e6b4": {
+              "id": "dfb88c4f2534e6b4",
+              "pinned": true,
+              "origin": "n1-committed"
+            }
+          },
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "35bcb2f95336a73f": {
+          "id": "35bcb2f95336a73f",
+          "name": "Dark Lightning",
+          "type": "feat",
+          "key": "!actors.items!9eeede64c23161fb.35bcb2f95336a73f",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "4c76a4941f6daec8": {
+          "id": "4c76a4941f6daec8",
+          "name": "Makashi Form",
+          "type": "feat",
+          "key": "!actors.items!9eeede64c23161fb.4c76a4941f6daec8",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "cbcbef8d9591a942": {
+          "id": "cbcbef8d9591a942",
+          "name": "Detect Force",
+          "type": "feat",
+          "key": "!actors.items!9eeede64c23161fb.cbcbef8d9591a942",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "9ddf5f7ddc2729d4": {
+          "id": "9ddf5f7ddc2729d4",
+          "name": "Denounce",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.9ddf5f7ddc2729d4",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "4404bf893495d3c1": {
+          "id": "4404bf893495d3c1",
+          "name": "Force Disarm",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.4404bf893495d3c1",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "e44ca53da1eaa30e": {
+          "id": "e44ca53da1eaa30e",
+          "name": "Force Push/Pull",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.e44ca53da1eaa30e",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "f467afb30cc8374f": {
+          "id": "f467afb30cc8374f",
+          "name": "Mind Trick",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.f467afb30cc8374f",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "1ce0792b9ce59a09": {
+          "id": "1ce0792b9ce59a09",
+          "name": "Saber Throw",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.1ce0792b9ce59a09",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "70d25710cd322728": {
+          "id": "70d25710cd322728",
+          "name": "Slow",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.70d25710cd322728",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "b934b23fd7df7ccc": {
+          "id": "b934b23fd7df7ccc",
+          "name": "Animate Weapon",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.b934b23fd7df7ccc",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "9ce8ade7b040708f": {
+          "id": "9ce8ade7b040708f",
+          "name": "Dominate Mind",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.9ce8ade7b040708f",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "fafd857b92e96d27": {
+          "id": "fafd857b92e96d27",
+          "name": "Improved Dark Side Tendrils",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.fafd857b92e96d27",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "b62ebdcf901360ba": {
+          "id": "b62ebdcf901360ba",
+          "name": "Choke",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.b62ebdcf901360ba",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "4c871567106d7857": {
+          "id": "4c871567106d7857",
+          "name": "Force Suppression",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.4c871567106d7857",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "8161ab806200a7a7": {
+          "id": "8161ab806200a7a7",
+          "name": "Horror",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.8161ab806200a7a7",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "2820b3c0f7a520e7": {
+          "id": "2820b3c0f7a520e7",
+          "name": "Force Jump",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.2820b3c0f7a520e7",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "05b091afa7ddb91c": {
+          "id": "05b091afa7ddb91c",
+          "name": "Sense Force",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.05b091afa7ddb91c",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "babbe0170b9b180a": {
+          "id": "babbe0170b9b180a",
+          "name": "Siphon Life",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.babbe0170b9b180a",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        },
+        "6e2a6728a8cf328c": {
+          "id": "6e2a6728a8cf328c",
+          "name": "Stun",
+          "type": "spell",
+          "key": "!actors.items!9eeede64c23161fb.6e2a6728a8cf328c",
+          "activities": {},
+          "pinned": true,
+          "origin": "n1-committed"
+        }
+      },
+      "pinned": true,
+      "origin": "n1-committed"
+    }
+  }
+}
