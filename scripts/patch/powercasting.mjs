@@ -19,6 +19,15 @@ import { getSchoolPowerAttackBonus, patchPowerBonuses } from "./power-bonuses.mj
 import { applySpecialTraitsTabLabel } from "./special-traits-sheet.mjs";
 import { applyStarshipTabsContext } from "./starship-sheet.mjs";
 import { hasSuperiorityStyleGrant } from "../superiority-style.mjs";
+import {
+	POWER_POINT_DISCOUNT_APPLIED,
+	classifyPowercastingType,
+	resolvePowerPointCost
+} from "../power-point-cost.mjs";
+import {
+	getPendingOrCurrentAttributeValue,
+	installPowerPointDiscountAttributeConsume
+} from "../power-point-discount-consume.mjs";
 
 const PRECALCULATED_SPELLCASTING_KEY = "sw5e-preCalculatedSpellcastingClasses";
 let baseActorTabsContextWrapped = false;
@@ -163,23 +172,10 @@ function getPreparedPowercastingCards(actor) {
 	};
 }
 
-function getPowercastingTypeFromItem(item) {
-	return item?.system?.school === "tec" ? "tech" : "force";
-}
-
-function getPowerPointCost(item, activity, castLevel) {
-	const powercastingType = getPowercastingTypeFromItem(item);
-	const targetPath = `powercasting.${powercastingType}.points.value`;
-	const activityTarget = activity?.consumption?.targets?.find(target =>
-		target?.type === "attribute" && target?.target === targetPath
-	);
-	const baseCostValue = activityTarget?.value ?? item?.system?.consume?.amount ?? 0;
-	const baseCost = Number.isFinite(Number(baseCostValue)) ? Number(baseCostValue) : 0;
-	const itemLevel = Number.isFinite(Number(item?.system?.level)) ? Number(item.system.level) : 0;
-	const selectedLevel = Number.isFinite(Number(castLevel)) ? Number(castLevel) : itemLevel;
-	return baseCost + Math.max(0, selectedLevel - itemLevel);
-}
-
+/**
+ * @param {object|null|undefined} itemData
+ * @returns {boolean}
+ */
 function isSw5ePowerData(itemData) {
 	if ( itemData?.type !== "spell" ) return false;
 	const school = itemData?.system?.school;
@@ -1140,7 +1136,8 @@ function patchAbilityUseDialog() {
 				const note = context.notes[context.notes.length - 1];
 				if (note.type === "warn" && note.message.startsWith("You have no available")) context.notes.pop();
 			}
-			const powercastingType = getPowercastingTypeFromItem(_this.item);
+			const powercastingType = classifyPowercastingType(_this.item, _this.activity);
+			if ( !powercastingType ) return;
 			const powercasting = _this.actor.system.powercasting[powercastingType];
 			if ( !powercasting ) return;
 			context.hasScaling = true;
@@ -1162,7 +1159,13 @@ function patchAbilityUseDialog() {
 			const spellSlotOptions = Array.from({ length: maximumLevel - minimumLevel + 1 }, (v, i) => {
 				const lvl = i + minimumLevel;
 				const label = game.i18n.localize(`DND5E.SpellLevel${lvl}`);
-				const cost = getPowerPointCost(_this.item, _this.activity, lvl);
+				const resolved = resolvePowerPointCost({
+					actor: _this.actor,
+					item: _this.item,
+					activity: _this.activity,
+					castLevel: lvl
+				});
+				const cost = resolved.finalCost;
 				const alreadyUsed = limit > 0 && lvl >= limit && powercasting.used.has(lvl);
 				return {
 					value: lvl,
@@ -1208,7 +1211,8 @@ function patchAbilityUseDialog() {
 	Hooks.on('dnd5e.activityConsumption', function (activity, usageConfig, messageConfig, updates) {
 	if (activity?.item?.type !== "spell" || activity?.item?.system?.method !== "powerCasting") return;
 
-	const powercastingType = getPowercastingTypeFromItem(activity.item);
+	const powercastingType = classifyPowercastingType(activity.item, activity);
+	if ( !powercastingType ) return;
 	const powercasting = activity?.actor?.system?.powercasting?.[powercastingType];
 	if ( !powercasting ) return;
 
@@ -1216,12 +1220,11 @@ function patchAbilityUseDialog() {
 	const itemLevel = getNumericValue(activity.item.system.level) ?? 0;
 	const scaling = Math.max(0, castLevel - itemLevel);
 
-	if ( scaling > 0 ) {
+	// When the discount wrapper already applied finalCost (base + scaling - discount),
+	// do not subtract scaling again.
+	if ( scaling > 0 && !usageConfig?.[POWER_POINT_DISCOUNT_APPLIED] ) {
 		const pointsPath = `system.powercasting.${powercastingType}.points.value`;
-		const currentValue = Number.isFinite(updates.actor[pointsPath])
-			? updates.actor[pointsPath]
-			: (foundry.utils.getProperty(activity.actor, pointsPath) ?? 0);
-
+		const currentValue = getPendingOrCurrentAttributeValue(activity.actor, updates, pointsPath);
 		updates.actor[pointsPath] = currentValue - scaling;
 		}
 
@@ -1255,6 +1258,7 @@ function makePowerPointsConsumable() {
 		for (const castType of ["force", "tech"]) {
 			CONFIG.DND5E.consumableResources.push(`powercasting.${castType}.points.value`);
 		}
+		installPowerPointDiscountAttributeConsume();
 	});
 }
 
@@ -1445,4 +1449,6 @@ export function patchPowercasting() {
 	showPowercastingStats();
 	makePowerPointsConsumable();
 	showPowercastingBar();
+	// Idempotent: also attempt install at init in case setup already fired or CONFIG is ready.
+	installPowerPointDiscountAttributeConsume();
 }

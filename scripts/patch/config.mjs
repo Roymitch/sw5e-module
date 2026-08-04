@@ -2352,20 +2352,6 @@ config.languages.standard.children = {
 			type: Number,
 			placeholder: 20
 		},
-		forcePowerDiscount: {
-			name: "SW5E.FlagsForcePowerDiscount",
-			hint: "SW5E.FlagsForcePowerDiscountHint",
-			section: "SW5E.Features",
-			type: Number,
-			placeholder: 0
-		},
-		techPowerDiscount: {
-			name: "SW5E.FlagsTechPowerDiscount",
-			hint: "SW5E.FlagsTechPowerDiscountHint",
-			section: "SW5E.Features",
-			type: Number,
-			placeholder: 0
-		},
 		supremeAptitude: {
 			name: "SW5E.FlagsSupremeAptitude",
 			hint: "SW5E.FlagsSupremeAptitudeHint",

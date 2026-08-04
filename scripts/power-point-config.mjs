@@ -1,4 +1,9 @@
 import { getModulePath, localizeOrFallback } from "./module-support.mjs";
+import {
+	getActorPowerPointDiscountSource,
+	getPowerPointDiscountFlagKey,
+	normalizePowerPointDiscount
+} from "./power-point-cost.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -75,6 +80,8 @@ export class PowerPointConfigApp extends HandlebarsApplicationMixin(ApplicationV
 		const tempmax = getNumericValue(points.tempmax) ?? 0;
 		const calculatedMax = Math.max(0, getNumericValue(runtime.calculatedMax) ?? max);
 		const hasMaxOverride = source.max !== null && source.max !== undefined && source.max !== "";
+		const discountFlagKey = getPowerPointDiscountFlagKey(this.castType);
+		const discountSourceValue = getActorPowerPointDiscountSource(this.actor, this.castType);
 		return {
 			castType: this.castType,
 			source,
@@ -93,6 +100,9 @@ export class PowerPointConfigApp extends HandlebarsApplicationMixin(ApplicationV
 			maxOverrideHint: `Leave blank to use the calculated ${formatPointsLabel(this.castType).toLowerCase()} maximum.`,
 			perLevelBonusLabel: "Per Level Bonus",
 			overallBonusLabel: "Overall Bonus",
+			pointDiscountLabel: localizeOrFallback("SW5E.Powercasting.PointDiscount.Label", "Point Discount"),
+			pointDiscountName: `flags.sw5e.${discountFlagKey}`,
+			pointDiscountValue: discountSourceValue,
 			resetLabel: "Reset to Calculated",
 			saveLabel: "Save"
 		};
@@ -114,13 +124,16 @@ export class PowerPointConfigApp extends HandlebarsApplicationMixin(ApplicationV
 		const formData = new FormData(event.currentTarget);
 		const submitAction = event.submitter?.dataset?.action ?? "save";
 		const basePath = `system.powercasting.${this.castType}.points`;
+		const discountFlagKey = getPowerPointDiscountFlagKey(this.castType);
+		const discountFieldName = `flags.sw5e.${discountFlagKey}`;
 		const updateData = {
 			[`${basePath}.value`]: parseNumberInput(formData.get(`${basePath}.value`)),
 			[`${basePath}.temp`]: parseNumberInput(formData.get(`${basePath}.temp`)),
 			[`${basePath}.tempmax`]: parseNumberInput(formData.get(`${basePath}.tempmax`)),
 			[`${basePath}.max`]: parseNullableNumberInput(formData.get(`${basePath}.max`)),
 			[`${basePath}.bonuses.level`]: String(formData.get(`${basePath}.bonuses.level`) ?? "").trim(),
-			[`${basePath}.bonuses.overall`]: String(formData.get(`${basePath}.bonuses.overall`) ?? "").trim()
+			[`${basePath}.bonuses.overall`]: String(formData.get(`${basePath}.bonuses.overall`) ?? "").trim(),
+			[discountFieldName]: normalizePowerPointDiscount(formData.get(discountFieldName))
 		};
 		if ( submitAction === "reset-calculated" ) updateData[`${basePath}.max`] = null;
 
