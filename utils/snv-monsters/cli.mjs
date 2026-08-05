@@ -15,6 +15,15 @@ import {
 	SANDBOX_PROTOTYPE
 } from "./paths.mjs";
 import { runOfflineValidationSuite, validateWriteGuard } from "./validate.mjs";
+import {
+	runBaselineGate,
+	runCompiledValidate,
+	runDryRun,
+	runPostwriteValidation,
+	runPrewriteValidation,
+	runProductionWrite,
+	runRerunCheck
+} from "./production-write.mjs";
 
 function writeJson(filePath, data) {
 	fs.mkdirSync(path.dirname(filePath), { recursive: true });
@@ -121,14 +130,123 @@ function cmdPipeline() {
 	console.log("PIPELINE_OK");
 }
 
-const cmd = process.argv[2] || "pipeline";
-switch ( cmd ) {
-	case "parse": cmdParse(); break;
-	case "generate": cmdGenerate(); break;
-	case "validate": cmdValidate(); break;
-	case "parity": cmdParity(); break;
-	case "pipeline": cmdPipeline(); break;
-	default:
-		console.error(`Unknown command ${cmd}`);
-		process.exit(1);
+function parseArgs(argv) {
+	const args = {};
+	for ( let index = 0; index < argv.length; index += 1 ) {
+		const token = argv[index];
+		if ( !token.startsWith("--") ) continue;
+		const key = token.slice(2);
+		const next = argv[index + 1];
+		if ( next && !next.startsWith("--") ) {
+			args[key] = next;
+			index += 1;
+		} else args[key] = true;
+	}
+	return args;
 }
+
+async function main() {
+	const cmd = process.argv[2] || "pipeline";
+	const args = parseArgs(process.argv.slice(3));
+	switch ( cmd ) {
+		case "parse":
+			cmdParse();
+			break;
+		case "generate":
+			cmdGenerate();
+			break;
+		case "validate":
+			cmdValidate();
+			break;
+		case "parity":
+			cmdParity();
+			break;
+		case "pipeline":
+			cmdPipeline();
+			break;
+		case "baseline": {
+			const result = runBaselineGate({
+				batch: args.batch,
+				batchLedgerPath: args["batch-ledger"],
+				expectedHead: args["expected-head"]
+			});
+			console.log(JSON.stringify(result, null, 2));
+			if ( !result.ok ) process.exit(1);
+			break;
+		}
+		case "dry-run": {
+			const result = runDryRun({
+				batch: args.batch,
+				batchLedgerPath: args["batch-ledger"],
+				outputRoot: args["output-root"],
+				expectedHead: args["expected-head"]
+			});
+			console.log(JSON.stringify(result, null, 2));
+			if ( !result.ok ) process.exit(1);
+			break;
+		}
+		case "prewrite-validate": {
+			const result = runPrewriteValidation({
+				batch: args.batch,
+				batchLedgerPath: args["batch-ledger"],
+				outputRoot: args["output-root"],
+				expectedHead: args["expected-head"]
+			});
+			console.log(JSON.stringify(result, null, 2));
+			if ( !result.ok ) process.exit(1);
+			break;
+		}
+		case "production-write": {
+			if ( args.allowProductionWrite !== true ) {
+				console.error("[snv-monsters] production-write requires --allowProductionWrite");
+				process.exit(1);
+			}
+			const result = runProductionWrite({
+				batch: args.batch,
+				batchLedgerPath: args["batch-ledger"],
+				outputRoot: args["output-root"],
+				expectedHead: args["expected-head"]
+			});
+			console.log(JSON.stringify(result, null, 2));
+			if ( !result.ok ) process.exit(1);
+			break;
+		}
+		case "postwrite-validate": {
+			const result = runPostwriteValidation({
+				batch: args.batch,
+				batchLedgerPath: args["batch-ledger"],
+				outputRoot: args["output-root"],
+				expectedHead: args["expected-head"]
+			});
+			console.log(JSON.stringify(result, null, 2));
+			if ( !result.ok ) process.exit(1);
+			break;
+		}
+		case "rerun-check": {
+			const result = runRerunCheck({
+				batch: args.batch,
+				batchLedgerPath: args["batch-ledger"],
+				outputRoot: args["output-root"],
+				expectedHead: args["expected-head"]
+			});
+			console.log(JSON.stringify(result, null, 2));
+			if ( !result.ok ) process.exit(1);
+			break;
+		}
+		case "compiled-validate": {
+			const result = await runCompiledValidate({
+				pack: args.pack,
+				batch: args.batch,
+				batchLedgerPath: args["batch-ledger"]
+			});
+			console.log(JSON.stringify(result, null, 2));
+			if ( !result.ok ) process.exit(1);
+			break;
+		}
+		default:
+			console.error(`Unknown command ${cmd}`);
+			process.exit(1);
+	}
+}
+
+await main();

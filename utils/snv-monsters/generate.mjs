@@ -7,17 +7,18 @@ import path from "node:path";
 import yaml from "js-yaml";
 import { EDGE_CASE_SELECTION } from "./edge-cases.mjs";
 import { generateGeneralizedActor } from "./generate-generalized.mjs";
-import { loadIdentityMap, resolveActorId } from "./identity.mjs";
-import { normalizeName } from "./parse-helpers.mjs";
+import { buildN3aIdentityPlan, loadIdentityMap, loadProductionIdentityMap, resolveActorId, summarizeIdentityAddition } from "./identity.mjs";
+import { normalizeName, sha256 } from "./parse-helpers.mjs";
 import {
 	COMMITTED_PACK_SOURCE,
 	GENERATOR_VERSION,
+	ROOT,
 	SANDBOX_PROTOTYPE,
 	SCHEMA_VERSION,
 	SNV_FINAL_PATH
 } from "./paths.mjs";
 import { splitCreatureBlocks } from "./parse.mjs";
-import { assertAllowedOutputRoot } from "./write-guard.mjs";
+import { assertAllowedOutputRoot, assertApprovedN3aYamlPath } from "./write-guard.mjs";
 
 const DUMP = { lineWidth: -1, noRefs: true, quotingType: "'", forceQuotes: false };
 
@@ -236,10 +237,109 @@ function summarizeExceptions(exceptions) {
 }
 
 export function attemptProductionWrite(outputRoot = COMMITTED_PACK_SOURCE) {
-	assertAllowedOutputRoot(outputRoot);
+	return generateProductionBatch({ outputRoot, write: true });
 }
 
 /** @deprecated use generateSandbox */
 export function generateSupportedSandbox(opts) {
 	return generateSandbox(opts);
+}
+
+function ensureCommittedPackRoot(outputRoot) {
+	const resolved = path.resolve(ROOT, outputRoot);
+	const expected = path.resolve(COMMITTED_PACK_SOURCE);
+	if ( resolved !== expected ) {
+		throw new Error(`[snv-monsters] expected committed pack source root ${path.relative(ROOT, expected)} but got ${path.relative(ROOT, resolved)}`);
+	}
+	return resolved;
+}
+
+function candidateYamlPath(root, semanticKey) {
+	return path.join(root, "beasts", `${semanticKey.split(":").at(-1)}.yml`);
+}
+
+export function generateProductionBatch({
+	outputRoot = COMMITTED_PACK_SOURCE,
+	identityMap = loadProductionIdentityMap(),
+	irEntries = [],
+	snvMarkdown = null,
+	batchLedger,
+	write = false
+} = {}) {
+	if ( !batchLedger?.finalCandidates?.length ) {
+		throw new Error("[snv-monsters] batch ledger with finalCandidates is required");
+	}
+	const root = ensureCommittedPackRoot(outputRoot);
+	if ( write ) assertAllowedOutputRoot(outputRoot, { allowProductionWrite: true, batch: "n3a" });
+	const markdown = snvMarkdown
+		|| (fs.existsSync(SNV_FINAL_PATH) ? fs.readFileSync(SNV_FINAL_PATH, "utf8") : "");
+	if ( !markdown ) throw new Error("[snv-monsters] authoritative SnV markdown is required for production generation");
+	const bodies = loadBodiesByName(markdown);
+	const identityPlan = buildN3aIdentityPlan(batchLedger, identityMap);
+	const emitted = [];
+	const exceptions = [];
+	const generatedDocs = {};
+
+	for ( const candidate of batchLedger.finalCandidates ) {
+		const irEntry = irEntries.find(entry => entry.semanticKey === candidate.semanticKey);
+		if ( !irEntry ) throw new Error(`[snv-monsters] missing IR entry for ${candidate.semanticKey}`);
+		const body = bodies.get(irEntry.normalizedName || normalizeName(candidate.name));
+		if ( !body ) throw new Error(`[snv-monsters] missing source body for ${candidate.name}`);
+		const actorIdentity = identityMap.actors?.[candidate.semanticKey] || identityPlan.actors?.[candidate.semanticKey];
+		if ( !actorIdentity ) throw new Error(`[snv-monsters] missing actor identity for ${candidate.semanticKey}`);
+		const targetPath = assertApprovedN3aYamlPath(candidateYamlPath(root, candidate.semanticKey));
+		const { actor, exceptions: actorExceptions, attacksParsed, parsedStatBlock } = generateGeneralizedActor({
+			irEntry,
+			body,
+			actorId: actorIdentity.id,
+			nonproduction: false,
+			productionContext: {
+				identityActor: actorIdentity,
+				artwork: {
+					...candidate.artwork,
+					folderId: actorIdentity.folderId
+				},
+				exactFeatures: {
+					passives: candidate.passives || [],
+					nonAttackActions: candidate.nonAttackActions || [],
+					weaponAttacks: candidate.weaponAttacks || []
+				}
+			}
+		});
+		const yamlText = `${yaml.dump(actor, DUMP)}\n`;
+		generatedDocs[targetPath] = yamlText;
+		if ( write ) fs.writeFileSync(targetPath, yamlText, "utf8");
+		emitted.push({
+			semanticKey: candidate.semanticKey,
+			name: candidate.name,
+			actorId: actor._id,
+			path: relPosix(ROOT, targetPath),
+			hash: sha256(yamlText),
+			itemCount: actor.items.length,
+			attacksParsed,
+			parsedStatBlock,
+			items: actor.items.map(item => ({
+				id: item._id,
+				name: item.name,
+				type: item.type,
+				activityIds: Object.keys(item.system?.activities || {})
+			}))
+		});
+		for ( const exception of actorExceptions ) {
+			exceptions.push({
+				semanticKey: candidate.semanticKey,
+				name: candidate.name,
+				...exception
+			});
+		}
+	}
+
+	return {
+		batch: "n3a",
+		outputRoot: root,
+		emitted,
+		exceptions,
+		generatedDocs,
+		identityAdditionCounts: summarizeIdentityAddition(identityPlan)
+	};
 }

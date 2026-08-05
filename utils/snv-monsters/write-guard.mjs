@@ -16,9 +16,44 @@ const FORBIDDEN_PREFIXES = [
 	path.resolve(ROOT, "packs/_source")
 ];
 
+export const N3A_ALLOWED_TRACKED_RELATIVE_PATHS = [
+	"utils/snv-monsters/identity.mjs",
+	"utils/snv-monsters/generate-generalized.mjs",
+	"utils/snv-monsters/generate.mjs",
+	"utils/snv-monsters/production-write.mjs",
+	"utils/snv-monsters/validate.mjs",
+	"utils/snv-monsters/write-guard.mjs",
+	"utils/snv-monsters/cli.mjs",
+	"utils/snv-monsters/manifests/identity-map.json",
+	"packs/_source/snv-monsters/beasts/blurrg.yml",
+	"packs/_source/snv-monsters/beasts/fyrnock.yml",
+	"packs/_source/snv-monsters/beasts/jakrab.yml",
+	"packs/_source/snv-monsters/beasts/kath-hound.yml",
+	"packs/_source/snv-monsters/beasts/massiff.yml",
+	"packs/_source/snv-monsters/beasts/stintaril.yml",
+	"packs/_source/snv-monsters/beasts/zalaaca.yml"
+];
+
+export const N3A_ALLOWED_PRODUCTION_YAMLS = N3A_ALLOWED_TRACKED_RELATIVE_PATHS
+	.filter(relativePath => relativePath.startsWith("packs/_source/snv-monsters/beasts/"))
+	.map(relativePath => path.resolve(ROOT, relativePath));
+
 function isUnder(parent, child) {
 	const rel = path.relative(parent, child);
 	return child === parent || (rel && !rel.startsWith("..") && !path.isAbsolute(rel));
+}
+
+function isExactAllowedTrackedPath(candidate) {
+	const relative = path.relative(ROOT, candidate).split(path.sep).join("/");
+	return N3A_ALLOWED_TRACKED_RELATIVE_PATHS.includes(relative);
+}
+
+export function toRepoRelative(candidate) {
+	return path.relative(ROOT, candidate).split(path.sep).join("/");
+}
+
+export function isAllowedN3aTrackedPath(candidate) {
+	return isExactAllowedTrackedPath(path.resolve(ROOT, candidate));
 }
 
 /**
@@ -35,10 +70,8 @@ export function assertAllowedOutputRoot(outputRoot, opts = {}) {
 	for ( const forbidden of FORBIDDEN_PREFIXES ) {
 		if ( isUnder(forbidden, resolved) ) {
 			if ( opts.allowProductionWrite === true ) {
-				throw new Error(
-					"[snv-monsters] production pack/source write is not authorized in Phase N2 "
-					+ "(allowProductionWrite requires a future explicit authorization gate)."
-				);
+				if ( opts.batch === "n3a" && resolved === path.resolve(COMMITTED_PACK_SOURCE) ) return resolved;
+				throw new Error("[snv-monsters] production pack/source write is only authorized for the exact N3a pack source root.");
 			}
 			throw new Error(
 				`[snv-monsters] REFUSED: cannot write under ${path.relative(ROOT, forbidden) || forbidden} during N2. `
@@ -61,4 +94,12 @@ export function isCommittedPackPath(candidate) {
 	const resolved = path.resolve(ROOT, candidate);
 	return isUnder(path.resolve(COMMITTED_PACK_SOURCE), resolved)
 		|| isUnder(path.resolve(ROOT, "packs/snv-monsters"), resolved);
+}
+
+export function assertApprovedN3aYamlPath(candidate) {
+	const resolved = path.resolve(ROOT, candidate);
+	if ( !N3A_ALLOWED_PRODUCTION_YAMLS.includes(resolved) ) {
+		throw new Error(`[snv-monsters] REFUSED: non-approved N3a YAML path ${toRepoRelative(resolved)}`);
+	}
+	return resolved;
 }
