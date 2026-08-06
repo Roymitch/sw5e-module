@@ -405,6 +405,52 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			productionReadiness: "prototype-validated",
 			packPhase: "n3b-p10-tracked"
 		}
+	}),
+	"n3b-p11": Object.freeze({
+		batch: "n3b-p11",
+		artifactPrefix: "n3b-p11",
+		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
+		approvedSemanticKeys: [
+			"snv:Beasts:kath-hound-horned",
+			"snv:Beasts:eopie",
+			"snv:Beasts:rancor-adolescent",
+			"snv:Beasts:beggars-canyon-womp-rat",
+			"snv:Beasts:gundark-alpha",
+			"snv:Beasts:gundark-matriarch"
+		],
+		approvedYamlRelativePaths: [
+			"packs/_source/snv-monsters/beasts/kath-hound-horned.yml",
+			"packs/_source/snv-monsters/beasts/eopie.yml",
+			"packs/_source/snv-monsters/beasts/rancor-adolescent.yml",
+			"packs/_source/snv-monsters/beasts/beggars-canyon-womp-rat.yml",
+			"packs/_source/snv-monsters/beasts/gundark-alpha.yml",
+			"packs/_source/snv-monsters/beasts/gundark-matriarch.yml"
+		],
+		allowedTrackedRelativePaths: [
+			"utils/snv-monsters/identity.mjs",
+			"utils/snv-monsters/generate.mjs",
+			"utils/snv-monsters/production-write.mjs",
+			"utils/snv-monsters/validate.mjs",
+			"utils/snv-monsters/write-guard.mjs",
+			"utils/snv-monsters/cli.mjs",
+			"utils/snv-monsters/test-unit.mjs",
+			"utils/snv-monsters/generate-generalized.mjs",
+			"utils/snv-monsters/test-generalized.mjs",
+			"utils/snv-monsters/manifests/identity-map.json",
+			"packs/_source/snv-monsters/beasts/kath-hound-horned.yml",
+			"packs/_source/snv-monsters/beasts/eopie.yml",
+			"packs/_source/snv-monsters/beasts/rancor-adolescent.yml",
+			"packs/_source/snv-monsters/beasts/beggars-canyon-womp-rat.yml",
+			"packs/_source/snv-monsters/beasts/gundark-alpha.yml",
+			"packs/_source/snv-monsters/beasts/gundark-matriarch.yml"
+		],
+		expectedIdentityAdditions: { actors: 6, items: 33, activities: 14 },
+		requireWorkingTreeClean: false,
+		productionMetadata: {
+			outputSelection: "selected-n3b-p11",
+			productionReadiness: "prototype-validated",
+			packPhase: "n3b-p11-tracked"
+		}
 	})
 });
 

@@ -91,6 +91,9 @@ test("production batch descriptors stay fail-closed and path-scoped", () => {
 	const p10 = getProductionBatchDescriptor("n3b-p10");
 	assert.equal(p10.approvedSemanticKeys.length, 1);
 	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/dianoga-adolescent.yml"), "n3b-p10"));
+	const p11 = getProductionBatchDescriptor("n3b-p11");
+	assert.equal(p11.approvedSemanticKeys.length, 6);
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/kath-hound-horned.yml"), "n3b-p11"));
 });
 
 test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {
@@ -295,6 +298,24 @@ test("production identity plans support n3b-p10 counts", () => {
 	assert.equal(counts.actors, 1);
 	assert.equal(counts.items, 6);
 	assert.equal(counts.activities, 2);
+});
+
+test("production identity plans support n3b-p11 counts", () => {
+	const plan = buildProductionIdentityPlan("n3b-p11", {
+		actors: [
+			{ name: "Kath Hound, Horned", semanticKey: "snv:Beasts:kath-hound-horned", traitsAndActions: { passives: ["Charge", "Keen Hearing and Smell", "Pack Tactics"], nonAttackActions: [], weaponAttacks: ["Bite", "Tusk"] } },
+			{ name: "Eopie", semanticKey: "snv:Beasts:eopie", traitsAndActions: { passives: ["Beast of Burden"], nonAttackActions: [], weaponAttacks: ["Bite", "Regurgitate"] } },
+			{ name: "Rancor, Adolescent", semanticKey: "snv:Beasts:rancor-adolescent", traitsAndActions: { passives: ["Siege Monster"], nonAttackActions: ["Multiattack"], weaponAttacks: ["Bite", "Claws", "Throw Boulder"] } },
+			{ name: "Beggar's Canyon Womp Rat", semanticKey: "snv:Beasts:beggars-canyon-womp-rat", traitsAndActions: { passives: ["Grunge Fever", "Keen Hearing and Smell", "Pack Tactics"], nonAttackActions: [], weaponAttacks: ["Bite", "Gnash"] } },
+			{ name: "Gundark, Alpha", semanticKey: "snv:Beasts:gundark-alpha", traitsAndActions: { passives: ["Aura of Menace", "Keen Hearing and Smell", "Rampage", "Siege Monster"], nonAttackActions: ["Multiattack"], weaponAttacks: ["Bite", "Claw", "Crush"] } },
+			{ name: "Gundark, Matriarch", semanticKey: "snv:Beasts:gundark-matriarch", traitsAndActions: { passives: ["Aura of Blood Thirst", "Keen Hearing and Smell", "Rampage", "Siege Monster"], nonAttackActions: ["Multiattack"], weaponAttacks: ["Claw", "Gigantic Claw"] } }
+		]
+	}, loadProductionIdentityMap());
+	const counts = summarizeIdentityAddition(plan);
+	assert.equal(Object.keys(plan.actors).length, 6);
+	assert.equal(counts.actors, 6);
+	assert.equal(counts.items, 33);
+	assert.equal(counts.activities, 14);
 });
 
 test("production validators fail closed on malformed ledgers", () => {
