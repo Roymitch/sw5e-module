@@ -18,7 +18,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix2-01
+          approvedBatch: fts-alias-remediate-01
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
@@ -119,7 +119,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix2-01
+          approvedBatch: fts-alias-remediate-01
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
@@ -218,7 +218,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix2-01
+          approvedBatch: fts-alias-remediate-01
           limitedUses:
             family: per-day
             max: 3
@@ -324,7 +324,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix2-01
+          approvedBatch: fts-alias-remediate-01
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
@@ -428,7 +428,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix2-01
+          approvedBatch: fts-alias-remediate-01
           limitedUses:
             family: per-day
             max: 3
@@ -535,7 +535,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix2-01
+          approvedBatch: fts-alias-remediate-01
     img: modules/sw5e-module/icons/packs/Monster Traits/Sneak Attack.webp
     effects: []
     folder: null
@@ -636,7 +636,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix2-01
+          approvedBatch: fts-alias-remediate-01
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
@@ -738,7 +738,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix2-01
+          approvedBatch: fts-alias-remediate-01
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
@@ -843,7 +843,7 @@ items:
           sandboxTemp: false
           prePublication: false
           trackedPack: snv-monsters
-          approvedBatch: fts-fix2-01
+          approvedBatch: fts-alias-remediate-01
           sourceActionNames:
             - Techblade
           duplicateActionProhibited: true
@@ -1054,7 +1054,7 @@ items:
           sandboxTemp: false
           prePublication: false
           trackedPack: snv-monsters
-          approvedBatch: fts-fix2-01
+          approvedBatch: fts-alias-remediate-01
           sourceActionNames:
             - Sniper Rifle
           duplicateActionProhibited: true
@@ -2387,6 +2387,154 @@ items:
       duplicateSource: null
       compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.TTZ5ye48ia5Et69o
     _key: "!actors.items!901357e65d7062e4.938b1e57998fd47a"
+  - name: Capacity Boost
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1447493+00:00"
+        importer_version: 3
+        uid: Power.name-capacity_boost.level-2
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.uYsjujidPJJ6EblO
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Capacity Boost
+          sourceSemanticKey: snv:Humanoids:ambush-master
+          tierLabel: 2nd-level
+          tierKind: leveled
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/CapacityBoost.webp
+    system:
+      description:
+        value: >-
+          <p>You empower a blaster weapon you are holding. For the duration, you can reload the weapon once on each of
+          your turns without using an action, and as a bonus action on each of your turns you can make one attack with
+          the weapon.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 5th level or
+          higher, you can make two attacks with your bonus action, instead of one.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: minute
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: touch
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 2
+      school: tec
+      properties:
+        - concentration
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: level
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 3
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: bonus
+          description: {}
+          duration:
+            units: minute
+            value: "1"
+          img: null
+          range:
+            override: false
+            units: touch
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "3"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: e3e7bce50da4c2d1
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.uYsjujidPJJ6EblO
+    _key: "!actors.items!901357e65d7062e4.e3e7bce50da4c2d1"
   - name: Detect Invisibility
     flags:
       sw5e-importer:
@@ -3889,7 +4037,7 @@ flags:
       schemaVersion: fts-ir-0.1
       parseStatus: parsed-valid
       capabilityStatus: partially-supported
-      outputSelection: selected-fts-fix2-01
+      outputSelection: selected-fts-alias-remediate-01
       productionReadiness: prototype-validated
       nonproduction: false
       sandboxTemp: false
@@ -3908,7 +4056,7 @@ flags:
       prePublication: false
       trackedPack: snv-monsters
       collectionId: sw5e-module.snv-monsters
-      packPhase: fts-fix2-01
+      packPhase: fts-alias-remediate-01
       reviewState: offline-generated-awaiting-validation
       worldCleanupFlag: ""
       folderTaxonomy: foundry-creature-type
@@ -3973,6 +4121,13 @@ flags:
             activityCount: 1
             consumeTarget: powercasting.tech.points.value
           - kind: power
+            name: Capacity Boost
+            id: e3e7bce50da4c2d1
+            castType: tech
+            canonicalId: uYsjujidPJJ6EblO
+            activityCount: 1
+            consumeTarget: powercasting.tech.points.value
+          - kind: power
             name: Detect Invisibility
             id: ae6541a9e7e179cd
             castType: tech
@@ -4014,12 +4169,7 @@ flags:
             canonicalId: AgKPp0WJ0Xcdwfat
             activityCount: 1
             consumeTarget: powercasting.tech.points.value
-        missingCanonical:
-          - type: canonical-match-missing
-            mechanic: tech-power-missing
-            powerName: Charge Power Cell
-            castType: tech
-            reason: no-canonical-power-name-match
+        missingCanonical: []
       superiorityEmbedding:
         maneuvers: []
         missingCanonical: []

@@ -32,7 +32,7 @@ items:
           sandboxTemp: false
           prePublication: false
           trackedPack: snv-monsters
-          approvedBatch: fts-fix2-01
+          approvedBatch: fts-alias-remediate-01
           sourceActionNames:
             - Ion Pistol
           duplicateActionProhibited: true
@@ -1860,6 +1860,170 @@ items:
       duplicateSource: null
       compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.gY3ZALNoZlKX14TT
     _key: "!actors.items!80e519f3d75905ab.b198a24eb224adfb"
+  - name: Shocking Ray
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1837268+00:00"
+        importer_version: 3
+        uid: Power.name-shocking_ray.level-2
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.iY0c4E1XdTKhd2H8
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Shocking Ray
+          sourceSemanticKey: snv:Humanoids:black-market-lab-tech
+          tierLabel: 2nd-level
+          tierKind: leveled
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/ShockingRay.webp
+    system:
+      description:
+        value: >-
+          <p>You create three ionic rays and hurl them at targets within range. You can hurl them at one target or
+          several. Make a ranged tech attack for each ray. On a hit, the target takes [[/r 2d4]] ion damage.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 3rd level or
+          higher, you create one additional ray for each slot level above 2nd.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 120
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: rpak
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 2d4
+            - ion
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 2
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: level
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 3
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0attack00000:
+          _id: sw5e0attack00000
+          activation:
+            condition: ""
+            type: action
+          attack:
+            ability: ""
+            bonus: ""
+            flat: false
+            type:
+              classification: spell
+              value: ranged
+          damage:
+            critical: {}
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 4
+                number: 2
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - ion
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "120"
+          target:
+            template:
+              type: ""
+              units: ""
+          type: attack
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "3"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: ad0a06cac22536f9
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.iY0c4E1XdTKhd2H8
+    _key: "!actors.items!80e519f3d75905ab.ad0a06cac22536f9"
   - name: Sabotage Charges
     flags:
       sw5e-importer:
@@ -2765,7 +2929,7 @@ flags:
       schemaVersion: fts-ir-0.1
       parseStatus: parsed-valid
       capabilityStatus: partially-supported
-      outputSelection: selected-fts-fix2-01
+      outputSelection: selected-fts-alias-remediate-01
       productionReadiness: prototype-validated
       nonproduction: false
       sandboxTemp: false
@@ -2784,7 +2948,7 @@ flags:
       prePublication: false
       trackedPack: snv-monsters
       collectionId: sw5e-module.snv-monsters
-      packPhase: fts-fix2-01
+      packPhase: fts-alias-remediate-01
       reviewState: offline-generated-awaiting-validation
       worldCleanupFlag: ""
       folderTaxonomy: foundry-creature-type
@@ -2870,6 +3034,13 @@ flags:
             activityCount: 1
             consumeTarget: powercasting.tech.points.value
           - kind: power
+            name: Shocking Ray
+            id: ad0a06cac22536f9
+            castType: tech
+            canonicalId: iY0c4E1XdTKhd2H8
+            activityCount: 1
+            consumeTarget: powercasting.tech.points.value
+          - kind: power
             name: Sabotage Charges
             id: 68900976f94de93c
             castType: tech
@@ -2883,12 +3054,7 @@ flags:
             canonicalId: ioNhkBWLyJ0AfQbw
             activityCount: 1
             consumeTarget: powercasting.tech.points.value
-        missingCanonical:
-          - type: canonical-match-missing
-            mechanic: tech-power-missing
-            powerName: Scorching Ray
-            castType: tech
-            reason: no-canonical-power-name-match
+        missingCanonical: []
       superiorityEmbedding:
         maneuvers: []
         missingCanonical: []

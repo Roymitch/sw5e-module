@@ -30,7 +30,10 @@ const POWER_ALIASES = Object.freeze({
 	"propel": "force propel",
 	"mindspike": "mind spike",
 	"mind spike": "mind spike",
-	"concealed caltrop": "concealed caltrops"
+	"concealed caltrop": "concealed caltrops",
+	// Maintainer-locked SnV outdated/D&D-derived terminology → SW5e canonical tech powers
+	"charge power cell": "capacity boost",
+	"scorching ray": "shocking ray"
 });
 
 /**

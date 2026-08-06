@@ -147,4 +147,27 @@ At-will: *on/off* <br>
 	assert.equal(exceptions.some(e => e.mechanic === "tech-power-embedding-incomplete"), false);
 });
 
+test("maintainer-locked Tech aliases resolve to Capacity Boost and Shocking Ray", () => {
+	buildCanonicalPowerIndex();
+	const capacity = resolveCanonicalPower("Charge Power Cell", "tech");
+	assert.equal(capacity.match, "exact-name");
+	assert.equal(capacity.canonical.name, "Capacity Boost");
+	assert.equal(capacity.canonical.id, "uYsjujidPJJ6EblO");
+	const cloneCap = loadAndCloneCanonicalPower("Charge Power Cell", "tech");
+	assert.equal(cloneCap.ok, true);
+	assert.equal(cloneCap.clone.name, "Capacity Boost");
+	assert.equal(cloneCap.clone.system.consume.target, "powercasting.tech.points.value");
+	assert.ok(Object.keys(cloneCap.clone.system.activities || {}).length >= 1);
+
+	const shocking = resolveCanonicalPower("Scorching Ray", "tech");
+	assert.equal(shocking.match, "exact-name");
+	assert.equal(shocking.canonical.name, "Shocking Ray");
+	assert.equal(shocking.canonical.id, "iY0c4E1XdTKhd2H8");
+	const cloneShock = loadAndCloneCanonicalPower("Scorching Ray", "tech");
+	assert.equal(cloneShock.ok, true);
+	assert.equal(cloneShock.clone.name, "Shocking Ray");
+	assert.equal(cloneShock.clone.system.consume.target, "powercasting.tech.points.value");
+	assert.ok(Object.keys(cloneShock.clone.system.activities || {}).length >= 1);
+});
+
 console.log(`\n${passed} fts embedding tests passed`);
