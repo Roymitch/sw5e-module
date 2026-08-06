@@ -479,6 +479,9 @@ function resolveFeatureImage(name, type, actorImg) {
 
 function activationTypeForFeature(section, text) {
 	if ( section === "actions" ) return "action";
+	if ( section === "reactions" ) return "reaction";
+	if ( section === "bonus-actions" ) return "bonus";
+	if ( section === "legendary-actions" ) return "legendary";
 	if ( /bonus action/i.test(text) ) return "bonus";
 	if ( /\breaction\b/i.test(text) ) return "reaction";
 	return "";
@@ -838,6 +841,29 @@ function buildFeatItem({ featScaffold, actorId, itemId, name, description, img, 
 	item.system.save.scaling = "spell";
 	item.system.recharge.value = null;
 	item.system.recharge.charged = false;
+	const usesMatch = String(name || "").match(/\((\d+)\s*\/\s*Day\)/i);
+	if ( usesMatch ) {
+		const max = Number(usesMatch[1]);
+		item.system.uses.value = max;
+		item.system.uses.max = String(max);
+		item.system.uses.per = "day";
+		item.flags.sw5e.snvMonsters.limitedUses = {
+			family: "per-day",
+			max,
+			runtimeAutomation: true
+		};
+	}
+	const rechargeMatch = String(name || "").match(/\(Recharge\s+(\d+)(?:\s*-\s*(\d+))?\)/i);
+	if ( rechargeMatch ) {
+		item.system.recharge.value = Number(rechargeMatch[1]);
+		item.system.recharge.charged = true;
+		item.flags.sw5e.snvMonsters.recharge = {
+			family: "recharge",
+			min: Number(rechargeMatch[1]),
+			max: rechargeMatch[2] ? Number(rechargeMatch[2]) : Number(rechargeMatch[1]),
+			runtimeAutomation: true
+		};
+	}
 	item.system.attack.bonus = "";
 	item.system.attack.flat = false;
 	item.system.properties = [];
@@ -1203,9 +1229,14 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 		const canon = !isNatural ? loadAndCloneCanonicalWeapon(attack.name) : { ok: false };
 		if ( canon.ok ) {
 			const weaponDoc = canon.clone;
-			weaponDoc._id = itemIdentity?.id || tempId(`${id}:${attack.name}`);
+			const itemId = itemIdentity?.id || tempId(`${id}:${attack.name}`);
+			const pinnedActivityId = activityId || tempId(`${id}:${attack.name}:attack`);
+			const oldActivities = weaponDoc.system?.activities || {};
+			const oldActivity = Object.values(oldActivities)[0] || {};
+			weaponDoc._id = itemId;
 			weaponDoc.name = attack.name;
-			weaponDoc._key = `!actors.items!${id}.${weaponDoc._id}`;
+			weaponDoc._key = `!actors.items!${id}.${itemId}`;
+			weaponDoc.folder = null;
 			weaponDoc.flags = weaponDoc.flags || {};
 			weaponDoc.flags.sw5e = weaponDoc.flags.sw5e || {};
 			weaponDoc.flags.sw5e.snvMonsters = {
@@ -1215,14 +1246,52 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 				ammoModel: "itemUses",
 				sandboxTemp: nonproduction,
 				prePublication: nonproduction,
-				trackedPack: "snv-monsters"
+				trackedPack: "snv-monsters",
+				approvedBatch: nonproduction ? null : productionContext?.batch || null,
+				sourceActionNames: [attack.name],
+				duplicateActionProhibited: true
+			};
+			weaponDoc.system = weaponDoc.system || {};
+			weaponDoc.system.source = weaponDoc.system.source || {};
+			weaponDoc.system.source.custom = "SnV";
+			weaponDoc.system.description = weaponDoc.system.description || {};
+			weaponDoc.system.description.value = toHtmlParagraph(
+				entriesByName.get(attack.name)?.text || attack.description || attack.hit || weaponDoc.system.description.value || ""
+			);
+			if ( attack.range != null || attack.long != null ) {
+				weaponDoc.system.range = weaponDoc.system.range || {};
+				if ( attack.range != null ) weaponDoc.system.range.value = attack.range;
+				if ( attack.long != null ) weaponDoc.system.range.long = attack.long;
+				weaponDoc.system.range.units = "ft";
+			}
+			if ( attack.damageFormula && attack.damageType ) {
+				weaponDoc.system.damage = weaponDoc.system.damage || {};
+				weaponDoc.system.damage.parts = [[attack.damageFormula, attack.damageType]];
+			}
+			if ( attack.flatBonus != null && attack.flatBonus !== "" ) {
+				weaponDoc.system.attack = weaponDoc.system.attack || {};
+				weaponDoc.system.attack.bonus = String(attack.flatBonus);
+				weaponDoc.system.attack.flat = true;
+				weaponDoc.system.attackBonus = attack.flatBonus;
+			}
+			weaponDoc.system.activities = {
+				[pinnedActivityId]: {
+					...oldActivity,
+					_id: pinnedActivityId,
+					attack: {
+						...(oldActivity.attack || {}),
+						bonus: attack.flatBonus != null && attack.flatBonus !== "" ? String(attack.flatBonus) : (oldActivity.attack?.bonus || ""),
+						flat: attack.flatBonus != null && attack.flatBonus !== ""
+					},
+					damage: {
+						...(oldActivity.damage || {}),
+						parts: attack.damageFormula && attack.damageType
+							? activityDamageParts(attack.damageFormula, attack.damageType)
+							: (oldActivity.damage?.parts || [])
+					}
+				}
 			};
 			items.push(weaponDoc);
-			exceptions.push({
-				type: "canonical-clone-with-overrides",
-				weapon: attack.name,
-				canonical: canon.resolved.canonical.path
-			});
 			return;
 		}
 		if ( !isNatural ) {
@@ -1251,7 +1320,10 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 
 	if ( exactFeatures ) {
 		for ( const name of exactFeatures.passives || [] ) addFeat(name, "traits");
-		for ( const name of exactFeatures.nonAttackActions || [] ) addFeat(name, "actions");
+		for ( const name of exactFeatures.nonAttackActions || [] ) {
+			const entry = entriesByName.get(name);
+			addFeat(name, entry?.section || "actions");
+		}
 		for ( const name of exactFeatures.weaponAttacks || [] ) {
 			const attack = attacksByName.get(name);
 			if ( !attack ) throw new Error(`[snv-monsters] missing required source attack ${irEntry.sourceName}/${name}`);
@@ -1265,9 +1337,16 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 		exceptions.push({ type: "save-only-action-not-fully-emitted", note: "save text detected; skeleton actor scalars only" });
 	}
 	const softUnsupportedMechanics = [];
+	const softMechanics = new Set([
+		"qualified-defense-parsing",
+		"reaction-activity",
+		"limited-uses-activity",
+		"recharge-activity",
+		"swarm-squad-ammo-policy"
+	]);
 	for ( const mechanic of irEntry.unsupportedMechanics || [] ) {
 		// Soft classifier flags that do not block descriptive production emission.
-		if ( mechanic === "qualified-defense-parsing" ) {
+		if ( softMechanics.has(mechanic) ) {
 			softUnsupportedMechanics.push(mechanic);
 			continue;
 		}

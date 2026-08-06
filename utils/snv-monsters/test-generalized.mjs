@@ -587,6 +587,64 @@ test("N3f swallow and Tentacle Slam limitations preserve facts without automatio
 	assert.equal(plague?.diseaseName, "the Rakghoul Plague");
 });
 
+test("A-C2 reaction section, per-day uses, and recharge metadata", () => {
+	const body = `
+*Medium aberration, unaligned*
+- Armor Class 12
+- Hit Points 27 (5d8+5)
+- Speed 30 ft.
+
+| STR | DEX | CON | INT | WIS | CHA |
+| --- | --- | --- | --- | --- | --- |
+| 14 (+1) | 14 (+2) | 12 (+1) | 4 (-3) | 10 (+0) | 6 (-2) |
+
+- Challenge 1 (200 XP)
+
+### Actions
+**Baleful Wail (Recharge 5-6).** Each creature within 60 feet must succeed on a DC 17 Wisdom saving throw or take 21 (6d6) sonic damage.
+
+### Reactions
+**Muscle Memory.** When a creature moves to within 30 feet of the rakghoul, it can make a ranged weapon attack against the creature.
+`;
+	const ir = createEmptyIrEntry({
+		sourceName: "Synthetic Reaction",
+		semanticKey: "snv:Aberrations:synthetic-reaction",
+		section: "Aberrations",
+		parseStatus: "parsed-valid",
+		capabilityStatus: "fully-supported",
+		outputSelection: "selected-edge-case",
+		productionReadiness: "sandbox-only",
+		features: detectFeatures(body)
+	});
+	const { actor } = generateGeneralizedActor({
+		irEntry: ir,
+		body,
+		nonproduction: false,
+		productionContext: {
+			batch: "n3a-p3",
+			exactFeatures: {
+				passives: [],
+				nonAttackActions: ["Baleful Wail (Recharge 5-6)", "Muscle Memory"],
+				weaponAttacks: []
+			},
+			identityActor: {
+				items: {
+					a: { id: "aaaaaaaaaaaaaaaa", name: "Baleful Wail (Recharge 5-6)", type: "feat", activities: {} },
+					b: { id: "bbbbbbbbbbbbbbbb", name: "Muscle Memory", type: "feat", activities: {} }
+				}
+			},
+			artwork: { avatarPath: "systems/dnd5e/icons/svg/actors/npc.svg", tokenPath: "systems/dnd5e/icons/svg/actors/npc.svg", folderId: null },
+			metadata: { outputSelection: "selected-n3a-p3", productionReadiness: "prototype-validated", packPhase: "n3a-p3-aberrations" }
+		}
+	});
+	const wail = actor.items.find(item => item.name.startsWith("Baleful Wail"));
+	const muscle = actor.items.find(item => item.name === "Muscle Memory");
+	assert.equal(wail.system.recharge.value, 5);
+	assert.equal(wail.system.recharge.charged, true);
+	assert.equal(wail.system.activation.type, "action");
+	assert.equal(muscle.system.activation.type, "reaction");
+});
+
 test("C10 Multiattack nonattack emits description-only feat without attack activity", () => {
 	const body = `
 *Huge beast*

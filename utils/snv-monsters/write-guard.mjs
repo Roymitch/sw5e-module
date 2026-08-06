@@ -581,6 +581,46 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			productionReadiness: "prototype-validated",
 			packPhase: "n3a-p2-aberrations"
 		}
+	}),
+	"n3a-p3": Object.freeze({
+		batch: "n3a-p3",
+		artifactPrefix: "n3a-p3",
+		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
+		approvedSemanticKeys: [
+			"snv:Aberrations:orbalisk-swarm",
+			"snv:Aberrations:rakghoul-vile",
+			"snv:Aberrations:rakghoul-fiend",
+			"snv:Aberrations:rakghoul-monstrous"
+		],
+		approvedYamlRelativePaths: [
+			"packs/_source/snv-monsters/aberrations/orbalisk-swarm.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-vile.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-fiend.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-monstrous.yml"
+		],
+		allowedTrackedRelativePaths: [
+			"utils/snv-monsters/identity.mjs",
+			"utils/snv-monsters/generate.mjs",
+			"utils/snv-monsters/production-write.mjs",
+			"utils/snv-monsters/validate.mjs",
+			"utils/snv-monsters/write-guard.mjs",
+			"utils/snv-monsters/cli.mjs",
+			"utils/snv-monsters/test-unit.mjs",
+			"utils/snv-monsters/generate-generalized.mjs",
+			"utils/snv-monsters/test-generalized.mjs",
+			"utils/snv-monsters/manifests/identity-map.json",
+			"packs/_source/snv-monsters/aberrations/orbalisk-swarm.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-vile.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-fiend.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-monstrous.yml"
+		],
+		expectedIdentityAdditions: { actors: 4, items: 31, activities: 10 },
+		requireWorkingTreeClean: false,
+		productionMetadata: {
+			outputSelection: "selected-n3a-p3",
+			productionReadiness: "prototype-validated",
+			packPhase: "n3a-p3-aberrations"
+		}
 	})
 });
 
