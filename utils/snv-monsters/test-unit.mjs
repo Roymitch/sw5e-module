@@ -88,6 +88,9 @@ test("production batch descriptors stay fail-closed and path-scoped", () => {
 	const p9 = getProductionBatchDescriptor("n3b-p9");
 	assert.equal(p9.approvedSemanticKeys.length, 2);
 	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/vornskr.yml"), "n3b-p9"));
+	const p10 = getProductionBatchDescriptor("n3b-p10");
+	assert.equal(p10.approvedSemanticKeys.length, 1);
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/dianoga-adolescent.yml"), "n3b-p10"));
 });
 
 test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {
@@ -273,6 +276,25 @@ test("production identity plans support n3b-p9 counts", () => {
 	assert.equal(counts.actors, 2);
 	assert.equal(counts.items, 9);
 	assert.equal(counts.activities, 4);
+});
+
+test("production identity plans support n3b-p10 counts", () => {
+	const plan = buildProductionIdentityPlan("n3b-p10", {
+		actors: [{
+			name: "Dianoga, Adolescent",
+			semanticKey: "snv:Beasts:dianoga-adolescent",
+			traitsAndActions: {
+				passives: ["Grasping Tentacles", "Limited Amphibiousness", "Regeneration"],
+				nonAttackActions: ["Multiattack"],
+				weaponAttacks: ["Bite", "Tentacles"]
+			}
+		}]
+	}, loadProductionIdentityMap());
+	const counts = summarizeIdentityAddition(plan);
+	assert.equal(Object.keys(plan.actors).length, 1);
+	assert.equal(counts.actors, 1);
+	assert.equal(counts.items, 6);
+	assert.equal(counts.activities, 2);
 });
 
 test("production validators fail closed on malformed ledgers", () => {

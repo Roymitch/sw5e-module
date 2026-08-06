@@ -18,6 +18,7 @@ export const N3B_P6_ORIGIN = "n3b-p6-approved";
 export const N3B_P7_ORIGIN = "n3b-p7-approved";
 export const N3B_P8_ORIGIN = "n3b-p8-approved";
 export const N3B_P9_ORIGIN = "n3b-p9-approved";
+export const N3B_P10_ORIGIN = "n3b-p10-approved";
 export const N3A_BATCH = "n3a";
 export const N3A_BEASTS_FOLDER_KEY = "snv-folder:Beasts";
 const PRODUCTION_ORIGINS = Object.freeze({
@@ -30,7 +31,8 @@ const PRODUCTION_ORIGINS = Object.freeze({
 	"n3b-p6": N3B_P6_ORIGIN,
 	"n3b-p7": N3B_P7_ORIGIN,
 	"n3b-p8": N3B_P8_ORIGIN,
-	"n3b-p9": N3B_P9_ORIGIN
+	"n3b-p9": N3B_P9_ORIGIN,
+	"n3b-p10": N3B_P10_ORIGIN
 });
 
 function shortHash(seed) {

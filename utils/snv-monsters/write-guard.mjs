@@ -378,6 +378,33 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			productionReadiness: "prototype-validated",
 			packPhase: "n3b-p9-tracked"
 		}
+	}),
+	"n3b-p10": Object.freeze({
+		batch: "n3b-p10",
+		artifactPrefix: "n3b-p10",
+		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
+		approvedSemanticKeys: ["snv:Beasts:dianoga-adolescent"],
+		approvedYamlRelativePaths: ["packs/_source/snv-monsters/beasts/dianoga-adolescent.yml"],
+		allowedTrackedRelativePaths: [
+			"utils/snv-monsters/identity.mjs",
+			"utils/snv-monsters/generate.mjs",
+			"utils/snv-monsters/production-write.mjs",
+			"utils/snv-monsters/validate.mjs",
+			"utils/snv-monsters/write-guard.mjs",
+			"utils/snv-monsters/cli.mjs",
+			"utils/snv-monsters/test-unit.mjs",
+			"utils/snv-monsters/generate-generalized.mjs",
+			"utils/snv-monsters/test-generalized.mjs",
+			"utils/snv-monsters/manifests/identity-map.json",
+			"packs/_source/snv-monsters/beasts/dianoga-adolescent.yml"
+		],
+		expectedIdentityAdditions: { actors: 1, items: 6, activities: 2 },
+		requireWorkingTreeClean: false,
+		productionMetadata: {
+			outputSelection: "selected-n3b-p10",
+			productionReadiness: "prototype-validated",
+			packPhase: "n3b-p10-tracked"
+		}
 	})
 });
 
