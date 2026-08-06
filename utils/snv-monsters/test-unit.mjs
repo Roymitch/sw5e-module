@@ -94,6 +94,9 @@ test("production batch descriptors stay fail-closed and path-scoped", () => {
 	const p11 = getProductionBatchDescriptor("n3b-p11");
 	assert.equal(p11.approvedSemanticKeys.length, 6);
 	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/kath-hound-horned.yml"), "n3b-p11"));
+	const p12 = getProductionBatchDescriptor("n3b-p12");
+	assert.equal(p12.approvedSemanticKeys.length, 8);
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/ghest.yml"), "n3b-p12"));
 });
 
 test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {
@@ -316,6 +319,26 @@ test("production identity plans support n3b-p11 counts", () => {
 	assert.equal(counts.actors, 6);
 	assert.equal(counts.items, 33);
 	assert.equal(counts.activities, 14);
+});
+
+test("production identity plans support n3b-p12 counts", () => {
+	const plan = buildProductionIdentityPlan("n3b-p12", {
+		actors: [
+			{ name: "Bantha, Feral", semanticKey: "snv:Beasts:bantha-feral", traitsAndActions: { passives: ["Trampling Charge"], nonAttackActions: [], weaponAttacks: ["Ram", "Stomp"] } },
+			{ name: "Sleen", semanticKey: "snv:Beasts:sleen", traitsAndActions: { passives: ["Trampling Charge"], nonAttackActions: [], weaponAttacks: ["Bite", "Claw"] } },
+			{ name: "Scazz", semanticKey: "snv:Beasts:scazz", traitsAndActions: { passives: ["Pack Tactics", "Sunlight Sensitivity"], nonAttackActions: [], weaponAttacks: ["Bite", "Leap Attack"] } },
+			{ name: "Pherin", semanticKey: "snv:Beasts:pherin", traitsAndActions: { passives: ["Amphibious", "Standing Leap", "Swamp Camouflage"], nonAttackActions: ["Multiattack"], weaponAttacks: ["Bite", "Stone"] } },
+			{ name: "Nashtah", semanticKey: "snv:Beasts:nashtah", traitsAndActions: { passives: ["Ambusher", "Keen Striking", "Pack Tactics", "Tracking Venom"], nonAttackActions: ["Multiattack"], weaponAttacks: ["Bite", "Claw", "Tail"] } },
+			{ name: "Ghest", semanticKey: "snv:Beasts:ghest", traitsAndActions: { passives: ["Ambusher", "Hold Breath"], nonAttackActions: ["Multiattack"], weaponAttacks: ["Bite", "Claws"] } },
+			{ name: "Dianoga, Adult", semanticKey: "snv:Beasts:dianoga-adult", traitsAndActions: { passives: ["Grasping Tentacles", "Limited Amphibiousness", "Regeneration"], nonAttackActions: ["Multiattack", "Tentacle Slam"], weaponAttacks: ["Bite", "Tentacles"] } },
+			{ name: "Rancor, Adult", semanticKey: "snv:Beasts:rancor-adult", traitsAndActions: { passives: ["Siege Monster"], nonAttackActions: ["Multiattack", "Swallow"], weaponAttacks: ["Bite", "Claws", "Throw Boulder"] } }
+		]
+	}, loadProductionIdentityMap());
+	const counts = summarizeIdentityAddition(plan);
+	assert.equal(Object.keys(plan.actors).length, 8);
+	assert.equal(counts.actors, 8);
+	assert.equal(counts.items, 42);
+	assert.equal(counts.activities, 18);
 });
 
 test("production validators fail closed on malformed ledgers", () => {

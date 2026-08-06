@@ -451,6 +451,58 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			productionReadiness: "prototype-validated",
 			packPhase: "n3b-p11-tracked"
 		}
+	}),
+	"n3b-p12": Object.freeze({
+		batch: "n3b-p12",
+		artifactPrefix: "n3b-p12",
+		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
+		approvedSemanticKeys: [
+			"snv:Beasts:bantha-feral",
+			"snv:Beasts:sleen",
+			"snv:Beasts:scazz",
+			"snv:Beasts:pherin",
+			"snv:Beasts:nashtah",
+			"snv:Beasts:ghest",
+			"snv:Beasts:dianoga-adult",
+			"snv:Beasts:rancor-adult"
+		],
+		approvedYamlRelativePaths: [
+			"packs/_source/snv-monsters/beasts/bantha-feral.yml",
+			"packs/_source/snv-monsters/beasts/sleen.yml",
+			"packs/_source/snv-monsters/beasts/scazz.yml",
+			"packs/_source/snv-monsters/beasts/pherin.yml",
+			"packs/_source/snv-monsters/beasts/nashtah.yml",
+			"packs/_source/snv-monsters/beasts/ghest.yml",
+			"packs/_source/snv-monsters/beasts/dianoga-adult.yml",
+			"packs/_source/snv-monsters/beasts/rancor-adult.yml"
+		],
+		allowedTrackedRelativePaths: [
+			"utils/snv-monsters/identity.mjs",
+			"utils/snv-monsters/generate.mjs",
+			"utils/snv-monsters/production-write.mjs",
+			"utils/snv-monsters/validate.mjs",
+			"utils/snv-monsters/write-guard.mjs",
+			"utils/snv-monsters/cli.mjs",
+			"utils/snv-monsters/test-unit.mjs",
+			"utils/snv-monsters/generate-generalized.mjs",
+			"utils/snv-monsters/test-generalized.mjs",
+			"utils/snv-monsters/manifests/identity-map.json",
+			"packs/_source/snv-monsters/beasts/bantha-feral.yml",
+			"packs/_source/snv-monsters/beasts/sleen.yml",
+			"packs/_source/snv-monsters/beasts/scazz.yml",
+			"packs/_source/snv-monsters/beasts/pherin.yml",
+			"packs/_source/snv-monsters/beasts/nashtah.yml",
+			"packs/_source/snv-monsters/beasts/ghest.yml",
+			"packs/_source/snv-monsters/beasts/dianoga-adult.yml",
+			"packs/_source/snv-monsters/beasts/rancor-adult.yml"
+		],
+		expectedIdentityAdditions: { actors: 8, items: 42, activities: 18 },
+		requireWorkingTreeClean: false,
+		productionMetadata: {
+			outputSelection: "selected-n3b-p12",
+			productionReadiness: "prototype-validated",
+			packPhase: "n3b-p12-tracked"
+		}
 	})
 });
 
