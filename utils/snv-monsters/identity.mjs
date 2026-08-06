@@ -11,12 +11,14 @@ const N1_ORIGIN = "n1-committed";
 export const N3A_ORIGIN = "n3a-approved";
 export const N3B_P2_ORIGIN = "n3b-p2-approved";
 export const N3B_P3_ORIGIN = "n3b-p3-approved";
+export const N3B_P4_ORIGIN = "n3b-p4-approved";
 export const N3A_BATCH = "n3a";
 export const N3A_BEASTS_FOLDER_KEY = "snv-folder:Beasts";
 const PRODUCTION_ORIGINS = Object.freeze({
 	n3a: N3A_ORIGIN,
 	"n3b-p2": N3B_P2_ORIGIN,
-	"n3b-p3": N3B_P3_ORIGIN
+	"n3b-p3": N3B_P3_ORIGIN,
+	"n3b-p4": N3B_P4_ORIGIN
 });
 
 function shortHash(seed) {

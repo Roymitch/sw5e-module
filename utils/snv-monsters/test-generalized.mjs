@@ -2,7 +2,7 @@
  * Tracked generalized-generator unit tests (synthetic fixtures only).
  */
 import assert from "node:assert/strict";
-import { generateGeneralizedActor, parseChargeDamageKnockdown } from "./generate-generalized.mjs";
+import { generateGeneralizedActor, parseChargeDamageKnockdown, parseOnHitProneRider } from "./generate-generalized.mjs";
 import { createEmptyIrEntry } from "./ir-schema.mjs";
 import { detectFeatures, deriveCapability } from "./classify.mjs";
 import { resolveCanonicalWeapon, buildCanonicalWeaponIndex } from "./canonical.mjs";
@@ -192,6 +192,77 @@ test("C6 Charge damage-plus-knockdown metadata recognizes Moof/Reek and excludes
 	assert.equal(charge.flags.sw5e.snvMonsters.chargeDamageKnockdown?.family, "charge-damage-knockdown");
 	assert.equal(charge.flags.sw5e.snvMonsters.chargeDamageKnockdown?.extraDamage, "2d10");
 	assert.equal(actor.items.filter(item => item.type === "weapon").length, 1);
+});
+
+test("C7 on-hit prone riders recognize Bite/Stomp/Tail and exclude charge, grapple, and affliction", () => {
+	const womp = parseOnHitProneRider({
+		name: "Bite",
+		description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) kinetic damage. If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone."
+	});
+	assert.equal(womp?.family, "on-hit-prone");
+	assert.equal(womp?.saveDc, 13);
+	assert.equal(womp?.targetRestriction, "creature");
+	assert.equal(womp?.runtimeAutomation, false);
+
+	const sibian = parseOnHitProneRider({
+		name: "Bite",
+		description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) kinetic damage. If the target is Large or smaller, it must succeed on a DC 11 Strength saving throw or be knocked prone."
+	});
+	assert.equal(sibian?.targetRestriction, "large-or-smaller");
+	assert.equal(sibian?.saveDc, 11);
+
+	const fambaa = parseOnHitProneRider({
+		name: "Stomp",
+		description: "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 24 (4d8 + 6) kinetic damage, and the target must succeed on a DC 16 Strength saving throw or be knocked prone."
+	});
+	assert.equal(fambaa?.saveDc, 16);
+
+	const nashtahTail = parseOnHitProneRider({
+		name: "Tail",
+		description: "Melee Weapon Attack: +6 to hit, reach 10 ft., one target not grappled by the nashtah. Hit: 13 (2d8 + 4) kinetic damage. If the target is a creature, it must succeed on a DC 16 Strength saving throw or be knocked prone."
+	});
+	assert.equal(nashtahTail?.saveDc, 16);
+	assert.match(nashtahTail?.targetingRestriction || "", /not grappled by the nashtah/i);
+
+	assert.equal(parseOnHitProneRider({
+		name: "Charge",
+		description: "If the moof moves at least 20 feet straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 11 (2d10) kinetic damage. If the target is a creature, it must succeed on a DC 14 Strength saving throw or be knocked prone."
+	}), null);
+	assert.equal(parseOnHitProneRider({
+		name: "Bite",
+		description: "Hit: 15 (2d10 + 4) kinetic damage. The target is grappled (escape DC 16). Until this grapple ends, the target is restrained and the nashtah can't bite another target."
+	}), null);
+	assert.equal(parseOnHitProneRider({
+		name: "Tail",
+		description: "Hit: 5 (1d6 + 2) kinetic damage plus 7 (2d6) poison damage. If the target is a creature it must also make DC 13 Constitution saving throw. On a failure, a creature is paralyzed for 1 minute."
+	}), null);
+
+	const body = `
+*Medium beast*
+- Armor Class 13
+- Hit Points 22 (4d8 + 4)
+- Speed 40 ft.
+| STR | DEX | CON | INT | WIS | CHA |
+| 14 (+2) | 14 (+2) | 12 (+1) | 2 (-4) | 12 (+1) | 6 (-2) |
+- Challenge 1 (200 XP)
+### Actions
+**Bite.** *Melee Weapon Attack:* +4 to hit, reach 5 ft., one target. *Hit:* 7 (2d4 + 2) kinetic damage. If the target is Large or smaller, it must succeed on a DC 11 Strength saving throw or be knocked prone.
+`;
+	const ir = createEmptyIrEntry({
+		sourceName: "Synthetic Sibian Bite",
+		semanticKey: "snv:Beasts:synthetic-sibian-bite",
+		section: "Beasts",
+		parseStatus: "parsed-valid",
+		capabilityStatus: "fully-supported",
+		outputSelection: "selected-edge-case",
+		productionReadiness: "sandbox-only",
+		features: detectFeatures(body)
+	});
+	const { actor } = generateGeneralizedActor({ irEntry: ir, body });
+	const bite = actor.items.find(item => item.name === "Bite");
+	assert.ok(bite);
+	assert.equal(bite.flags.sw5e.snvMonsters.onHitProne?.family, "on-hit-prone");
+	assert.equal(bite.flags.sw5e.snvMonsters.onHitProne?.saveDc, 11);
 });
 
 test("bounded anatomy natural names emit natural mwak and keep out-of-scope names non-natural", () => {

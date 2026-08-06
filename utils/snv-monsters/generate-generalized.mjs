@@ -369,7 +369,9 @@ function activityDamageParts(formula, damageType) {
 }
 
 function parseAttackEntry(entry) {
-	const attackMatch = entry.text.match(/\*?(Melee|Ranged) Weapon Attack:\*?\s*([+-]\d+)\s*to hit,\s*([^.]*)\.\s*\*?Hit:\*?\s*([^]+)$/i);
+	const attackMatch = entry.text.match(
+		/\*?(Melee|Ranged) Weapon Attack:\*?\s*([+-]\d+)\s*to hit,\s*(.*?)\.\s*\*?Hit:\*?\s*([^]+)$/i
+	);
 	if ( !attackMatch ) return null;
 	const targetingClause = attackMatch[3].trim();
 	const hitText = attackMatch[4].replace(/\s+/g, " ").trim().replace(/\.*$/, "");
@@ -457,6 +459,37 @@ function activationTypeForFeature(section, text) {
 
 function isNaturalWeaponAttackName(name) {
 	return NATURAL_MELEE_WEAPON_NAMES.has(String(name || "").trim().toLowerCase());
+}
+
+/**
+ * Recognize bounded C7 on-hit Strength-save prone riders on the attack line itself.
+ * Excludes charge/move triggers (C5/C6), grapple/restrain setups (C8), and affliction riders (C9).
+ */
+export function parseOnHitProneRider(attack) {
+	const text = String(attack?.description || attack?.hit || "");
+	if ( !text ) return null;
+	if ( /moves at least\s+\d+\s+feet/i.test(text) ) return null;
+	if ( /\bgrappled\b/i.test(text) && /\brestrained\b/i.test(text) ) return null;
+	if ( /\bConstitution saving throw\b/i.test(text) ) return null;
+	if ( /\b(paralyzed|poisoned|diseased)\b/i.test(text) ) return null;
+	const match = text.match(
+		/(?:If the target is (?:a )?(creature|Large or smaller)(?:,?\s*it)?|and the target) must succeed on a DC\s+(\d+)\s+Strength saving throw or be knocked prone/i
+	);
+	if ( !match ) return null;
+	const restrictionRaw = match[1] || null;
+	const targetingRestrictionMatch = text.match(/one target not grappled by the [^.]+/i);
+	return {
+		family: "on-hit-prone",
+		attackName: titleCase(String(attack?.name || "").trim()),
+		saveAbility: "str",
+		saveDc: Number(match[2]),
+		condition: "prone",
+		targetRestriction: restrictionRaw && /large or smaller/i.test(restrictionRaw)
+			? "large-or-smaller"
+			: (restrictionRaw && /creature/i.test(restrictionRaw) ? "creature" : null),
+		targetingRestriction: targetingRestrictionMatch ? targetingRestrictionMatch[0].trim() : null,
+		runtimeAutomation: false
+	};
 }
 
 /**
@@ -554,6 +587,11 @@ function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, 
 	item.folder = null;
 	item.flags = item.flags || {};
 	item.flags.sw5e = item.flags.sw5e || {};
+	const onHitProne = parseOnHitProneRider({
+		...attack,
+		description: description || attack.description || attack.hit,
+		hit: description || attack.hit
+	});
 	item.flags.sw5e.snvMonsters = {
 		prototype: nonproduction,
 		classification: isNatural ? "natural" : "source-specific",
@@ -565,7 +603,8 @@ function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, 
 		prePublication: nonproduction,
 		trackedPack: "snv-monsters",
 		sandboxTemp: nonproduction,
-		approvedBatch: nonproduction ? null : approvedBatch
+		approvedBatch: nonproduction ? null : approvedBatch,
+		...(onHitProne ? { onHitProne } : {})
 	};
 	item.system.description.value = toHtmlParagraph(description);
 	item.system.description.chat = "";
@@ -901,7 +940,7 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 			itemId: itemIdentity?.id || tempId(`${id}:${attack.name}`),
 			activityId: activityId || tempId(`${id}:${attack.name}:attack`),
 			attack,
-			description: attack.description || entriesByName.get(attack.name)?.text || attack.hit,
+			description: entriesByName.get(attack.name)?.text || attack.description || attack.hit,
 			img: resolveFeatureImage(attack.name, "weapon", actor.img),
 			isNatural,
 			nonproduction,

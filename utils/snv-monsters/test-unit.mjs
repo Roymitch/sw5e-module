@@ -67,6 +67,9 @@ test("production batch descriptors stay fail-closed and path-scoped", () => {
 	assert.throws(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/blurrg.yml"), "n3b-p2"));
 	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/aryx.yml"), "n3b-p2"));
 	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/moof.yml"), "n3b-p3"));
+	const p4 = getProductionBatchDescriptor("n3b-p4");
+	assert.equal(p4.approvedSemanticKeys.length, 2);
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/sibian-hound.yml"), "n3b-p4"));
 });
 
 test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {
@@ -116,6 +119,36 @@ test("production identity plans support n3b-p3 Moof counts", () => {
 	assert.equal(counts.actors, 1);
 	assert.equal(counts.items, 3);
 	assert.equal(counts.activities, 1);
+});
+
+test("production identity plans support n3b-p4 counts", () => {
+	const plan = buildProductionIdentityPlan("n3b-p4", {
+		actors: [
+			{
+				name: "Jundland Wastes Womp Rat",
+				semanticKey: "snv:Beasts:jundland-wastes-womp-rat",
+				traitsAndActions: {
+					passives: ["Keen Hearing and Smell", "Pack Tactics"],
+					nonAttackActions: [],
+					weaponAttacks: ["Bite"]
+				}
+			},
+			{
+				name: "Sibian Hound",
+				semanticKey: "snv:Beasts:sibian-hound",
+				traitsAndActions: {
+					passives: ["Keen Hearing and Smell", "Pack Tactics"],
+					nonAttackActions: [],
+					weaponAttacks: ["Bite"]
+				}
+			}
+		]
+	}, loadProductionIdentityMap());
+	const counts = summarizeIdentityAddition(plan);
+	assert.equal(Object.keys(plan.actors).length, 2);
+	assert.equal(counts.actors, 2);
+	assert.equal(counts.items, 6);
+	assert.equal(counts.activities, 2);
 });
 
 test("production validators fail closed on malformed ledgers", () => {

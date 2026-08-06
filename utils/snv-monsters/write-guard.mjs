@@ -128,6 +128,40 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			productionReadiness: "prototype-validated",
 			packPhase: "n3b-p3-tracked"
 		}
+	}),
+	"n3b-p4": Object.freeze({
+		batch: "n3b-p4",
+		artifactPrefix: "n3b-p4",
+		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
+		approvedSemanticKeys: [
+			"snv:Beasts:jundland-wastes-womp-rat",
+			"snv:Beasts:sibian-hound"
+		],
+		approvedYamlRelativePaths: [
+			"packs/_source/snv-monsters/beasts/jundland-wastes-womp-rat.yml",
+			"packs/_source/snv-monsters/beasts/sibian-hound.yml"
+		],
+		allowedTrackedRelativePaths: [
+			"utils/snv-monsters/identity.mjs",
+			"utils/snv-monsters/generate.mjs",
+			"utils/snv-monsters/production-write.mjs",
+			"utils/snv-monsters/validate.mjs",
+			"utils/snv-monsters/write-guard.mjs",
+			"utils/snv-monsters/cli.mjs",
+			"utils/snv-monsters/test-unit.mjs",
+			"utils/snv-monsters/generate-generalized.mjs",
+			"utils/snv-monsters/test-generalized.mjs",
+			"utils/snv-monsters/manifests/identity-map.json",
+			"packs/_source/snv-monsters/beasts/jundland-wastes-womp-rat.yml",
+			"packs/_source/snv-monsters/beasts/sibian-hound.yml"
+		],
+		expectedIdentityAdditions: { actors: 2, items: 6, activities: 2 },
+		requireWorkingTreeClean: false,
+		productionMetadata: {
+			outputSelection: "selected-n3b-p4",
+			productionReadiness: "prototype-validated",
+			packPhase: "n3b-p4-tracked"
+		}
 	})
 });
 
