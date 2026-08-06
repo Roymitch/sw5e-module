@@ -528,6 +528,16 @@ items:
           trackedPack: snv-monsters
           sandboxTemp: false
           approvedBatch: n3b-p12
+          grappleRestrain:
+            family: grapple-restrain
+            attackName: Claws
+            saveAbility: null
+            saveDc: null
+            escapeDc: 18
+            conditions:
+              - grappled
+              - restrained
+            runtimeAutomation: false
     img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
     effects: []
     folder: null

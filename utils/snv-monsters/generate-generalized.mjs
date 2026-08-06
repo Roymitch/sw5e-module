@@ -707,7 +707,7 @@ export function parseGrappleRestrainRider(attack) {
 	const saveGrapple = text.match(
 		/DC\s+(\d+)\s+Strength saving throw or be grappled\b/i
 	);
-	const autoGrapple = /the target is grappled\b/i.test(text);
+	const autoGrapple = /(?:the target|it) is grappled\b/i.test(text);
 	if ( !saveGrapple && !autoGrapple ) return null;
 
 	const restrained = /\brestrained\b/i.test(text);
@@ -762,7 +762,7 @@ export function parseChargeKnockdownFollowup(featureName, description) {
 	const text = String(description || "");
 	if ( /takes an extra\s+\d+\s*\(/i.test(text) ) return null;
 	const match = text.match(
-		/moves at least\s+(\d+)\s+feet(?:\s+straight)?\s+toward a creature(?:\s+and then|\s+and)\s+hits it with an?\s+([A-Za-z][A-Za-z '-]*?)\s+attack on (?:the same |that )?turn,\s*(?:that|the) target must succeed on a DC\s+(\d+)\s+Strength saving throw or be knocked prone\.\s*If the target is prone,\s*(?:the|it)\s+[^.]*?\b(?:can make (?:another|one) attack with its ([A-Za-z][A-Za-z '-]*?)|can make (?:another|one) ([A-Za-z][A-Za-z '-]*?) attack)\b[^.]*\bas a bonus action/i
+		/moves at least\s+(\d+)\s+feet(?:\s+straight)?\s+toward a creature(?:\s+and then|\s+and)\s+hits it with an?\s+([A-Za-z][A-Za-z '-]*?)\s+attack on (?:the same |that )?turn,\s*(?:that|the) target must succeed on a DC\s+(\d+)\s+Strength saving throw or be knocked prone\.\s*If the target is prone,\s*(?:the|it)\s+[^.]*?\b(?:can(?:\s+\w+)?\s+make (?:another|one) attack with its ([A-Za-z][A-Za-z '-]*?)|can(?:\s+\w+)?\s+make (?:another|one) ([A-Za-z][A-Za-z '-]*?) attack)\b[^.]*\bas a bonus action/i
 	);
 	if ( !match ) return null;
 	const followUpRaw = (match[4] || match[5] || "").trim();

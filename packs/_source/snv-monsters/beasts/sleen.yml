@@ -19,6 +19,18 @@ items:
           trackedPack: snv-monsters
           sandboxTemp: false
           approvedBatch: n3b-p12
+          chargeKnockdownFollowup:
+            family: charge-knockdown-followup
+            featureName: Trampling Charge
+            moveFeet: 20
+            triggerAttack: Claw
+            saveAbility: str
+            saveDc: 13
+            condition: prone
+            followUpAttack: Bite
+            followUpActivation: bonus
+            sourceTriggerLabelPreserved: claw
+            runtimeAutomation: false
     img: modules/sw5e-module/icons/packs/Monster Traits/Trampling Charge.webp
     effects: []
     folder: null
