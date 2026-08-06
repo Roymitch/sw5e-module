@@ -668,6 +668,27 @@ export function parseSwallowOnHitRider(attack) {
 export function parseComplexActionLimitation(featureName, description) {
 	const name = String(featureName || "").trim().toLowerCase();
 	const text = String(description || "");
+	if ( name === "engulf" ) {
+		const save = text.match(/DC\s+(\d+)\s+Dexterity saving throw/i);
+		const escape = text.match(/DC\s+(\d+)\s+Strength \(Athletics\)/i);
+		return {
+			family: "engulf",
+			featureName: titleCase(String(featureName || "").trim()),
+			saveAbility: "dex",
+			saveDc: save ? Number(save[1]) : null,
+			escapeDc: escape ? Number(escape[1]) : null,
+			runtimeAutomation: false,
+			limitation: "Engulf movement-into-space save, restrained/blinded ongoing acid, and escape checks are description-preserved only."
+		};
+	}
+	if ( name === "infect host" || name === "acid spit" ) {
+		return {
+			family: name === "acid spit" ? "acid-spit-cone" : "infect-host",
+			featureName: titleCase(String(featureName || "").trim()),
+			runtimeAutomation: false,
+			limitation: "Complex save cone / possession-transform rider is description-preserved only."
+		};
+	}
 	if ( name === "tentacle slam" || name === "grapple slam" ) {
 		const save = text.match(/DC\s+(\d+)\s+Constitution saving throw/i);
 		return {

@@ -621,6 +621,40 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			productionReadiness: "prototype-validated",
 			packPhase: "n3a-p3-aberrations"
 		}
+	}),
+	"n3a-p4": Object.freeze({
+		batch: "n3a-p4",
+		artifactPrefix: "n3a-p4",
+		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
+		approvedSemanticKeys: [
+			"snv:Aberrations:mnggal-mnggal-gray-pudding",
+			"snv:Aberrations:mnggal-mnggal-pool-of"
+		],
+		approvedYamlRelativePaths: [
+			"packs/_source/snv-monsters/aberrations/mnggal-mnggal-gray-pudding.yml",
+			"packs/_source/snv-monsters/aberrations/mnggal-mnggal-pool-of.yml"
+		],
+		allowedTrackedRelativePaths: [
+			"utils/snv-monsters/identity.mjs",
+			"utils/snv-monsters/generate.mjs",
+			"utils/snv-monsters/production-write.mjs",
+			"utils/snv-monsters/validate.mjs",
+			"utils/snv-monsters/write-guard.mjs",
+			"utils/snv-monsters/cli.mjs",
+			"utils/snv-monsters/test-unit.mjs",
+			"utils/snv-monsters/generate-generalized.mjs",
+			"utils/snv-monsters/test-generalized.mjs",
+			"utils/snv-monsters/manifests/identity-map.json",
+			"packs/_source/snv-monsters/aberrations/mnggal-mnggal-gray-pudding.yml",
+			"packs/_source/snv-monsters/aberrations/mnggal-mnggal-pool-of.yml"
+		],
+		expectedIdentityAdditions: { actors: 2, items: 20, activities: 2 },
+		requireWorkingTreeClean: false,
+		productionMetadata: {
+			outputSelection: "selected-n3a-p4",
+			productionReadiness: "prototype-validated",
+			packPhase: "n3a-p4-aberrations"
+		}
 	})
 });
 
