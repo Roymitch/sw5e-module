@@ -1,0 +1,2681 @@
+_id: d05b947e93fa726a
+name: Salvager
+type: npc
+img: systems/dnd5e/icons/svg/actors/npc.svg
+folder: a907e6b54e75b9d3
+items:
+  - _id: 326e27a5ca829ce9
+    name: Staunch
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-auto-13
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The salvager has advantage on saving throws against being charmed or frightened.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!d05b947e93fa726a.326e27a5ca829ce9"
+  - _id: 93cb48a800795d7e
+    name: Multiattack
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featAction
+          sourceSection: actions
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-auto-13
+    img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The salvager makes two weapon attacks.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!d05b947e93fa726a.93cb48a800795d7e"
+  - _id: 696aa5d9e5e627fc
+    name: Heavy Shotgun Burst (Recharge 4-6)
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featAction
+          sourceSection: actions
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-auto-13
+          recharge:
+            family: recharge
+            min: 4
+            max: 6
+            runtimeAutomation: true
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The salvager sprays a 10-foot-cube area within range (60/240) with shots. Each creature in the area must
+          make a DC 12 Dexterity saving throw, taking 7 (2d4 + 2) energy damage on a failed save, or half as much on a
+          successful one.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: 4
+        charged: true
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!d05b947e93fa726a.696aa5d9e5e627fc"
+  - name: Electrostaff
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:52:06.0987176+00:00"
+        importer_version: 3
+        uid: Weapon.name-electrostaff.equipmentCategory-weapon
+      sw5e:
+        properties:
+          double: 1d6 kinetic
+          shocking: 13
+          fin: true
+        reload:
+          types: []
+        snvMonsters:
+          classification: manufactured
+          kind: weaponCarried
+          canonicalMatch: packs/_source/equipment/weapons/martial-vibroweapons/electrostaff.yml
+          ammoModel: itemUses
+          sandboxTemp: false
+          prePublication: false
+          trackedPack: snv-monsters
+          approvedBatch: fts-auto-13
+          sourceActionNames:
+            - Electrostaff
+          duplicateActionProhibited: true
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+    type: weapon
+    img: modules/sw5e-module/icons/packs/Martial%20Vibroweapons/Electrostaff.webp
+    system:
+      description:
+        value: >-
+          <p>*Melee Weapon Attack:* +4 to hit, reach 5 ft., one target. *Hit:* 5 (1d6 + 2) kinetic damage and the target
+          must make a DC 13 Dexterity saving throw or take 2 (1d4) lightning damage and be shocked until the end of its
+          next turn. On a success, the target takes half damage and isn't shocked.</p>
+        chat: ""
+      source:
+        custom: SnV
+      quantity: 1
+      weight:
+        value: 5
+        units: lb
+      price:
+        value: 600
+        denomination: gc
+      attunement: ""
+      equipped: false
+      rarity: ""
+      identified: true
+      type:
+        value: martialVW
+        subtype: ""
+        baseItem: electrostaff
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      target:
+        value: "1"
+        width: null
+        units: ""
+        type: enemy
+        prompt: false
+      range:
+        value: null
+        long: null
+        units: ft
+      actionType: mwak
+      damage:
+        parts:
+          - - 1d6+2
+            - kinetic
+        versatile: ""
+        base:
+          custom: {}
+          scaling:
+            number: 1
+            mode: ""
+          denomination: 6
+          number: 1
+          types:
+            - kinetic
+      properties:
+        - double
+        - fin
+        - shocking
+      weaponClass: polearm
+      ammo:
+        types: []
+        target: ""
+        value: null
+        use: null
+      unidentified:
+        description: ""
+      container: null
+      attuned: false
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: null
+      attack:
+        bonus: "4"
+        flat: true
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      enchantment: null
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      summons: null
+      armor:
+        value: null
+      hp:
+        value: null
+        max: null
+        dt: null
+        conditions: ""
+      modify:
+        chassis: none
+        augmentSlots: 0
+        modSlots: 4
+        items: []
+        changes: {}
+      magicalBonus: null
+      proficient: null
+      firingArc: ""
+      activities:
+        25589178696e2dc2:
+          _id: 25589178696e2dc2
+          activation:
+            type: action
+          attack:
+            ability: ""
+            bonus: "4"
+            flat: true
+            type:
+              classification: weapon
+              value: melee
+          damage:
+            critical: {}
+            parts:
+              - number: 1
+                denomination: 6
+                bonus: "+2"
+                types:
+                  - kinetic
+                custom:
+                  enabled: false
+                  formula: ""
+                scaling:
+                  mode: ""
+                  number: null
+                  formula: ""
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            override: false
+            units: ft
+          target:
+            template:
+              contiguous: false
+              units: ft
+              type: ""
+            affects:
+              choice: false
+              type: ""
+            override: false
+            prompt: false
+          type: attack
+      attackBonus: "4"
+    effects: []
+    _id: fe23937e5cff7be6
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296019804
+      modifiedTime: 1739121084621
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+    _key: "!actors.items!d05b947e93fa726a.fe23937e5cff7be6"
+  - _id: d13ce93a46984872
+    name: Heavy Shotgun
+    type: weapon
+    img: modules/sw5e-module/icons/packs/Martial%20Blasters/HeavyShotgun.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:54.3935038+00:00"
+        importer_version: 3
+        uid: Weapon.name-heavy_shotgun.equipmentCategory-weapon
+      sw5e:
+        properties:
+          burst: 2
+          rel: 8
+          range: 60
+          strRq: 13
+          reload: 8
+          two: true
+        reload:
+          types:
+            - cartridge
+        snvMonsters:
+          classification: manufactured
+          kind: weaponCarried
+          canonicalMatch: packs/_source/equipment/weapons/martial-blasters/heavy-shotgun.yml
+          ammoModel: itemUses
+          sandboxTemp: false
+          prePublication: false
+          trackedPack: snv-monsters
+          approvedBatch: fts-auto-13
+          sourceActionNames:
+            - Heavy Shotgun
+          duplicateActionProhibited: true
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+    system:
+      description:
+        value: <p>*Ranged Weapon Attack:* +4 to hit, range 60/240 ft., one target. *Hit:* 7 (2d4 + 2) kinetic damage.</p>
+        chat: ""
+      source:
+        custom: SnV
+      quantity: 1
+      weight:
+        value: 0
+        units: lb
+      price:
+        value: 1125
+        denomination: gc
+      attunement: ""
+      equipped: false
+      rarity: ""
+      identified: true
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      cover: null
+      crewed: false
+      target:
+        value: "1"
+        width: null
+        units: ""
+        type: enemy
+        prompt: true
+      range:
+        value: 60
+        long: 240
+        units: ft
+      uses:
+        value: null
+        max: "8"
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: ""
+        amount: null
+        scale: false
+      ability: ""
+      actionType: rwak
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 2d4+2
+            - kinetic
+        versatile: ""
+        base:
+          custom: {}
+          scaling:
+            number: 1
+            mode: ""
+          denomination: 4
+          number: 2
+          types:
+            - kinetic
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      armor:
+        value: 10
+      hp:
+        value: 0
+        max: 0
+        dt: null
+        conditions: ""
+      modify:
+        chassis: none
+        augmentSlots: 0
+        modSlots: 4
+        items: []
+        changes: {}
+      weaponClass: heavy
+      ammo:
+        target: null
+        value: null
+        use: null
+        types:
+          - cartridge
+      properties:
+        - burst
+        - rel
+        - range
+        - strRq
+        - two
+      proficient: null
+      type:
+        value: martialBL
+        subtype: ""
+        baseItem: heavyshotgun
+      unidentified:
+        description: ""
+      attack:
+        bonus: "4"
+        flat: true
+      container: null
+      attuned: false
+      enchantment: null
+      summons: null
+      magicalBonus: null
+      firingArc: ""
+      activities:
+        ca0b9c5302acf6e6:
+          _id: ca0b9c5302acf6e6
+          activation:
+            type: action
+          attack:
+            ability: ""
+            bonus: "4"
+            flat: true
+            type:
+              classification: weapon
+              value: ranged
+          damage:
+            critical: {}
+            parts:
+              - number: 2
+                denomination: 4
+                bonus: "+2"
+                types:
+                  - kinetic
+                custom:
+                  enabled: false
+                  formula: ""
+                scaling:
+                  mode: ""
+                  number: null
+                  formula: ""
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "60"
+          target:
+            template:
+              contiguous: false
+              units: ft
+              type: ""
+            affects:
+              choice: false
+              type: ""
+            override: false
+            prompt: false
+          type: attack
+          consumption:
+            targets:
+              - type: itemUses
+                target: ""
+                value: "1"
+      attackBonus: "4"
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493961274
+      modifiedTime: 1739121083882
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+    _key: "!actors.items!d05b947e93fa726a.d13ce93a46984872"
+  - _id: af6fa8b1a3b92fd0
+    _key: "!actors.items!d05b947e93fa726a.af6fa8b1a3b92fd0"
+    name: Techcasting
+    type: feat
+    img: systems/dnd5e/icons/svg/items/feature.svg
+    system:
+      description:
+        value: >-
+          <p>The salvager is a 4th-level techcaster. Its techcasting ability is Intelligence (tech save DC 12, +4 to hit
+          with tech powers). It has 18 tech points and knows the following tech powers:   <br>At-will: *electroshock,
+          mending, poison spray, ward*<br><br>1st-level: *tactical barrier, tranquilizer*<br><br>2nd-level: *cryogenic
+          volley, infiltrate*</p>
+        chat: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: ""
+        amount: null
+        scale: false
+      ability: null
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      requirements: ""
+      recharge:
+        value: null
+        charged: false
+    effects: []
+    folder: null
+    flags:
+      sw5e:
+        snvMonsters:
+          castingTrait: true
+          castType: tech
+          parsedLevel: 4
+          parsedPoints: 18
+          parsedAbility: int
+          parsedSaveDc: 12
+          parsedAttackBonus: 4
+  - name: Electroshock
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1527446+00:00"
+        importer_version: 3
+        uid: Power.name-electroshock.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.Z3XGcIc1VXtQW64C
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Electroshock
+          sourceSemanticKey: snv:Humanoids:salvager
+          tierLabel: At-will
+          tierKind: at-will
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/Electroshock.webp
+    system:
+      description:
+        value: >-
+          <p>Lightning springs from you to deliver a shock to a creature you try to touch. Make a melee tech attack
+          against the target. You have advantage on the attack roll if the target is made of metal or wearing armor made
+          of metal. On a hit, the target takes [[/r 1d8]] lightning damage and becomes shocked until the start of its
+          next turn.</p>
+
+          <p>This power's damage increases by [[/r 1d8]] when you reach 5th level ([[/r 2d8]]), 11th level ([[/r 3d8]]),
+          and 17th level ([[/r 4d8]]).</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: touch
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: mpak
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 1d8
+            - lightning
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 0
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: atwill
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0attack00000:
+          _id: sw5e0attack00000
+          activation:
+            condition: ""
+            type: action
+          attack:
+            ability: ""
+            bonus: ""
+            flat: false
+            type:
+              classification: spell
+              value: melee
+          damage:
+            critical: {}
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 1
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - lightning
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            override: false
+            units: touch
+          target:
+            template:
+              type: ""
+              units: ""
+          type: attack
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 7963df5cc942d11b
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.Z3XGcIc1VXtQW64C
+    _key: "!actors.items!d05b947e93fa726a.7963df5cc942d11b"
+  - name: Mending
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1727335+00:00"
+        importer_version: 3
+        uid: Power.name-mending.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.1k52oYn3btadr8G1
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Mending
+          sourceSemanticKey: snv:Humanoids:salvager
+          tierLabel: At-will
+          tierKind: at-will
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/Mending.webp
+    system:
+      description:
+        value: >-
+          <p>This ability repairs a single break or tear in an object you touch, such as broken chain link, two halves
+          of a broken key, a torn strap, or a leaking cup. As long as the break or tear is no larger than 1 foot in any
+          dimension, you mend it, leaving no trace of the former damage. If you target a droid or construction with this
+          feature, it can spend and roll one of its Hit Dice and regain that many hit points.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: minute
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: touch
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 0
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: none
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: minute
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            override: false
+            units: touch
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 6bd7aca97d75fcc1
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.1k52oYn3btadr8G1
+    _key: "!actors.items!d05b947e93fa726a.6bd7aca97d75fcc1"
+  - name: Poison Spray
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1767313+00:00"
+        importer_version: 3
+        uid: Power.name-poison_spray.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.k6A6OHZkEECqIP1Q
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Poison Spray
+          sourceSemanticKey: snv:Humanoids:salvager
+          tierLabel: At-will
+          tierKind: at-will
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/PoisonSpray.webp
+    system:
+      description:
+        value: >-
+          <p>You extend your hand toward a creature you can see within range and project a puff of noxious gas. The
+          creature must succeed on a Constitution saving throw or take [[/r 1d12]] poison damage. </p>
+
+          <p>This power's damage increases by [[/r 1d12]] when you reach 5th level ([[/r 2d12]]), 11th level ([[/r
+          3d12]]), and 17th level ([[/r 4d12]]).</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 10
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: save
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 1d12
+            - poison
+        versatile: ""
+      formula: ""
+      save:
+        ability: con
+        dc: null
+        scaling: spell
+      level: 0
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: atwill
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 12
+                number: 1
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - poison
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "10"
+          save:
+            ability: con
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: save
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 8256f2d6d8bd2bd3
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.k6A6OHZkEECqIP1Q
+    _key: "!actors.items!d05b947e93fa726a.8256f2d6d8bd2bd3"
+  - name: Ward
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1927216+00:00"
+        importer_version: 3
+        uid: Power.name-ward.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.HsJfktZEpBaFoBHB
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Ward
+          sourceSemanticKey: snv:Humanoids:salvager
+          tierLabel: At-will
+          tierKind: at-will
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/Ward.webp
+    system:
+      description:
+        value: >-
+          <p>You emit a powerful force field that deflects incoming attacks. Until the end of your next turn, you have
+          resistance against kinetic, energy, and ion damage dealt by weapon attacks.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: round
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: self
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 0
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: none
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: round
+            value: "1"
+          img: null
+          range:
+            override: false
+            units: self
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 4f4d583d55438ab8
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.HsJfktZEpBaFoBHB
+    _key: "!actors.items!d05b947e93fa726a.4f4d583d55438ab8"
+  - name: Tactical Barrier
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1877241+00:00"
+        importer_version: 3
+        uid: Power.name-tactical_barrier.level-1
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.D6V8iydsUcLyNuQ0
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Tactical Barrier
+          sourceSemanticKey: snv:Humanoids:salvager
+          tierLabel: 1st-level
+          tierKind: leveled
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/TacticalBarrier.webp
+    system:
+      description:
+        value: >-
+          <p>A shimmering field appears and surrounds a creature of your choice within range, granting it a +2 bonus to
+          AC for the duration.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: "10"
+        units: minute
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 60
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 1
+      school: tec
+      properties:
+        - concentration
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: none
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 2
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: bonus
+          description: {}
+          duration:
+            units: minute
+            value: "10"
+          img: null
+          range:
+            units: ft
+            value: "60"
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "2"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: b5c04de62d513f9b
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.D6V8iydsUcLyNuQ0
+    _key: "!actors.items!d05b947e93fa726a.b5c04de62d513f9b"
+  - name: Tranquilizer
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1907223+00:00"
+        importer_version: 3
+        uid: Power.name-tranquilizer.level-1
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.KCxzDwrmHOUizQBJ
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Tranquilizer
+          sourceSemanticKey: snv:Humanoids:salvager
+          tierLabel: 1st-level
+          tierKind: leveled
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/Tranquilizer.webp
+    system:
+      description:
+        value: >-
+          <p>You emit a tranquilizing dart that knocks a creature unconscious. Roll [[/r 5d8]]; if the creature's
+          remaining hit points are less than the total, the creature falls unconscious until the power ends, the sleeper
+          takes damage, or someone uses an action to shake or slap the sleeper awake. This power has no effect on droids
+          or constructs.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 2nd level or
+          higher, you can target an additional creature for each slot level above 1st. For each target, roll [[/r 5d8]]
+          separately.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: minute
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 90
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: 5d8
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 1
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: level
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 2
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: minute
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "90"
+          roll:
+            formula: 5d8
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "2"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 86dfa98087be3f87
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.KCxzDwrmHOUizQBJ
+    _key: "!actors.items!d05b947e93fa726a.86dfa98087be3f87"
+  - name: Cryogenic Volley
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1487465+00:00"
+        importer_version: 3
+        uid: Power.name-cryogenic_volley.level-2
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.FPN272OUubDOCHfT
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Cryogenic Volley
+          sourceSemanticKey: snv:Humanoids:salvager
+          tierLabel: 2nd-level
+          tierKind: leveled
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/CryogenicVolley.webp
+    system:
+      description:
+        value: >-
+          <p>An explosion of cold energy erupts from a point you choose within range. Each creature in a 5-foot-radius
+          sphere centered on that point must make a Dexterity saving throw. On a failed save, a creature takes [[/r
+          3d6]] cold damage, and gains 1 slowed level until the start of your next turn. On a successful save, a
+          creature takes half as much damage and isn't slowed.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 3rd level or
+          higher, the damage increases by [[/r 1d6]] for each slot level above 2nd.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: "5"
+        width: null
+        units: ft
+        type: sphere
+        prompt: true
+      range:
+        value: 90
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: save
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 3d6
+            - cold
+        versatile: ""
+      formula: ""
+      save:
+        ability: dex
+        dc: null
+        scaling: spell
+      level: 2
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: level
+        formula: 1d6
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 3
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 6
+                number: 3
+                scaling:
+                  mode: whole
+                  number: 1
+                types:
+                  - cold
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "90"
+          save:
+            ability: dex
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              size: "5"
+              type: sphere
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "3"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 304ed7b7a7354323
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.FPN272OUubDOCHfT
+    _key: "!actors.items!d05b947e93fa726a.304ed7b7a7354323"
+  - name: Infiltrate
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1627387+00:00"
+        importer_version: 3
+        uid: Power.name-infiltrate.level-2
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.VLH57JJHSKafVadB
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Infiltrate
+          sourceSemanticKey: snv:Humanoids:salvager
+          tierLabel: 2nd-level
+          tierKind: leveled
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/Infiltrate.webp
+    system:
+      description:
+        value: >-
+          <p>A creature you touch becomes invisible. Anything the target is carrying is invisible as long as it is on
+          the target. The power ends if the target attacks, casts a power, or otherwise take a hostile action.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> You can target one additional creature for each slot level above
+          2nd.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: hour
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: touch
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 2
+      school: tec
+      properties:
+        - concentration
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: level
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 3
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: hour
+            value: "1"
+          img: null
+          range:
+            override: false
+            units: touch
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "3"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: e8309b20dcc777ce
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.VLH57JJHSKafVadB
+    _key: "!actors.items!d05b947e93fa726a.e8309b20dcc777ce"
+effects: []
+prototypeToken:
+  flags: {}
+  name: Salvager
+  displayName: 40
+  width: 1
+  height: 1
+  lockRotation: false
+  rotation: 0
+  actorLink: false
+  disposition: -1
+  displayBars: 40
+  bar1:
+    attribute: attributes.hp
+  bar2:
+    attribute: attributes.bar2
+  randomImg: false
+  alpha: 1
+  light:
+    dim: 0
+    bright: 0
+    angle: 360
+    alpha: 1
+    animation:
+      speed: 5
+      intensity: 5
+      type: null
+      reverse: false
+    color: null
+    coloration: 1
+    attenuation: 0.5
+    luminosity: 0.5
+    saturation: 0
+    contrast: 0
+    shadows: 0
+    darkness:
+      min: 0
+      max: 1
+    negative: false
+    priority: 0
+  texture:
+    src: systems/dnd5e/icons/svg/actors/npc.svg
+    tint: "#ffffff"
+    scaleX: 1
+    scaleY: 1
+    offsetX: 0
+    offsetY: 0
+    rotation: 0
+    anchorX: 0.5
+    anchorY: 0.5
+    fit: contain
+    alphaThreshold: 0.75
+  sight:
+    angle: 360
+    enabled: false
+    range: 15
+    brightness: 1
+    visionMode: basic
+    color: null
+    attenuation: 0.1
+    saturation: 0
+    contrast: 0
+  detectionModes: []
+  appendNumber: false
+  prependAdjective: false
+  hexagonalShape: 0
+  occludable:
+    radius: 0
+  ring:
+    enabled: false
+    colors:
+      ring: null
+      background: null
+    effects: 1
+    subject:
+      scale: 1
+      texture: null
+system:
+  abilities:
+    str:
+      value: 12
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    dex:
+      value: 14
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    con:
+      value: 12
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    int:
+      value: 14
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    wis:
+      value: 10
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    cha:
+      value: 10
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    hon:
+      value: 5
+      proficient: 0
+      bonuses:
+        check: ""
+        save: ""
+      max: null
+    san:
+      value: 12
+      proficient: 0
+      bonuses:
+        check: ""
+        save: ""
+      max: null
+  attributes:
+    ac:
+      flat: 14
+      calc: flat
+      formula: ""
+    hp:
+      value: 33
+      max: 33
+      temp: 0
+      tempmax: 0
+      formula: 6d8 + 6
+    init:
+      ability: ""
+      bonus: "0"
+      roll:
+        min: null
+        max: null
+        mode: 0
+    movement:
+      burrow: 0
+      climb: 0
+      fly: 0
+      swim: 0
+      walk: 30
+      units: ft
+      hover: false
+    attunement:
+      max: 3
+    senses:
+      darkvision: 0
+      blindsight: 0
+      tremorsense: 0
+      truesight: 0
+      units: ft
+      special: ""
+    force:
+      points:
+        value: 0
+        bonuses:
+          level: ""
+          overall: ""
+        max: null
+        temp: 0
+    tech:
+      points:
+        value: 18
+        bonuses:
+          level: ""
+          overall: ""
+        max: 18
+        temp: 0
+    super:
+      dice:
+        value: 0
+        bonuses:
+          level: ""
+          overall: ""
+        max: null
+      die: 0
+    deployed:
+      uuid: null
+      deployments: []
+    death:
+      success: 0
+      failure: 0
+      ability: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    exhaustion: 0
+    forcecasting: wis
+    techcasting: int
+    concentration:
+      ability: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+      bonuses:
+        save: ""
+      limit: 1
+    hd:
+      spent: 0
+    slowed: 0
+  details:
+    biography:
+      value: ""
+      public: ""
+    alignment: Any Alignment
+    species: null
+    type:
+      value: humanoid
+      subtype: any
+      swarm: ""
+      custom: ""
+    environment: ""
+    cr: "2"
+    powerForceLevel: 0
+    powerTechLevel: 4
+    superiorityLevel: 0
+    source:
+      custom: SnV
+  traits:
+    size: med
+    di:
+      value: []
+      bypasses: []
+      custom: ""
+    dr:
+      value: []
+      bypasses: []
+      custom: ""
+    dv:
+      value: []
+      bypasses: []
+      custom: ""
+    ci:
+      value: []
+      custom: ""
+    languages:
+      value: []
+      custom: "-"
+    dm:
+      amount: {}
+      bypasses: []
+  currency:
+    gc: 0
+  skills:
+    acr:
+      value: 0
+      ability: dex
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    ani:
+      value: 0
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    ath:
+      value: 0
+      ability: str
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    dec:
+      value: 0
+      ability: cha
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    ins:
+      value: 0
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    itm:
+      value: 0
+      ability: cha
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    inv:
+      value: 0
+      ability: int
+      bonuses:
+        check: NaN
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    lor:
+      value: 0
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    med:
+      value: 0
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    nat:
+      value: 0
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    pil:
+      value: 0
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    prc:
+      value: 0
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    prf:
+      value: 0
+      ability: cha
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    per:
+      value: 0
+      ability: cha
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    slt:
+      value: 0
+      ability: dex
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    ste:
+      value: 0
+      ability: dex
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    sur:
+      value: 0
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    tec:
+      value: 0
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+  tools: {}
+  powers:
+    power1:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power2:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power3:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power4:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power5:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power6:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power7:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power8:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power9:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    pact:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power0:
+      fvalue: 0
+      tvalue: 0
+      foverride: null
+      toverride: null
+  bonuses:
+    mwak:
+      attack: ""
+      damage: ""
+    rwak:
+      attack: ""
+      damage: ""
+    mpak:
+      attack: ""
+      damage: ""
+    rpak:
+      attack: ""
+      damage: ""
+    abilities:
+      check: ""
+      save: ""
+      skill: ""
+    power:
+      dc: ""
+      forceLightDC: ""
+      forceUnivDC: ""
+      forceDarkDC: ""
+      techDC: ""
+  resources:
+    legact:
+      value: 0
+      max: 0
+    legres:
+      value: 0
+      max: 0
+    lair:
+      value: false
+      initiative: 0
+  powercasting:
+    force:
+      points:
+        value: 0
+        max: null
+        temp: null
+        tempmax: null
+        bonuses:
+          level: ""
+          overall: ""
+      schools:
+        lgt:
+          attr: wis
+          dc: null
+        uni:
+          attr: ""
+          dc: null
+        drk:
+          attr: cha
+          dc: null
+    tech:
+      points:
+        value: 18
+        max: 18
+        temp: null
+        tempmax: null
+        bonuses:
+          level: ""
+          overall: ""
+      schools:
+        tec:
+          attr: int
+          dc: null
+flags:
+  sw5e:
+    dataVersion: 1.2.4
+    snvMonsters:
+      prototype: false
+      temporaryId: false
+      notProductionIdentity: false
+      sourceEntry: Salvager
+      sourceSection: Humanoids
+      sourceOrder: 0
+      sourceHash: d44671570a0a466e0e25b7f73eed763d6e5098743090bce2aedc0b96fa78bb1c
+      semanticKey: snv:Humanoids:salvager
+      generatorVersion: fts-2026-08-06
+      schemaVersion: fts-ir-0.1
+      parseStatus: parsed-valid
+      capabilityStatus: partially-supported
+      outputSelection: selected-fts-auto-13
+      productionReadiness: prototype-validated
+      nonproduction: false
+      sandboxTemp: false
+      unsupportedMechanics:
+        - tech-power-embedding-incomplete
+        - recharge-activity
+      generatedStatus: production
+      manualOverrideStatus: false
+      artwork:
+        path: systems/dnd5e/icons/svg/actors/npc.svg
+        tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
+        approval: approved-fallback
+        source: module-existing
+        loreConfidence: supported-by-exact-local-folder-name
+      lastGeneratedHash: d44671570a0a466e0e25b7f73eed763d6e5098743090bce2aedc0b96fa78bb1c
+      prePublication: false
+      trackedPack: snv-monsters
+      collectionId: sw5e-module.snv-monsters
+      packPhase: fts-auto-13
+      reviewState: offline-generated-awaiting-validation
+      worldCleanupFlag: ""
+      folderTaxonomy: foundry-creature-type
+      creatureTypeFolder: Humanoid
+      softUnsupportedMechanics:
+        - tech-power-embedding-incomplete
+        - recharge-activity
+      forceTechEmbedding:
+        forcePowers: []
+        techPowers:
+          - kind: casting-feat
+            name: Techcasting
+            id: af6fa8b1a3b92fd0
+            castType: tech
+          - kind: power
+            name: Electroshock
+            id: 7963df5cc942d11b
+            castType: tech
+            canonicalId: Z3XGcIc1VXtQW64C
+            activityCount: 1
+            consumeTarget: null
+          - kind: power
+            name: Mending
+            id: 6bd7aca97d75fcc1
+            castType: tech
+            canonicalId: 1k52oYn3btadr8G1
+            activityCount: 1
+            consumeTarget: null
+          - kind: power
+            name: Poison Spray
+            id: 8256f2d6d8bd2bd3
+            castType: tech
+            canonicalId: k6A6OHZkEECqIP1Q
+            activityCount: 1
+            consumeTarget: null
+          - kind: power
+            name: Ward
+            id: 4f4d583d55438ab8
+            castType: tech
+            canonicalId: HsJfktZEpBaFoBHB
+            activityCount: 1
+            consumeTarget: null
+          - kind: power
+            name: Tactical Barrier
+            id: b5c04de62d513f9b
+            castType: tech
+            canonicalId: D6V8iydsUcLyNuQ0
+            activityCount: 1
+            consumeTarget: powercasting.tech.points.value
+          - kind: power
+            name: Tranquilizer
+            id: 86dfa98087be3f87
+            castType: tech
+            canonicalId: KCxzDwrmHOUizQBJ
+            activityCount: 1
+            consumeTarget: powercasting.tech.points.value
+          - kind: power
+            name: Cryogenic Volley
+            id: 304ed7b7a7354323
+            castType: tech
+            canonicalId: FPN272OUubDOCHfT
+            activityCount: 1
+            consumeTarget: powercasting.tech.points.value
+          - kind: power
+            name: Infiltrate
+            id: e8309b20dcc777ce
+            castType: tech
+            canonicalId: VLH57JJHSKafVadB
+            activityCount: 1
+            consumeTarget: powercasting.tech.points.value
+        missingCanonical: []
+      superiorityEmbedding:
+        maneuvers: []
+        missingCanonical: []
+ownership:
+  default: 0
+_stats:
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  coreVersion: "13.345"
+  createdTime: null
+  modifiedTime: null
+  lastModifiedBy: null
+  compendiumSource: null
+  duplicateSource: null
+_key: "!actors!d05b947e93fa726a"
+

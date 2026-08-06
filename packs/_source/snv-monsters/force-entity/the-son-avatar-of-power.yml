@@ -1,0 +1,3237 @@
+_id: fb132f7bce8a18f5
+name: The Son, Avatar of Power
+type: npc
+img: systems/dnd5e/icons/svg/actors/npc.svg
+folder: f4d85328dc1b5e69
+items:
+  - _id: 9ac5340d8c4ceaa2
+    name: Beast Form
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-fix-01
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The avatar can transition between Humanoid and Beast forms using a legendary action. While in Beast form,
+          the avatar uses its Charisma modifier for attack and damage rolls when making a claw attack, and adds its
+          Wisdom modifier to its AC.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!fb132f7bce8a18f5.9ac5340d8c4ceaa2"
+  - _id: f108413f01b26970
+    name: Enhanced Casting
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-fix-01
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The avatar's force powers are considered enhanced for the purpose of overcoming resistances.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!fb132f7bce8a18f5.f108413f01b26970"
+  - _id: 350cf951d65ef799
+    name: Font of Power
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-fix-01
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>When the avatar rolls damage on a power or melee weapon attack, it can use its reaction to reroll a number
+          of the damage dice equal to its Charisma modifier (7). It must use the new rolls.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: reaction
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!fb132f7bce8a18f5.350cf951d65ef799"
+  - _id: c13015d35f13b175
+    name: Force Resistance
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-fix-01
+    img: modules/sw5e-module/icons/packs/Monster Traits/Force Resistance.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The avatar has advantage on saving throws against force powers.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!fb132f7bce8a18f5.c13015d35f13b175"
+  - _id: 1d31b7cd42c514b1
+    name: Legendary Resistance (3/Day)
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-fix-01
+          limitedUses:
+            family: per-day
+            max: 3
+            runtimeAutomation: true
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>If the avatar fails a saving throw, it can choose to succeed instead.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: 3
+        max: "3"
+        per: day
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!fb132f7bce8a18f5.1d31b7cd42c514b1"
+  - _id: 5916894836e3071d
+    name: Unarmored Defense
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-fix-01
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>While in its humanoid form, the avatar adds its Charisma modifier to its AC.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!fb132f7bce8a18f5.5916894836e3071d"
+  - _id: 5586de50154908e4
+    name: Dark Lightning
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-fix-01
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>When the avatar successfully deals lightning damage to a creature, it can activate one of the following
+          effects as a bonus action or as a reaction on another creature's turn. The target must make a DC 21
+          Constitution saving throw, suffering one of the following effects on a failure *(the effect is of the avatar's
+          choice, and it chooses the effect before the target rolls their saving throw)*: **Debilitating Burst:** On a
+          failure, the target is blinded and deafened until the end of the avatar's next turn. On a success, the target
+          is considered poisoned until the end of its next turn. The avatar must maintain concentration on these
+          effects. **Lingering Burst:** On a failure, the target is shocked until the end of the avatar's next turn. On
+          a success, the target is shocked until the start of its next turn. **Powerful Burst:** On a failure, the
+          target is pushed 10 feet in any direction and knocked prone. On a success, the target is pushed 10 feet in any
+          direction.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!fb132f7bce8a18f5.5586de50154908e4"
+  - _id: 1b7844ffea00e4c4
+    name: Multiattack (Humanoid Form)
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featAction
+          sourceSection: actions
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-fix-01
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The avatar can make two attacks using the *shock* at-will power.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!fb132f7bce8a18f5.1b7844ffea00e4c4"
+  - _id: 27e9d764210939d7
+    name: Multiattack (Beast Form)
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featAction
+          sourceSection: actions
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-fix-01
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The avatar makes three claw attacks.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!fb132f7bce8a18f5.27e9d764210939d7"
+  - _id: d4467d0e781d1f56
+    name: Claw (Beast Form)
+    type: weapon
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: source-specific
+          kind: weaponSourceSpecific
+          sourceActionNames:
+            - Claw (Beast Form)
+          duplicateActionProhibited: true
+          canonicalWeaponSource: null
+          ammoSource: null
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-fix-01
+    img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The avatar makes one claw attack.</p>
+        chat: ""
+      source:
+        custom: SnV
+      quantity: 1
+      weight:
+        value: 1
+        units: lb
+      price:
+        value: 0
+        denomination: gc
+      attunement: ""
+      equipped: false
+      rarity: ""
+      identified: true
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 5
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: str
+      actionType: mwak
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 6d6+7
+            - kinetic
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      armor:
+        value: 10
+      hp:
+        value: 0
+        max: 0
+        dt: null
+        conditions: ""
+      modify:
+        chassis: none
+        augmentSlots: 0
+        modSlots: 4
+        items: []
+        changes: {}
+      weaponClass: ""
+      ammo:
+        target: null
+        value: null
+        use: null
+        types: []
+      properties: []
+      proficient: 1
+      type:
+        value: simpleM
+        subtype: ""
+        baseItem: ""
+      unidentified:
+        description: ""
+      attack:
+        bonus: ""
+        flat: false
+      container: null
+      attuned: false
+      enchantment: null
+      summons: null
+      magicalBonus: null
+      firingArc: ""
+      activities:
+        e8099fdd39e0af22:
+          _id: e8099fdd39e0af22
+          type: attack
+          activation:
+            type: action
+            value: 1
+            condition: ""
+            override: false
+          attack:
+            ability: ""
+            bonus: "14"
+            flat: true
+            type:
+              classification: weapon
+              value: melee
+            critical: {}
+          damage:
+            critical: {}
+            includeBase: false
+            parts:
+              - number: 6
+                denomination: 6
+                bonus: "+7"
+                types:
+                  - kinetic
+                custom:
+                  enabled: false
+                  formula: ""
+                scaling:
+                  mode: ""
+                  number: null
+                  formula: ""
+          description: {}
+          duration:
+            units: inst
+            concentration: false
+            override: false
+          effects: []
+          range:
+            override: false
+            units: ft
+            value: "5"
+          target:
+            template:
+              contiguous: false
+              units: ft
+              type: ""
+            affects:
+              choice: false
+              type: creature
+              count: "1"
+            override: false
+            prompt: true
+          consumption:
+            targets: []
+            scaling:
+              allowed: false
+            spellSlot: true
+          uses:
+            spent: 0
+            max: ""
+            recovery: []
+          sort: 0
+      attackBonus: "14"
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!fb132f7bce8a18f5.d4467d0e781d1f56"
+  - _id: c5e2db7063c0d712
+    _key: "!actors.items!fb132f7bce8a18f5.c5e2db7063c0d712"
+    name: Innate Forcecasting
+    type: feat
+    img: systems/dnd5e/icons/svg/items/feature.svg
+    system:
+      description:
+        value: >-
+          <p>The avatar's forcecasting ability is Charisma (force save DC 22, +14 to hit with force powers). It can
+          innately cast the following force powers:<br>At will: *coerce mind, sense force, shock (cast as a 17th-level
+          forcecaster)*<br><br>3/day each: *dominate mind, fear, force lightning, siphon life*<br><br>1/day each: *force
+          lightning cone*<br></p>
+        chat: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: ""
+        amount: null
+        scale: false
+      ability: null
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      requirements: ""
+      recharge:
+        value: null
+        charged: false
+    effects: []
+    folder: null
+    flags:
+      sw5e:
+        snvMonsters:
+          castingTrait: true
+          castType: force
+          parsedLevel: 17
+          parsedPoints: null
+          parsedAbility: cha
+          parsedSaveDc: 22
+          parsedAttackBonus: 14
+  - _id: 3677dfd326d00a8a
+    name: Coerce Mind
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/CoerceMind.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1417509+00:00"
+        importer_version: 3
+        uid: Power.name-coerce_mind.level-2
+      sw5e:
+        migratedProperties:
+          - concentration
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: force
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Coerce Mind
+          sourceSemanticKey: snv:Humanoids (Force Users):the-son-avatar-of-power
+          tierLabel: At will
+          tierKind: at-will
+          overrides: []
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.jcK1uxpi914YwZz7
+    system:
+      description:
+        value: >-
+          <p><em><strong>Prerequisite</strong>: Affect Mind</em></p>
+
+          <p>You suggest a course of activity (limited to a sentence or two) and influence with the Force a creature you
+          can see within range that can hear and understand you.  Creatures that can't be charmed are immune to this
+          effect. The suggestion must be worded in such a manner as to make the course of action sound reasonable.
+          Asking the creature to harm itself automatically negates the effect of the power.</p>
+
+          <p>The target must make a Wisdom saving throw. On a failed save, it pursues the course of action you described
+          to the best of its ability. The suggested course of action can continue for the entire duration. If the
+          suggested activity can be completed in a shorter time, the power ends when the subject finishes what it was
+          asked to do.</p>
+
+          <p>You can also specify conditions that will trigger a special activity during the duration. For example, you
+          might suggest that a soldier give her speeder to the first vagrant she meets. If the condition isn't met
+          before the power expires, the activity isn't performed.</p>
+
+          <p>If you or any of your companions damage the target, the power ends. This power has no effect on droids or
+          constructs.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "8"
+        units: hour
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 30
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 3
+        scale: true
+      ability: null
+      actionType: save
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: wis
+        dc: null
+        scaling: spell
+      level: 2
+      school: uni
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: none
+        formula: null
+      properties:
+        - concentration
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts: []
+          description: {}
+          duration:
+            units: hour
+            value: "8"
+          img: null
+          range:
+            units: ft
+            value: "30"
+          save:
+            ability: wis
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "3"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979299
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.jcK1uxpi914YwZz7
+    _key: "!actors.items!fb132f7bce8a18f5.3677dfd326d00a8a"
+  - _id: e57a7631ef3ca5da
+    name: Sense Force
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/SenseForce.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1237611+00:00"
+        importer_version: 3
+        uid: Power.name-sense_force.level-1
+      sw5e:
+        migratedProperties:
+          - concentration
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: force
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Sense Force
+          sourceSemanticKey: snv:Humanoids (Force Users):the-son-avatar-of-power
+          tierLabel: At will
+          tierKind: at-will
+          overrides: []
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.8nJ7XK6Zfdmv3XC2
+    system:
+      description:
+        value: >-
+          <p>For the duration, you sense the use of the Force, or its presence in an inanimate object within 30 feet of
+          you. If you sense the Force in this way, you can use your action to determine the direction from which it
+          originates and, if it's in line of sight, you see a faint aura around the person or object from which the
+          Force emanates.</p>
+
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a 3rd-level force slot, the range
+          increases to 60 feet. When you use a 5th-level force slot, the range increases to 500 feet. When you use a
+          7th-level force slot, the range increases to 1 mile. When you use a 9th-level force slot, the range increases
+          to 10 miles.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "10"
+        units: minute
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: self
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 2
+        scale: true
+      ability: null
+      actionType: other
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 1
+      school: uni
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: level
+        formula: null
+      properties:
+        - concentration
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: minute
+            value: "10"
+          img: null
+          range:
+            override: false
+            units: self
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "2"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979183
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.8nJ7XK6Zfdmv3XC2
+    _key: "!actors.items!fb132f7bce8a18f5.e57a7631ef3ca5da"
+  - _id: 273ac2f46471acff
+    name: Shock
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/Shock.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1247609+00:00"
+        importer_version: 3
+        uid: Power.name-shock.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.HNZGubklAqLXpp0N
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: force
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Shock
+          sourceSemanticKey: snv:Humanoids (Force Users):the-son-avatar-of-power
+          tierLabel: At will
+          tierKind: at-will
+          overrides: []
+    system:
+      description:
+        value: >-
+          <p>You hurl a bolt of lightning at a target within range, making a ranged force attack. On a hit, the target
+          takes [[/r 1d10]] lightning damage. The lightning ignites flammable objects in the area that aren't being worn
+          or carried.</p>
+
+          <p>This power's damage increases by [[/r 1d10]] when you reach 5th level ([[/r 2d10]]), 11th level ([[/r
+          3d10]]), and 17th level ([[/r 4d10]]).</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 120
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: null
+      actionType: rpak
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 1d10
+            - lightning
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 0
+      school: drk
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: atwill
+        formula: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      properties: []
+      activities:
+        sw5e0attack00000:
+          _id: sw5e0attack00000
+          activation:
+            condition: ""
+            type: action
+          attack:
+            ability: ""
+            bonus: ""
+            flat: false
+            type:
+              classification: spell
+              value: ranged
+          damage:
+            critical: {}
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 10
+                number: 1
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - lightning
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "120"
+          target:
+            template:
+              type: ""
+              units: ""
+          type: attack
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979201
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.HNZGubklAqLXpp0N
+    _key: "!actors.items!fb132f7bce8a18f5.273ac2f46471acff"
+  - _id: 87a4a1b71f7bc203
+    name: Dominate Mind
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/DominateMind.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1457493+00:00"
+        importer_version: 3
+        uid: Power.name-dominate_mind.level-5
+      sw5e:
+        migratedProperties:
+          - concentration
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: force
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Dominate Mind
+          sourceSemanticKey: snv:Humanoids (Force Users):the-son-avatar-of-power
+          tierLabel: 3/day each
+          tierKind: per-day
+          overrides:
+            - system.uses.max
+            - system.uses.recovery
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.lZgJ4nsfjWERlumF
+    system:
+      description:
+        value: >-
+          <p><em><strong>Prerequisite</strong>: Dominate Beast</em></p>
+
+          <p>You attempt to beguile a humanoid that you can see within range. It must succeed on a Wisdom saving throw
+          or be charmed by you for the duration. If you or creatures that are friendly to you are fighting it, it has
+          advantage on the saving throw.</p>
+
+          <p>While the target is charmed, you have a telepathic link with it as long as you are within 1 mile of it. You
+          can use this telepathic link to issue commands to the creature while you are conscious (no action required),
+          which it does its best to obey. You can specify a simple and general course of action, such as "Attack that
+          creature," "Run over there," or "Fetch that object." If the creature completes the order and doesn't receive
+          further direction from you, it defends and preserves itself to the best of its ability.</p>
+
+          <p>You can use your action to take total and precise control of the target. Until the end of your next turn,
+          the creature takes only the actions you choose, and doesn't do anything that you don't allow it to do. During
+          this time you can also cause the creature to use a reaction, but this requires you to use your own reaction as
+          well.</p>
+
+          <p>Each time the target takes damage, it makes a new Wisdom saving throw against the power. If the saving
+          throw succeeds, the power ends. </p>
+
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a 6th-level force slot, the
+          duration is 10 minutes. When you use a 7th-level force slot, the duration is 1 hour. When you use a force slot
+          of 8th level or higher, the duration is 8 hours.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: minute
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 60
+        long: null
+        units: ft
+      uses:
+        value: 3
+        max: "3"
+        per: null
+        recovery:
+          - period: day
+            type: recoverAll
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 6
+        scale: true
+      ability: null
+      actionType: save
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: wis
+        dc: null
+        scaling: spell
+      level: 5
+      school: drk
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: level
+        formula: null
+      properties:
+        - concentration
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts: []
+          description: {}
+          duration:
+            units: minute
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "60"
+          save:
+            ability: wis
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "6"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979304
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.lZgJ4nsfjWERlumF
+    _key: "!actors.items!fb132f7bce8a18f5.87a4a1b71f7bc203"
+  - _id: adbc6b9171fada49
+    name: Fear
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/Fear.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1477482+00:00"
+        importer_version: 3
+        uid: Power.name-fear.level-1
+      sw5e:
+        migratedProperties:
+          - concentration
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: force
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Fear
+          sourceSemanticKey: snv:Humanoids (Force Users):the-son-avatar-of-power
+          tierLabel: 3/day each
+          tierKind: per-day
+          overrides:
+            - system.uses.max
+            - system.uses.recovery
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.fDzm8b06fCuenc9g
+    system:
+      description:
+        value: >-
+          <p>You awaken the sense of mortality in one creature you can see within range. The target must succeed on a
+          Wisdom saving throw or become frightened for the duration. A target with 25 hit points or fewer makes the
+          saving throw with disadvantage. A frightened creature can repeat this save at the end of each of its turns,
+          ending this effect on a success. This power has no effect on constructs or droids.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: minute
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 60
+        long: null
+        units: ft
+      uses:
+        value: 3
+        max: "3"
+        per: null
+        recovery:
+          - period: day
+            type: recoverAll
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 2
+        scale: true
+      ability: null
+      actionType: save
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: wis
+        dc: null
+        scaling: spell
+      level: 1
+      school: drk
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: none
+        formula: null
+      properties:
+        - concentration
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts: []
+          description: {}
+          duration:
+            units: minute
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "60"
+          save:
+            ability: wis
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "2"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979290
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.fDzm8b06fCuenc9g
+    _key: "!actors.items!fb132f7bce8a18f5.adbc6b9171fada49"
+  - _id: 1f74bd6263c89465
+    name: Force Lightning
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/ForceLightning.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1517445+00:00"
+        importer_version: 3
+        uid: Power.name-force_lightning.level-3
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.TFHnZ5LI7b1DhSDV
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: force
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Force Lightning
+          sourceSemanticKey: snv:Humanoids (Force Users):the-son-avatar-of-power
+          tierLabel: 3/day each
+          tierKind: per-day
+          overrides:
+            - system.uses.max
+            - system.uses.recovery
+    system:
+      description:
+        value: >-
+          <p><em><strong>Prerequisite</strong>: Shock</em></p>
+
+          <p>A stroke of lightning forming a line 100 feet long and 5 feet wide blasts out from you in a direction you
+          choose. Each creature in the line must make a Dexterity saving throw. A creature takes [[/r 8d6]] lightning
+          damage on a failed save, or half as much damage on a successful one. </p>
+
+          <p>The lightning ignites flammable objects in the area that aren't being worn or carried.</p>
+
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 4th level or
+          higher, the damage increases by [[/r 1d6]] for each slot level above 3rd.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      cover: null
+      crewed: false
+      target:
+        value: "100"
+        width: null
+        units: ft
+        type: line
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: self
+      uses:
+        value: 3
+        max: "3"
+        per: null
+        recovery:
+          - period: day
+            type: recoverAll
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 4
+        scale: true
+      ability: null
+      actionType: save
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 8d6
+            - lightning
+        versatile: ""
+      formula: ""
+      save:
+        ability: dex
+        dc: null
+        scaling: spell
+      level: 3
+      school: drk
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: level
+        formula: 1d6
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      properties: []
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 6
+                number: 8
+                scaling:
+                  mode: whole
+                  number: 1
+                types:
+                  - lightning
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            override: false
+            units: self
+          save:
+            ability: dex
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              size: "100"
+              type: line
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "4"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979241
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.TFHnZ5LI7b1DhSDV
+    _key: "!actors.items!fb132f7bce8a18f5.1f74bd6263c89465"
+  - _id: f96e6996a7c7d294
+    name: Siphon Life
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/SiphonLife.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1247609+00:00"
+        importer_version: 3
+        uid: Power.name-siphon_life.level-5
+      sw5e:
+        migratedProperties:
+          - concentration
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: force
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Siphon Life
+          sourceSemanticKey: snv:Humanoids (Force Users):the-son-avatar-of-power
+          tierLabel: 3/day each
+          tierKind: per-day
+          overrides:
+            - system.uses.max
+            - system.uses.recovery
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.ddllNHq19xvlRvLm
+    system:
+      description:
+        value: >-
+          <p><em><strong>Prerequisite</strong>: Drain Life</em></p>
+
+          <p>A tendril of inky darkness reaches out from you, touching a creature you can see within range to drain life
+          from it. The target must make a Dexterity saving throw. On a successful save, the target takes [[/r 2d8]]
+          necrotic damage, and the power ends. On a failed save, the target takes [[/r 4d8]] necrotic damage, and until
+          the power ends, you can use your action on each of your turns to automatically deal [[/r 4d8]] necrotic damage
+          to the target. The power ends if you use your action to do anything else, if the target is ever outside the
+          power's range, or if the target has total cover from you.</p>
+
+          <p>Whenever the power deals damage to a target, you regain hit points equal to half the amount of necrotic
+          damage the target takes.</p>
+
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 6th level or
+          higher, the damage increases by [[/r 1d8]] for each slot level above 5th.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: minute
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 60
+        long: null
+        units: ft
+      uses:
+        value: 3
+        max: "3"
+        per: null
+        recovery:
+          - period: day
+            type: recoverAll
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 6
+        scale: true
+      ability: null
+      actionType: save
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 2d8
+            - necrotic
+          - - 4d8
+            - necrotic
+          - - 4d8
+            - necrotic
+        versatile: ""
+      formula: ""
+      save:
+        ability: dex
+        dc: null
+        scaling: spell
+      level: 5
+      school: drk
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: level
+        formula: 1d8
+      properties:
+        - concentration
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 2
+                scaling:
+                  mode: whole
+                  number: 1
+                types:
+                  - necrotic
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 4
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - necrotic
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 4
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - necrotic
+          description: {}
+          duration:
+            units: minute
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "60"
+          save:
+            ability: dex
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "6"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979284
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.ddllNHq19xvlRvLm
+    _key: "!actors.items!fb132f7bce8a18f5.f96e6996a7c7d294"
+  - _id: 729b9b8c6df113eb
+    name: Force Lightning Cone
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/ForceLightningCone.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1517445+00:00"
+        importer_version: 3
+        uid: Power.name-force_lightning_cone.level-7
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.D10gdFbjJVO0H5WH
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: force
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Force Lightning Cone
+          sourceSemanticKey: snv:Humanoids (Force Users):the-son-avatar-of-power
+          tierLabel: 1/day each
+          tierKind: per-day
+          overrides:
+            - system.uses.max
+            - system.uses.recovery
+    system:
+      description:
+        value: >-
+          <p><em><strong>Prerequisite</strong>: Force Chain Lightning</em></p>
+
+          <p>Lightning arcs from your hands. Each creature in a 60-foot cone must make a Dexterity saving throw. A
+          creature takes [[/r 12d6]] lightning damage on a failed save, or half as much on a successful one.</p>
+
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 8th level or
+          higher, the damage increases by [[/r 2d6]] for each slot level above 7th.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      cover: null
+      crewed: false
+      target:
+        value: "60"
+        width: null
+        units: ft
+        type: cone
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: self
+      uses:
+        value: 1
+        max: "1"
+        per: null
+        recovery:
+          - period: day
+            type: recoverAll
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 8
+        scale: true
+      ability: null
+      actionType: save
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 12d6
+            - lightning
+        versatile: ""
+      formula: ""
+      save:
+        ability: dex
+        dc: null
+        scaling: spell
+      level: 7
+      school: drk
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: level
+        formula: 2d6
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      properties: []
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 6
+                number: 12
+                scaling:
+                  mode: whole
+                  number: 2
+                types:
+                  - lightning
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            override: false
+            units: self
+          save:
+            ability: dex
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              size: "60"
+              type: cone
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "8"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979192
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.D10gdFbjJVO0H5WH
+    _key: "!actors.items!fb132f7bce8a18f5.729b9b8c6df113eb"
+effects: []
+prototypeToken:
+  flags: {}
+  name: The Son, Avatar of Power
+  displayName: 40
+  width: 1
+  height: 1
+  lockRotation: false
+  rotation: 0
+  actorLink: false
+  disposition: -1
+  displayBars: 40
+  bar1:
+    attribute: attributes.hp
+  bar2:
+    attribute: attributes.bar2
+  randomImg: false
+  alpha: 1
+  light:
+    dim: 0
+    bright: 0
+    angle: 360
+    alpha: 1
+    animation:
+      speed: 5
+      intensity: 5
+      type: null
+      reverse: false
+    color: null
+    coloration: 1
+    attenuation: 0.5
+    luminosity: 0.5
+    saturation: 0
+    contrast: 0
+    shadows: 0
+    darkness:
+      min: 0
+      max: 1
+    negative: false
+    priority: 0
+  texture:
+    src: systems/dnd5e/icons/svg/actors/npc.svg
+    tint: "#ffffff"
+    scaleX: 1
+    scaleY: 1
+    offsetX: 0
+    offsetY: 0
+    rotation: 0
+    anchorX: 0.5
+    anchorY: 0.5
+    fit: contain
+    alphaThreshold: 0.75
+  sight:
+    angle: 360
+    enabled: false
+    range: 15
+    brightness: 1
+    visionMode: basic
+    color: null
+    attenuation: 0.1
+    saturation: 0
+    contrast: 0
+  detectionModes: []
+  appendNumber: false
+  prependAdjective: false
+  hexagonalShape: 0
+  occludable:
+    radius: 0
+  ring:
+    enabled: false
+    colors:
+      ring: null
+      background: null
+    effects: 1
+    subject:
+      scale: 1
+      texture: null
+system:
+  abilities:
+    str:
+      value: 14
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    dex:
+      value: 16
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    con:
+      value: 20
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    int:
+      value: 18
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    wis:
+      value: 20
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    cha:
+      value: 24
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    hon:
+      value: 5
+      proficient: 0
+      bonuses:
+        check: ""
+        save: ""
+      max: null
+    san:
+      value: 12
+      proficient: 0
+      bonuses:
+        check: ""
+        save: ""
+      max: null
+  attributes:
+    ac:
+      flat: 20
+      calc: flat
+      formula: ""
+    hp:
+      value: 228
+      max: 228
+      temp: 0
+      tempmax: 0
+      formula: 24d8 + 120
+    init:
+      ability: ""
+      bonus: "0"
+      roll:
+        min: null
+        max: null
+        mode: 0
+    movement:
+      burrow: 0
+      climb: 0
+      fly: 30
+      swim: 0
+      walk: 30
+      units: ft
+      hover: false
+    attunement:
+      max: 3
+    senses:
+      darkvision: 0
+      blindsight: 0
+      tremorsense: 0
+      truesight: 120
+      units: ft
+      special: ""
+    force:
+      points:
+        value: 0
+        bonuses:
+          level: ""
+          overall: ""
+        max: null
+        temp: 0
+    tech:
+      points:
+        value: 0
+        bonuses:
+          level: ""
+          overall: ""
+        max: null
+        temp: 0
+    super:
+      dice:
+        value: 0
+        bonuses:
+          level: ""
+          overall: ""
+        max: null
+      die: 0
+    deployed:
+      uuid: null
+      deployments: []
+    death:
+      success: 0
+      failure: 0
+      ability: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    exhaustion: 0
+    forcecasting: wis
+    techcasting: int
+    concentration:
+      ability: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+      bonuses:
+        save: ""
+      limit: 1
+    hd:
+      spent: 0
+    slowed: 0
+  details:
+    biography:
+      value: ""
+      public: ""
+    alignment: Chaotic Dark
+    species: null
+    type:
+      value: force
+      subtype: ""
+      swarm: ""
+      custom: ""
+    environment: ""
+    cr: "21"
+    powerForceLevel: 17
+    powerTechLevel: 0
+    superiorityLevel: 0
+    source:
+      custom: SnV
+  traits:
+    size: med
+    di:
+      value: []
+      bypasses: []
+      custom: ""
+    dr:
+      value: []
+      bypasses: []
+      custom: ""
+    dv:
+      value: []
+      bypasses: []
+      custom: ""
+    ci:
+      value: []
+      custom: ""
+    languages:
+      value: []
+      custom: "-"
+    dm:
+      amount: {}
+      bypasses: []
+  currency:
+    gc: 0
+  skills:
+    acr:
+      value: 0
+      ability: dex
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    ani:
+      value: 0
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    ath:
+      value: 0
+      ability: str
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    dec:
+      value: 0
+      ability: cha
+      bonuses:
+        check: NaN
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    ins:
+      value: 0
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    itm:
+      value: 0
+      ability: cha
+      bonuses:
+        check: NaN
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    inv:
+      value: 0
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    lor:
+      value: 0
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    med:
+      value: 0
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    nat:
+      value: 0
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    pil:
+      value: 0
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    prc:
+      value: 0
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    prf:
+      value: 0
+      ability: cha
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    per:
+      value: 0
+      ability: cha
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    slt:
+      value: 0
+      ability: dex
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    ste:
+      value: 0
+      ability: dex
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    sur:
+      value: 0
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    tec:
+      value: 0
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+  tools: {}
+  powers:
+    power1:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power2:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power3:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power4:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power5:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power6:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power7:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power8:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power9:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    pact:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power0:
+      fvalue: 0
+      tvalue: 0
+      foverride: null
+      toverride: null
+  bonuses:
+    mwak:
+      attack: ""
+      damage: ""
+    rwak:
+      attack: ""
+      damage: ""
+    mpak:
+      attack: ""
+      damage: ""
+    rpak:
+      attack: ""
+      damage: ""
+    abilities:
+      check: ""
+      save: ""
+      skill: ""
+    power:
+      dc: ""
+      forceLightDC: ""
+      forceUnivDC: ""
+      forceDarkDC: ""
+      techDC: ""
+  resources:
+    legact:
+      value: 0
+      max: 0
+    legres:
+      value: 0
+      max: 0
+    lair:
+      value: false
+      initiative: 0
+  powercasting:
+    force:
+      points:
+        value: 0
+        max: null
+        temp: null
+        tempmax: null
+        bonuses:
+          level: ""
+          overall: ""
+      schools:
+        lgt:
+          attr: cha
+          dc: null
+        uni:
+          attr: cha
+          dc: null
+        drk:
+          attr: cha
+          dc: null
+    tech:
+      points:
+        value: 0
+        max: null
+        temp: null
+        tempmax: null
+        bonuses:
+          level: ""
+          overall: ""
+      schools:
+        tec:
+          attr: int
+          dc: null
+flags:
+  sw5e:
+    dataVersion: 1.2.4
+    snvMonsters:
+      prototype: false
+      temporaryId: false
+      notProductionIdentity: false
+      sourceEntry: The Son, Avatar of Power
+      sourceSection: Humanoids (Force Users)
+      sourceOrder: 0
+      sourceHash: 97ecd1f819edbf1770ac18ca36746e61804cd05a6606f857e836ebdb2fe5b81a
+      semanticKey: snv:Humanoids (Force Users):the-son-avatar-of-power
+      generatorVersion: fts-2026-08-06
+      schemaVersion: fts-ir-0.1
+      parseStatus: parsed-valid
+      capabilityStatus: partially-supported
+      outputSelection: selected-fts-fix-01
+      productionReadiness: prototype-validated
+      nonproduction: false
+      sandboxTemp: false
+      unsupportedMechanics:
+        - legendary-actions
+        - force-power-embedding-incomplete
+        - qualified-defense-parsing
+        - limited-uses-activity
+      generatedStatus: production
+      manualOverrideStatus: false
+      artwork:
+        path: systems/dnd5e/icons/svg/actors/npc.svg
+        tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
+        approval: approved-fallback
+        source: module-existing
+        loreConfidence: supported-by-exact-local-folder-name
+      lastGeneratedHash: 97ecd1f819edbf1770ac18ca36746e61804cd05a6606f857e836ebdb2fe5b81a
+      prePublication: false
+      trackedPack: snv-monsters
+      collectionId: sw5e-module.snv-monsters
+      packPhase: fts-fix-01
+      reviewState: offline-generated-awaiting-validation
+      worldCleanupFlag: ""
+      folderTaxonomy: foundry-creature-type
+      creatureTypeFolder: Custom Type
+      softUnsupportedMechanics:
+        - legendary-actions
+        - force-power-embedding-incomplete
+        - qualified-defense-parsing
+        - limited-uses-activity
+      forceTechEmbedding:
+        forcePowers:
+          - kind: casting-feat
+            name: Innate Forcecasting
+            id: c5e2db7063c0d712
+            castType: force
+          - kind: power
+            name: Coerce Mind
+            id: 3677dfd326d00a8a
+            castType: force
+            canonicalId: jcK1uxpi914YwZz7
+            activityCount: 1
+            consumeTarget: powercasting.force.points.value
+          - kind: power
+            name: Sense Force
+            id: e57a7631ef3ca5da
+            castType: force
+            canonicalId: 8nJ7XK6Zfdmv3XC2
+            activityCount: 1
+            consumeTarget: powercasting.force.points.value
+          - kind: power
+            name: Shock
+            id: 273ac2f46471acff
+            castType: force
+            canonicalId: HNZGubklAqLXpp0N
+            activityCount: 1
+            consumeTarget: null
+          - kind: power
+            name: Dominate Mind
+            id: 87a4a1b71f7bc203
+            castType: force
+            canonicalId: lZgJ4nsfjWERlumF
+            activityCount: 1
+            consumeTarget: powercasting.force.points.value
+          - kind: power
+            name: Fear
+            id: adbc6b9171fada49
+            castType: force
+            canonicalId: fDzm8b06fCuenc9g
+            activityCount: 1
+            consumeTarget: powercasting.force.points.value
+          - kind: power
+            name: Force Lightning
+            id: 1f74bd6263c89465
+            castType: force
+            canonicalId: TFHnZ5LI7b1DhSDV
+            activityCount: 1
+            consumeTarget: powercasting.force.points.value
+          - kind: power
+            name: Siphon Life
+            id: f96e6996a7c7d294
+            castType: force
+            canonicalId: ddllNHq19xvlRvLm
+            activityCount: 1
+            consumeTarget: powercasting.force.points.value
+          - kind: power
+            name: Force Lightning Cone
+            id: 729b9b8c6df113eb
+            castType: force
+            canonicalId: D10gdFbjJVO0H5WH
+            activityCount: 1
+            consumeTarget: powercasting.force.points.value
+        techPowers: []
+        missingCanonical: []
+      superiorityEmbedding:
+        maneuvers: []
+        missingCanonical: []
+      folderAssignment:
+        label: Force Entity
+        folderId: f4d85328dc1b5e69
+        folderSemanticKey: snv-folder:Force Entity
+        taxonomy: foundry-creature-type
+ownership:
+  default: 0
+_stats:
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  coreVersion: "13.345"
+  createdTime: null
+  modifiedTime: null
+  lastModifiedBy: null
+  compendiumSource: null
+  duplicateSource: null
+_key: "!actors!fb132f7bce8a18f5"
+

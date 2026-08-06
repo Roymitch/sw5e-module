@@ -36,7 +36,10 @@ function extractItalicNames(chunk) {
 		const raw = match[1].trim();
 		if ( !raw || /^(?:at-?will|\d+(?:st|nd|rd|th)-?level|br)$/i.test(raw) ) continue;
 		for ( const piece of raw.split(/,\s*/) ) {
-			const cleaned = piece.replace(/<br\s*\/?>/gi, "").trim();
+			const cleaned = piece
+				.replace(/<br\s*\/?>/gi, "")
+				.replace(/\s*\([^)]*cast[^)]*\)\s*/gi, " ")
+				.trim();
 			if ( cleaned ) names.push(titleCasePower(cleaned));
 		}
 	}
@@ -79,7 +82,7 @@ export function parseCastingTrait(body, castType) {
 	const casterWord = castType === "force" ? "forcecaster" : "techcaster";
 	const pointsWord = castType === "force" ? "force points" : "tech points";
 	const traitRe = new RegExp(
-		`\\*{1,3}(?:Innate\\s+)?${label}\\.\\*{0,3}\\s*([\\s\\S]*?)(?=\\n\\*{1,3}[A-Z]|\\n###|\\n\\\\pagebreak|$)`,
+		`\\*{1,3}(?:Innate\\s+)?${label}\\*{0,3}\\.?\\*{0,3}\\s*([\\s\\S]*?)(?=\\n\\*{1,3}[A-Z]|\\n###|\\n\\\\pagebreak|$)`,
 		"i"
 	);
 	const traitMatch = text.match(traitRe);

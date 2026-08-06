@@ -13,11 +13,36 @@ const TECH_POWERS_ROOT = path.join(ROOT, "packs/_source/powers-maneuvers/tech-po
 const MANEUVERS_ROOT = path.join(ROOT, "packs/_source/powers-maneuvers/maneuvers");
 
 const POWER_ALIASES = Object.freeze({
-	"force push/pull": "force push/pull",
-	"force push / pull": "force push/pull",
+	// Keys must match normalizeName() output (punctuation collapsed/removed).
+	"force push pull": "force push/pull",
+	"force pull push": "force push/pull",
 	"improved dark side tendrils": "improved dark side tendrils",
-	"dark side tendrils": "dark side tendrils"
+	"dark side tendrils": "dark side tendrils",
+	"voltaic shield": "voltaic shielding",
+	"phase strike": "phasestrike",
+	"phasestrike": "phasestrike",
+	"electro shock": "electroshock",
+	"predictive a i": "predictive ai",
+	"predictive ai": "predictive ai",
+	"tech overide": "tech override",
+	"dimish tech": "diminish tech",
+	"turbulance": "turbulence",
+	"propel": "force propel",
+	"mindspike": "mind spike",
+	"mind spike": "mind spike",
+	"concealed caltrop": "concealed caltrops"
 });
+
+/**
+ * Normalize SnV power labels before alias/index lookup.
+ * Strips cast-as parentheticals and collapses punctuation variants.
+ */
+export function normalizePowerLookupName(name) {
+	return String(name || "")
+		.replace(/\s*\([^)]*cast[^)]*\)\s*/gi, " ")
+		.replace(/\s+/g, " ")
+		.trim();
+}
 
 function walkYml(dir, out = []) {
 	if ( !fs.existsSync(dir) ) return out;
@@ -95,7 +120,8 @@ export function getCanonicalManeuverIndex() {
 }
 
 function aliasKey(name) {
-	const n = normalizeName(name);
+	const cleaned = normalizePowerLookupName(name);
+	const n = normalizeName(cleaned);
 	return POWER_ALIASES[n] ? normalizeName(POWER_ALIASES[n]) : n;
 }
 

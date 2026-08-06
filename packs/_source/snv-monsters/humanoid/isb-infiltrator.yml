@@ -25,7 +25,9 @@ items:
     effects: []
     system:
       description:
-        value: <p><em>Spare Power cell inventory for this prototype NPC. Attack consumption uses the weapon Item Usage magazine (itemUses), not this Item's quantity.</em></p>
+        value: >-
+          <p><em>Spare Power cell inventory for this prototype NPC. Attack consumption uses the weapon Item Usage
+          magazine (itemUses), not this Item's quantity.</em></p>
         chat: ""
       quantity: 2
       weight:
@@ -82,7 +84,9 @@ items:
     folder: null
     system:
       description:
-        value: <p>On each of its turns, the infiltrator can use a bonus action to take the Dash, Disengage, or Hide action.</p>
+        value: >-
+          <p>On each of its turns, the infiltrator can use a bonus action to take the Dash, Disengage, or Hide
+          action.</p>
         chat: ""
       requirements: ""
       source:
@@ -182,7 +186,9 @@ items:
     folder: null
     system:
       description:
-        value: <p>If the infiltrator is subjected to an effect that allows it to make a Dexterity saving throw to take only half damage, the infiltrator instead takes no damage on a success, and half damage on a fail.</p>
+        value: >-
+          <p>If the infiltrator is subjected to an effect that allows it to make a Dexterity saving throw to take only
+          half damage, the infiltrator instead takes no damage on a success, and half damage on a fail.</p>
         chat: ""
       requirements: ""
       source:
@@ -261,103 +267,6 @@ items:
       compendiumSource: null
       duplicateSource: null
     _key: "!actors.items!86b300ca462ff90a.42467ee3d2651392"
-  - _id: f2d3a3660cfc2d3b
-    name: Techcasting
-    type: feat
-    sort: 0
-    flags:
-      sw5e:
-        snvMonsters:
-          prototype: true
-          classification: non-weapon
-          kind: featPassive
-          sourceSection: traits
-          prePublication: true
-          trackedPack: snv-monsters
-    img: modules/sw5e-module/icons/packs/monsters/207_-_ISB_Infiltrator/Avatar.webp
-    effects: []
-    folder: null
-    system:
-      description:
-        value: "<p>The infiltrator is a 3rd-level techcaster. Its techcasting ability is Intelligence (tech save DC 13, +5 to hit with tech powers). It has 15 tech points and knows the following tech powers: <br> At-will: *encrypted message, haywire, on/off, stinger* <br> 1st-level: *holographic disguise, smoke cloud, tranquilizer* <br> 2nd-level: *infiltrate, shocking ray, truth serum*</p>"
-        chat: ""
-      requirements: ""
-      source:
-        custom: ""
-      activation:
-        type: ""
-        cost: null
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: ""
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: ""
-      actionType: ""
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
-        value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      prerequisites:
-        level: null
-      properties: []
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!86b300ca462ff90a.f2d3a3660cfc2d3b"
   - _id: 6d4a44b27bab57d4
     name: Blaster Carbine
     type: weapon
@@ -407,12 +316,19 @@ items:
           effect: []
     system:
       description:
-        value: |-
+        value: >-
           <h3>Power cell (range 70/280) Cell</h3>
-          <p>Weapons with this property are fueled by power cells, which must be loaded in order to fire the weapon. A power cell fuels a number of attacks equal to the weapon's reload number.</p>
+
+          <p>Weapons with this property are fueled by power cells, which must be loaded in order to fire the weapon. A
+          power cell fuels a number of attacks equal to the weapon's reload number.</p>
+
           <h3>Reload 16</h3>
-          <p>A number of shots equal to the reload number can be made with a weapon with this property. A character must then reload it using an action or a bonus action (their choice). You must have one free hand to reload.</p>
+
+          <p>A number of shots equal to the reload number can be made with a weapon with this property. A character must
+          then reload it using an action or a bonus action (their choice). You must have one free hand to reload.</p>
+
           <h3>Two-handed</h3>
+
           <p>A weapon with this property requires two hands to use.</p>
         chat: ""
       source:
@@ -686,36 +602,24 @@ items:
       compendiumSource: null
       duplicateSource: null
     _key: "!actors.items!86b300ca462ff90a.158156e4e6374ad9"
-  - _id: e849cdef0c2ad467
-    name: Electrical Burst
-    type: spell
-    sort: 0
-    flags:
-      core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.Ap77p4kYut7c7XKH
-      sw5e:
-        dataVersion: 1.2.4
-        snvMonsters:
-          prototype: true
-          carriedFromLegacy: true
-          legacyId: 7fVKhppxfx8dcLsy
-          note: Carried for Force/tech/trait completeness in N1; not a silent omission
-          prePublication: true
-          trackedPack: snv-monsters
-    img: modules/sw5e-module/icons/packs/Tech Powers/ElectricalBurst.webp
-    effects: []
-    folder: null
+  - _id: f2d3a3660cfc2d3b
+    _key: "!actors.items!86b300ca462ff90a.f2d3a3660cfc2d3b"
+    name: Techcasting
+    type: feat
+    img: systems/dnd5e/icons/svg/items/feature.svg
     system:
       description:
-        value: |-
-          <p>You emit a burst of electricity. Each creature within range, other than you, must succeed on a Dexterity saving throw or take 1d6 lightning damage.</p>
-          <p>This power's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).</p>
+        value: >-
+          <p>The infiltrator is a 3rd-level techcaster. Its techcasting ability is Intelligence (tech save DC 13, +5 to
+          hit with tech powers). It has 15 tech points and knows the following tech powers: <br><br>At-will: *encrypted
+          message, haywire, on/off, stinger* <br><br>1st-level: *holographic disguise, smoke cloud, tranquilizer*
+          <br><br>2nd-level: *infiltrate, shocking ray, truth serum*</p>
         chat: ""
       source:
-        custom: PHB
+        custom: SnV
       activation:
-        type: action
-        cost: 1
+        type: ""
+        cost: null
         condition: ""
       duration:
         value: ""
@@ -723,15 +627,15 @@ items:
       cover: null
       crewed: false
       target:
-        value: "5"
+        value: ""
         width: null
-        units: ft
-        type: sphere
+        units: ""
+        type: ""
         prompt: true
       range:
         value: null
         long: null
-        units: self
+        units: ""
       uses:
         value: null
         max: ""
@@ -743,114 +647,7 @@ items:
         target: ""
         amount: null
         scale: false
-      ability: int
-      actionType: save
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts:
-          - - 1d6
-            - lightning
-        versatile: ""
-      formula: ""
-      save:
-        ability: dex
-        dc: null
-        scaling: spell
-      level: 0
-      school: tec
-      materials:
-        value: ""
-        consumed: false
-        cost: 0
-        supply: 0
-      preparation:
-        mode: ""
-        prepared: true
-      scaling:
-        mode: none
-        formula: ""
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      properties: []
-      method: powerCasting
-      prepared: true
-      activities: {}
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.Ap77p4kYut7c7XKH
-      duplicateSource: null
-    _key: "!actors.items!86b300ca462ff90a.e849cdef0c2ad467"
-  - _id: 907dd84026f1c1c9
-    name: Encrypted Message
-    type: spell
-    sort: 0
-    flags:
-      core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.RZKUHTQ91h9i8XiJ
-      sw5e:
-        dataVersion: 1.2.4
-        snvMonsters:
-          prototype: true
-          carriedFromLegacy: true
-          legacyId: XPNn5jcUrlHtVPNj
-          note: Carried for Force/tech/trait completeness in N1; not a silent omission
-          prePublication: true
-          trackedPack: snv-monsters
-    img: modules/sw5e-module/icons/packs/Tech Powers/EncryptedMessage.webp
-    effects: []
-    folder: null
-    system:
-      description:
-        value: |-
-          <p>You point your finger toward a creature within range that possesses a commlink and whisper a message. The target (and only the target) hears the message and can send an encrypted reply that only you can hear. These messages cannot be intercepted or decrypted by unenhanced means.</p>
-          <p>You can cast this power through solid objects if you are familiar with the target and know it is beyond the barrier. 1 foot of stone, 1 inch of common metal, a thin sheet of lead, or 3 feet of wood blocks the power. The power doesn't have to follow a straight line and can travel freely around corners or through openings.</p>
-        chat: ""
-      source:
-        custom: PHB
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: "1"
-        units: round
-      cover: null
-      crewed: false
-      target:
-        value: "1"
-        width: null
-        units: ""
-        type: creature
-        prompt: true
-      range:
-        value: 120
-        long: null
-        units: ft
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: ""
-        amount: null
-        scale: false
-      ability: int
+      ability: null
       actionType: ""
       chatFlavor: ""
       critical:
@@ -864,62 +661,199 @@ items:
         ability: ""
         dc: null
         scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      requirements: ""
+      recharge:
+        value: null
+        charged: false
+    effects: []
+    folder: null
+    flags:
+      sw5e:
+        snvMonsters:
+          castingTrait: true
+          castType: tech
+          parsedLevel: 3
+          parsedPoints: 15
+          parsedAbility: int
+          parsedSaveDc: 13
+          parsedAttackBonus: 5
+  - name: Encrypted Message
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1527446+00:00"
+        importer_version: 3
+        uid: Power.name-encrypted_message.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.RZKUHTQ91h9i8XiJ
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Encrypted Message
+          sourceSemanticKey: snv:Humanoids:isb-infiltrator
+          tierLabel: At-will
+          tierKind: at-will
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/EncryptedMessage.webp
+    system:
+      description:
+        value: >-
+          <p>You point your finger toward a creature within range that possesses a commlink and whisper a message. The
+          target (and only the target) hears the message and can send an encrypted reply that only you can hear. These
+          messages cannot be intercepted or decrypted by unenhanced means.</p>
+
+          <p>You can cast this power through solid objects if you are familiar with the target and know it is beyond the
+          barrier. 1 foot of stone, 1 inch of common metal, a thin sheet of lead, or 3 feet of wood blocks the power.
+          The power doesn't have to follow a straight line and can travel freely around corners or through openings.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: round
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 120
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
       level: 0
       school: tec
+      properties: []
       materials:
         value: ""
         consumed: false
         cost: 0
         supply: 0
       preparation:
-        mode: ""
+        mode: prepared
         prepared: true
       scaling:
         mode: none
-        formula: ""
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
       attack:
         bonus: ""
         flat: false
+      chatFlavor: ""
       enchantment: null
       summons: null
-      properties: []
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: round
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "120"
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
       method: powerCasting
       prepared: true
-      activities: {}
+    effects: []
+    _id: 907dd84026f1c1c9
+    folder: null
+    sort: 0
     ownership:
       default: 0
     _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.RZKUHTQ91h9i8XiJ
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.RZKUHTQ91h9i8XiJ
     _key: "!actors.items!86b300ca462ff90a.907dd84026f1c1c9"
-  - _id: 7c58f52fef5143a2
-    name: On/Off
-    type: spell
-    sort: 0
+  - name: Haywire
     flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1597403+00:00"
+        importer_version: 3
+        uid: Power.name-haywire.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.xB1gBT01FENx6xht
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.ztJ7diXCKhpYfaZH
       sw5e:
-        dataVersion: 1.2.4
         snvMonsters:
-          prototype: true
-          carriedFromLegacy: true
-          legacyId: 34wPMlsoQa6Z9ujy
-          note: Carried for Force/tech/trait completeness in N1; not a silent omission
-          prePublication: true
-          trackedPack: snv-monsters
-    img: modules/sw5e-module/icons/packs/Tech Powers/OnOff.webp
-    effects: []
-    folder: null
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Haywire
+          sourceSemanticKey: snv:Humanoids:isb-infiltrator
+          tierLabel: At-will
+          tierKind: at-will
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/Haywire.webp
     system:
       description:
-        value: <p>This power allows you to activate or deactivate any electronic device within range, as long as the device is not being wielded by a creature, and has a clearly defined on or off function that can be easily accessed from the outside of the device. Any device that requires a software-based shutdown sequence to activate or deactivate cannot be affected by <em>on/off</em>.</p>
+        value: >-
+          <p>You momentarily surround a creature you can see within range with electronic interference and holographic
+          illusions. The target must succeed on an Intelligence saving throw, or it takes [[/r 1d6]] lightning damage
+          and moves 5 feet in a random direction if it can move and its speed is at least 5 feet. Roll a [[/r d4]] for
+          the direction: 1, north; 2, south; 3, east; or 4, west. This movement doesn't provoke opportunity attacks, and
+          if the direction rolled is blocked, the target doesn't move.</p>
+
+          <p>The power's damage increases by [[/r 1d6]] when you reach 5th level ([[/r 2d6]]), 11th level ([[/r 3d6]]),
+          and 17th level ([[/r 4d6]]).</p>
         chat: ""
       source:
         custom: PHB
@@ -929,14 +863,163 @@ items:
         condition: ""
       duration:
         value: ""
-        units: ""
-      cover: null
-      crewed: false
+        units: inst
       target:
-        value: "1"
+        value: ""
         width: null
         units: ""
-        type: object
+        type: ""
+        prompt: true
+      range:
+        value: 30
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: save
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 1d6
+            - lightning
+        versatile: ""
+      formula: 1d4
+      save:
+        ability: int
+        dc: null
+        scaling: spell
+      level: 0
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: atwill
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 6
+                number: 1
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - lightning
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "30"
+          save:
+            ability: int
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: save
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 5c1d7b0e7e776295
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.ztJ7diXCKhpYfaZH
+    _key: "!actors.items!86b300ca462ff90a.5c1d7b0e7e776295"
+  - name: On/Off
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1747317+00:00"
+        importer_version: 3
+        uid: Power.name-onoff.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.xB1gBT01FENx6xht
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: On/Off
+          sourceSemanticKey: snv:Humanoids:isb-infiltrator
+          tierLabel: At-will
+          tierKind: at-will
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/On-Off.webp
+    system:
+      description:
+        value: >-
+          <p>This power allows you to activate or deactivate any electronic device within range, as long as the device
+          is not being wielded by a creature, and has a clearly defined on or off function that can be easily accessed
+          from the outside of the device. Any device that requires a software-based shutdown sequence to activate or
+          deactivate cannot be affected by <em>on/off</em>.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
         prompt: true
       range:
         value: 60
@@ -948,14 +1031,8 @@ items:
         per: null
         recovery: ""
         prompt: true
-      consume:
-        type: ""
-        target: ""
-        amount: null
-        scale: false
-      ability: int
-      actionType: ""
-      chatFlavor: ""
+      ability: null
+      actionType: other
       critical:
         threshold: null
         damage: ""
@@ -969,186 +1046,117 @@ items:
         scaling: spell
       level: 0
       school: tec
+      properties: []
       materials:
         value: ""
         consumed: false
         cost: 0
         supply: 0
       preparation:
-        mode: ""
+        mode: prepared
         prepared: true
       scaling:
         mode: none
-        formula: ""
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
       attack:
-        bonus: "@prof"
+        bonus: ""
         flat: false
+      chatFlavor: ""
       enchantment: null
       summons: null
-      properties: []
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "60"
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
       method: powerCasting
       prepared: true
-      activities: {}
+    effects: []
+    _id: 7c58f52fef5143a2
+    folder: null
+    sort: 0
     ownership:
       default: 0
     _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.xB1gBT01FENx6xht
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.xB1gBT01FENx6xht
     _key: "!actors.items!86b300ca462ff90a.7c58f52fef5143a2"
-  - _id: 613b02e8a342b866
-    name: Holographic Disguise
-    type: spell
-    sort: 0
+  - name: Stinger
     flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:52:03.1914029+00:00"
+        importer_version: 3
+        uid: Power.name-stinger.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.8HfCFmDRWbaAz8d2
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.XKfW1l79td5wzdGd
       sw5e:
-        dataVersion: 1.2.4
         snvMonsters:
-          prototype: true
-          carriedFromLegacy: true
-          legacyId: p3VHgkLYz2Ws8Xax
-          note: Carried for Force/tech/trait completeness in N1; not a silent omission
-          prePublication: true
-          trackedPack: snv-monsters
-    img: modules/sw5e-module/icons/packs/Tech Powers/HolographicDisguise.webp
-    effects: []
-    folder: null
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Stinger
+          sourceSemanticKey: snv:Humanoids:isb-infiltrator
+          tierLabel: At-will
+          tierKind: at-will
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/Stinger.webp
     system:
       description:
-        value: |-
-          <p>Until the power ends or you use an action to dismiss it, you can disguise yourself through the use of a hologram emitter. You can appear to be shorter or taller by about a foot and change the appearance of your body weight, but you cannot change the basic structure of your body. The hologram can include your clothes, armor, weapons, and other belongings on your person.</p>
-          <p>The illusion is only visual, so any sort of physical contact will only interact with the real size and shape of you. A creature can use its action to make an Intelligence (Investigation) check against your tech save DC, seeing through the hologram on a success.</p>
+        value: >-
+          <p>You fire a stinging dart at a creature within range. Make a ranged tech attack against the target. On a
+          hit, the target takes [[/r 1d8]] poison damage, and if the target is a humanoid or beast, it can't regain hit
+          points until the start of your next turn.</p>
+
+          <p>This power's damage increases by [[/r 1d8]] when you reach 5th level ([[/r 2d8]]), 11th level ([[/r 3d8]]),
+          and 17th level ([[/r 4d8]]).</p>
         chat: ""
       source:
-        custom: PHB
+        custom: EC
       activation:
         type: action
         cost: 1
         condition: ""
       duration:
         value: "1"
-        units: hour
-      cover: null
-      crewed: false
+        units: round
       target:
         value: ""
         width: null
         units: ""
-        type: self
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: self
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
         type: ""
-        target: ""
-        amount: null
-        scale: false
-      ability: int
-      actionType: save
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: int
-        dc: null
-        scaling: spell
-      level: 1
-      school: tec
-      materials:
-        value: ""
-        consumed: false
-        cost: 0
-        supply: 0
-      preparation:
-        mode: ""
-        prepared: true
-      scaling:
-        mode: none
-        formula: ""
-      attack:
-        bonus: "@prof"
-        flat: false
-      enchantment: null
-      summons: null
-      properties: []
-      method: powerCasting
-      prepared: true
-      activities: {}
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.8HfCFmDRWbaAz8d2
-      duplicateSource: null
-    _key: "!actors.items!86b300ca462ff90a.613b02e8a342b866"
-  - _id: 80598ebe5a0de91b
-    name: Smoke Cloud
-    type: spell
-    sort: 0
-    flags:
-      core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.uuUhmgIc8k1K1k0q
-      sw5e:
-        dataVersion: 1.2.4
-        migratedProperties:
-          - concentration
-        snvMonsters:
-          prototype: true
-          carriedFromLegacy: true
-          legacyId: 1suW3DBFO79hijQZ
-          note: Carried for Force/tech/trait completeness in N1; not a silent omission
-          prePublication: true
-          trackedPack: snv-monsters
-    img: modules/sw5e-module/icons/packs/Tech Powers/SmokeCloud.webp
-    effects: []
-    folder: null
-    system:
-      description:
-        value: |-
-          <p>You cause thick smoke to erupt from a point within range, filling a 20-foot-radius sphere. The sphere spreads around corners, and its area is heavily obscured. It lasts for the duration or until a wind of moderate or greater speed (at least 10 miles per hour) disperses it.</p>
-          <p><em><strong>Overcharge Tech.</strong></em> When you cast this power using a tech slot of 2nd level or higher, the radius of the smoke cloud increases by 20 feet for each slot level above 1st.</p>
-        chat: ""
-      source:
-        custom: PHB
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: "1"
-        units: hour
-      cover: null
-      crewed: false
-      target:
-        value: "20"
-        width: null
-        units: ft
-        type: radius
         prompt: true
       range:
         value: 120
@@ -1160,14 +1168,167 @@ items:
         per: null
         recovery: ""
         prompt: true
+      ability: null
+      actionType: rpak
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 1d8
+            - poison
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 0
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: atwill
+        formula: null
+      cover: null
+      crewed: false
       consume:
         type: ""
-        target: ""
+        target: null
         amount: null
         scale: false
-      ability: int
-      actionType: ""
+      attack:
+        bonus: ""
+        flat: false
       chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0attack00000:
+          _id: sw5e0attack00000
+          activation:
+            condition: ""
+            type: action
+          attack:
+            ability: ""
+            bonus: ""
+            flat: false
+            type:
+              classification: spell
+              value: ranged
+          damage:
+            critical: {}
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 1
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - poison
+          description: {}
+          duration:
+            units: round
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "120"
+          target:
+            template:
+              type: ""
+              units: ""
+          type: attack
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 2c1bf42857070383
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.XKfW1l79td5wzdGd
+    _key: "!actors.items!86b300ca462ff90a.2c1bf42857070383"
+  - name: Holographic Disguise
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1607401+00:00"
+        importer_version: 3
+        uid: Power.name-holographic_disguise.level-1
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.8HfCFmDRWbaAz8d2
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Holographic Disguise
+          sourceSemanticKey: snv:Humanoids:isb-infiltrator
+          tierLabel: 1st-level
+          tierKind: leveled
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/HolographicDisguise.webp
+    system:
+      description:
+        value: >-
+          <p>Until the power ends or you use an action to dismiss it, you can disguise yourself through the use of a
+          hologram emitter. You can appear to be shorter or taller by about a foot and change the appearance of your
+          body weight, but you cannot change the basic structure of your body. The hologram can include your clothes,
+          armor, weapons, and other belongings on your person. </p>
+
+          <p>The illusion is only visual, so any sort of physical contact will only interact with the real size and
+          shape of you. A creature can use its action to make an Intelligence (Investigation) check against your tech
+          save DC, seeing through the hologram on a success.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: hour
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: self
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
       critical:
         threshold: null
         damage: ""
@@ -1181,62 +1342,262 @@ items:
         scaling: spell
       level: 1
       school: tec
+      properties: []
       materials:
         value: ""
         consumed: false
         cost: 0
         supply: 0
       preparation:
-        mode: ""
+        mode: prepared
         prepared: true
       scaling:
         mode: none
-        formula: ""
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 2
+        scale: true
       attack:
-        bonus: "@prof"
+        bonus: ""
         flat: false
+      chatFlavor: ""
       enchantment: null
       summons: null
-      properties: []
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: hour
+            value: "1"
+          img: null
+          range:
+            override: false
+            units: self
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "2"
       method: powerCasting
       prepared: true
-      activities: {}
+    effects: []
+    _id: 613b02e8a342b866
+    folder: null
+    sort: 0
     ownership:
       default: 0
     _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.uuUhmgIc8k1K1k0q
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-    _key: "!actors.items!86b300ca462ff90a.80598ebe5a0de91b"
-  - _id: 70adc5a2cdccf0a1
-    name: Tranquilizer
-    type: spell
-    sort: 0
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.8HfCFmDRWbaAz8d2
+    _key: "!actors.items!86b300ca462ff90a.613b02e8a342b866"
+  - name: Smoke Cloud
     flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1847261+00:00"
+        importer_version: 3
+        uid: Power.name-smoke_cloud.level-1
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.uuUhmgIc8k1K1k0q
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Smoke Cloud
+          sourceSemanticKey: snv:Humanoids:isb-infiltrator
+          tierLabel: 1st-level
+          tierKind: leveled
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/SmokeCloud.webp
+    system:
+      description:
+        value: >-
+          <p>You cause thick smoke to erupt from a point within range, filling a 20-foot-radius sphere. The sphere
+          spreads around corners, and its area is heavily obscured. It lasts for the duration or until a wind of
+          moderate or greater speed (at least 10 miles per hour) disperses it.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 2nd level or
+          higher, the radius of the smoke cloud increases by 20 feet for each slot level above 1st.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: hour
+      target:
+        value: "20"
+        width: null
+        units: ft
+        type: sphere
+        prompt: true
+      range:
+        value: 120
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 1
+      school: tec
+      properties:
+        - concentration
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: level
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 2
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: hour
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "120"
+          roll:
+            formula: ""
+          target:
+            template:
+              size: "20"
+              type: sphere
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "2"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 80598ebe5a0de91b
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.uuUhmgIc8k1K1k0q
+    _key: "!actors.items!86b300ca462ff90a.80598ebe5a0de91b"
+  - name: Tranquilizer
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1907223+00:00"
+        importer_version: 3
+        uid: Power.name-tranquilizer.level-1
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
       core:
         sourceId: Compendium.sw5e-module.powers-maneuvers.Item.KCxzDwrmHOUizQBJ
       sw5e:
-        dataVersion: 1.2.4
         snvMonsters:
-          prototype: true
-          carriedFromLegacy: true
-          legacyId: EhuEHjLBpkbpJBJ0
-          note: Carried for Force/tech/trait completeness in N1; not a silent omission
-          prePublication: true
-          trackedPack: snv-monsters
-    img: modules/sw5e-module/icons/packs/Tech Powers/Tranquilizer.webp
-    effects: []
-    folder: null
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Tranquilizer
+          sourceSemanticKey: snv:Humanoids:isb-infiltrator
+          tierLabel: 1st-level
+          tierKind: leveled
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/Tranquilizer.webp
     system:
       description:
-        value: |-
-          <p>You emit a tranquilizing dart that knocks a creature unconscious. Roll 5d8; if the creature's remaining hit points are less than the total, the creature falls unconscious until the power ends, the sleeper takes damage, or someone uses an action to shake or slap the sleeper awake. This power has no effect on droids or constructs.</p>
-          <p><em><strong>Overcharge Tech.</strong></em> When you cast this power using a tech slot of 2nd level or higher, you can target an additional creature for each slot level above 1st. For each target, roll 5d8 separately.</p>
+        value: >-
+          <p>You emit a tranquilizing dart that knocks a creature unconscious. Roll [[/r 5d8]]; if the creature's
+          remaining hit points are less than the total, the creature falls unconscious until the power ends, the sleeper
+          takes damage, or someone uses an action to shake or slap the sleeper awake. This power has no effect on droids
+          or constructs.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 2nd level or
+          higher, you can target an additional creature for each slot level above 1st. For each target, roll [[/r 5d8]]
+          separately.</p>
         chat: ""
       source:
         custom: PHB
@@ -1247,13 +1608,11 @@ items:
       duration:
         value: "1"
         units: minute
-      cover: null
-      crewed: false
       target:
-        value: "1"
+        value: ""
         width: null
         units: ""
-        type: creature
+        type: ""
         prompt: true
       range:
         value: 90
@@ -1265,87 +1624,126 @@ items:
         per: null
         recovery: ""
         prompt: true
-      consume:
-        type: ""
-        target: ""
-        amount: null
-        scale: false
-      ability: int
-      actionType: util
-      chatFlavor: ""
+      ability: null
+      actionType: other
       critical:
         threshold: null
         damage: ""
       damage:
-        parts:
-          - - 5d8
-            - ""
+        parts: []
         versatile: ""
-      formula: ""
+      formula: 5d8
       save:
         ability: ""
         dc: null
         scaling: spell
       level: 1
       school: tec
+      properties: []
       materials:
         value: ""
         consumed: false
         cost: 0
         supply: 0
       preparation:
-        mode: ""
+        mode: prepared
         prepared: true
       scaling:
-        mode: none
-        formula: ""
+        mode: level
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 2
+        scale: true
       attack:
-        bonus: "@prof"
+        bonus: ""
         flat: false
+      chatFlavor: ""
       enchantment: null
       summons: null
-      properties: []
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: minute
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "90"
+          roll:
+            formula: 5d8
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "2"
       method: powerCasting
       prepared: true
-      activities: {}
+    effects: []
+    _id: 70adc5a2cdccf0a1
+    folder: null
+    sort: 0
     ownership:
       default: 0
     _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.KCxzDwrmHOUizQBJ
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.KCxzDwrmHOUizQBJ
     _key: "!actors.items!86b300ca462ff90a.70adc5a2cdccf0a1"
-  - _id: 50275d4b41f2845b
-    name: Infiltrate
-    type: spell
-    sort: 0
+  - name: Infiltrate
     flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1627387+00:00"
+        importer_version: 3
+        uid: Power.name-infiltrate.level-2
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
       core:
         sourceId: Compendium.sw5e-module.powers-maneuvers.Item.VLH57JJHSKafVadB
       sw5e:
-        dataVersion: 1.2.4
-        migratedProperties:
-          - concentration
         snvMonsters:
-          prototype: true
-          carriedFromLegacy: true
-          legacyId: H9tWY5ExJq2n1kIY
-          note: Carried for Force/tech/trait completeness in N1; not a silent omission
-          prePublication: true
-          trackedPack: snv-monsters
-    img: modules/sw5e-module/icons/packs/Tech Powers/Infiltrate.webp
-    effects: []
-    folder: null
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Infiltrate
+          sourceSemanticKey: snv:Humanoids:isb-infiltrator
+          tierLabel: 2nd-level
+          tierKind: leveled
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/Infiltrate.webp
     system:
       description:
-        value: |-
-          <p>A creature you touch becomes invisible. Anything the target is carrying is invisible as long as it is on the target. The power ends if the target attacks or casts a power.</p>
-          <p><em><strong>Overcharge Tech.</strong></em> You can target one additional creature for each slot level above 2nd.</p>
+        value: >-
+          <p>A creature you touch becomes invisible. Anything the target is carrying is invisible as long as it is on
+          the target. The power ends if the target attacks, casts a power, or otherwise take a hostile action.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> You can target one additional creature for each slot level above
+          2nd.</p>
         chat: ""
       source:
         custom: PHB
@@ -1356,13 +1754,11 @@ items:
       duration:
         value: "1"
         units: hour
-      cover: null
-      crewed: false
       target:
-        value: "1"
+        value: ""
         width: null
         units: ""
-        type: creature
+        type: ""
         prompt: true
       range:
         value: null
@@ -1374,14 +1770,8 @@ items:
         per: null
         recovery: ""
         prompt: true
-      consume:
-        type: ""
-        target: ""
-        amount: null
-        scale: false
-      ability: int
-      actionType: ""
-      chatFlavor: ""
+      ability: null
+      actionType: other
       critical:
         threshold: null
         damage: ""
@@ -1395,62 +1785,112 @@ items:
         scaling: spell
       level: 2
       school: tec
+      properties:
+        - concentration
       materials:
         value: ""
         consumed: false
         cost: 0
         supply: 0
       preparation:
-        mode: ""
+        mode: prepared
         prepared: true
       scaling:
-        mode: none
-        formula: ""
+        mode: level
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 3
+        scale: true
       attack:
-        bonus: "@prof"
+        bonus: ""
         flat: false
+      chatFlavor: ""
       enchantment: null
       summons: null
-      properties: []
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: hour
+            value: "1"
+          img: null
+          range:
+            override: false
+            units: touch
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "3"
       method: powerCasting
       prepared: true
-      activities: {}
+    effects: []
+    _id: 50275d4b41f2845b
+    folder: null
+    sort: 0
     ownership:
       default: 0
     _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.VLH57JJHSKafVadB
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.VLH57JJHSKafVadB
     _key: "!actors.items!86b300ca462ff90a.50275d4b41f2845b"
-  - _id: 1dd87ba43548a897
-    name: Shocking Ray
-    type: spell
-    sort: 0
+  - name: Shocking Ray
     flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1837268+00:00"
+        importer_version: 3
+        uid: Power.name-shocking_ray.level-2
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
       core:
         sourceId: Compendium.sw5e-module.powers-maneuvers.Item.iY0c4E1XdTKhd2H8
       sw5e:
-        dataVersion: 1.2.4
         snvMonsters:
-          prototype: true
-          carriedFromLegacy: true
-          legacyId: TSpNelWL35vi7O5O
-          note: Carried for Force/tech/trait completeness in N1; not a silent omission
-          prePublication: true
-          trackedPack: snv-monsters
-    img: modules/sw5e-module/icons/packs/Tech Powers/ShockingRay.webp
-    effects: []
-    folder: null
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Shocking Ray
+          sourceSemanticKey: snv:Humanoids:isb-infiltrator
+          tierLabel: 2nd-level
+          tierKind: leveled
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/ShockingRay.webp
     system:
       description:
-        value: |-
-          <p>You create three ionic rays and hurl them at targets within range. You can hurl them at one target or several. Make a ranged tech attack for each ray. On a hit, the target takes 2d4 ion damage.</p>
-          <p><em><strong>Overcharge Tech.</strong></em> When you cast this power using a tech slot of 3rd level or higher, you create one additional ray for each slot level above 2nd.</p>
+        value: >-
+          <p>You create three ionic rays and hurl them at targets within range. You can hurl them at one target or
+          several. Make a ranged tech attack for each ray. On a hit, the target takes [[/r 2d4]] ion damage.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 3rd level or
+          higher, you create one additional ray for each slot level above 2nd.</p>
         chat: ""
       source:
         custom: PHB
@@ -1460,14 +1900,12 @@ items:
         condition: ""
       duration:
         value: ""
-        units: ""
-      cover: null
-      crewed: false
+        units: inst
       target:
-        value: "1"
+        value: ""
         width: null
         units: ""
-        type: creature
+        type: ""
         prompt: true
       range:
         value: 120
@@ -1479,14 +1917,8 @@ items:
         per: null
         recovery: ""
         prompt: true
-      consume:
-        type: ""
-        target: ""
-        amount: null
-        scale: false
-      ability: int
+      ability: null
       actionType: rpak
-      chatFlavor: ""
       critical:
         threshold: null
         damage: ""
@@ -1502,38 +1934,248 @@ items:
         scaling: spell
       level: 2
       school: tec
+      properties: []
       materials:
         value: ""
         consumed: false
         cost: 0
         supply: 0
       preparation:
-        mode: ""
+        mode: prepared
         prepared: true
       scaling:
-        mode: none
-        formula: ""
+        mode: level
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 3
+        scale: true
       attack:
-        bonus: "@prof"
+        bonus: ""
         flat: false
+      chatFlavor: ""
       enchantment: null
       summons: null
-      properties: []
+      activities:
+        sw5e0attack00000:
+          _id: sw5e0attack00000
+          activation:
+            condition: ""
+            type: action
+          attack:
+            ability: ""
+            bonus: ""
+            flat: false
+            type:
+              classification: spell
+              value: ranged
+          damage:
+            critical: {}
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 4
+                number: 2
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - ion
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "120"
+          target:
+            template:
+              type: ""
+              units: ""
+          type: attack
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "3"
       method: powerCasting
       prepared: true
-      activities: {}
+    effects: []
+    _id: 1dd87ba43548a897
+    folder: null
+    sort: 0
     ownership:
       default: 0
     _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.iY0c4E1XdTKhd2H8
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.iY0c4E1XdTKhd2H8
     _key: "!actors.items!86b300ca462ff90a.1dd87ba43548a897"
+  - name: Truth Serum
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1917223+00:00"
+        importer_version: 3
+        uid: Power.name-truth_serum.level-2
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.Rfhfgkw4au6kGPcI
+      sw5e:
+        snvMonsters:
+          embeddedFromCanonical: true
+          canonicalCastType: tech
+          canonicalCompendium: sw5e-module.powers-maneuvers
+          canonicalName: Truth Serum
+          sourceSemanticKey: snv:Humanoids:isb-infiltrator
+          tierLabel: 2nd-level
+          tierKind: leveled
+          overrides: []
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/TruthSerum.webp
+    system:
+      description:
+        value: >-
+          <p>You administer a poison to a creature you touched that prevents it from telling lies. The creature touched
+          must make a Constitution saving throw. On a success, nothing happens. On a failure, the creature can't speak a
+          deliberate lie until the power ends.</p>
+
+          <p>An affected creature is aware of the power and can thus avoid answering questions to which it would
+          normally respond with a lie. Such a creature can be evasive in its answers as long as it remains within the
+          boundaries of the truth.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "10"
+        units: minute
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: touch
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: save
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: con
+        dc: null
+        scaling: spell
+      level: 2
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      preparation:
+        mode: prepared
+        prepared: true
+      scaling:
+        mode: none
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 3
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts: []
+          description: {}
+          duration:
+            units: minute
+            value: "10"
+          img: null
+          range:
+            override: false
+            units: touch
+          save:
+            ability: con
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "3"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: eab374fc66f9d1a3
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.Rfhfgkw4au6kGPcI
+    _key: "!actors.items!86b300ca462ff90a.eab374fc66f9d1a3"
 effects: []
 prototypeToken:
   flags: {}
@@ -2069,6 +2711,39 @@ system:
     lair:
       value: false
       initiative: 0
+  powercasting:
+    force:
+      points:
+        value: 0
+        max: null
+        temp: null
+        tempmax: null
+        bonuses:
+          level: ""
+          overall: ""
+      schools:
+        lgt:
+          attr: wis
+          dc: null
+        uni:
+          attr: ""
+          dc: null
+        drk:
+          attr: cha
+          dc: null
+    tech:
+      points:
+        value: 15
+        max: 15
+        temp: null
+        tempmax: null
+        bonuses:
+          level: ""
+          overall: ""
+      schools:
+        tec:
+          attr: int
+          dc: null
 flags:
   sw5e:
     dataVersion: 1.2.4
@@ -2099,6 +2774,85 @@ flags:
       worldCleanupFlag: snv-n1-prototype-test
       folderTaxonomy: foundry-creature-type
       creatureTypeFolder: Humanoid
+      forceTechEmbedding:
+        remediated: "2026-08-06"
+        forcePowers: []
+        techPowers:
+          - kind: casting-feat
+            name: Techcasting
+            id: f2d3a3660cfc2d3b
+            castType: tech
+          - kind: power
+            name: Encrypted Message
+            id: 907dd84026f1c1c9
+            castType: tech
+            canonicalId: RZKUHTQ91h9i8XiJ
+            activityCount: 1
+            consumeTarget: null
+          - kind: power
+            name: Haywire
+            id: 5c1d7b0e7e776295
+            castType: tech
+            canonicalId: ztJ7diXCKhpYfaZH
+            activityCount: 1
+            consumeTarget: null
+          - kind: power
+            name: On/Off
+            id: 7c58f52fef5143a2
+            castType: tech
+            canonicalId: xB1gBT01FENx6xht
+            activityCount: 1
+            consumeTarget: null
+          - kind: power
+            name: Stinger
+            id: 2c1bf42857070383
+            castType: tech
+            canonicalId: XKfW1l79td5wzdGd
+            activityCount: 1
+            consumeTarget: null
+          - kind: power
+            name: Holographic Disguise
+            id: 613b02e8a342b866
+            castType: tech
+            canonicalId: 8HfCFmDRWbaAz8d2
+            activityCount: 1
+            consumeTarget: powercasting.tech.points.value
+          - kind: power
+            name: Smoke Cloud
+            id: 80598ebe5a0de91b
+            castType: tech
+            canonicalId: uuUhmgIc8k1K1k0q
+            activityCount: 1
+            consumeTarget: powercasting.tech.points.value
+          - kind: power
+            name: Tranquilizer
+            id: 70adc5a2cdccf0a1
+            castType: tech
+            canonicalId: KCxzDwrmHOUizQBJ
+            activityCount: 1
+            consumeTarget: powercasting.tech.points.value
+          - kind: power
+            name: Infiltrate
+            id: 50275d4b41f2845b
+            castType: tech
+            canonicalId: VLH57JJHSKafVadB
+            activityCount: 1
+            consumeTarget: powercasting.tech.points.value
+          - kind: power
+            name: Shocking Ray
+            id: 1dd87ba43548a897
+            castType: tech
+            canonicalId: iY0c4E1XdTKhd2H8
+            activityCount: 1
+            consumeTarget: powercasting.tech.points.value
+          - kind: power
+            name: Truth Serum
+            id: eab374fc66f9d1a3
+            castType: tech
+            canonicalId: Rfhfgkw4au6kGPcI
+            activityCount: 1
+            consumeTarget: powercasting.tech.points.value
+        missingCanonical: []
 ownership:
   default: 0
 _stats:

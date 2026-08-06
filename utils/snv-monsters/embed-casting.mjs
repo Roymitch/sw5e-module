@@ -100,8 +100,18 @@ function stampPowerFlags(clone, {
 		tierKind: tier?.kind || null,
 		overrides: overrides || []
 	};
-	if ( clone.flags.core.sourceId === undefined && clone._id ) {
-		// keep original id on clone before overwrite was applied — restored via resolved.canonical.id
+	// Active Effects are packed as sibling LevelDB keys; rewrite to the embedded Item id
+	// so clones across Actors do not collide on the canonical Item's effect keys.
+	if ( Array.isArray(clone.effects) ) {
+		clone.effects = clone.effects.map(effect => {
+			const effectId = effect._id || shortHash(`fts-effect:${semanticKey}:${itemId}:${effect.name || "effect"}`);
+			return {
+				...effect,
+				_id: effectId,
+				_key: `!actors.items.effects!${actorId}.${itemId}.${effectId}`,
+				origin: `Actor.${actorId}.Item.${itemId}`
+			};
+		});
 	}
 	return clone;
 }

@@ -209,6 +209,7 @@ export function parseCreatureTypeFromDescriptorPart(typePart) {
 		construct: "construct",
 		droid: "droid",
 		"force entity": "force",
+		"force-entity": "force",
 		force: "force",
 		humanoid: "humanoid",
 		plant: "plant",
@@ -218,6 +219,10 @@ export function parseCreatureTypeFromDescriptorPart(typePart) {
 	const value = alias[normalized];
 	if ( value ) {
 		return { value, subtype, swarm, custom: "" };
+	}
+	// SnV sometimes embeds "force-entity" inside complex form descriptors.
+	if ( /force[- ]?entit/i.test(raw) ) {
+		return { value: "force", subtype: subtype || "", swarm, custom: "" };
 	}
 	return { value: "custom", subtype: "", swarm, custom: raw };
 }

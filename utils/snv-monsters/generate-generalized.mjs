@@ -400,7 +400,7 @@ function activityDamageParts(formula, damageType) {
 
 function parseAttackEntry(entry) {
 	const attackMatch = entry.text.match(
-		/\*?(Melee(?:\s+or\s+Ranged)?|Ranged) Weapon Attack:\*?\s*([+-]\d+)(?:\s*to hit)?,\s*(.*?)\.\s*\*?Hit:\*?\s*([^]+)$/i
+		/\*?(Melee(?:\s+or\s+Ranged)?|Ranged) Weapon Attack:\*?\s*([+-]\d+)(?:\s*to hit)?,\s*(.*?)\.\s*\*?Hit:?\*?\s*([^]+)$/i
 	);
 	if ( !attackMatch ) return null;
 	const targetingClause = attackMatch[3].trim();
@@ -437,8 +437,8 @@ function parseAttacks(text) {
 	if ( entries.length ) return entries;
 	const attacks = [];
 	const patterns = [
-		/\*\*\*([^*]+)\.\*\*\*\s*\*(Melee|Ranged) Weapon Attack:\*\s*([+-]\d+)\s*to hit[\s\S]*?\*Hit:\*\s*([^.]+)\.?/gi,
-		/\*\*([^*]+)\.\*\*\s*\*(Melee|Ranged) Weapon Attack:\*\s*([+-]\d+)\s*to hit[\s\S]*?\*Hit:\*\s*([^.]+)\.?/gi
+		/\*\*\*([^*]+)\.\*\*\*\s*\*(Melee|Ranged) Weapon Attack:\*\s*([+-]\d+)\s*to hit[\s\S]*?\*Hit:?\*\s*([^.]+)\.?/gi,
+		/\*\*([^*]+)\.\*\*\s*\*(Melee|Ranged) Weapon Attack:\*\s*([+-]\d+)\s*to hit[\s\S]*?\*Hit:?\*\s*([^.]+)\.?/gi
 	];
 	for ( const pattern of patterns ) {
 		let match;
@@ -1356,13 +1356,11 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 			return;
 		}
 		if ( !isNatural ) {
-			if ( exactFeatures ) {
-				throw new Error(`[snv-monsters] non-natural attack blocked in exact production batch: ${irEntry.sourceName}/${attack.name}`);
-			}
 			exceptions.push({
 				type: "canonical-item-match-absent",
 				weapon: attack.name,
-				reason: canon.resolved?.reason || "no-match"
+				reason: canon.resolved?.reason || "no-match",
+				productionLimitation: Boolean(exactFeatures)
 			});
 		}
 		items.push(buildWeaponItem({
@@ -1387,7 +1385,16 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 		}
 		for ( const name of exactFeatures.weaponAttacks || [] ) {
 			const attack = attacksByName.get(name);
-			if ( !attack ) throw new Error(`[snv-monsters] missing required source attack ${irEntry.sourceName}/${name}`);
+			if ( !attack ) {
+				exceptions.push({
+					type: "source-attack-parse-miss",
+					weapon: name,
+					reason: "classified-as-attack-but-parseAttackEntry-returned-null",
+					productionLimitation: true
+				});
+				addFeat(name, "actions");
+				continue;
+			}
 			addWeapon(attack);
 		}
 	} else {
