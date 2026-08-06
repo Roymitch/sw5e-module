@@ -9,6 +9,7 @@ import path from "node:path";
 import yaml from "js-yaml";
 import { loadAndCloneCanonicalWeapon } from "./canonical.mjs";
 import { stripBlockquotes } from "./classify.mjs";
+import { parseCreatureTypeFromDescriptorPart, folderIdForCreatureType, resolveCreatureTypeFolderLabel } from "./creature-type-folders.mjs";
 import { resolvePinnedItemIdentity } from "./identity.mjs";
 import { COMMITTED_PACK_SOURCE, ROOT } from "./paths.mjs";
 
@@ -115,11 +116,11 @@ function loadScaffolds() {
 	if ( !SCAFFOLDS ) {
 		// Pin the scaffold source to a pre-N3 committed prototype so adding new
 		// N3a YAML files cannot change generated output order or hashes.
-		const preferredActorPath = path.join(COMMITTED_PACK_SOURCE, "beasts", "aiwha.yml");
+		const preferredActorPath = path.join(COMMITTED_PACK_SOURCE, "beast", "aiwha.yml");
 		const actorPath = fs.existsSync(preferredActorPath)
 			? preferredActorPath
 			: walkYamlFiles(COMMITTED_PACK_SOURCE)
-				.find(filePath => filePath.includes(`${path.sep}beasts${path.sep}`));
+				.find(filePath => filePath.includes(`${path.sep}beast${path.sep}`));
 		if ( !actorPath ) throw new Error("[snv-monsters] unable to locate committed beast scaffold");
 		const actor = yaml.load(fs.readFileSync(actorPath, "utf8"));
 		const feat = actor.items?.find(item => item.type === "feat");
@@ -194,17 +195,20 @@ function parseDescriptor(text) {
 	const lines = stripBlockquotes(text).split("\n").map(line => line.trim());
 	const descriptorLine = lines.find(line => /^\*[^*]+\*$/.test(line));
 	if ( !descriptorLine ) {
-		return { size: "med", type: "custom", alignment: "", raw: "" };
+		return { size: "med", type: "custom", subtype: "", swarm: "", custom: "", alignment: "", raw: "" };
 	}
 	const descriptor = descriptorLine.replace(/^\*|\*$/g, "").trim();
 	const sizeMatch = descriptor.match(/^(Tiny|Small|Medium|Large|Huge|Gargantuan)\b/i);
 	const size = SIZE_TO_CODE[sizeMatch?.[1]?.toLowerCase() || "medium"] || "med";
 	const afterSize = descriptor.replace(/^(Tiny|Small|Medium|Large|Huge|Gargantuan)\s+/i, "");
 	const [typePart, alignmentPart = ""] = afterSize.split(/\s*,\s*/, 2);
-	const normalizedType = /beast/i.test(typePart) ? "beast" : "custom";
+	const creatureType = parseCreatureTypeFromDescriptorPart(typePart);
 	return {
 		size,
-		type: normalizedType,
+		type: creatureType.value,
+		subtype: creatureType.subtype,
+		swarm: creatureType.swarm,
+		custom: creatureType.custom,
 		alignment: titleCase(alignmentPart || ""),
 		raw: descriptor
 	};
@@ -1077,7 +1081,15 @@ function buildActorFromScaffold(actorScaffold, { irEntry, actorId, parsed, artwo
 	actor.name = irEntry.sourceName;
 	actor.type = "npc";
 	actor.img = artwork?.avatarPath || "systems/dnd5e/icons/svg/actors/npc.svg";
-	actor.folder = artwork?.folderId || null;
+	const typeForFolder = {
+		value: parsed.descriptor.type,
+		subtype: parsed.descriptor.subtype || "",
+		swarm: parsed.descriptor.swarm || "",
+		custom: parsed.descriptor.custom || ""
+	};
+	const folderResolution = resolveCreatureTypeFolderLabel(typeForFolder);
+	actor.folder = artwork?.folderId
+		|| (folderResolution.unresolved ? null : folderIdForCreatureType(typeForFolder));
 	actor.effects = [];
 	actor.items = [];
 	actor.prototypeToken.name = irEntry.sourceName;
@@ -1115,9 +1127,9 @@ function buildActorFromScaffold(actorScaffold, { irEntry, actorId, parsed, artwo
 	actor.system.details.biography.public = "";
 	actor.system.details.alignment = parsed.descriptor.alignment;
 	actor.system.details.type.value = parsed.descriptor.type;
-	actor.system.details.type.subtype = "";
-	actor.system.details.type.swarm = "";
-	actor.system.details.type.custom = "";
+	actor.system.details.type.subtype = parsed.descriptor.subtype || "";
+	actor.system.details.type.swarm = parsed.descriptor.swarm || "";
+	actor.system.details.type.custom = parsed.descriptor.custom || "";
 	actor.system.details.cr = parsed.cr;
 	actor.system.details.source.custom = "SnV";
 	actor.system.details.powerForceLevel = 0;
@@ -1176,7 +1188,9 @@ function buildActorFromScaffold(actorScaffold, { irEntry, actorId, parsed, artwo
 		collectionId: "sw5e-module.snv-monsters",
 		packPhase: nonproduction ? "n2-sandbox" : metadata.packPhase,
 		reviewState: nonproduction ? "sandbox" : "offline-generated-awaiting-validation",
-		worldCleanupFlag: nonproduction ? "snv-n2-sandbox-test" : ""
+		worldCleanupFlag: nonproduction ? "snv-n2-sandbox-test" : "",
+		folderTaxonomy: "foundry-creature-type",
+		creatureTypeFolder: folderResolution.unresolved ? null : folderResolution.label
 	};
 	return actor;
 }

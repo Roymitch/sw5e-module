@@ -4,6 +4,10 @@
  */
 import crypto from "node:crypto";
 import fs from "node:fs";
+import {
+	CREATURE_TYPE_FOLDERS,
+	getCreatureTypeFolder
+} from "./creature-type-folders.mjs";
 import { IDENTITY_MAP_PATH } from "./paths.mjs";
 import { getProductionBatchDescriptor } from "./write-guard.mjs";
 
@@ -27,32 +31,61 @@ export const N3A_P3_ORIGIN = "n3a-p3-approved";
 export const N3A_P4_ORIGIN = "n3a-p4-approved";
 export const N3A_P5_ORIGIN = "n3a-p5-approved";
 export const N3A_BATCH = "n3a";
-export const N3A_BEASTS_FOLDER_KEY = "snv-folder:Beasts";
-export const N3A_ABERRATIONS_FOLDER_KEY = "snv-folder:Aberrations";
-export const N3A_ABERRATIONS_FOLDER_ORIGIN = "n3a-aberrations-folder";
+/** @deprecated Use N3A_BEAST_FOLDER_KEY — Creature Type taxonomy. */
+export const N3A_BEASTS_FOLDER_KEY = "snv-folder:Beast";
+export const N3A_BEAST_FOLDER_KEY = "snv-folder:Beast";
+/** @deprecated Use N3A_ABERRATION_FOLDER_KEY — Creature Type taxonomy. */
+export const N3A_ABERRATIONS_FOLDER_KEY = "snv-folder:Aberration";
+export const N3A_ABERRATION_FOLDER_KEY = "snv-folder:Aberration";
+export const N3A_ABERRATIONS_FOLDER_ORIGIN = "n3-folder-taxonomy";
 
-const SECTION_PACK_SUBDIRS = Object.freeze({
-	Beasts: "beasts",
-	Aberrations: "aberrations",
-	Droids: "droids",
-	"Constructs/Vehicles": "constructs-and-vehicles",
-	Humanoids: "humanoids",
-	"Humanoids (Force Users)": "humanoids-force-users",
-	Undead: "undead",
-	Elemental: "elemental"
-});
-
-export function packSubdirForSemanticKey(semanticKey) {
-	const section = String(semanticKey || "").split(":")[1] || "";
-	if ( SECTION_PACK_SUBDIRS[section] ) return SECTION_PACK_SUBDIRS[section];
-	return section.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "misc";
+function folderSpecById(folderId) {
+	return Object.values(CREATURE_TYPE_FOLDERS).find(folder => folder.id === folderId) || null;
 }
 
-export function folderKeyForSemanticKey(semanticKey) {
-	const section = String(semanticKey || "").split(":")[1] || "";
-	if ( section === "Aberrations" ) return N3A_ABERRATIONS_FOLDER_KEY;
-	if ( section === "Beasts" ) return N3A_BEASTS_FOLDER_KEY;
-	return `snv-folder:${section}`;
+export function packSubdirForFolderId(folderId) {
+	const folder = folderSpecById(folderId);
+	if ( !folder ) {
+		throw new Error(`[snv-monsters] unknown creature-type folder id: ${folderId}`);
+	}
+	return folder.packSubdir;
+}
+
+/**
+ * Resolve pack subdirectory from the actor's pinned Creature Type folder.
+ * Source-section semantic keys (e.g. snv:Aberrations:ngok) are provenance only.
+ */
+export function packSubdirForSemanticKey(semanticKey, map = loadProductionIdentityMap()) {
+	const actor = map.actors?.[semanticKey];
+	if ( actor?.folderId ) return packSubdirForFolderId(actor.folderId);
+	throw new Error(`[snv-monsters] cannot resolve pack subdir for ${semanticKey}: missing folderId`);
+}
+
+export function folderKeyForFolderId(folderId) {
+	const folder = folderSpecById(folderId);
+	if ( !folder ) {
+		throw new Error(`[snv-monsters] unknown creature-type folder id: ${folderId}`);
+	}
+	return folder.semanticKey;
+}
+
+/**
+ * Resolve folder semantic key from the actor pin (Creature Type taxonomy).
+ */
+export function folderKeyForSemanticKey(semanticKey, map = loadProductionIdentityMap()) {
+	const actor = map.actors?.[semanticKey];
+	if ( actor?.folderId ) return folderKeyForFolderId(actor.folderId);
+	throw new Error(`[snv-monsters] cannot resolve folder key for ${semanticKey}: missing folderId`);
+}
+
+export function listPopulatedFolderEntries(map = loadProductionIdentityMap()) {
+	return Object.entries(map.folders || {}).filter(([, folder]) => !folder.reservedUntilPopulated);
+}
+
+export function getCreatureTypeFolderPin(label, map = loadProductionIdentityMap()) {
+	const folder = getCreatureTypeFolder(label);
+	if ( !folder ) return null;
+	return map.folders?.[folder.semanticKey] || null;
 }
 const PRODUCTION_ORIGINS = Object.freeze({
 	n3a: N3A_ORIGIN,
@@ -234,15 +267,17 @@ export function summarizeIdentityAddition(proposed = {}) {
 export function buildProductionIdentityPlan(batch, ledger, map = loadProductionIdentityMap()) {
 	getProductionBatchDescriptor(batch);
 	const candidates = listBatchCandidates(ledger);
-	const defaultFolderKey = ledger?.folderAssignment?.folderSemanticKey || N3A_BEASTS_FOLDER_KEY;
+	const defaultFolderKey = ledger?.folderAssignment?.folderSemanticKey || N3A_BEAST_FOLDER_KEY;
 	const origin = productionOrigin(batch);
 	const actors = {};
 
 	for ( const candidate of candidates ) {
+		const existing = map.actors?.[candidate.semanticKey];
 		const folderKey = candidate.folderAssignment?.folderSemanticKey
-			|| folderKeyForSemanticKey(candidate.semanticKey)
+			|| (existing?.folderId ? folderKeyForFolderId(existing.folderId) : null)
 			|| defaultFolderKey;
 		const folderId = candidate.folderAssignment?.folderId
+			|| existing?.folderId
 			|| getOrThrow(map.folders, folderKey, "folder pin").id;
 		const actorId = createProductionActorId(batch, candidate.semanticKey);
 		const actor = {

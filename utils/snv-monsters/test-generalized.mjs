@@ -94,7 +94,8 @@ test("generalized generator emits natural weapon + activity without N1 semantic 
 	assert.equal(actor.items[0].system.type.value, "natural");
 	assert.equal(actor.system.details.source.custom, "SnV");
 	assert.equal(actor.flags.sw5e.snvMonsters.nonproduction, true);
-	assert.ok(exceptions.some(e => e.mechanic === "reaction-activity" || e.type === "unsupported-mechanic"));
+	assert.ok((actor.flags.sw5e.snvMonsters.softUnsupportedMechanics || []).includes("reaction-activity"));
+	assert.equal(exceptions.some(e => e.mechanic === "reaction-activity"), false);
 	assert.throws(() => assertAllowedOutputRoot("packs/_source/snv-monsters"));
 });
 
@@ -754,8 +755,9 @@ test("explicit unsupported mechanic remains visible", () => {
 ### Legendary Actions
 The beast can take 3 legendary actions.
 `;
-	const { exceptions } = generateGeneralizedActor({ irEntry: ir, body });
-	assert.ok(exceptions.some(e => e.mechanic === "legendary-actions" || e.type === "unsupported-mechanic"));
+	const { actor, exceptions } = generateGeneralizedActor({ irEntry: ir, body });
+	assert.ok((actor.flags.sw5e.snvMonsters.softUnsupportedMechanics || []).includes("legendary-actions"));
+	assert.equal(exceptions.some(e => e.mechanic === "legendary-actions"), false);
 });
 
 if ( !process.exitCode ) console.log(`\n${passed} generalized tests passed`);

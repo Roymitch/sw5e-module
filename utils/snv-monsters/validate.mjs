@@ -7,12 +7,18 @@ import path from "node:path";
 import yaml from "js-yaml";
 import { assertFourDimensionalAccounting } from "./classify.mjs";
 import {
+	resolveCreatureTypeFolderLabel,
+	CREATURE_TYPE_FOLDERS,
+	OBSOLETE_SOURCE_SECTION_FOLDERS
+} from "./creature-type-folders.mjs";
+import {
 	buildProductionIdentityPlan,
 	folderKeyForSemanticKey,
 	listBatchCandidates,
+	listPopulatedFolderEntries,
 	loadIdentityMap,
 	loadProductionIdentityMap,
-	N3A_BEASTS_FOLDER_KEY,
+	N3A_BEAST_FOLDER_KEY,
 	packSubdirForSemanticKey,
 	resolvePinnedItemIdentity,
 	summarizeIdentityAddition,
@@ -122,7 +128,8 @@ export function validateIdentityPins(map = loadIdentityMap()) {
 	const failures = [];
 	const baselineActors = Object.entries(map.actors || {})
 		.filter(([, actor]) => actor.origin === "n1-committed");
-	if ( summary.folders !== 5 ) failures.push(`folders ${summary.folders} !== 5`);
+	// Creature Type taxonomy: N1 baseline folders are Beast, Construct, Droid, Humanoid.
+	if ( summary.folders !== 4 ) failures.push(`folders ${summary.folders} !== 4`);
 	if ( summary.actors !== 8 ) failures.push(`actors ${summary.actors} !== 8`);
 	if ( summary.items < 1 ) failures.push("no pinned items");
 	if ( summary.activities < 1 ) failures.push("no pinned activities");
@@ -131,6 +138,72 @@ export function validateIdentityPins(map = loadIdentityMap()) {
 		if ( !/^[a-f0-9]{16}$/i.test(actor.id) ) failures.push(`actor ${semanticKey} bad id`);
 	}
 	return { ok: failures.length === 0, failures, summary };
+}
+
+/**
+ * Every production Actor folder must match its stored Foundry Creature Type.
+ */
+export function validateCreatureTypeFolderTaxonomy(map = loadProductionIdentityMap()) {
+	const failures = [];
+	const obsoleteIds = new Set(OBSOLETE_SOURCE_SECTION_FOLDERS.map(folder => folder.id));
+	const populatedFolders = Object.fromEntries(listPopulatedFolderEntries(map));
+	const folderDocs = walkFolderYamlDocs();
+	for ( const [semanticKey, folder] of Object.entries(populatedFolders) ) {
+		const doc = folderDocs.find(entry => entry._id === folder.id);
+		if ( !doc ) {
+			failures.push(`missing populated folder yaml for ${semanticKey}`);
+			continue;
+		}
+		if ( doc.name !== folder.name ) failures.push(`folder name drift ${semanticKey}: ${doc.name} !== ${folder.name}`);
+		const expected = CREATURE_TYPE_FOLDERS[folder.name];
+		if ( !expected || expected.id !== folder.id ) {
+			failures.push(`folder identity mismatch ${semanticKey}`);
+		}
+	}
+	for ( const doc of folderDocs ) {
+		if ( obsoleteIds.has(doc._id) ) failures.push(`obsolete folder still present: ${doc.name} (${doc._id})`);
+	}
+	for ( const [semanticKey, actor] of Object.entries(map.actors || {}) ) {
+		const rel = expectedYamlRelativePath(semanticKey);
+		const abs = path.resolve(ROOT, rel);
+		if ( !fs.existsSync(abs) ) {
+			failures.push(`missing actor yaml ${rel}`);
+			continue;
+		}
+		const doc = readYaml(abs);
+		if ( doc._id !== actor.id ) failures.push(`${semanticKey}: actor id drift`);
+		if ( doc.folder !== actor.folderId ) failures.push(`${semanticKey}: folder pin drift`);
+		const resolved = resolveCreatureTypeFolderLabel(doc.system?.details?.type || {});
+		if ( resolved.unresolved ) {
+			failures.push(`${semanticKey}: unresolved creature type (${resolved.reason})`);
+			continue;
+		}
+		const expectedFolder = CREATURE_TYPE_FOLDERS[resolved.label];
+		if ( !expectedFolder ) {
+			failures.push(`${semanticKey}: no folder for label ${resolved.label}`);
+			continue;
+		}
+		if ( doc.folder !== expectedFolder.id ) {
+			failures.push(`${semanticKey}: folder ${doc.folder} !== creature type ${resolved.label} (${expectedFolder.id})`);
+		}
+		if ( actor.folderId !== expectedFolder.id ) {
+			failures.push(`${semanticKey}: identity folderId drift vs creature type`);
+		}
+		if ( obsoleteIds.has(doc.folder) ) failures.push(`${semanticKey}: still references obsolete folder`);
+	}
+	return { ok: failures.length === 0, failures };
+}
+
+function walkFolderYamlDocs() {
+	const docs = [];
+	if ( !fs.existsSync(COMMITTED_PACK_SOURCE) ) return docs;
+	for ( const entry of fs.readdirSync(COMMITTED_PACK_SOURCE, { withFileTypes: true }) ) {
+		if ( !entry.isDirectory() ) continue;
+		const folderPath = path.join(COMMITTED_PACK_SOURCE, entry.name, "_folder.yml");
+		if ( !fs.existsSync(folderPath) ) continue;
+		docs.push(readYaml(folderPath));
+	}
+	return docs;
 }
 
 export function validateClassificationLedger(ir, expectedComplete = EXPECTED_COMPLETE_ENTRIES) {
@@ -220,12 +293,12 @@ export function validateWriteGuard() {
 		failures.push(`n3b-p2 production root should be allowed when explicitly authorized: ${error.message}`);
 	}
 	try {
-		assertApprovedN3aYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/blurrg.yml"));
+		assertApprovedN3aYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/blurrg.yml"));
 	} catch ( error ) {
 		failures.push(`approved N3a YAML should be allowed: ${error.message}`);
 	}
 	try {
-		assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/aryx.yml"), "n3b-p2");
+		assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/aryx.yml"), "n3b-p2");
 	} catch ( error ) {
 		failures.push(`approved n3b-p2 YAML should be allowed: ${error.message}`);
 	}
@@ -302,7 +375,7 @@ export function validateProductionIdentityExtension(batch, map = loadProductionI
 	if ( counts.activities !== descriptor.expectedIdentityAdditions.activities ) {
 		failures.push(`identity activity additions ${counts.activities} !== ${descriptor.expectedIdentityAdditions.activities}`);
 	}
-	const beastsFolderId = map.folders?.[N3A_BEASTS_FOLDER_KEY]?.id;
+	const beastFolderId = map.folders?.[N3A_BEAST_FOLDER_KEY]?.id;
 	for ( const [semanticKey, actor] of Object.entries(plan.actors || {}) ) {
 		const actual = map.actors?.[semanticKey];
 		if ( !actual ) {
@@ -310,8 +383,8 @@ export function validateProductionIdentityExtension(batch, map = loadProductionI
 			continue;
 		}
 		if ( actual.id !== actor.id ) failures.push(`identity actor id drift ${semanticKey}`);
-		const expectedFolderKey = folderKeyForSemanticKey(semanticKey);
-		const expectedFolderId = map.folders?.[expectedFolderKey]?.id || beastsFolderId;
+		const expectedFolderKey = folderKeyForSemanticKey(semanticKey, map);
+		const expectedFolderId = map.folders?.[expectedFolderKey]?.id || beastFolderId;
 		if ( actual.folderId !== expectedFolderId ) failures.push(`identity folder drift ${semanticKey}`);
 		if ( actor.folderId !== expectedFolderId ) failures.push(`identity plan folder drift ${semanticKey}`);
 		for ( const expectedItem of Object.values(actor.items || {}) ) {
@@ -419,8 +492,9 @@ export function validateCompiledPackData(records, ledger, map = loadProductionId
 	if ( actorRecords.length !== Object.keys(map.actors || {}).length ) {
 		failures.push(`compiled actor count ${actorRecords.length} !== ${Object.keys(map.actors || {}).length}`);
 	}
-	if ( folderRecords.length !== Object.keys(map.folders || {}).length ) {
-		failures.push(`compiled folder count ${folderRecords.length} !== ${Object.keys(map.folders || {}).length}`);
+	const populatedFolderCount = listPopulatedFolderEntries(map).length;
+	if ( folderRecords.length !== populatedFolderCount ) {
+		failures.push(`compiled folder count ${folderRecords.length} !== ${populatedFolderCount}`);
 	}
 	for ( const candidate of safeListBatchCandidates(ledger) ) {
 		const actorIdentity = map.actors?.[candidate.semanticKey];

@@ -31,13 +31,13 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Beasts:zalaaca"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/beasts/blurrg.yml",
-			"packs/_source/snv-monsters/beasts/fyrnock.yml",
-			"packs/_source/snv-monsters/beasts/jakrab.yml",
-			"packs/_source/snv-monsters/beasts/kath-hound.yml",
-			"packs/_source/snv-monsters/beasts/massiff.yml",
-			"packs/_source/snv-monsters/beasts/stintaril.yml",
-			"packs/_source/snv-monsters/beasts/zalaaca.yml"
+			"packs/_source/snv-monsters/beast/blurrg.yml",
+			"packs/_source/snv-monsters/beast/fyrnock.yml",
+			"packs/_source/snv-monsters/beast/jakrab.yml",
+			"packs/_source/snv-monsters/beast/kath-hound.yml",
+			"packs/_source/snv-monsters/beast/massiff.yml",
+			"packs/_source/snv-monsters/beast/stintaril.yml",
+			"packs/_source/snv-monsters/beast/zalaaca.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -48,13 +48,13 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/write-guard.mjs",
 			"utils/snv-monsters/cli.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/beasts/blurrg.yml",
-			"packs/_source/snv-monsters/beasts/fyrnock.yml",
-			"packs/_source/snv-monsters/beasts/jakrab.yml",
-			"packs/_source/snv-monsters/beasts/kath-hound.yml",
-			"packs/_source/snv-monsters/beasts/massiff.yml",
-			"packs/_source/snv-monsters/beasts/stintaril.yml",
-			"packs/_source/snv-monsters/beasts/zalaaca.yml"
+			"packs/_source/snv-monsters/beast/blurrg.yml",
+			"packs/_source/snv-monsters/beast/fyrnock.yml",
+			"packs/_source/snv-monsters/beast/jakrab.yml",
+			"packs/_source/snv-monsters/beast/kath-hound.yml",
+			"packs/_source/snv-monsters/beast/massiff.yml",
+			"packs/_source/snv-monsters/beast/stintaril.yml",
+			"packs/_source/snv-monsters/beast/zalaaca.yml"
 		],
 		expectedIdentityAdditions: { actors: 7, items: 24, activities: 7, folders: 0 },
 		requireWorkingTreeClean: true,
@@ -73,8 +73,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Beasts:ewok-pony"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/beasts/aryx.yml",
-			"packs/_source/snv-monsters/beasts/ewok-pony.yml"
+			"packs/_source/snv-monsters/beast/aryx.yml",
+			"packs/_source/snv-monsters/beast/ewok-pony.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -87,8 +87,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/beasts/aryx.yml",
-			"packs/_source/snv-monsters/beasts/ewok-pony.yml"
+			"packs/_source/snv-monsters/beast/aryx.yml",
+			"packs/_source/snv-monsters/beast/ewok-pony.yml"
 		],
 		expectedIdentityAdditions: { actors: 2, items: 3, activities: 3, folders: 0 },
 		requireWorkingTreeClean: false,
@@ -106,7 +106,7 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Beasts:moof"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/beasts/moof.yml"
+			"packs/_source/snv-monsters/beast/moof.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -119,7 +119,7 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/beasts/moof.yml"
+			"packs/_source/snv-monsters/beast/moof.yml"
 		],
 		expectedIdentityAdditions: { actors: 1, items: 3, activities: 1 },
 		requireWorkingTreeClean: false,
@@ -138,8 +138,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Beasts:sibian-hound"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/beasts/jundland-wastes-womp-rat.yml",
-			"packs/_source/snv-monsters/beasts/sibian-hound.yml"
+			"packs/_source/snv-monsters/beast/jundland-wastes-womp-rat.yml",
+			"packs/_source/snv-monsters/beast/sibian-hound.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -152,8 +152,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/beasts/jundland-wastes-womp-rat.yml",
-			"packs/_source/snv-monsters/beasts/sibian-hound.yml"
+			"packs/_source/snv-monsters/beast/jundland-wastes-womp-rat.yml",
+			"packs/_source/snv-monsters/beast/sibian-hound.yml"
 		],
 		expectedIdentityAdditions: { actors: 2, items: 6, activities: 2 },
 		requireWorkingTreeClean: false,
@@ -172,8 +172,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Beasts:rancor-juvenile"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/beasts/gundark-adolescent.yml",
-			"packs/_source/snv-monsters/beasts/rancor-juvenile.yml"
+			"packs/_source/snv-monsters/beast/gundark-adolescent.yml",
+			"packs/_source/snv-monsters/beast/rancor-juvenile.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -186,8 +186,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/beasts/gundark-adolescent.yml",
-			"packs/_source/snv-monsters/beasts/rancor-juvenile.yml"
+			"packs/_source/snv-monsters/beast/gundark-adolescent.yml",
+			"packs/_source/snv-monsters/beast/rancor-juvenile.yml"
 		],
 		expectedIdentityAdditions: { actors: 2, items: 8, activities: 3 },
 		requireWorkingTreeClean: false,
@@ -206,8 +206,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Beasts:fambaa"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/beasts/nerf.yml",
-			"packs/_source/snv-monsters/beasts/fambaa.yml"
+			"packs/_source/snv-monsters/beast/nerf.yml",
+			"packs/_source/snv-monsters/beast/fambaa.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -220,8 +220,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/beasts/nerf.yml",
-			"packs/_source/snv-monsters/beasts/fambaa.yml"
+			"packs/_source/snv-monsters/beast/nerf.yml",
+			"packs/_source/snv-monsters/beast/fambaa.yml"
 		],
 		expectedIdentityAdditions: { actors: 2, items: 8, activities: 4 },
 		requireWorkingTreeClean: false,
@@ -240,8 +240,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Beasts:fambaa-howdah"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/beasts/scrange.yml",
-			"packs/_source/snv-monsters/beasts/fambaa-howdah.yml"
+			"packs/_source/snv-monsters/beast/scrange.yml",
+			"packs/_source/snv-monsters/beast/fambaa-howdah.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -254,8 +254,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/beasts/scrange.yml",
-			"packs/_source/snv-monsters/beasts/fambaa-howdah.yml"
+			"packs/_source/snv-monsters/beast/scrange.yml",
+			"packs/_source/snv-monsters/beast/fambaa-howdah.yml"
 		],
 		expectedIdentityAdditions: { actors: 2, items: 14, activities: 4 },
 		requireWorkingTreeClean: false,
@@ -278,12 +278,12 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Beasts:bantha-adult"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/beasts/fathier.yml",
-			"packs/_source/snv-monsters/beasts/tusk-cat.yml",
-			"packs/_source/snv-monsters/beasts/ronto.yml",
-			"packs/_source/snv-monsters/beasts/acklay-adolescent.yml",
-			"packs/_source/snv-monsters/beasts/bantha-adolescent.yml",
-			"packs/_source/snv-monsters/beasts/bantha-adult.yml"
+			"packs/_source/snv-monsters/beast/fathier.yml",
+			"packs/_source/snv-monsters/beast/tusk-cat.yml",
+			"packs/_source/snv-monsters/beast/ronto.yml",
+			"packs/_source/snv-monsters/beast/acklay-adolescent.yml",
+			"packs/_source/snv-monsters/beast/bantha-adolescent.yml",
+			"packs/_source/snv-monsters/beast/bantha-adult.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -296,12 +296,12 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/beasts/fathier.yml",
-			"packs/_source/snv-monsters/beasts/tusk-cat.yml",
-			"packs/_source/snv-monsters/beasts/ronto.yml",
-			"packs/_source/snv-monsters/beasts/acklay-adolescent.yml",
-			"packs/_source/snv-monsters/beasts/bantha-adolescent.yml",
-			"packs/_source/snv-monsters/beasts/bantha-adult.yml"
+			"packs/_source/snv-monsters/beast/fathier.yml",
+			"packs/_source/snv-monsters/beast/tusk-cat.yml",
+			"packs/_source/snv-monsters/beast/ronto.yml",
+			"packs/_source/snv-monsters/beast/acklay-adolescent.yml",
+			"packs/_source/snv-monsters/beast/bantha-adolescent.yml",
+			"packs/_source/snv-monsters/beast/bantha-adult.yml"
 		],
 		expectedIdentityAdditions: { actors: 6, items: 21, activities: 11 },
 		requireWorkingTreeClean: false,
@@ -320,8 +320,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Beasts:reek-adult"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/beasts/reek-adolescent.yml",
-			"packs/_source/snv-monsters/beasts/reek-adult.yml"
+			"packs/_source/snv-monsters/beast/reek-adolescent.yml",
+			"packs/_source/snv-monsters/beast/reek-adult.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -334,8 +334,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/beasts/reek-adolescent.yml",
-			"packs/_source/snv-monsters/beasts/reek-adult.yml"
+			"packs/_source/snv-monsters/beast/reek-adolescent.yml",
+			"packs/_source/snv-monsters/beast/reek-adult.yml"
 		],
 		expectedIdentityAdditions: { actors: 2, items: 4, activities: 2 },
 		requireWorkingTreeClean: false,
@@ -354,8 +354,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Beasts:vornskr"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/beasts/scurrier.yml",
-			"packs/_source/snv-monsters/beasts/vornskr.yml"
+			"packs/_source/snv-monsters/beast/scurrier.yml",
+			"packs/_source/snv-monsters/beast/vornskr.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -368,8 +368,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/beasts/scurrier.yml",
-			"packs/_source/snv-monsters/beasts/vornskr.yml"
+			"packs/_source/snv-monsters/beast/scurrier.yml",
+			"packs/_source/snv-monsters/beast/vornskr.yml"
 		],
 		expectedIdentityAdditions: { actors: 2, items: 9, activities: 4 },
 		requireWorkingTreeClean: false,
@@ -384,7 +384,7 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 		artifactPrefix: "n3b-p10",
 		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
 		approvedSemanticKeys: ["snv:Beasts:dianoga-adolescent"],
-		approvedYamlRelativePaths: ["packs/_source/snv-monsters/beasts/dianoga-adolescent.yml"],
+		approvedYamlRelativePaths: ["packs/_source/snv-monsters/beast/dianoga-adolescent.yml"],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
 			"utils/snv-monsters/generate.mjs",
@@ -396,7 +396,7 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/beasts/dianoga-adolescent.yml"
+			"packs/_source/snv-monsters/beast/dianoga-adolescent.yml"
 		],
 		expectedIdentityAdditions: { actors: 1, items: 6, activities: 2 },
 		requireWorkingTreeClean: false,
@@ -419,12 +419,12 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Beasts:gundark-matriarch"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/beasts/kath-hound-horned.yml",
-			"packs/_source/snv-monsters/beasts/eopie.yml",
-			"packs/_source/snv-monsters/beasts/rancor-adolescent.yml",
-			"packs/_source/snv-monsters/beasts/beggars-canyon-womp-rat.yml",
-			"packs/_source/snv-monsters/beasts/gundark-alpha.yml",
-			"packs/_source/snv-monsters/beasts/gundark-matriarch.yml"
+			"packs/_source/snv-monsters/beast/kath-hound-horned.yml",
+			"packs/_source/snv-monsters/beast/eopie.yml",
+			"packs/_source/snv-monsters/beast/rancor-adolescent.yml",
+			"packs/_source/snv-monsters/beast/beggars-canyon-womp-rat.yml",
+			"packs/_source/snv-monsters/beast/gundark-alpha.yml",
+			"packs/_source/snv-monsters/beast/gundark-matriarch.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -437,12 +437,12 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/beasts/kath-hound-horned.yml",
-			"packs/_source/snv-monsters/beasts/eopie.yml",
-			"packs/_source/snv-monsters/beasts/rancor-adolescent.yml",
-			"packs/_source/snv-monsters/beasts/beggars-canyon-womp-rat.yml",
-			"packs/_source/snv-monsters/beasts/gundark-alpha.yml",
-			"packs/_source/snv-monsters/beasts/gundark-matriarch.yml"
+			"packs/_source/snv-monsters/beast/kath-hound-horned.yml",
+			"packs/_source/snv-monsters/beast/eopie.yml",
+			"packs/_source/snv-monsters/beast/rancor-adolescent.yml",
+			"packs/_source/snv-monsters/beast/beggars-canyon-womp-rat.yml",
+			"packs/_source/snv-monsters/beast/gundark-alpha.yml",
+			"packs/_source/snv-monsters/beast/gundark-matriarch.yml"
 		],
 		expectedIdentityAdditions: { actors: 6, items: 33, activities: 14 },
 		requireWorkingTreeClean: false,
@@ -467,14 +467,14 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Beasts:rancor-adult"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/beasts/bantha-feral.yml",
-			"packs/_source/snv-monsters/beasts/sleen.yml",
-			"packs/_source/snv-monsters/beasts/scazz.yml",
-			"packs/_source/snv-monsters/beasts/pherin.yml",
-			"packs/_source/snv-monsters/beasts/nashtah.yml",
-			"packs/_source/snv-monsters/beasts/ghest.yml",
-			"packs/_source/snv-monsters/beasts/dianoga-adult.yml",
-			"packs/_source/snv-monsters/beasts/rancor-adult.yml"
+			"packs/_source/snv-monsters/beast/bantha-feral.yml",
+			"packs/_source/snv-monsters/beast/sleen.yml",
+			"packs/_source/snv-monsters/beast/scazz.yml",
+			"packs/_source/snv-monsters/beast/pherin.yml",
+			"packs/_source/snv-monsters/beast/nashtah.yml",
+			"packs/_source/snv-monsters/beast/ghest.yml",
+			"packs/_source/snv-monsters/beast/dianoga-adult.yml",
+			"packs/_source/snv-monsters/beast/rancor-adult.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -487,14 +487,14 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/beasts/bantha-feral.yml",
-			"packs/_source/snv-monsters/beasts/sleen.yml",
-			"packs/_source/snv-monsters/beasts/scazz.yml",
-			"packs/_source/snv-monsters/beasts/pherin.yml",
-			"packs/_source/snv-monsters/beasts/nashtah.yml",
-			"packs/_source/snv-monsters/beasts/ghest.yml",
-			"packs/_source/snv-monsters/beasts/dianoga-adult.yml",
-			"packs/_source/snv-monsters/beasts/rancor-adult.yml"
+			"packs/_source/snv-monsters/beast/bantha-feral.yml",
+			"packs/_source/snv-monsters/beast/sleen.yml",
+			"packs/_source/snv-monsters/beast/scazz.yml",
+			"packs/_source/snv-monsters/beast/pherin.yml",
+			"packs/_source/snv-monsters/beast/nashtah.yml",
+			"packs/_source/snv-monsters/beast/ghest.yml",
+			"packs/_source/snv-monsters/beast/dianoga-adult.yml",
+			"packs/_source/snv-monsters/beast/rancor-adult.yml"
 		],
 		expectedIdentityAdditions: { actors: 8, items: 42, activities: 18 },
 		requireWorkingTreeClean: false,
@@ -515,10 +515,10 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Aberrations:rakling"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/aberrations/ngok.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-hulking.yml",
-			"packs/_source/snv-monsters/aberrations/rakling.yml"
+			"packs/_source/snv-monsters/aberration/ngok.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-hulking.yml",
+			"packs/_source/snv-monsters/aberration/rakling.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -531,11 +531,11 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/aberrations/_folder.yml",
-			"packs/_source/snv-monsters/aberrations/ngok.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-hulking.yml",
-			"packs/_source/snv-monsters/aberrations/rakling.yml"
+			"packs/_source/snv-monsters/aberration/_folder.yml",
+			"packs/_source/snv-monsters/aberration/ngok.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-hulking.yml",
+			"packs/_source/snv-monsters/aberration/rakling.yml"
 		],
 		expectedIdentityAdditions: { actors: 4, items: 18, activities: 7 },
 		requireWorkingTreeClean: false,
@@ -555,9 +555,9 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Aberrations:rakghoul-irradiated"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/aberrations/orbalisk.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-crazed.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-irradiated.yml"
+			"packs/_source/snv-monsters/aberration/orbalisk.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-crazed.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-irradiated.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -570,9 +570,9 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/aberrations/orbalisk.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-crazed.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-irradiated.yml"
+			"packs/_source/snv-monsters/aberration/orbalisk.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-crazed.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-irradiated.yml"
 		],
 		expectedIdentityAdditions: { actors: 3, items: 15, activities: 5 },
 		requireWorkingTreeClean: false,
@@ -593,10 +593,10 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Aberrations:rakghoul-monstrous"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/aberrations/orbalisk-swarm.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-vile.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-fiend.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-monstrous.yml"
+			"packs/_source/snv-monsters/aberration/orbalisk-swarm.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-vile.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-fiend.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-monstrous.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -609,10 +609,10 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/aberrations/orbalisk-swarm.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-vile.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-fiend.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-monstrous.yml"
+			"packs/_source/snv-monsters/aberration/orbalisk-swarm.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-vile.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-fiend.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-monstrous.yml"
 		],
 		expectedIdentityAdditions: { actors: 4, items: 31, activities: 10 },
 		requireWorkingTreeClean: false,
@@ -631,8 +631,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Aberrations:mnggal-mnggal-pool-of"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/aberrations/mnggal-mnggal-gray-pudding.yml",
-			"packs/_source/snv-monsters/aberrations/mnggal-mnggal-pool-of.yml"
+			"packs/_source/snv-monsters/aberration/mnggal-mnggal-gray-pudding.yml",
+			"packs/_source/snv-monsters/aberration/mnggal-mnggal-pool-of.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -645,8 +645,8 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/aberrations/mnggal-mnggal-gray-pudding.yml",
-			"packs/_source/snv-monsters/aberrations/mnggal-mnggal-pool-of.yml"
+			"packs/_source/snv-monsters/aberration/mnggal-mnggal-gray-pudding.yml",
+			"packs/_source/snv-monsters/aberration/mnggal-mnggal-pool-of.yml"
 		],
 		expectedIdentityAdditions: { actors: 2, items: 20, activities: 2 },
 		requireWorkingTreeClean: false,
@@ -666,9 +666,9 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"snv:Aberrations:tsalak"
 		],
 		approvedYamlRelativePaths: [
-			"packs/_source/snv-monsters/aberrations/mnggal-mnggal-lake-of.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-eyeless.yml",
-			"packs/_source/snv-monsters/aberrations/tsalak.yml"
+			"packs/_source/snv-monsters/aberration/mnggal-mnggal-lake-of.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-eyeless.yml",
+			"packs/_source/snv-monsters/aberration/tsalak.yml"
 		],
 		allowedTrackedRelativePaths: [
 			"utils/snv-monsters/identity.mjs",
@@ -681,9 +681,9 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			"utils/snv-monsters/generate-generalized.mjs",
 			"utils/snv-monsters/test-generalized.mjs",
 			"utils/snv-monsters/manifests/identity-map.json",
-			"packs/_source/snv-monsters/aberrations/mnggal-mnggal-lake-of.yml",
-			"packs/_source/snv-monsters/aberrations/rakghoul-eyeless.yml",
-			"packs/_source/snv-monsters/aberrations/tsalak.yml"
+			"packs/_source/snv-monsters/aberration/mnggal-mnggal-lake-of.yml",
+			"packs/_source/snv-monsters/aberration/rakghoul-eyeless.yml",
+			"packs/_source/snv-monsters/aberration/tsalak.yml"
 		],
 		expectedIdentityAdditions: { actors: 3, items: 30, activities: 3 },
 		requireWorkingTreeClean: false,

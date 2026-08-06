@@ -37,7 +37,7 @@ function test(name, fn) {
 	}
 }
 
-test("identity map pins 5 folders and 8 actors", () => {
+test("identity map pins 4 folders and 8 actors", () => {
 	const v = validateIdentityPins();
 	assert.equal(v.ok, true, v.failures.join("; "));
 	assert.equal(summarizeIdentityMap().actors, 8);
@@ -64,42 +64,42 @@ test("production batch descriptors stay fail-closed and path-scoped", () => {
 	assert.equal(p3.approvedSemanticKeys.length, 1);
 	assert.throws(() => getProductionBatchDescriptor("not-a-batch"));
 	assert.throws(() => assertAllowedOutputRoot(COMMITTED_PACK_SOURCE, { allowProductionWrite: true }));
-	assert.throws(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/blurrg.yml"), "n3b-p2"));
-	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/aryx.yml"), "n3b-p2"));
-	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/moof.yml"), "n3b-p3"));
+	assert.throws(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/blurrg.yml"), "n3b-p2"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/aryx.yml"), "n3b-p2"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/moof.yml"), "n3b-p3"));
 	const p4 = getProductionBatchDescriptor("n3b-p4");
 	assert.equal(p4.approvedSemanticKeys.length, 2);
-	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/sibian-hound.yml"), "n3b-p4"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/sibian-hound.yml"), "n3b-p4"));
 	const p1 = getProductionBatchDescriptor("n3b-p1");
 	assert.equal(p1.approvedSemanticKeys.length, 2);
-	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/gundark-adolescent.yml"), "n3b-p1"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/gundark-adolescent.yml"), "n3b-p1"));
 	const p5 = getProductionBatchDescriptor("n3b-p5");
 	assert.equal(p5.approvedSemanticKeys.length, 2);
-	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/nerf.yml"), "n3b-p5"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/nerf.yml"), "n3b-p5"));
 	const p6 = getProductionBatchDescriptor("n3b-p6");
 	assert.equal(p6.approvedSemanticKeys.length, 2);
-	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/scrange.yml"), "n3b-p6"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/scrange.yml"), "n3b-p6"));
 	const p7 = getProductionBatchDescriptor("n3b-p7");
 	assert.equal(p7.approvedSemanticKeys.length, 6);
-	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/fathier.yml"), "n3b-p7"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/fathier.yml"), "n3b-p7"));
 	const p8 = getProductionBatchDescriptor("n3b-p8");
 	assert.equal(p8.approvedSemanticKeys.length, 2);
-	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/reek-adult.yml"), "n3b-p8"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/reek-adult.yml"), "n3b-p8"));
 	const p9 = getProductionBatchDescriptor("n3b-p9");
 	assert.equal(p9.approvedSemanticKeys.length, 2);
-	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/vornskr.yml"), "n3b-p9"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/vornskr.yml"), "n3b-p9"));
 	const p10 = getProductionBatchDescriptor("n3b-p10");
 	assert.equal(p10.approvedSemanticKeys.length, 1);
-	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/dianoga-adolescent.yml"), "n3b-p10"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/dianoga-adolescent.yml"), "n3b-p10"));
 	const p11 = getProductionBatchDescriptor("n3b-p11");
 	assert.equal(p11.approvedSemanticKeys.length, 6);
-	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/kath-hound-horned.yml"), "n3b-p11"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/kath-hound-horned.yml"), "n3b-p11"));
 	const p12 = getProductionBatchDescriptor("n3b-p12");
 	assert.equal(p12.approvedSemanticKeys.length, 8);
-	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/ghest.yml"), "n3b-p12"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beast/ghest.yml"), "n3b-p12"));
 	const ap1 = getProductionBatchDescriptor("n3a-p1");
 	assert.equal(ap1.approvedSemanticKeys.length, 4);
-	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "aberrations/ngok.yml"), "n3a-p1"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "aberration/ngok.yml"), "n3a-p1"));
 });
 
 test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {
@@ -358,7 +358,7 @@ test("production identity plans support n3a-p1 aberration counts", () => {
 	assert.equal(counts.actors, 4);
 	assert.equal(counts.items, 18);
 	assert.equal(counts.activities, 7);
-	assert.equal(plan.actors["snv:Aberrations:ngok"].folderId, "9b15e7dfce3031e1");
+	assert.equal(plan.actors["snv:Aberrations:ngok"].folderId, "c79ec9e6319e91f3");
 });
 
 test("production identity plans support n3a-p2 aberration counts", () => {
@@ -426,6 +426,36 @@ test("classification does not use N1 pin as capability", () => {
 
 test("blocks split without SnV_Final", () => {
 	assert.ok(splitCreatureBlocks(fs.readFileSync(FIXTURE, "utf8")).length >= 3);
+});
+
+test("creature type folder taxonomy resolves Foundry types, not source sections", async () => {
+	const {
+		parseCreatureTypeFromDescriptorPart,
+		resolveCreatureTypeFolderLabel,
+		CREATURE_TYPE_FOLDERS
+	} = await import("./creature-type-folders.mjs");
+	const { validateCreatureTypeFolderTaxonomy } = await import("./validate.mjs");
+	assert.deepEqual(parseCreatureTypeFromDescriptorPart("humanoid (Human)"), {
+		value: "humanoid",
+		subtype: "Human",
+		swarm: "",
+		custom: ""
+	});
+	assert.deepEqual(parseCreatureTypeFromDescriptorPart("swarm of Tiny aberrations"), {
+		value: "aberration",
+		subtype: "",
+		swarm: "tiny",
+		custom: ""
+	});
+	assert.equal(resolveCreatureTypeFolderLabel({ value: "humanoid", subtype: "Human" }).label, "Humanoid");
+	assert.equal(resolveCreatureTypeFolderLabel({ value: "force" }).label, "Force Entity");
+	assert.equal(resolveCreatureTypeFolderLabel({ value: "droid" }).label, "Droid");
+	assert.equal(resolveCreatureTypeFolderLabel({ value: "construct" }).label, "Construct");
+	assert.equal(resolveCreatureTypeFolderLabel({ value: "custom", custom: "" }).unresolved, true);
+	assert.equal(CREATURE_TYPE_FOLDERS.Aberration.id, "c79ec9e6319e91f3");
+	assert.notEqual(CREATURE_TYPE_FOLDERS.Aberration.id, CREATURE_TYPE_FOLDERS.Beast.id);
+	const taxonomy = validateCreatureTypeFolderTaxonomy();
+	assert.equal(taxonomy.ok, true, taxonomy.failures.join("; "));
 });
 
 if ( !process.exitCode ) console.log(`\n${passed} unit tests passed`);

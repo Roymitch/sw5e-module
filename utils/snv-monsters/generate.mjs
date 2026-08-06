@@ -78,6 +78,7 @@ export function generateSandbox({
 	});
 
 	for ( const [sk, folder] of Object.entries(identityMap.folders || {}) ) {
+		if ( folder.reservedUntilPopulated ) continue;
 		let matched = null;
 		for ( const f of walkYamlFiles(COMMITTED_PACK_SOURCE).filter(x => path.basename(x) === "_folder.yml") ) {
 			const doc = yaml.load(fs.readFileSync(f, "utf8"));

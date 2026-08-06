@@ -5,55 +5,97 @@
   "generatedFromCommit": "20bcebe0c68e1dd1d22dee517f1dd8a7fbe22069",
   "note": "Pinned N1 identities. N2 must not change pinned IDs. N3 extends this map.",
   "folders": {
-    "snv-folder:Beasts": {
-      "id": "ed7eb55524af7eab",
-      "name": "Beasts",
-      "key": "!folders!ed7eb55524af7eab",
+    "snv-folder:Aberration": {
+      "id": "c79ec9e6319e91f3",
+      "name": "Aberration",
+      "key": "!folders!c79ec9e6319e91f3",
       "pinned": true,
-      "origin": "n1-committed"
+      "origin": "n3-folder-taxonomy",
+      "folderTaxonomy": "foundry-creature-type"
     },
-    "snv-folder:Constructs and Vehicles": {
-      "id": "9f1a4571a73c2dae",
-      "name": "Constructs and Vehicles",
-      "key": "!folders!9f1a4571a73c2dae",
+    "snv-folder:Beast": {
+      "id": "ebd87deffbaf7f14",
+      "name": "Beast",
+      "key": "!folders!ebd87deffbaf7f14",
       "pinned": true,
-      "origin": "n1-committed"
+      "origin": "n1-committed",
+      "folderTaxonomy": "foundry-creature-type"
     },
-    "snv-folder:Droids": {
-      "id": "16546b69f18516ea",
-      "name": "Droids",
-      "key": "!folders!16546b69f18516ea",
+    "snv-folder:Construct": {
+      "id": "b85c99705796bd3c",
+      "name": "Construct",
+      "key": "!folders!b85c99705796bd3c",
       "pinned": true,
-      "origin": "n1-committed"
+      "origin": "n1-committed",
+      "folderTaxonomy": "foundry-creature-type"
     },
-    "snv-folder:Humanoids": {
-      "id": "f05d69f927581f63",
-      "name": "Humanoids",
-      "key": "!folders!f05d69f927581f63",
+    "snv-folder:Droid": {
+      "id": "369928055e801207",
+      "name": "Droid",
+      "key": "!folders!369928055e801207",
       "pinned": true,
-      "origin": "n1-committed"
+      "origin": "n1-committed",
+      "folderTaxonomy": "foundry-creature-type"
     },
-    "snv-folder:Humanoids: Force Users": {
-      "id": "b83e569dec185e65",
-      "name": "Humanoids: Force Users",
-      "key": "!folders!b83e569dec185e65",
+    "snv-folder:Humanoid": {
+      "id": "a907e6b54e75b9d3",
+      "name": "Humanoid",
+      "key": "!folders!a907e6b54e75b9d3",
       "pinned": true,
-      "origin": "n1-committed"
+      "origin": "n1-committed",
+      "folderTaxonomy": "foundry-creature-type"
     },
-    "snv-folder:Aberrations": {
-      "id": "9b15e7dfce3031e1",
-      "name": "Aberrations",
-      "key": "!folders!9b15e7dfce3031e1",
+    "snv-folder:Force Entity": {
+      "id": "f4d85328dc1b5e69",
+      "name": "Force Entity",
+      "key": "!folders!f4d85328dc1b5e69",
       "pinned": true,
-      "origin": "n3a-aberrations-folder",
-      "batch": "n3a-p1"
+      "origin": "reserved-creature-type",
+      "folderTaxonomy": "foundry-creature-type",
+      "reservedUntilPopulated": true
+    },
+    "snv-folder:Plant": {
+      "id": "75eb0e2e417ce93b",
+      "name": "Plant",
+      "key": "!folders!75eb0e2e417ce93b",
+      "pinned": true,
+      "origin": "reserved-creature-type",
+      "folderTaxonomy": "foundry-creature-type",
+      "reservedUntilPopulated": true
+    },
+    "snv-folder:Starship": {
+      "id": "b41aace5f37856a4",
+      "name": "Starship",
+      "key": "!folders!b41aace5f37856a4",
+      "pinned": true,
+      "origin": "reserved-creature-type",
+      "folderTaxonomy": "foundry-creature-type",
+      "reservedUntilPopulated": true
+    },
+    "snv-folder:Undead": {
+      "id": "c4eee40d9b3a867e",
+      "name": "Undead",
+      "key": "!folders!c4eee40d9b3a867e",
+      "pinned": true,
+      "origin": "reserved-creature-type",
+      "folderTaxonomy": "foundry-creature-type",
+      "reservedUntilPopulated": true
+    },
+    "snv-folder:Custom Type": {
+      "id": "4f561f7660224b78",
+      "name": "Custom Type",
+      "key": "!folders!4f561f7660224b78",
+      "pinned": true,
+      "origin": "reserved-creature-type",
+      "folderTaxonomy": "foundry-creature-type",
+      "reservedUntilPopulated": true
     }
   },
   "actors": {
     "snv:Beasts:aiwha": {
       "id": "42fe8a5de621f18f",
       "name": "Aiwha",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!42fe8a5de621f18f",
       "items": {
         "e0fb47287041c075": {
@@ -105,7 +147,7 @@
     "snv:Beasts:gundark-adult": {
       "id": "1a3eab067211137e",
       "name": "Gundark, Adult",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!1a3eab067211137e",
       "items": {
         "2c02d55e90026bde": {
@@ -172,7 +214,7 @@
     "snv:Constructs and Vehicles:ax-108-sentry-gun": {
       "id": "cd55b977c1c148bf",
       "name": "AX-108 Sentry Gun",
-      "folderId": "9f1a4571a73c2dae",
+      "folderId": "b85c99705796bd3c",
       "key": "!actors!cd55b977c1c148bf",
       "items": {
         "41568cb4a348b3a2": {
@@ -224,7 +266,7 @@
     "snv:Droids:b1-battle-droid-b1-a": {
       "id": "3557e8a7bc4bb620",
       "name": "B1 Battle Droid, B1-A",
-      "folderId": "16546b69f18516ea",
+      "folderId": "369928055e801207",
       "key": "!actors!3557e8a7bc4bb620",
       "items": {
         "debee7292b0d1f40": {
@@ -282,7 +324,7 @@
     "snv:Humanoids:isb-infiltrator": {
       "id": "86b300ca462ff90a",
       "name": "ISB Infiltrator",
-      "folderId": "f05d69f927581f63",
+      "folderId": "a907e6b54e75b9d3",
       "key": "!actors!86b300ca462ff90a",
       "items": {
         "c5bda3ac6607da53": {
@@ -424,7 +466,7 @@
     "snv:Humanoids:trooper-squad": {
       "id": "f6c9d44c2e70b8f7",
       "name": "Trooper Squad",
-      "folderId": "f05d69f927581f63",
+      "folderId": "a907e6b54e75b9d3",
       "key": "!actors!f6c9d44c2e70b8f7",
       "items": {
         "1ccb52a07072ca25": {
@@ -503,7 +545,7 @@
     "snv:Humanoids:trooper": {
       "id": "fb6aef3ed3570b48",
       "name": "Trooper",
-      "folderId": "f05d69f927581f63",
+      "folderId": "a907e6b54e75b9d3",
       "key": "!actors!fb6aef3ed3570b48",
       "items": {
         "3a86f93f7d8919db": {
@@ -552,7 +594,7 @@
     "snv:Humanoids: Force Users:inquisitor-grand": {
       "id": "9eeede64c23161fb",
       "name": "Inquisitor, Grand",
-      "folderId": "b83e569dec185e65",
+      "folderId": "a907e6b54e75b9d3",
       "key": "!actors!9eeede64c23161fb",
       "items": {
         "75bb84fc70594dc9": {
@@ -802,7 +844,7 @@
     "snv:Beasts:blurrg": {
       "id": "4d4928bb764a8f49",
       "name": "Blurrg",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!4d4928bb764a8f49",
       "items": {
         "b615efaabb960e99": {
@@ -855,7 +897,7 @@
     "snv:Beasts:fyrnock": {
       "id": "fba148abe0a0c9c1",
       "name": "Fyrnock",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!fba148abe0a0c9c1",
       "items": {
         "51cddda3c68e19c1": {
@@ -917,7 +959,7 @@
     "snv:Beasts:jakrab": {
       "id": "dab56b4aae9b1bf1",
       "name": "Jakrab",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!dab56b4aae9b1bf1",
       "items": {
         "4e847cefe735dc48": {
@@ -952,7 +994,7 @@
     "snv:Beasts:kath-hound": {
       "id": "a149ef560bd5c43f",
       "name": "Kath Hound",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!a149ef560bd5c43f",
       "items": {
         "34fbd20934965630": {
@@ -996,7 +1038,7 @@
     "snv:Beasts:massiff": {
       "id": "56f31ac1b041747b",
       "name": "Massiff",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!56f31ac1b041747b",
       "items": {
         "165584d75a30059d": {
@@ -1040,7 +1082,7 @@
     "snv:Beasts:stintaril": {
       "id": "ee13a62866b791d7",
       "name": "Stintaril",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!ee13a62866b791d7",
       "items": {
         "f44cc99ffdb174a4": {
@@ -1084,7 +1126,7 @@
     "snv:Beasts:zalaaca": {
       "id": "df1c84b511a77d01",
       "name": "Zalaaca",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!df1c84b511a77d01",
       "items": {
         "66cc0e1564c530db": {
@@ -1137,7 +1179,7 @@
     "snv:Beasts:aryx": {
       "id": "605e5f7d367e2b37",
       "name": "Aryx",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!605e5f7d367e2b37",
       "items": {
         "22a5ee40c14e9c05": {
@@ -1178,7 +1220,7 @@
     "snv:Beasts:ewok-pony": {
       "id": "5163d3f78b02084b",
       "name": "Ewok Pony",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!5163d3f78b02084b",
       "items": {
         "1ff6ff964acd17c1": {
@@ -1204,7 +1246,7 @@
     "snv:Beasts:moof": {
       "id": "4afb820bb14f1f72",
       "name": "Moof",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!4afb820bb14f1f72",
       "items": {
         "cf36950cd19db94d": {
@@ -1248,7 +1290,7 @@
     "snv:Beasts:jundland-wastes-womp-rat": {
       "id": "3a9de368eee32af3",
       "name": "Jundland Wastes Womp Rat",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!3a9de368eee32af3",
       "items": {
         "8d9f3ce16255d004": {
@@ -1292,7 +1334,7 @@
     "snv:Beasts:sibian-hound": {
       "id": "db502ada9bc2f31b",
       "name": "Sibian Hound",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!db502ada9bc2f31b",
       "items": {
         "175063a83fc0bb96": {
@@ -1336,7 +1378,7 @@
     "snv:Beasts:gundark-adolescent": {
       "id": "24096c5ac69fa08c",
       "name": "Gundark, Adolescent",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!24096c5ac69fa08c",
       "items": {
         "1838387f8801d89c": {
@@ -1389,7 +1431,7 @@
     "snv:Beasts:rancor-juvenile": {
       "id": "c1c0a2b20ad8c24e",
       "name": "Rancor, Juvenile",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!c1c0a2b20ad8c24e",
       "items": {
         "027dc6f33f05474a": {
@@ -1448,7 +1490,7 @@
     "snv:Beasts:nerf": {
       "id": "8a7436653bed1bae",
       "name": "Nerf",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!8a7436653bed1bae",
       "items": {
         "422794a682c169f9": {
@@ -1498,7 +1540,7 @@
     "snv:Beasts:fambaa": {
       "id": "80ceb93abe5ac4b4",
       "name": "Fambaa",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!80ceb93abe5ac4b4",
       "items": {
         "3f6339009f6fef21": {
@@ -1566,7 +1608,7 @@
     "snv:Beasts:scrange": {
       "id": "d05e12e1213e13ab",
       "name": "Scrange",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!d05e12e1213e13ab",
       "items": {
         "391d8a492b93d778": {
@@ -1661,7 +1703,7 @@
     "snv:Beasts:fambaa-howdah": {
       "id": "3f0250ddf402e928",
       "name": "Fambaa Howdah",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!3f0250ddf402e928",
       "items": {
         "5403d2ec066a7210": {
@@ -1738,7 +1780,7 @@
     "snv:Beasts:fathier": {
       "id": "bd32225e97d3e1ee",
       "name": "Fathier",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!bd32225e97d3e1ee",
       "items": {
         "37515529c99efccb": {
@@ -1782,7 +1824,7 @@
     "snv:Beasts:tusk-cat": {
       "id": "d2bb23426f705eb6",
       "name": "Tusk Cat",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!d2bb23426f705eb6",
       "items": {
         "e011e8eef75fe3ec": {
@@ -1841,7 +1883,7 @@
     "snv:Beasts:ronto": {
       "id": "8516f63242668601",
       "name": "Ronto",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!8516f63242668601",
       "items": {
         "2c5588e252939f87": {
@@ -1900,7 +1942,7 @@
     "snv:Beasts:acklay-adolescent": {
       "id": "5b4e1d3dbb21cf2a",
       "name": "Acklay, Adolescent",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!5b4e1d3dbb21cf2a",
       "items": {
         "5348fc9b402045e6": {
@@ -1959,7 +2001,7 @@
     "snv:Beasts:bantha-adolescent": {
       "id": "2aa08db65752fb7e",
       "name": "Bantha, Adolescent",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!2aa08db65752fb7e",
       "items": {
         "a66b2c61a141f0f5": {
@@ -2009,7 +2051,7 @@
     "snv:Beasts:bantha-adult": {
       "id": "9064d3fcec41a170",
       "name": "Bantha, Adult",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!9064d3fcec41a170",
       "items": {
         "051812199088d422": {
@@ -2059,7 +2101,7 @@
     "snv:Beasts:reek-adolescent": {
       "id": "cba3a5556ecbf6aa",
       "name": "Reek, Adolescent",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!cba3a5556ecbf6aa",
       "items": {
         "80ec5f3224f43d4d": {
@@ -2094,7 +2136,7 @@
     "snv:Beasts:reek-adult": {
       "id": "39da81781dbbf9e3",
       "name": "Reek, Adult",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!39da81781dbbf9e3",
       "items": {
         "8a85e7c98a3b3bb5": {
@@ -2129,7 +2171,7 @@
     "snv:Beasts:scurrier": {
       "id": "f46ca7fdf7144f52",
       "name": "Scurrier",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!f46ca7fdf7144f52",
       "items": {
         "d82917ed58b778a8": {
@@ -2188,7 +2230,7 @@
     "snv:Beasts:vornskr": {
       "id": "45e6875508f14819",
       "name": "Vornskr",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!45e6875508f14819",
       "items": {
         "6e0d7d6b3dfcce32": {
@@ -2256,7 +2298,7 @@
     "snv:Beasts:dianoga-adolescent": {
       "id": "8dcd907d87eb84d2",
       "name": "Dianoga, Adolescent",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!8dcd907d87eb84d2",
       "items": {
         "c15e3991b8ecbb0b": {
@@ -2333,7 +2375,7 @@
     "snv:Beasts:kath-hound-horned": {
       "id": "30d3ad7cda787477",
       "name": "Kath Hound, Horned",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!30d3ad7cda787477",
       "items": {
         "7e94d00c508c3545": {
@@ -2401,7 +2443,7 @@
     "snv:Beasts:eopie": {
       "id": "fc68d579927b3f45",
       "name": "Eopie",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!fc68d579927b3f45",
       "items": {
         "b300d64e04d7d217": {
@@ -2451,7 +2493,7 @@
     "snv:Beasts:rancor-adolescent": {
       "id": "aca71919145b7e60",
       "name": "Rancor, Adolescent",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!aca71919145b7e60",
       "items": {
         "f6f6a6441eb1b94b": {
@@ -2525,7 +2567,7 @@
     "snv:Beasts:beggars-canyon-womp-rat": {
       "id": "bbf18765c40730c4",
       "name": "Beggar's Canyon Womp Rat",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!bbf18765c40730c4",
       "items": {
         "a79b9a47e45125e4": {
@@ -2593,7 +2635,7 @@
     "snv:Beasts:gundark-alpha": {
       "id": "287ec01f0179489a",
       "name": "Gundark, Alpha",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!287ec01f0179489a",
       "items": {
         "232359b082241d40": {
@@ -2694,7 +2736,7 @@
     "snv:Beasts:gundark-matriarch": {
       "id": "0a4c330fc33774a8",
       "name": "Gundark, Matriarch",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!0a4c330fc33774a8",
       "items": {
         "9af0f7f885ce1c2f": {
@@ -2780,7 +2822,7 @@
     "snv:Beasts:bantha-feral": {
       "id": "e2b906afbe52622a",
       "name": "Bantha, Feral",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!e2b906afbe52622a",
       "items": {
         "68d690863952a44e": {
@@ -2830,7 +2872,7 @@
     "snv:Beasts:sleen": {
       "id": "2877745d07309335",
       "name": "Sleen",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!2877745d07309335",
       "items": {
         "ca17b1257b325514": {
@@ -2880,7 +2922,7 @@
     "snv:Beasts:scazz": {
       "id": "75afd9665cd5d41e",
       "name": "Scazz",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!75afd9665cd5d41e",
       "items": {
         "936d9b897ba89e1c": {
@@ -2939,7 +2981,7 @@
     "snv:Beasts:pherin": {
       "id": "b1d4a3e11c8fc604",
       "name": "Pherin",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!b1d4a3e11c8fc604",
       "items": {
         "f674af8a88aca25b": {
@@ -3016,7 +3058,7 @@
     "snv:Beasts:nashtah": {
       "id": "f552dcb3dc819006",
       "name": "Nashtah",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!f552dcb3dc819006",
       "items": {
         "2a10743d86744be1": {
@@ -3117,7 +3159,7 @@
     "snv:Beasts:ghest": {
       "id": "ca7335edfcf29da4",
       "name": "Ghest",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!ca7335edfcf29da4",
       "items": {
         "31df285883fc1a65": {
@@ -3185,7 +3227,7 @@
     "snv:Beasts:dianoga-adult": {
       "id": "9ca5dac012d4280b",
       "name": "Dianoga, Adult",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!9ca5dac012d4280b",
       "items": {
         "e2abe2c0ccd53d28": {
@@ -3271,7 +3313,7 @@
     "snv:Beasts:rancor-adult": {
       "id": "1b9a2a5ccb695149",
       "name": "Rancor, Adult",
-      "folderId": "ed7eb55524af7eab",
+      "folderId": "ebd87deffbaf7f14",
       "key": "!actors!1b9a2a5ccb695149",
       "items": {
         "f8a1597da3285ea9": {
@@ -3354,7 +3396,7 @@
     "snv:Aberrations:ngok": {
       "id": "369faa2bea18faf5",
       "name": "Ng'ok",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!369faa2bea18faf5",
       "items": {
         "346ef4896787ae43": {
@@ -3431,7 +3473,7 @@
     "snv:Aberrations:rakghoul": {
       "id": "d11ca81eed06117d",
       "name": "Rakghoul",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!d11ca81eed06117d",
       "items": {
         "999d8e478f920f2f": {
@@ -3490,7 +3532,7 @@
     "snv:Aberrations:rakghoul-hulking": {
       "id": "a87076e5edd3249b",
       "name": "Rakghoul, Hulking",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!a87076e5edd3249b",
       "items": {
         "aeecadfbdd008b2b": {
@@ -3567,7 +3609,7 @@
     "snv:Aberrations:rakling": {
       "id": "1fd6c1a976e549b3",
       "name": "Rakling",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!1fd6c1a976e549b3",
       "items": {
         "c0e4e02a21855e0e": {
@@ -3602,7 +3644,7 @@
     "snv:Aberrations:orbalisk": {
       "id": "ed3922858d4bae9a",
       "name": "Orbalisk",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!ed3922858d4bae9a",
       "items": {
         "819ee3ca4ed4e5d8": {
@@ -3655,7 +3697,7 @@
     "snv:Aberrations:rakghoul-crazed": {
       "id": "a3a94df151dc59f9",
       "name": "Rakghoul, Crazed",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!a3a94df151dc59f9",
       "items": {
         "2e8e2b43a401b783": {
@@ -3723,7 +3765,7 @@
     "snv:Aberrations:rakghoul-irradiated": {
       "id": "1dcee759dc89013d",
       "name": "Rakghoul, Irradiated",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!1dcee759dc89013d",
       "items": {
         "8bceb20d5be3af25": {
@@ -3800,7 +3842,7 @@
     "snv:Aberrations:orbalisk-swarm": {
       "id": "9bdc97d4dafe720d",
       "name": "Orbalisk Swarm",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!9bdc97d4dafe720d",
       "items": {
         "762f14de41e06992": {
@@ -3871,7 +3913,7 @@
     "snv:Aberrations:rakghoul-vile": {
       "id": "8427ff26b88ddf0f",
       "name": "Rakghoul, Vile",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!8427ff26b88ddf0f",
       "items": {
         "4aa51b5eac26ce9b": {
@@ -3957,7 +3999,7 @@
     "snv:Aberrations:rakghoul-fiend": {
       "id": "d125725a0c76a339",
       "name": "Rakghoul, Fiend",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!d125725a0c76a339",
       "items": {
         "028ea9d74f16ebfb": {
@@ -4067,7 +4109,7 @@
     "snv:Aberrations:rakghoul-monstrous": {
       "id": "39f405b2943848a8",
       "name": "Rakghoul, Monstrous",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!39f405b2943848a8",
       "items": {
         "df6b2f2d5000650b": {
@@ -4183,7 +4225,7 @@
     "snv:Aberrations:mnggal-mnggal-gray-pudding": {
       "id": "9334ffc22a88106c",
       "name": "Mnggal-Mnggal, Gray Pudding",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!9334ffc22a88106c",
       "items": {
         "446ed0e38addf396": {
@@ -4281,7 +4323,7 @@
     "snv:Aberrations:mnggal-mnggal-pool-of": {
       "id": "62ead405e37db0e2",
       "name": "Mnggal-Mnggal, Pool of",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!62ead405e37db0e2",
       "items": {
         "1325c156e5ca1423": {
@@ -4397,7 +4439,7 @@
     "snv:Aberrations:mnggal-mnggal-lake-of": {
       "id": "18e70d3166f8d532",
       "name": "Mnggal-Mnggal, Lake of",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!18e70d3166f8d532",
       "items": {
         "90fdac033621da17": {
@@ -4549,7 +4591,7 @@
     "snv:Aberrations:rakghoul-eyeless": {
       "id": "f2d7cbaeda067572",
       "name": "Rakghoul, Eyeless",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!f2d7cbaeda067572",
       "items": {
         "bb889fda3a7cec74": {
@@ -4665,7 +4707,7 @@
     "snv:Aberrations:tsalak": {
       "id": "e94116541c694c1a",
       "name": "T'salak",
-      "folderId": "9b15e7dfce3031e1",
+      "folderId": "c79ec9e6319e91f3",
       "key": "!actors!e94116541c694c1a",
       "items": {
         "73c2afa86e058084": {
