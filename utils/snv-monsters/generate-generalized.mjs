@@ -68,11 +68,18 @@ const NATURAL_MELEE_WEAPON_NAMES = new Set([
 	"tusks",
 	"tail",
 	"ram",
-	"stomp"
+	"stomp",
+	"gnash",
+	"crush",
+	"gigantic claw"
 ]);
 
 const NATURAL_RANGED_WEAPON_NAMES = new Set([
-	"spit"
+	"spit",
+	"regurgitate",
+	"throw boulder",
+	"stone",
+	"leap attack"
 ]);
 
 function isNaturalWeaponAttackName(name) {
@@ -384,19 +391,22 @@ function activityDamageParts(formula, damageType) {
 
 function parseAttackEntry(entry) {
 	const attackMatch = entry.text.match(
-		/\*?(Melee|Ranged) Weapon Attack:\*?\s*([+-]\d+)\s*to hit,\s*(.*?)\.\s*\*?Hit:\*?\s*([^]+)$/i
+		/\*?(Melee(?:\s+or\s+Ranged)?|Ranged) Weapon Attack:\*?\s*([+-]\d+)\s*to hit,\s*(.*?)\.\s*\*?Hit:\*?\s*([^]+)$/i
 	);
 	if ( !attackMatch ) return null;
 	const targetingClause = attackMatch[3].trim();
 	const hitText = attackMatch[4].replace(/\s+/g, " ").trim().replace(/\.*$/, "");
 	const reachMatch = targetingClause.match(/reach\s+(\d+)\s*ft\.?/i);
-	const rangeMatch = targetingClause.match(/range\s+(\d+)(?:\/(\d+))?\s*ft\.?/i);
+	const rangeMatch = targetingClause.match(/(?:range\s+|or\s+)(\d+)(?:\/(\d+))?\s*ft\.?/i);
+	const dualMode = /melee\s+or\s+ranged/i.test(attackMatch[1]);
+	const kind = dualMode ? "ranged" : attackMatch[1].toLowerCase();
 	const damage = parseDamageFormula(hitText);
 	return {
 		name: entry.name,
 		section: entry.section,
 		description: entry.text,
-		kind: attackMatch[1].toLowerCase(),
+		kind,
+		dualMode,
 		bonus: attackMatch[2],
 		flatBonus: String(attackMatch[2]).replace(/^\+/, ""),
 		reach: reachMatch ? Number(reachMatch[1]) : null,
@@ -563,7 +573,60 @@ export function parseAfflictionRider(attack) {
 		};
 	}
 
+	const shortPoison = text.match(
+		/DC\s+(\d+)\s+Constitution saving throw or be poisoned until the start of the (?:creature|target)'s next turn/i
+	);
+	if ( shortPoison ) {
+		return {
+			family: "affliction-poison-short",
+			attackName: titleCase(String(attack?.name || "").trim()),
+			saveAbility: "con",
+			saveDc: Number(shortPoison[1]),
+			condition: "poisoned",
+			duration: "until-start-of-next-turn",
+			runtimeAutomation: false
+		};
+	}
+
 	return null;
+}
+
+/**
+ * Recognize bounded grapple-conditional attack targeting
+ * ("one target grappled by the …"). Does not automate the prerequisite.
+ */
+export function parseGrappleConditionalTarget(attack) {
+	const text = String(attack?.description || "");
+	const match = text.match(/one target grappled by the ([^.]+?)(?:\.|,|\s+\*?Hit)/i)
+		|| String(attack?.description || attack?.hit || "").match(/one target grappled by the ([^.]+)/i);
+	if ( !match ) return null;
+	return {
+		family: "grapple-conditional-target",
+		attackName: titleCase(String(attack?.name || "").trim()),
+		grapplerLabel: match[1].trim(),
+		runtimeAutomation: false
+	};
+}
+
+/**
+ * Recognize Crush-style additional save-for-half damage on the attack hit line.
+ */
+export function parseAdditionalSaveDamageRider(attack) {
+	const text = String(attack?.description || attack?.hit || "");
+	const match = text.match(
+		/DC\s+(\d+)\s+(Strength|Dexterity|Constitution) saving throw,\s*taking an additional\s+\d+\s*\(([^)]+)\)\s+([a-z]+)\s+damage on a failed save,\s*or half as much on a success/i
+	);
+	if ( !match ) return null;
+	return {
+		family: "additional-save-damage",
+		attackName: titleCase(String(attack?.name || "").trim()),
+		saveAbility: match[2].slice(0, 3).toLowerCase(),
+		saveDc: Number(match[1]),
+		damageFormula: cleanFormula(match[3]),
+		damageType: String(match[4] || "").toLowerCase(),
+		onSuccess: "half",
+		runtimeAutomation: false
+	};
 }
 
 /**
@@ -738,6 +801,16 @@ function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, 
 		description: description || attack.description || attack.hit,
 		hit: description || attack.hit
 	});
+	const grappleConditionalTarget = parseGrappleConditionalTarget({
+		...attack,
+		description: description || attack.description || attack.hit,
+		hit: description || attack.hit
+	});
+	const additionalSaveDamage = parseAdditionalSaveDamageRider({
+		...attack,
+		description: description || attack.description || attack.hit,
+		hit: description || attack.hit
+	});
 	item.flags.sw5e.snvMonsters = {
 		prototype: nonproduction,
 		classification: isNatural ? "natural" : "source-specific",
@@ -750,9 +823,12 @@ function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, 
 		trackedPack: "snv-monsters",
 		sandboxTemp: nonproduction,
 		approvedBatch: nonproduction ? null : approvedBatch,
+		...(attack.dualMode ? { attackModes: ["melee", "ranged"] } : {}),
 		...(onHitProne ? { onHitProne } : {}),
 		...(afflictionRider ? { afflictionRider } : {}),
-		...(grappleRestrain ? { grappleRestrain } : {})
+		...(grappleRestrain ? { grappleRestrain } : {}),
+		...(grappleConditionalTarget ? { grappleConditionalTarget } : {}),
+		...(additionalSaveDamage ? { additionalSaveDamage } : {})
 	};
 	item.system.description.value = toHtmlParagraph(description);
 	item.system.description.chat = "";
@@ -760,7 +836,9 @@ function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, 
 	item.system.activation.type = "action";
 	item.system.activation.cost = 1;
 	item.system.activation.condition = "";
-	item.system.range.value = attack.reach ?? attack.range;
+	item.system.range.value = attack.kind === "ranged"
+		? (attack.range ?? attack.reach)
+		: (attack.reach ?? attack.range);
 	item.system.range.long = attack.long ?? null;
 	item.system.range.units = attack.reach || attack.range ? "ft" : "";
 	item.system.uses.value = null;

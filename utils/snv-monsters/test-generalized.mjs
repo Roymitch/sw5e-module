@@ -2,7 +2,7 @@
  * Tracked generalized-generator unit tests (synthetic fixtures only).
  */
 import assert from "node:assert/strict";
-import { generateGeneralizedActor, parseAfflictionRider, parseChargeDamageKnockdown, parseChargeKnockdownFollowup, parseGrappleRestrainRider, parseOnHitProneRider } from "./generate-generalized.mjs";
+import { generateGeneralizedActor, parseAdditionalSaveDamageRider, parseAfflictionRider, parseChargeDamageKnockdown, parseChargeKnockdownFollowup, parseGrappleConditionalTarget, parseGrappleRestrainRider, parseOnHitProneRider } from "./generate-generalized.mjs";
 import { createEmptyIrEntry } from "./ir-schema.mjs";
 import { detectFeatures, deriveCapability } from "./classify.mjs";
 import { resolveCanonicalWeapon, buildCanonicalWeaponIndex } from "./canonical.mjs";
@@ -413,7 +413,7 @@ test("C7 on-hit prone riders recognize Bite/Stomp/Tail and exclude charge, grapp
 });
 
 test("bounded anatomy natural names emit natural mwak/rwak and keep out-of-scope names non-natural", () => {
-	const positiveMelee = ["Bite", "Claw", "Claws", "Slam", "Tentacle", "Tentacles", "Gore", "Sting", "Beak", "Talons", "Hooves", "Tusk", "Tusks", "Tail", "Ram", "Stomp"];
+	const positiveMelee = ["Bite", "Claw", "Claws", "Slam", "Tentacle", "Tentacles", "Gore", "Sting", "Beak", "Talons", "Hooves", "Tusk", "Tusks", "Tail", "Ram", "Stomp", "Gnash", "Crush", "Gigantic Claw", "Leap Attack"];
 	for ( const attackName of positiveMelee ) {
 		const body = singleAttackBody({
 			name: attackName,
@@ -421,7 +421,7 @@ test("bounded anatomy natural names emit natural mwak/rwak and keep out-of-scope
 		});
 		const ir = createEmptyIrEntry({
 			sourceName: `Synthetic ${attackName}`,
-			semanticKey: `snv:Beasts:synthetic-${attackName.toLowerCase()}`,
+			semanticKey: `snv:Beasts:synthetic-${attackName.toLowerCase().replace(/\s+/g, "-")}`,
 			section: "Beasts",
 			parseStatus: "parsed-valid",
 			capabilityStatus: "fully-supported",
@@ -435,32 +435,34 @@ test("bounded anatomy natural names emit natural mwak/rwak and keep out-of-scope
 		assert.equal(actor.items[0].system.actionType, "mwak", attackName);
 	}
 
-	const spitBody = singleAttackBody({
-		name: "Spit",
-		attackText: "*Ranged Weapon Attack:* +2 to hit, range 15/30 ft., one target. *Hit:* 2 (1d4) acid damage."
-	});
-	const spitIr = createEmptyIrEntry({
-		sourceName: "Synthetic Spit",
-		semanticKey: "snv:Beasts:synthetic-spit",
-		section: "Beasts",
-		parseStatus: "parsed-valid",
-		capabilityStatus: "fully-supported",
-		outputSelection: "selected-edge-case",
-		productionReadiness: "sandbox-only",
-		features: detectFeatures(spitBody)
-	});
-	const { actor: spitActor } = generateGeneralizedActor({ irEntry: spitIr, body: spitBody });
-	assert.equal(spitActor.items.length, 1);
-	assert.equal(spitActor.items[0].system.type.value, "natural");
-	assert.equal(spitActor.items[0].system.actionType, "rwak");
+	for ( const [attackName, attackText] of [
+		["Spit", "*Ranged Weapon Attack:* +2 to hit, range 15/30 ft., one target. *Hit:* 2 (1d4) acid damage."],
+		["Regurgitate", "*Ranged Weapon Attack:* +5 to hit, range 15/30 ft., one target. *Hit:* 1 (1d4 - 1) acid damage."],
+		["Throw Boulder", "*Ranged Weapon Attack:* +8 to hit, range 60/240 ft., one target. *Hit:* 21 (3d10 + 5) kinetic damage."],
+		["Stone", "*Melee or Ranged Weapon Attack:* +3 to hit, reach 5 ft. or 20/60 ft., one target. *Hit:* 5 (1d8 + 1) kinetic damage."]
+	] ) {
+		const body = singleAttackBody({ name: attackName, attackText });
+		const ir = createEmptyIrEntry({
+			sourceName: `Synthetic ${attackName}`,
+			semanticKey: `snv:Beasts:synthetic-${attackName.toLowerCase().replace(/\s+/g, "-")}`,
+			section: "Beasts",
+			parseStatus: "parsed-valid",
+			capabilityStatus: "fully-supported",
+			outputSelection: "selected-edge-case",
+			productionReadiness: "sandbox-only",
+			features: detectFeatures(body)
+		});
+		const { actor } = generateGeneralizedActor({ irEntry: ir, body });
+		assert.equal(actor.items.length, 1, attackName);
+		assert.equal(actor.items[0].system.type.value, "natural", attackName);
+		assert.equal(actor.items[0].system.actionType, "rwak", attackName);
+	}
 
 	for ( const [attackName, attackText] of [
 		["Tail Stinger", "*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target."],
 		["Barbed Tail", "*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target."],
 		["Acid Spit", "*Ranged Weapon Attack:* +5 to hit, range 30/60 ft., one target."],
-		["Venom Spit", "*Ranged Weapon Attack:* +5 to hit, range 30/60 ft., one target."],
-		["Regurgitate", "*Ranged Weapon Attack:* +5 to hit, range 30/60 ft., one target."],
-		["Stone", "*Ranged Weapon Attack:* +5 to hit, range 30/60 ft., one target."]
+		["Venom Spit", "*Ranged Weapon Attack:* +5 to hit, range 30/60 ft., one target."]
 	] ) {
 		const body = singleAttackBody({ name: attackName, attackText });
 		const ir = createEmptyIrEntry({
@@ -477,6 +479,61 @@ test("bounded anatomy natural names emit natural mwak/rwak and keep out-of-scope
 		assert.equal(actor.items.length, 1, attackName);
 		assert.notEqual(actor.items[0].system.type.value, "natural", attackName);
 	}
+});
+
+test("C11 grapple-conditional targets, Crush save-for-half, and short poison riders", () => {
+	const gnash = parseGrappleConditionalTarget({
+		name: "Gnash",
+		description: "Melee Weapon Attack: +4 to hit, reach 5 ft. one target grappled by the rat. Hit: 9 (2d6 + 2) kinetic damage, and the target must succeed on a DC 11 Constitution saving throw or become infected with Grunge Fever."
+	});
+	assert.equal(gnash?.family, "grapple-conditional-target");
+	assert.equal(gnash?.grapplerLabel, "rat");
+	assert.equal(gnash?.runtimeAutomation, false);
+
+	const crushExtra = parseAdditionalSaveDamageRider({
+		name: "Crush",
+		description: "Hit: 12 (2d6 + 5) kinetic damage, and the target must succeed on a DC 17 Strength saving throw, taking an additional 21 (6d6) kinetic damage on a failed save, or half as much on a success."
+	});
+	assert.equal(crushExtra?.family, "additional-save-damage");
+	assert.equal(crushExtra?.saveDc, 17);
+	assert.equal(crushExtra?.damageFormula, "6d6");
+	assert.equal(crushExtra?.onSuccess, "half");
+
+	const regurgitate = parseAfflictionRider({
+		name: "Regurgitate",
+		description: "Hit: 1 (1d4 - 1) acid damage, and the target must make a DC 12 Constitution saving throw or be poisoned until the start of the creature's next turn."
+	});
+	assert.equal(regurgitate?.family, "affliction-poison-short");
+	assert.equal(regurgitate?.saveDc, 12);
+	assert.equal(regurgitate?.duration, "until-start-of-next-turn");
+
+	const body = `
+*Large beast*
+- Armor Class 15
+- Hit Points 157 (15d10 + 75)
+- Speed 40 ft.
+| STR | DEX | CON | INT | WIS | CHA |
+| 20 (+5) | 14 (+2) | 20 (+5) | 2 (-4) | 12 (+1) | 6 (-2) |
+- Challenge 9 (5000 XP)
+### Actions
+**Crush.** *Melee Weapon Attack:* +9 to hit, reach 5 ft., one target grappled by the gundark. *Hit:* 12 (2d6 + 5) kinetic damage, and the target must succeed on a DC 17 Strength saving throw, taking an additional 21 (6d6) kinetic damage on a failed save, or half as much on a success.
+`;
+	const ir = createEmptyIrEntry({
+		sourceName: "Synthetic Crush",
+		semanticKey: "snv:Beasts:synthetic-crush",
+		section: "Beasts",
+		parseStatus: "parsed-valid",
+		capabilityStatus: "fully-supported",
+		outputSelection: "selected-edge-case",
+		productionReadiness: "sandbox-only",
+		features: detectFeatures(body)
+	});
+	const { actor } = generateGeneralizedActor({ irEntry: ir, body });
+	const crush = actor.items.find(item => item.name === "Crush");
+	assert.ok(crush);
+	assert.equal(crush.system.type.value, "natural");
+	assert.equal(crush.flags.sw5e.snvMonsters.grappleConditionalTarget?.grapplerLabel, "gundark");
+	assert.equal(crush.flags.sw5e.snvMonsters.additionalSaveDamage?.saveDc, 17);
 });
 
 test("C10 Multiattack nonattack emits description-only feat without attack activity", () => {
