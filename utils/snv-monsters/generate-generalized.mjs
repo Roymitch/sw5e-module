@@ -71,7 +71,10 @@ const NATURAL_MELEE_WEAPON_NAMES = new Set([
 	"stomp",
 	"gnash",
 	"crush",
-	"gigantic claw"
+	"gigantic claw",
+	"attach",
+	"strangling tentacle",
+	"pseudopod"
 ]);
 
 const NATURAL_RANGED_WEAPON_NAMES = new Set([
@@ -1261,8 +1264,17 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 	if ( irEntry.features?.hasSave && !attacks.length ) {
 		exceptions.push({ type: "save-only-action-not-fully-emitted", note: "save text detected; skeleton actor scalars only" });
 	}
+	const softUnsupportedMechanics = [];
 	for ( const mechanic of irEntry.unsupportedMechanics || [] ) {
+		// Soft classifier flags that do not block descriptive production emission.
+		if ( mechanic === "qualified-defense-parsing" ) {
+			softUnsupportedMechanics.push(mechanic);
+			continue;
+		}
 		exceptions.push({ type: "unsupported-mechanic", mechanic });
+	}
+	if ( softUnsupportedMechanics.length ) {
+		actor.flags.sw5e.snvMonsters.softUnsupportedMechanics = softUnsupportedMechanics;
 	}
 
 	actor.items = items;

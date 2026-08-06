@@ -544,6 +544,43 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			productionReadiness: "prototype-validated",
 			packPhase: "n3a-p1-aberrations"
 		}
+	}),
+	"n3a-p2": Object.freeze({
+		batch: "n3a-p2",
+		artifactPrefix: "n3a-p2",
+		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
+		approvedSemanticKeys: [
+			"snv:Aberrations:orbalisk",
+			"snv:Aberrations:rakghoul-crazed",
+			"snv:Aberrations:rakghoul-irradiated"
+		],
+		approvedYamlRelativePaths: [
+			"packs/_source/snv-monsters/aberrations/orbalisk.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-crazed.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-irradiated.yml"
+		],
+		allowedTrackedRelativePaths: [
+			"utils/snv-monsters/identity.mjs",
+			"utils/snv-monsters/generate.mjs",
+			"utils/snv-monsters/production-write.mjs",
+			"utils/snv-monsters/validate.mjs",
+			"utils/snv-monsters/write-guard.mjs",
+			"utils/snv-monsters/cli.mjs",
+			"utils/snv-monsters/test-unit.mjs",
+			"utils/snv-monsters/generate-generalized.mjs",
+			"utils/snv-monsters/test-generalized.mjs",
+			"utils/snv-monsters/manifests/identity-map.json",
+			"packs/_source/snv-monsters/aberrations/orbalisk.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-crazed.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-irradiated.yml"
+		],
+		expectedIdentityAdditions: { actors: 3, items: 15, activities: 5 },
+		requireWorkingTreeClean: false,
+		productionMetadata: {
+			outputSelection: "selected-n3a-p2",
+			productionReadiness: "prototype-validated",
+			packPhase: "n3a-p2-aberrations"
+		}
 	})
 });
 

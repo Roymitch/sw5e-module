@@ -361,6 +361,20 @@ test("production identity plans support n3a-p1 aberration counts", () => {
 	assert.equal(plan.actors["snv:Aberrations:ngok"].folderId, "9b15e7dfce3031e1");
 });
 
+test("production identity plans support n3a-p2 aberration counts", () => {
+	const plan = buildProductionIdentityPlan("n3a-p2", {
+		actors: [
+			{ name: "Orbalisk", semanticKey: "snv:Aberrations:orbalisk", traitsAndActions: { passives: ["Damage Transfer", "Detect Dark Side", "Symbiosis"], nonAttackActions: [], weaponAttacks: ["Attach"] } },
+			{ name: "Rakghoul, Crazed", semanticKey: "snv:Aberrations:rakghoul-crazed", traitsAndActions: { passives: ["Rakghoul Plague", "Stench"], nonAttackActions: ["Multiattack"], weaponAttacks: ["Claws", "Strangling Tentacle"] } },
+			{ name: "Rakghoul, Irradiated", semanticKey: "snv:Aberrations:rakghoul-irradiated", traitsAndActions: { passives: ["Radioactive Aura", "Radioactive Glow", "Rakghoul Plague", "Savage Leap"], nonAttackActions: [], weaponAttacks: ["Bite", "Claws"] } }
+		]
+	}, loadProductionIdentityMap());
+	const counts = summarizeIdentityAddition(plan);
+	assert.equal(counts.actors, 3);
+	assert.equal(counts.items, 15);
+	assert.equal(counts.activities, 5);
+});
+
 test("production validators fail closed on malformed ledgers", () => {
 	const identityMap = loadProductionIdentityMap();
 	const malformedLedger = {};
