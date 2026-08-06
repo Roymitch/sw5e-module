@@ -265,9 +265,9 @@ test("C7 on-hit prone riders recognize Bite/Stomp/Tail and exclude charge, grapp
 	assert.equal(bite.flags.sw5e.snvMonsters.onHitProne?.saveDc, 11);
 });
 
-test("bounded anatomy natural names emit natural mwak and keep out-of-scope names non-natural", () => {
-	const positiveCases = ["Bite", "Claw", "Claws", "Slam", "Tentacle", "Gore", "Sting", "Beak", "Talons", "Hooves", "Tusk", "Tusks"];
-	for ( const attackName of positiveCases ) {
+test("bounded anatomy natural names emit natural mwak/rwak and keep out-of-scope names non-natural", () => {
+	const positiveMelee = ["Bite", "Claw", "Claws", "Slam", "Tentacle", "Gore", "Sting", "Beak", "Talons", "Hooves", "Tusk", "Tusks", "Tail", "Ram", "Stomp"];
+	for ( const attackName of positiveMelee ) {
 		const body = singleAttackBody({
 			name: attackName,
 			attackText: "*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target."
@@ -288,9 +288,31 @@ test("bounded anatomy natural names emit natural mwak and keep out-of-scope name
 		assert.equal(actor.items[0].system.actionType, "mwak", attackName);
 	}
 
+	const spitBody = singleAttackBody({
+		name: "Spit",
+		attackText: "*Ranged Weapon Attack:* +2 to hit, range 15/30 ft., one target. *Hit:* 2 (1d4) acid damage."
+	});
+	const spitIr = createEmptyIrEntry({
+		sourceName: "Synthetic Spit",
+		semanticKey: "snv:Beasts:synthetic-spit",
+		section: "Beasts",
+		parseStatus: "parsed-valid",
+		capabilityStatus: "fully-supported",
+		outputSelection: "selected-edge-case",
+		productionReadiness: "sandbox-only",
+		features: detectFeatures(spitBody)
+	});
+	const { actor: spitActor } = generateGeneralizedActor({ irEntry: spitIr, body: spitBody });
+	assert.equal(spitActor.items.length, 1);
+	assert.equal(spitActor.items[0].system.type.value, "natural");
+	assert.equal(spitActor.items[0].system.actionType, "rwak");
+
 	for ( const [attackName, attackText] of [
-		["Tail", "*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target."],
-		["Spit", "*Ranged Weapon Attack:* +5 to hit, range 30/60 ft., one target."],
+		["Tail Stinger", "*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target."],
+		["Barbed Tail", "*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target."],
+		["Acid Spit", "*Ranged Weapon Attack:* +5 to hit, range 30/60 ft., one target."],
+		["Venom Spit", "*Ranged Weapon Attack:* +5 to hit, range 30/60 ft., one target."],
+		["Regurgitate", "*Ranged Weapon Attack:* +5 to hit, range 30/60 ft., one target."],
 		["Stone", "*Ranged Weapon Attack:* +5 to hit, range 30/60 ft., one target."]
 	] ) {
 		const body = singleAttackBody({ name: attackName, attackText });

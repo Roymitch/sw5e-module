@@ -64,8 +64,20 @@ const NATURAL_MELEE_WEAPON_NAMES = new Set([
 	"talons",
 	"hooves",
 	"tusk",
-	"tusks"
+	"tusks",
+	"tail",
+	"ram",
+	"stomp"
 ]);
+
+const NATURAL_RANGED_WEAPON_NAMES = new Set([
+	"spit"
+]);
+
+function isNaturalWeaponAttackName(name) {
+	const key = String(name || "").trim().toLowerCase();
+	return NATURAL_MELEE_WEAPON_NAMES.has(key) || NATURAL_RANGED_WEAPON_NAMES.has(key);
+}
 
 let SCAFFOLDS = null;
 
@@ -456,10 +468,6 @@ function activationTypeForFeature(section, text) {
 	if ( /bonus action/i.test(text) ) return "bonus";
 	if ( /\breaction\b/i.test(text) ) return "reaction";
 	return "";
-}
-
-function isNaturalWeaponAttackName(name) {
-	return NATURAL_MELEE_WEAPON_NAMES.has(String(name || "").trim().toLowerCase());
 }
 
 /**
