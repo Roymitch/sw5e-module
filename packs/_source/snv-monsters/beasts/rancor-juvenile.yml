@@ -1,7 +1,7 @@
 _id: c1c0a2b20ad8c24e
 name: Rancor, Juvenile
 type: npc
-img: systems/dnd5e/icons/svg/actors/npc.svg
+img: modules/sw5e-module/icons/packs/monsters/106_-_Rancor_2C_Juvenile/Avatar.webp
 folder: ed7eb55524af7eab
 items:
   - _id: 027dc6f33f05474a
@@ -639,7 +639,7 @@ prototypeToken:
     negative: false
     priority: 0
   texture:
-    src: systems/dnd5e/icons/svg/actors/npc.svg
+    src: modules/sw5e-module/icons/packs/monsters/106_-_Rancor_2C_Juvenile/Token.webp
     tint: '#ffffff'
     scaleX: 1
     scaleY: 1
@@ -1156,11 +1156,16 @@ flags:
       generatedStatus: production
       manualOverrideStatus: false
       artwork:
-        path: systems/dnd5e/icons/svg/actors/npc.svg
-        tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
-        approval: fallback-rejected-local-mismatch
+        path: modules/sw5e-module/icons/packs/monsters/106_-_Rancor_2C_Juvenile/Avatar.webp
+        tokenPath: modules/sw5e-module/icons/packs/monsters/106_-_Rancor_2C_Juvenile/Token.webp
+        approval: approved-exact-npc-named-folder
         source: module-existing
-        loreConfidence: rejected-local-folder-106-shows-multi-age-group-not-juvenile-only-token
+        loreConfidence: exact-npc-named-folder-maintainer-approved
+        folder: 106_-_Rancor_2C_Juvenile
+        supersededPriorApproval: fallback-rejected-local-mismatch
+        supersededPriorPaths:
+          avatarPath: systems/dnd5e/icons/svg/actors/npc.svg
+          tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
       lastGeneratedHash: 91d31b1bcab3d583c10c73506a5d286759d860547b485ea8268e8c031d222e90
       prePublication: false
       trackedPack: snv-monsters

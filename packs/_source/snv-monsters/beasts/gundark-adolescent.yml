@@ -1,7 +1,7 @@
 _id: 24096c5ac69fa08c
 name: Gundark, Adolescent
 type: npc
-img: systems/dnd5e/icons/svg/actors/npc.svg
+img: modules/sw5e-module/icons/packs/monsters/068_-_Gundark_2C_Adolescent/Avatar.webp
 folder: ed7eb55524af7eab
 items:
   - _id: 1838387f8801d89c
@@ -540,7 +540,7 @@ prototypeToken:
     negative: false
     priority: 0
   texture:
-    src: systems/dnd5e/icons/svg/actors/npc.svg
+    src: modules/sw5e-module/icons/packs/monsters/068_-_Gundark_2C_Adolescent/Token.webp
     tint: '#ffffff'
     scaleX: 1
     scaleY: 1
@@ -1057,11 +1057,16 @@ flags:
       generatedStatus: production
       manualOverrideStatus: false
       artwork:
-        path: systems/dnd5e/icons/svg/actors/npc.svg
-        tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
-        approval: fallback-rejected-local-mismatch
+        path: modules/sw5e-module/icons/packs/monsters/068_-_Gundark_2C_Adolescent/Avatar.webp
+        tokenPath: modules/sw5e-module/icons/packs/monsters/068_-_Gundark_2C_Adolescent/Token.webp
+        approval: approved-exact-npc-named-folder
         source: module-existing
-        loreConfidence: rejected-local-folder-068-appears-nexu-not-gundark
+        loreConfidence: exact-npc-named-folder-maintainer-approved
+        folder: 068_-_Gundark_2C_Adolescent
+        supersededPriorApproval: fallback-rejected-local-mismatch
+        supersededPriorPaths:
+          avatarPath: systems/dnd5e/icons/svg/actors/npc.svg
+          tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
       lastGeneratedHash: ac8cbe186f1695248c79bf8db795ff6abf19a27cf1938fe7fe6a8280ce5dd7ed
       prePublication: false
       trackedPack: snv-monsters
