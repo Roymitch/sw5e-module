@@ -310,6 +310,40 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			productionReadiness: "prototype-validated",
 			packPhase: "n3b-p7-tracked"
 		}
+	}),
+	"n3b-p8": Object.freeze({
+		batch: "n3b-p8",
+		artifactPrefix: "n3b-p8",
+		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
+		approvedSemanticKeys: [
+			"snv:Beasts:reek-adolescent",
+			"snv:Beasts:reek-adult"
+		],
+		approvedYamlRelativePaths: [
+			"packs/_source/snv-monsters/beasts/reek-adolescent.yml",
+			"packs/_source/snv-monsters/beasts/reek-adult.yml"
+		],
+		allowedTrackedRelativePaths: [
+			"utils/snv-monsters/identity.mjs",
+			"utils/snv-monsters/generate.mjs",
+			"utils/snv-monsters/production-write.mjs",
+			"utils/snv-monsters/validate.mjs",
+			"utils/snv-monsters/write-guard.mjs",
+			"utils/snv-monsters/cli.mjs",
+			"utils/snv-monsters/test-unit.mjs",
+			"utils/snv-monsters/generate-generalized.mjs",
+			"utils/snv-monsters/test-generalized.mjs",
+			"utils/snv-monsters/manifests/identity-map.json",
+			"packs/_source/snv-monsters/beasts/reek-adolescent.yml",
+			"packs/_source/snv-monsters/beasts/reek-adult.yml"
+		],
+		expectedIdentityAdditions: { actors: 2, items: 4, activities: 2 },
+		requireWorkingTreeClean: false,
+		productionMetadata: {
+			outputSelection: "selected-n3b-p8",
+			productionReadiness: "prototype-validated",
+			packPhase: "n3b-p8-tracked"
+		}
 	})
 });
 

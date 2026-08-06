@@ -82,6 +82,9 @@ test("production batch descriptors stay fail-closed and path-scoped", () => {
 	const p7 = getProductionBatchDescriptor("n3b-p7");
 	assert.equal(p7.approvedSemanticKeys.length, 6);
 	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/fathier.yml"), "n3b-p7"));
+	const p8 = getProductionBatchDescriptor("n3b-p8");
+	assert.equal(p8.approvedSemanticKeys.length, 2);
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/reek-adult.yml"), "n3b-p8"));
 });
 
 test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {
@@ -239,6 +242,20 @@ test("production identity plans support n3b-p7 counts", () => {
 	assert.equal(counts.actors, 6);
 	assert.equal(counts.items, 21);
 	assert.equal(counts.activities, 11);
+});
+
+test("production identity plans support n3b-p8 counts", () => {
+	const plan = buildProductionIdentityPlan("n3b-p8", {
+		actors: [
+			{ name: "Reek, Adolescent", semanticKey: "snv:Beasts:reek-adolescent", traitsAndActions: { passives: ["Charge"], nonAttackActions: [], weaponAttacks: ["Gore"] } },
+			{ name: "Reek, Adult", semanticKey: "snv:Beasts:reek-adult", traitsAndActions: { passives: ["Charge"], nonAttackActions: [], weaponAttacks: ["Gore"] } }
+		]
+	}, loadProductionIdentityMap());
+	const counts = summarizeIdentityAddition(plan);
+	assert.equal(Object.keys(plan.actors).length, 2);
+	assert.equal(counts.actors, 2);
+	assert.equal(counts.items, 4);
+	assert.equal(counts.activities, 2);
 });
 
 test("production validators fail closed on malformed ledgers", () => {
