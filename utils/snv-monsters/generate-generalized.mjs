@@ -530,6 +530,36 @@ export function parseChargeDamageKnockdown(featureName, description) {
 	};
 }
 
+/**
+ * Recognize the bounded C5 Charge / Trampling Charge family only:
+ * move + named trigger attack hit + Strength save or prone + named bonus follow-up attack if prone.
+ * Excludes C6 extra-damage charges and C7 plain on-hit prone riders.
+ */
+export function parseChargeKnockdownFollowup(featureName, description) {
+	const name = String(featureName || "").trim().toLowerCase();
+	if ( name !== "charge" && name !== "trampling charge" ) return null;
+	const text = String(description || "");
+	if ( /takes an extra\s+\d+\s*\(/i.test(text) ) return null;
+	const match = text.match(
+		/moves at least\s+(\d+)\s+feet(?:\s+straight)?\s+toward a creature(?:\s+and then|\s+and)\s+hits it with an?\s+([A-Za-z][A-Za-z '-]*?)\s+attack on (?:the same |that )?turn,\s*(?:that|the) target must succeed on a DC\s+(\d+)\s+Strength saving throw or be knocked prone\.\s*If the target is prone,\s*(?:the|it)\s+[^.]*?\b(?:can make (?:another|one) attack with its ([A-Za-z][A-Za-z '-]*?)|can make (?:another|one) ([A-Za-z][A-Za-z '-]*?) attack)\b[^.]*\bas a bonus action/i
+	);
+	if ( !match ) return null;
+	const followUpRaw = (match[4] || match[5] || "").trim();
+	return {
+		family: "charge-knockdown-followup",
+		featureName: titleCase(String(featureName || "").trim()),
+		moveFeet: Number(match[1]),
+		triggerAttack: titleCase(match[2].trim()),
+		saveAbility: "str",
+		saveDc: Number(match[3]),
+		condition: "prone",
+		followUpAttack: titleCase(followUpRaw),
+		followUpActivation: "bonus",
+		sourceTriggerLabelPreserved: match[2].trim(),
+		runtimeAutomation: false
+	};
+}
+
 function buildFeatItem({ featScaffold, actorId, itemId, name, description, img, sourceSection, nonproduction, approvedBatch = null }) {
 	const item = deepClone(featScaffold);
 	item._id = itemId;
@@ -541,6 +571,7 @@ function buildFeatItem({ featScaffold, actorId, itemId, name, description, img, 
 	item.flags = item.flags || {};
 	item.flags.sw5e = item.flags.sw5e || {};
 	const chargeDamageKnockdown = parseChargeDamageKnockdown(name, description);
+	const chargeKnockdownFollowup = parseChargeKnockdownFollowup(name, description);
 	item.flags.sw5e.snvMonsters = {
 		prototype: nonproduction,
 		classification: "non-weapon",
@@ -550,7 +581,8 @@ function buildFeatItem({ featScaffold, actorId, itemId, name, description, img, 
 		trackedPack: "snv-monsters",
 		sandboxTemp: nonproduction,
 		approvedBatch: nonproduction ? null : approvedBatch,
-		...(chargeDamageKnockdown ? { chargeDamageKnockdown } : {})
+		...(chargeDamageKnockdown ? { chargeDamageKnockdown } : {}),
+		...(chargeKnockdownFollowup ? { chargeKnockdownFollowup } : {})
 	};
 	const activationType = activationTypeForFeature(sourceSection, description);
 	item.system.description.value = toHtmlParagraph(description);

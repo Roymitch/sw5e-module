@@ -2,7 +2,7 @@
  * Tracked generalized-generator unit tests (synthetic fixtures only).
  */
 import assert from "node:assert/strict";
-import { generateGeneralizedActor, parseChargeDamageKnockdown, parseOnHitProneRider } from "./generate-generalized.mjs";
+import { generateGeneralizedActor, parseChargeDamageKnockdown, parseChargeKnockdownFollowup, parseOnHitProneRider } from "./generate-generalized.mjs";
 import { createEmptyIrEntry } from "./ir-schema.mjs";
 import { detectFeatures, deriveCapability } from "./classify.mjs";
 import { resolveCanonicalWeapon, buildCanonicalWeaponIndex } from "./canonical.mjs";
@@ -192,6 +192,83 @@ test("C6 Charge damage-plus-knockdown metadata recognizes Moof/Reek and excludes
 	assert.equal(charge.flags.sw5e.snvMonsters.chargeDamageKnockdown?.family, "charge-damage-knockdown");
 	assert.equal(charge.flags.sw5e.snvMonsters.chargeDamageKnockdown?.extraDamage, "2d10");
 	assert.equal(actor.items.filter(item => item.type === "weapon").length, 1);
+});
+
+test("C5 Charge knockdown-followup recognizes Trampling Charge/Charge and excludes C6 damage charges", () => {
+	const fathier = parseChargeKnockdownFollowup(
+		"Trampling Charge",
+		"If the fathier moves at least 20 feet straight toward a creature and then hits it with a hooves attack on the same turn, that target must succeed on a DC 14 Strength saving throw or be knocked prone. If the target is prone, the fathier can make another attack with its hooves against it as a bonus action."
+	);
+	assert.equal(fathier?.family, "charge-knockdown-followup");
+	assert.equal(fathier?.triggerAttack, "Hooves");
+	assert.equal(fathier?.followUpAttack, "Hooves");
+	assert.equal(fathier?.saveDc, 14);
+	assert.equal(fathier?.runtimeAutomation, false);
+
+	const ronto = parseChargeKnockdownFollowup(
+		"Trampling Charge",
+		"If the ronto moves at least 20 feet straight toward a creature and then hits it with a ram attack on the same turn, that target must succeed on a DC 16 Strength saving throw or be knocked prone. If the target is prone, the ronto can make one stomp attack against it as a bonus action."
+	);
+	assert.equal(ronto?.triggerAttack, "Ram");
+	assert.equal(ronto?.followUpAttack, "Stomp");
+	assert.equal(ronto?.sourceTriggerLabelPreserved, "ram");
+
+	const horned = parseChargeKnockdownFollowup(
+		"Charge",
+		"If the hound moves at least 20 feet straight toward a creature and then hits it with a bite attack on the same turn, that target must succeed on a DC 13 Strength saving throw or be knocked prone. If the target is prone, the hound can make another attack with its tusks against it as a bonus action."
+	);
+	assert.equal(horned?.triggerAttack, "Bite");
+	assert.equal(horned?.followUpAttack, "Tusks");
+
+	assert.equal(parseChargeKnockdownFollowup(
+		"Charge",
+		"If the moof moves at least 20 feet straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 11 (2d10) kinetic damage. If the target is a creature, it must succeed on a DC 14 Strength saving throw or be knocked prone."
+	), null);
+	assert.equal(parseChargeKnockdownFollowup(
+		"Bite",
+		"Melee Weapon Attack: +4 to hit. Hit: 5 (1d6 + 2) kinetic damage, and the target must succeed on a DC 11 Strength saving throw or be knocked prone."
+	), null);
+
+	const body = `
+*Large beast*
+- Armor Class 12
+- Hit Points 30 (4d10 + 8)
+- Speed 60 ft.
+| STR | DEX | CON | INT | WIS | CHA |
+| 18 (+4) | 14 (+2) | 14 (+2) | 2 (-4) | 12 (+1) | 8 (-1) |
+- Challenge 2 (450 XP)
+### Traits
+**Trampling Charge.** If the fathier moves at least 20 feet straight toward a creature and then hits it with a hooves attack on the same turn, that target must succeed on a DC 14 Strength saving throw or be knocked prone. If the target is prone, the fathier can make another attack with its hooves against it as a bonus action.
+### Actions
+**Hooves.** *Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 11 (2d6 + 4) kinetic damage.
+`;
+	const ir = createEmptyIrEntry({
+		sourceName: "Synthetic Fathier Charge",
+		semanticKey: "snv:Beasts:synthetic-fathier-charge",
+		section: "Beasts",
+		parseStatus: "parsed-valid",
+		capabilityStatus: "fully-supported",
+		outputSelection: "selected-edge-case",
+		productionReadiness: "sandbox-only",
+		features: detectFeatures(body)
+	});
+	const { actor } = generateGeneralizedActor({
+		irEntry: ir,
+		body,
+		nonproduction: false,
+		productionContext: {
+			batch: "n3b-p3",
+			exactFeatures: {
+				passives: ["Trampling Charge"],
+				nonAttackActions: [],
+				weaponAttacks: ["Hooves"]
+			}
+		}
+	});
+	const charge = actor.items.find(item => item.name === "Trampling Charge");
+	assert.ok(charge);
+	assert.equal(charge.flags.sw5e.snvMonsters.chargeKnockdownFollowup?.family, "charge-knockdown-followup");
+	assert.equal(charge.flags.sw5e.snvMonsters.chargeKnockdownFollowup?.followUpAttack, "Hooves");
 });
 
 test("C7 on-hit prone riders recognize Bite/Stomp/Tail and exclude charge, grapple, and affliction", () => {
