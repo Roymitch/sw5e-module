@@ -1686,9 +1686,6 @@ items:
         consumed: false
         cost: 0
         supply: 0
-      preparation:
-        mode: prepared
-        prepared: true
       scaling:
         mode: atwill
         formula: null
@@ -2072,10 +2069,10 @@ system:
         max: null
         mode: 0
     itm:
-      value: 0
+      value: 1
       ability: cha
       bonuses:
-        check: NaN
+        check: ""
         passive: ""
       roll:
         min: null

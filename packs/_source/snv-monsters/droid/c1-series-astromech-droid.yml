@@ -665,9 +665,6 @@ items:
         consumed: false
         cost: 0
         supply: 0
-      preparation:
-        mode: prepared
-        prepared: true
       scaling:
         mode: none
         formula: null
@@ -806,9 +803,6 @@ items:
         consumed: false
         cost: 0
         supply: 0
-      preparation:
-        mode: prepared
-        prepared: true
       scaling:
         mode: atwill
         formula: null
@@ -964,9 +958,6 @@ items:
         consumed: false
         cost: 0
         supply: 0
-      preparation:
-        mode: prepared
-        prepared: true
       scaling:
         mode: atwill
         formula: null
@@ -1113,9 +1104,6 @@ items:
         consumed: false
         cost: 0
         supply: 0
-      preparation:
-        mode: prepared
-        prepared: true
       scaling:
         mode: none
         formula: null
@@ -1257,9 +1245,6 @@ items:
         consumed: false
         cost: 0
         supply: 0
-      preparation:
-        mode: prepared
-        prepared: true
       scaling:
         mode: none
         formula: null
@@ -1406,9 +1391,6 @@ items:
         consumed: false
         cost: 0
         supply: 0
-      preparation:
-        mode: prepared
-        prepared: true
       scaling:
         mode: level
         formula: null
@@ -1558,9 +1540,6 @@ items:
         consumed: false
         cost: 0
         supply: 0
-      preparation:
-        mode: prepared
-        prepared: true
       scaling:
         mode: none
         formula: null
@@ -1712,9 +1691,6 @@ items:
         consumed: false
         cost: 0
         supply: 0
-      preparation:
-        mode: prepared
-        prepared: true
       scaling:
         mode: level
         formula: null
@@ -1864,9 +1840,6 @@ items:
         consumed: false
         cost: 0
         supply: 0
-      preparation:
-        mode: prepared
-        prepared: true
       scaling:
         mode: none
         formula: null
@@ -2010,9 +1983,6 @@ items:
         consumed: false
         cost: 0
         supply: 0
-      preparation:
-        mode: prepared
-        prepared: true
       scaling:
         mode: none
         formula: null
@@ -2442,10 +2412,10 @@ system:
         max: null
         mode: 0
     pil:
-      value: 0
+      value: 1
       ability: int
       bonuses:
-        check: NaN
+        check: ""
         passive: ""
       roll:
         min: null
@@ -2512,7 +2482,7 @@ system:
         max: null
         mode: 0
     tec:
-      value: 0
+      value: 1
       ability: int
       bonuses:
         check: ""

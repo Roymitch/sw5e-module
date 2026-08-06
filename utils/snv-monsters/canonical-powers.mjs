@@ -166,11 +166,34 @@ export function resolveCanonicalPower(powerName, preferredCastType = null) {
 	};
 }
 
+/**
+ * Normalize cloned spell Item for current dnd5e SpellData (method/prepared).
+ * Does not modify the canonical source file — only the in-memory clone.
+ */
+export function normalizeClonedSpellSchema(clone) {
+	if ( !clone?.system ) return clone;
+	const prep = clone.system.preparation;
+	if ( clone.system.method == null && prep?.mode ) {
+		clone.system.method = prep.mode === "prepared" || prep.mode === "always"
+			? "powerCasting"
+			: prep.mode;
+	}
+	if ( clone.system.prepared == null && typeof prep?.prepared === "boolean" ) {
+		clone.system.prepared = prep.prepared;
+	}
+	if ( Object.prototype.hasOwnProperty.call(clone.system, "preparation") ) {
+		delete clone.system.preparation;
+	}
+	if ( clone.system.method == null ) clone.system.method = "powerCasting";
+	if ( clone.system.prepared == null ) clone.system.prepared = true;
+	return clone;
+}
+
 export function loadAndCloneCanonicalPower(powerName, preferredCastType = null) {
 	const resolved = resolveCanonicalPower(powerName, preferredCastType);
 	if ( resolved.match === "none" ) return { ok: false, resolved };
 	const full = yaml.load(fs.readFileSync(path.join(ROOT, resolved.canonical.path), "utf8"));
-	return { ok: true, resolved, clone: structuredClone(full) };
+	return { ok: true, resolved, clone: normalizeClonedSpellSchema(structuredClone(full)) };
 }
 
 export function resolveCanonicalManeuver(maneuverName) {

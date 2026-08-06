@@ -524,7 +524,14 @@ items:
     folder: null
     system:
       description:
-        value: <p>Mnggal-Mnggal expunges needle-like projectiles of ooze within a 30-foot cone in any direction. All creatures in the area must make a DC 14 Dexterity saving throw or take 11 (2d10) acid damage on a failed save. Additionally, on a failed save, a target must make a DC 16 Constitution saving throw or become poisoned. Creatures poisoned in this way take 11 (2d10) poison damage at the start of their turn, and this damage ignores resistance and immunity. A creature reduced to 0 hit points by this damage is killed instantly, and rises the next round as a Mnggal-Mnggal zombie. Creatures can repeat the saving throw at the end of their turn, ending the effect on a successful save. Unconscious creatures make this save with disadvantage.</p>
+        value: >-
+          <p>Mnggal-Mnggal expunges needle-like projectiles of ooze within a 30-foot cone in any direction. All
+          creatures in the area must make a DC 14 Dexterity saving throw or take 11 (2d10) acid damage on a failed save.
+          Additionally, on a failed save, a target must make a DC 16 Constitution saving throw or become poisoned.
+          Creatures poisoned in this way take 11 (2d10) poison damage at the start of their turn, and this damage
+          ignores resistance and immunity. A creature reduced to 0 hit points by this damage is killed instantly, and
+          rises the next round as a Mnggal-Mnggal zombie. Creatures can repeat the saving throw at the end of their
+          turn, ending the effect on a successful save. Unconscious creatures make this save with disadvantage.</p>
         chat: ""
       requirements: ""
       source:
@@ -625,13 +632,29 @@ items:
             saveDc: 14
             escapeDc: 17
             runtimeAutomation: false
-            limitation: Engulf movement-into-space save, restrained/blinded ongoing acid, and escape checks are description-preserved only.
+            limitation: >-
+              Engulf movement-into-space save, restrained/blinded ongoing acid, and escape checks are
+              description-preserved only.
     img: modules/sw5e-module/icons/packs/monsters/380_-_Mnggal-Mnggal_2C_Gray_Pudding/Avatar.webp
     effects: []
     folder: null
     system:
       description:
-        value: <p>Mnggal-Mnggal moves up to its speed. While doing so, it can enter Huge or smaller creatures’ spaces. Whenever Mnggal-Mnggal enters a creature’s space, the creature must make a DC 14 Dexterity saving throw. On a success, the creature can choose to be pushed 5 feet back or to the side of Mnggal-Mnggal. If it chooses not to be moved, it then suffers the consequences of a failed saving throw. On a failure, the creature takes 12 (2d6 + 5) kinetic damage and 7 (2d6) acid damage, and is engulfed by Mnggal-Mnggal. An engulfed creature is blinded, restrained, can’t breathe, has total cover against attacks and other effects outside Mnggal-Mnggal, and takes 7 (2d6) acid damage at the start of each of Mnggal-Mnggal's turns. An engulfed creature can try to escape by using its action to make a DC 17 Strength (Athletics) check. On a success, the creature escapes and enters a space of its choice within 5 feet of Mnggal-Mnggal. A creature within 5 feet of Mnggal-Mnggal can also attempt to pull an engulfed target free into the nearest unoccupied space as an action. Doing so requires a successful DC 17 Strength (Athletics) check, and the creature making the attempt takes 7 (2d6) acid damage. Mnggal-Mnggal can hold up to four Medium or smaller creatures inside it at a time. If a creature is reduced to 0 hit points, Mnggal-Mnggal can choose to either digest the creature, which kills it outright, or use its Infect Host action on the creature.</p>
+        value: >-
+          <p>Mnggal-Mnggal moves up to its speed. While doing so, it can enter Huge or smaller creatures’ spaces.
+          Whenever Mnggal-Mnggal enters a creature’s space, the creature must make a DC 14 Dexterity saving throw. On a
+          success, the creature can choose to be pushed 5 feet back or to the side of Mnggal-Mnggal. If it chooses not
+          to be moved, it then suffers the consequences of a failed saving throw. On a failure, the creature takes 12
+          (2d6 + 5) kinetic damage and 7 (2d6) acid damage, and is engulfed by Mnggal-Mnggal. An engulfed creature is
+          blinded, restrained, can’t breathe, has total cover against attacks and other effects outside Mnggal-Mnggal,
+          and takes 7 (2d6) acid damage at the start of each of Mnggal-Mnggal's turns. An engulfed creature can try to
+          escape by using its action to make a DC 17 Strength (Athletics) check. On a success, the creature escapes and
+          enters a space of its choice within 5 feet of Mnggal-Mnggal. A creature within 5 feet of Mnggal-Mnggal can
+          also attempt to pull an engulfed target free into the nearest unoccupied space as an action. Doing so requires
+          a successful DC 17 Strength (Athletics) check, and the creature making the attempt takes 7 (2d6) acid damage.
+          Mnggal-Mnggal can hold up to four Medium or smaller creatures inside it at a time. If a creature is reduced to
+          0 hit points, Mnggal-Mnggal can choose to either digest the creature, which kills it outright, or use its
+          Infect Host action on the creature.</p>
         chat: ""
       requirements: ""
       source:
@@ -735,7 +758,15 @@ items:
     folder: null
     system:
       description:
-        value: <p>Mnggal-Mnggal targets a creature grappled or engulfed by it, or an unconscious creature within 15 feet, and attempts to infect it with its ooze. A creature that is grappled or engulfed must make a DC 16 Constitution saving throw to keep the ooze out of their mouth. On a failed save, the creature becomes poisoned. A creature poisoned in this way takes 11 (2d10) poison damage at the start of its turn. This damage ignores resistance and immunity. A creature reduced to 0 hit points by this damage is killed instantly, and rises the next round as a Mnggal-Mnggal zombie. Creatures can repeat this saving throw at the end of their turn. A creature that has successfully saved is immune to this ability for 24 hours. Unconscious creatures make this save with disadvantage.</p>
+        value: >-
+          <p>Mnggal-Mnggal targets a creature grappled or engulfed by it, or an unconscious creature within 15 feet, and
+          attempts to infect it with its ooze. A creature that is grappled or engulfed must make a DC 16 Constitution
+          saving throw to keep the ooze out of their mouth. On a failed save, the creature becomes poisoned. A creature
+          poisoned in this way takes 11 (2d10) poison damage at the start of its turn. This damage ignores resistance
+          and immunity. A creature reduced to 0 hit points by this damage is killed instantly, and rises the next round
+          as a Mnggal-Mnggal zombie. Creatures can repeat this saving throw at the end of their turn. A creature that
+          has successfully saved is immune to this ability for 24 hours. Unconscious creatures make this save with
+          disadvantage.</p>
         chat: ""
       requirements: ""
       source:
@@ -838,7 +869,10 @@ items:
     folder: null
     system:
       description:
-        value: <p>*Melee Weapon Attack:* +9 to hit, reach 15 ft., one target. *Hit:* 12 (2d6 + 5) kinetic damage plus 7 (2d6) acid damage, and a Large or smaller target is grappled (escape DC 17). A grappled target takes 7 (2d6) acid damage at the start of its turn.</p>
+        value: >-
+          <p>*Melee Weapon Attack:* +9 to hit, reach 15 ft., one target. *Hit:* 12 (2d6 + 5) kinetic damage plus 7 (2d6)
+          acid damage, and a Large or smaller target is grappled (escape DC 17). A grappled target takes 7 (2d6) acid
+          damage at the start of its turn.</p>
         chat: ""
       source:
         custom: SnV
@@ -1307,10 +1341,10 @@ system:
         max: null
         mode: 0
     dec:
-      value: 0
+      value: 1
       ability: cha
       bonuses:
-        check: NaN
+        check: ""
         passive: ""
       roll:
         min: null

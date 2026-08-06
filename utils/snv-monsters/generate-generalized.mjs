@@ -51,8 +51,61 @@ const SKILL_KEY_MAP = {
 	Religion: "rel",
 	"Sleight of Hand": "slt",
 	Stealth: "ste",
-	Survival: "sur"
+	Survival: "sur",
+	Technology: "tec"
 };
+
+/** dnd5e / SW5e default ability per skill key. */
+const SKILL_ABILITY_MAP = Object.freeze({
+	acr: "dex",
+	ani: "wis",
+	arc: "int",
+	ath: "str",
+	dec: "cha",
+	his: "int",
+	ins: "wis",
+	itm: "cha",
+	inv: "int",
+	med: "wis",
+	nat: "int",
+	prc: "wis",
+	prf: "cha",
+	per: "cha",
+	pil: "int",
+	rel: "int",
+	slt: "dex",
+	ste: "dex",
+	sur: "wis",
+	tec: "int"
+});
+
+/**
+ * Fail closed when a generated numeric value is nonfinite.
+ * @param {unknown} value
+ * @param {string} path
+ * @param {object} [context]
+ */
+export function assertFiniteNumber(value, path, context = {}) {
+	if ( typeof value === "number" && Number.isFinite(value) ) return value;
+	const detail = Object.entries(context).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(" ");
+	throw new Error(`[snv-monsters] nonfinite numeric at ${path}${detail ? ` (${detail})` : ""}: ${String(value)}`);
+}
+
+/**
+ * Fail closed when a formula string would evaluate with NaN / Infinity terms.
+ * @param {string} formula
+ * @param {string} path
+ * @param {object} [context]
+ */
+export function assertSafeFormula(formula, path, context = {}) {
+	const text = formula == null ? "" : String(formula);
+	if ( text === "" ) return text;
+	if ( /\bNaN\b/i.test(text) || /\bInfinity\b/i.test(text) || /\bundefined\b/i.test(text) ) {
+		const detail = Object.entries(context).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(" ");
+		throw new Error(`[snv-monsters] unsafe formula at ${path}${detail ? ` (${detail})` : ""}: ${JSON.stringify(text)}`);
+	}
+	return text;
+}
 
 const NATURAL_MELEE_WEAPON_NAMES = new Set([
 	"bite",
@@ -277,34 +330,62 @@ function parseSenses(text) {
 	return senses;
 }
 
-function parseSkills(text, abilities, proficiencyBonus) {
+function parseSkills(text, abilities, proficiencyBonus, { sourceName = null } = {}) {
 	const skills = {};
 	const match = text.match(/Skills\**\s+([^\n]+)/i);
 	if ( !match ) return skills;
+	const pb = assertFiniteNumber(Number(proficiencyBonus), "proficiencyBonus", { sourceName });
 	for ( const entry of match[1].split(",").map(part => part.trim()).filter(Boolean) ) {
 		const skillMatch = entry.match(/^(.+?)\s+([+-]\d+)$/);
 		if ( !skillMatch ) continue;
-		const skillKey = SKILL_KEY_MAP[skillMatch[1].trim()];
+		const skillName = skillMatch[1].trim();
+		const skillKey = SKILL_KEY_MAP[skillName];
 		if ( !skillKey ) continue;
-		const abilityKey = {
-			ath: "str",
-			ste: "dex",
-			prc: "wis",
-			sur: "wis"
-		}[skillKey] || skillKey;
-		const totalBonus = Number(skillMatch[2]);
-		const delta = totalBonus - abilityMod(abilities[abilityKey]);
+		const abilityKey = SKILL_ABILITY_MAP[skillKey];
+		if ( !abilityKey ) {
+			throw new Error(`[snv-monsters] missing skill ability map for ${skillKey} (${skillName}) source=${sourceName}`);
+		}
+		const score = abilities?.[abilityKey];
+		const mod = abilityMod(score);
+		assertFiniteNumber(mod, `skills.${skillKey}.abilityMod`, {
+			sourceName,
+			skillName,
+			abilityKey,
+			score
+		});
+		const totalBonus = assertFiniteNumber(Number(skillMatch[2]), `skills.${skillKey}.totalBonus`, {
+			sourceName,
+			skillName
+		});
+		const delta = assertFiniteNumber(totalBonus - mod, `skills.${skillKey}.delta`, {
+			sourceName,
+			skillName,
+			totalBonus,
+			mod,
+			pb
+		});
 		let value = 0;
 		let checkBonus = "";
 		if ( delta === 0 ) value = 0;
-		else if ( delta === proficiencyBonus ) value = 1;
-		else if ( delta === proficiencyBonus * 2 ) value = 2;
-		else if ( delta === Math.floor(proficiencyBonus / 2) ) value = 0.5;
-		else checkBonus = String(delta);
-		skills[skillKey] = { value, checkBonus };
+		else if ( delta === pb ) value = 1;
+		else if ( delta === pb * 2 ) value = 2;
+		else if ( delta === Math.floor(pb / 2) ) value = 0.5;
+		else {
+			// Residual flat bonus beyond ability; keep proficiency unset and encode residual in check bonus.
+			checkBonus = assertSafeFormula(String(delta), `skills.${skillKey}.bonuses.check`, {
+				sourceName,
+				skillName,
+				totalBonus,
+				mod,
+				pb
+			});
+		}
+		skills[skillKey] = { value, checkBonus, ability: abilityKey };
 	}
 	return skills;
 }
+
+export { parseSkills, SKILL_KEY_MAP, SKILL_ABILITY_MAP };
 
 function parseFeatureEntries(text) {
 	const entries = [];
@@ -1147,7 +1228,12 @@ function buildActorFromScaffold(actorScaffold, { irEntry, actorId, parsed, artwo
 	for ( const [skillKey, config] of Object.entries(parsed.skills) ) {
 		if ( !actor.system.skills?.[skillKey] ) continue;
 		actor.system.skills[skillKey].value = config.value;
-		actor.system.skills[skillKey].bonuses.check = config.checkBonus;
+		if ( config.ability ) actor.system.skills[skillKey].ability = config.ability;
+		actor.system.skills[skillKey].bonuses.check = assertSafeFormula(
+			config.checkBonus ?? "",
+			`actor.system.skills.${skillKey}.bonuses.check`,
+			{ sourceName: irEntry.sourceName, skillKey }
+		);
 		actor.system.skills[skillKey].bonuses.passive = "";
 	}
 	actor.flags = actor.flags || {};
@@ -1196,7 +1282,7 @@ function buildActorFromScaffold(actorScaffold, { irEntry, actorId, parsed, artwo
 	return actor;
 }
 
-function parseStatBlock(text) {
+function parseStatBlock(text, { sourceName = null } = {}) {
 	const descriptor = parseDescriptor(text);
 	const abilities = parseAbilities(text);
 	const proficiencyBonus = parseProficiencyBonus(text);
@@ -1209,7 +1295,7 @@ function parseStatBlock(text) {
 		abilities,
 		movement: parseMovement(text),
 		senses: parseSenses(text),
-		skills: parseSkills(text, abilities, proficiencyBonus),
+		skills: parseSkills(text, abilities, proficiencyBonus, { sourceName }),
 		featureEntries: parseFeatureEntries(text)
 	};
 }
@@ -1220,7 +1306,7 @@ function parseStatBlock(text) {
 export function generateGeneralizedActor({ irEntry, body, actorId = null, nonproduction = true, productionContext = null }) {
 	const text = stripBlockquotes(body);
 	const id = actorId || tempId(irEntry.semanticKey || irEntry.sourceName);
-	const parsed = parseStatBlock(text);
+	const parsed = parseStatBlock(text, { sourceName: irEntry.sourceName });
 	const entriesByName = new Map(parsed.featureEntries.map(entry => [entry.name, entry]));
 	const attacks = parseAttacks(text);
 	const attacksByName = new Map(attacks.map(attack => [attack.name, attack]));

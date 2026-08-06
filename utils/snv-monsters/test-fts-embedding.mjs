@@ -2,12 +2,12 @@
  * Force / Tech / Superiority embedding unit tests.
  */
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import { buildCanonicalPowerIndex, loadAndCloneCanonicalPower, resolveCanonicalPower } from "./canonical-powers.mjs";
 import { detectFeatures } from "./classify.mjs";
-import { generateGeneralizedActor } from "./generate-generalized.mjs";
+import { generateGeneralizedActor, parseSkills } from "./generate-generalized.mjs";
 import { createEmptyIrEntry } from "./ir-schema.mjs";
 import { parseForcecasting, parseTechcasting } from "./parse-casting.mjs";
-
 let passed = 0;
 function test(name, fn) {
 	try {
@@ -158,6 +158,8 @@ test("maintainer-locked Tech aliases resolve to Capacity Boost and Shocking Ray"
 	assert.equal(cloneCap.clone.name, "Capacity Boost");
 	assert.equal(cloneCap.clone.system.consume.target, "powercasting.tech.points.value");
 	assert.ok(Object.keys(cloneCap.clone.system.activities || {}).length >= 1);
+	assert.equal(Object.prototype.hasOwnProperty.call(cloneCap.clone.system, "preparation"), false);
+	assert.ok(cloneCap.clone.system.method);
 
 	const shocking = resolveCanonicalPower("Scorching Ray", "tech");
 	assert.equal(shocking.match, "exact-name");
@@ -168,6 +170,40 @@ test("maintainer-locked Tech aliases resolve to Capacity Boost and Shocking Ray"
 	assert.equal(cloneShock.clone.name, "Shocking Ray");
 	assert.equal(cloneShock.clone.system.consume.target, "powercasting.tech.points.value");
 	assert.ok(Object.keys(cloneShock.clone.system.activities || {}).length >= 1);
+	assert.equal(Object.prototype.hasOwnProperty.call(cloneShock.clone.system, "preparation"), false);
+});
+
+test("parseSkills maps Piloting/Acrobatics abilities and never emits NaN check bonuses", () => {
+	const abilities = { str: 14, dex: 18, con: 12, int: 16, wis: 14, cha: 16 };
+	const skills = parseSkills(
+		"Skills** Acrobatics +11, Piloting +5, Deception +10, Insight +10, Sleight of Hand +11, Perception +10",
+		abilities,
+		6,
+		{ sourceName: "Test Actor" }
+	);
+	assert.equal(skills.pil.ability, "int");
+	assert.equal(skills.acr.ability, "dex");
+	assert.equal(skills.dec.ability, "cha");
+	assert.equal(skills.ins.ability, "wis");
+	assert.equal(skills.slt.ability, "dex");
+	for ( const [key, cfg] of Object.entries(skills) ) {
+		assert.equal(/\bNaN\b/i.test(String(cfg.checkBonus)), false, key);
+		assert.ok(Number.isFinite(cfg.value), key);
+	}
+	assert.ok(skills.pil);
+	assert.notEqual(String(skills.pil.checkBonus), "NaN");
+});
+
+test("runtime automation must not read deprecated SpellData#preparation API", () => {
+	// Contract: clones must expose method/prepared only (no serialized preparation blob).
+	const cloneCap = loadAndCloneCanonicalPower("Capacity Boost", "tech");
+	assert.equal(cloneCap.ok, true);
+	assert.equal(Object.prototype.hasOwnProperty.call(cloneCap.clone.system, "preparation"), false);
+	assert.ok(cloneCap.clone.system.method);
+	assert.equal(typeof cloneCap.clone.system.prepared, "boolean");
+	// Harness scripts must not inspect the deprecated getter path for display.
+	const embed = fs.readFileSync(new URL("./embed-casting.mjs", import.meta.url), "utf8");
+	assert.equal(/system\.preparation\?\.(mode|prepared)/.test(embed), false);
 });
 
 console.log(`\n${passed} fts embedding tests passed`);

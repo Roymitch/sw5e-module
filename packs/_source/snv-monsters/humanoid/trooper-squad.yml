@@ -119,7 +119,9 @@ items:
     folder: null
     system:
       description:
-        value: <p>The squad can occupy another creature's space and vice versa, and can move through openings large enough for a Medium humanoid. The squad can’t regain hit points or gain temporary hit points.</p>
+        value: >-
+          <p>The squad can occupy another creature's space and vice versa, and can move through openings large enough
+          for a Medium humanoid. The squad can’t regain hit points or gain temporary hit points.</p>
         chat: ""
       requirements: ""
       source:
@@ -216,7 +218,9 @@ items:
     folder: null
     system:
       description:
-        value: <p>The squad makes four blaster rifle attacks, or two blaster rifle attacks if it has half its hit points or fewer.</p>
+        value: >-
+          <p>The squad makes four blaster rifle attacks, or two blaster rifle attacks if it has half its hit points or
+          fewer.</p>
         chat: ""
       requirements: ""
       source:
@@ -342,12 +346,19 @@ items:
           effect: []
     system:
       description:
-        value: |-
+        value: >-
           <h3>Power cell (range 105/420) Cell</h3>
-          <p>Weapons with this property are fueled by power cells, which must be loaded in order to fire the weapon. A power cell fuels a number of attacks equal to the weapon's reload number.</p>
+
+          <p>Weapons with this property are fueled by power cells, which must be loaded in order to fire the weapon. A
+          power cell fuels a number of attacks equal to the weapon's reload number.</p>
+
           <h3>Reload 12</h3>
-          <p>A number of shots equal to the reload number can be made with a weapon with this property. A character must then reload it using an action or a bonus action (their choice). You must have one free hand to reload.</p>
+
+          <p>A number of shots equal to the reload number can be made with a weapon with this property. A character must
+          then reload it using an action or a bonus action (their choice). You must have one free hand to reload.</p>
+
           <h3>Two-handed</h3>
+
           <p>A weapon with this property requires two hands to use.</p>
         chat: ""
       source:
@@ -524,7 +535,11 @@ items:
   - type: feat
     system:
       description:
-        value: <p>The squad fires *en masse* at a point within 150 feet. Each creature of the squad's choice in a 10-foot radius sphere centered on that point must make a DC 14 Dexterity saving throw. On a failed save, a creature takes 36 (8d8) energy damage, or 18 (4d8) energy damage if the squad has half its hit points or fewer. On a successful save, it takes half as much damage. \pagebreakNum ___</p>
+        value: >-
+          <p>The squad fires *en masse* at a point within 150 feet. Each creature of the squad's choice in a 10-foot
+          radius sphere centered on that point must make a DC 14 Dexterity saving throw. On a failed save, a creature
+          takes 36 (8d8) energy damage, or 18 (4d8) energy damage if the squad has half its hit points or fewer. On a
+          successful save, it takes half as much damage. \pagebreakNum ___</p>
         chat: ""
       type:
         value: ""
@@ -561,7 +576,11 @@ items:
     folder: null
     system:
       description:
-        value: <p>The Trooper Captain can utter a special command or warning whenever a nonhostile creature that it can see within 30 feet of it makes an attack roll or a saving throw. The creature can add a d4 to its roll provided it can hear and understand the Trooper Captain. A creature can benefit from only one Leadership die at a time.</p>
+        value: >-
+          <p>The Trooper Captain can utter a special command or warning whenever a nonhostile creature that it can see
+          within 30 feet of it makes an attack roll or a saving throw. The creature can add a d4 to its roll provided it
+          can hear and understand the Trooper Captain. A creature can benefit from only one Leadership die at a
+          time.</p>
         chat: ""
       requirements: ""
       source:
@@ -708,7 +727,11 @@ items:
     folder: null
     system:
       description:
-        value: <p><p><strong></strong>.</p><p>The squad fires en masse at a point within 150 feet Each creature of the squad's choice in a 10-foot-radius sphere centered on that point must make a DC 13 Dexterity saving throw. On a failed save, a creature takes 36 (8d8) kinetic damage, or 18 (4d8) kinetic damage if the squad has half its hit points or fewer. On a successful save, it takes half as much damage.</p></p>
+        value: >-
+          <p><p><strong></strong>.</p><p>The squad fires en masse at a point within 150 feet Each creature of the
+          squad's choice in a 10-foot-radius sphere centered on that point must make a DC 13 Dexterity saving throw. On
+          a failed save, a creature takes 36 (8d8) kinetic damage, or 18 (4d8) kinetic damage if the squad has half its
+          hit points or fewer. On a successful save, it takes half as much damage.</p></p>
         chat: ""
       requirements: ""
       source:
@@ -1011,7 +1034,14 @@ system:
     slowed: 0
   details:
     biography:
-      value: <blockquote><p><i>"I put my faith in diplomacy. We can't solve all of our problems by throwing troops at them."</i></p><p>- Republic Senator PadmÃ© Amidala, during her mission to Rodia</p></blockquote><p>Troopers, sometimes referred to as troops, were soldiers who served in a military force, such as that of the clone troopers of the Grand Army of the Republic, who were bred on Kamino, the stormtroopers of the Galactic Empire, elite troops deployed on the frontlines and stationed aboard installations such as Star Destroyers, the Alliance troopers of the Rebel Alliance, the stormtroopers of the First Order, and the Resistance Troopers of General Leia Organa's Resistance.</p>
+      value: >-
+        <blockquote><p><i>"I put my faith in diplomacy. We can't solve all of our problems by throwing troops at
+        them."</i></p><p>- Republic Senator PadmÃ© Amidala, during her mission to Rodia</p></blockquote><p>Troopers,
+        sometimes referred to as troops, were soldiers who served in a military force, such as that of the clone
+        troopers of the Grand Army of the Republic, who were bred on Kamino, the stormtroopers of the Galactic Empire,
+        elite troops deployed on the frontlines and stationed aboard installations such as Star Destroyers, the Alliance
+        troopers of the Rebel Alliance, the stormtroopers of the First Order, and the Resistance Troopers of General
+        Leia Organa's Resistance.</p>
       public: ""
     alignment: Any Alignment
     species: null

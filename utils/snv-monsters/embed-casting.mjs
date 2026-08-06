@@ -88,7 +88,26 @@ function stampPowerFlags(clone, {
 		clone.flags.core.sourceId = clone.flags.core.sourceId
 			|| `Compendium.sw5e-module.powers-maneuvers.Item.${clone._stats?.exportSource?.id || clone._id}`;
 	}
+	const appliedOverrides = [...(overrides || [])];
 	clone.flags.sw5e = clone.flags.sw5e || {};
+	// Prefer current dnd5e SpellData fields; drop deprecated preparation blob on embed.
+	if ( clone.system ) {
+		const prep = clone.system.preparation;
+		if ( clone.system.method == null && prep?.mode ) {
+			clone.system.method = prep.mode === "prepared" || prep.mode === "always"
+				? "powerCasting"
+				: prep.mode;
+		}
+		if ( clone.system.prepared == null && typeof prep?.prepared === "boolean" ) {
+			clone.system.prepared = prep.prepared;
+		}
+		if ( Object.prototype.hasOwnProperty.call(clone.system, "preparation") ) {
+			delete clone.system.preparation;
+			appliedOverrides.push("system.preparation->method/prepared");
+		}
+		if ( clone.system.method == null ) clone.system.method = "powerCasting";
+		if ( clone.system.prepared == null ) clone.system.prepared = true;
+	}
 	clone.flags.sw5e.snvMonsters = {
 		...(clone.flags.sw5e.snvMonsters || {}),
 		embeddedFromCanonical: true,
@@ -98,7 +117,7 @@ function stampPowerFlags(clone, {
 		sourceSemanticKey: semanticKey,
 		tierLabel: tier?.label || null,
 		tierKind: tier?.kind || null,
-		overrides: overrides || []
+		overrides: appliedOverrides
 	};
 	// Active Effects are packed as sibling LevelDB keys; rewrite to the embedded Item id
 	// so clones across Actors do not collide on the canonical Item's effect keys.
