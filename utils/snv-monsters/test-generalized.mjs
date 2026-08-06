@@ -2,7 +2,7 @@
  * Tracked generalized-generator unit tests (synthetic fixtures only).
  */
 import assert from "node:assert/strict";
-import { generateGeneralizedActor, parseChargeDamageKnockdown, parseChargeKnockdownFollowup, parseOnHitProneRider } from "./generate-generalized.mjs";
+import { generateGeneralizedActor, parseAfflictionRider, parseChargeDamageKnockdown, parseChargeKnockdownFollowup, parseOnHitProneRider } from "./generate-generalized.mjs";
 import { createEmptyIrEntry } from "./ir-schema.mjs";
 import { detectFeatures, deriveCapability } from "./classify.mjs";
 import { resolveCanonicalWeapon, buildCanonicalWeaponIndex } from "./canonical.mjs";
@@ -269,6 +269,35 @@ test("C5 Charge knockdown-followup recognizes Trampling Charge/Charge and exclud
 	assert.ok(charge);
 	assert.equal(charge.flags.sw5e.snvMonsters.chargeKnockdownFollowup?.family, "charge-knockdown-followup");
 	assert.equal(charge.flags.sw5e.snvMonsters.chargeKnockdownFollowup?.followUpAttack, "Hooves");
+});
+
+test("C9 affliction riders recognize disease and paralysis and exclude prone or swallow", () => {
+	const scurrier = parseAfflictionRider({
+		name: "Bite",
+		description: "Hit: 4 (1d4 + 2) kinetic damage, and the target must succeed on a DC 10 Constitution saving throw or become infected with Scurrier Disease. A creature infected with Scurrier Disease's vision becomes blurry."
+	});
+	assert.equal(scurrier?.family, "affliction-disease");
+	assert.equal(scurrier?.saveDc, 10);
+	assert.equal(scurrier?.diseaseName, "Scurrier Disease");
+	assert.equal(scurrier?.runtimeAutomation, false);
+
+	const vornskr = parseAfflictionRider({
+		name: "Tail",
+		description: "Hit: 5 (1d6 + 2) kinetic damage plus 7 (2d6) poison damage. If the target is a creature it must also make DC 13 Constitution saving throw. On a failure, a creature is paralyzed for 1 minute. A creature paralyzed in this way can repeat the saving throw at end of each of its turns, ending the effect on itself on a success."
+	});
+	assert.equal(vornskr?.family, "affliction-paralysis");
+	assert.equal(vornskr?.saveDc, 13);
+	assert.equal(vornskr?.duration, "1 minute");
+	assert.equal(vornskr?.repeatSave, "end-of-turn");
+
+	assert.equal(parseAfflictionRider({
+		name: "Bite",
+		description: "If the target is a creature, it must succeed on a DC 12 Strength saving throw or be knocked prone."
+	}), null);
+	assert.equal(parseAfflictionRider({
+		name: "Bite",
+		description: "If the target is a Large or smaller creature, it must succeed on a DC 16 Dexterity saving throw or be swallowed. While swallowed, the creature is blinded and restrained."
+	}), null);
 });
 
 test("C7 on-hit prone riders recognize Bite/Stomp/Tail and exclude charge, grapple, and affliction", () => {

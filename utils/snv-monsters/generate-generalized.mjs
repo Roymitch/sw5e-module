@@ -502,6 +502,53 @@ export function parseOnHitProneRider(attack) {
 }
 
 /**
+ * Recognize bounded C9 affliction riders on attack lines:
+ * Con-save disease infection (long/progression) or Con-save paralysis with repeat saves.
+ * Excludes C7 Strength prone, C8 grapple/restrain, and swallow-state text.
+ */
+export function parseAfflictionRider(attack) {
+	const text = String(attack?.description || attack?.hit || "");
+	if ( !text ) return null;
+	if ( /\bswallowed\b/i.test(text) ) return null;
+	if ( /\bgrappled\b/i.test(text) && /\brestrained\b/i.test(text) ) return null;
+	if ( /\bStrength saving throw\b/i.test(text) && /\bknocked prone\b/i.test(text) ) return null;
+
+	const disease = text.match(
+		/DC\s+(\d+)\s+Constitution saving throw or become infected with ([^.]+)\./i
+	);
+	if ( disease ) {
+		return {
+			family: "affliction-disease",
+			attackName: titleCase(String(attack?.name || "").trim()),
+			saveAbility: "con",
+			saveDc: Number(disease[1]),
+			condition: "diseased",
+			diseaseName: disease[2].trim(),
+			durationClass: "long-rest-progression",
+			runtimeAutomation: false
+		};
+	}
+
+	const paralysis = text.match(
+		/DC\s+(\d+)\s+Constitution saving throw\.?\s*On a failure,? (?:a |the )?creature is paralyzed for ([^.]+)\.\s*A creature paralyzed in this way can repeat the saving throw at end of each of its turns/i
+	);
+	if ( paralysis ) {
+		return {
+			family: "affliction-paralysis",
+			attackName: titleCase(String(attack?.name || "").trim()),
+			saveAbility: "con",
+			saveDc: Number(paralysis[1]),
+			condition: "paralyzed",
+			duration: paralysis[2].trim(),
+			repeatSave: "end-of-turn",
+			runtimeAutomation: false
+		};
+	}
+
+	return null;
+}
+
+/**
  * Recognize the bounded C6 Charge family only:
  * move + named attack hit + extra damage + Strength save or prone,
  * with no named bonus follow-up attack (C5) and no plain on-hit prone rider (C7).
@@ -633,6 +680,11 @@ function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, 
 		description: description || attack.description || attack.hit,
 		hit: description || attack.hit
 	});
+	const afflictionRider = parseAfflictionRider({
+		...attack,
+		description: description || attack.description || attack.hit,
+		hit: description || attack.hit
+	});
 	item.flags.sw5e.snvMonsters = {
 		prototype: nonproduction,
 		classification: isNatural ? "natural" : "source-specific",
@@ -645,7 +697,8 @@ function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, 
 		trackedPack: "snv-monsters",
 		sandboxTemp: nonproduction,
 		approvedBatch: nonproduction ? null : approvedBatch,
-		...(onHitProne ? { onHitProne } : {})
+		...(onHitProne ? { onHitProne } : {}),
+		...(afflictionRider ? { afflictionRider } : {})
 	};
 	item.system.description.value = toHtmlParagraph(description);
 	item.system.description.chat = "";
