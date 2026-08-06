@@ -85,6 +85,9 @@ test("production batch descriptors stay fail-closed and path-scoped", () => {
 	const p8 = getProductionBatchDescriptor("n3b-p8");
 	assert.equal(p8.approvedSemanticKeys.length, 2);
 	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/reek-adult.yml"), "n3b-p8"));
+	const p9 = getProductionBatchDescriptor("n3b-p9");
+	assert.equal(p9.approvedSemanticKeys.length, 2);
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/vornskr.yml"), "n3b-p9"));
 });
 
 test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {
@@ -256,6 +259,20 @@ test("production identity plans support n3b-p8 counts", () => {
 	assert.equal(counts.actors, 2);
 	assert.equal(counts.items, 4);
 	assert.equal(counts.activities, 2);
+});
+
+test("production identity plans support n3b-p9 counts", () => {
+	const plan = buildProductionIdentityPlan("n3b-p9", {
+		actors: [
+			{ name: "Scurrier", semanticKey: "snv:Beasts:scurrier", traitsAndActions: { passives: ["Keen Smell", "Pack Tactics"], nonAttackActions: [], weaponAttacks: ["Bite", "Ram"] } },
+			{ name: "Vornskr", semanticKey: "snv:Beasts:vornskr", traitsAndActions: { passives: ["Force Tracking", "Keen Smell"], nonAttackActions: ["Multiattack"], weaponAttacks: ["Bite", "Tail"] } }
+		]
+	}, loadProductionIdentityMap());
+	const counts = summarizeIdentityAddition(plan);
+	assert.equal(Object.keys(plan.actors).length, 2);
+	assert.equal(counts.actors, 2);
+	assert.equal(counts.items, 9);
+	assert.equal(counts.activities, 4);
 });
 
 test("production validators fail closed on malformed ledgers", () => {
