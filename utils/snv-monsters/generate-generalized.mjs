@@ -549,6 +549,36 @@ export function parseAfflictionRider(attack) {
 }
 
 /**
+ * Recognize bounded C8 attack-line grapple/restrain with optional escape DC.
+ * Excludes swallow stacks, detachable appendages, and grapple-conditional finishers.
+ */
+export function parseGrappleRestrainRider(attack) {
+	const text = String(attack?.description || attack?.hit || "");
+	if ( !text ) return null;
+	if ( /\bswallowed\b/i.test(text) ) return null;
+	if ( /\bone target grappled by\b/i.test(text) ) return null;
+	if ( /\bdestroying a tentacle\b/i.test(text) ) return null;
+
+	const escapeMatch = text.match(/escape DC\s+(\d+)/i);
+	const saveGrapple = text.match(
+		/DC\s+(\d+)\s+Strength saving throw or be grappled\b/i
+	);
+	const autoGrapple = /the target is grappled\b/i.test(text);
+	if ( !saveGrapple && !autoGrapple ) return null;
+
+	const restrained = /\brestrained\b/i.test(text);
+	return {
+		family: "grapple-restrain",
+		attackName: titleCase(String(attack?.name || "").trim()),
+		saveAbility: saveGrapple ? "str" : null,
+		saveDc: saveGrapple ? Number(saveGrapple[1]) : null,
+		escapeDc: escapeMatch ? Number(escapeMatch[1]) : (saveGrapple ? Number(saveGrapple[1]) : null),
+		conditions: restrained ? ["grappled", "restrained"] : ["grappled"],
+		runtimeAutomation: false
+	};
+}
+
+/**
  * Recognize the bounded C6 Charge family only:
  * move + named attack hit + extra damage + Strength save or prone,
  * with no named bonus follow-up attack (C5) and no plain on-hit prone rider (C7).
@@ -685,6 +715,11 @@ function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, 
 		description: description || attack.description || attack.hit,
 		hit: description || attack.hit
 	});
+	const grappleRestrain = parseGrappleRestrainRider({
+		...attack,
+		description: description || attack.description || attack.hit,
+		hit: description || attack.hit
+	});
 	item.flags.sw5e.snvMonsters = {
 		prototype: nonproduction,
 		classification: isNatural ? "natural" : "source-specific",
@@ -698,7 +733,8 @@ function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, 
 		sandboxTemp: nonproduction,
 		approvedBatch: nonproduction ? null : approvedBatch,
 		...(onHitProne ? { onHitProne } : {}),
-		...(afflictionRider ? { afflictionRider } : {})
+		...(afflictionRider ? { afflictionRider } : {}),
+		...(grappleRestrain ? { grappleRestrain } : {})
 	};
 	item.system.description.value = toHtmlParagraph(description);
 	item.system.description.chat = "";

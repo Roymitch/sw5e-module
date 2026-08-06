@@ -2,7 +2,7 @@
  * Tracked generalized-generator unit tests (synthetic fixtures only).
  */
 import assert from "node:assert/strict";
-import { generateGeneralizedActor, parseAfflictionRider, parseChargeDamageKnockdown, parseChargeKnockdownFollowup, parseOnHitProneRider } from "./generate-generalized.mjs";
+import { generateGeneralizedActor, parseAfflictionRider, parseChargeDamageKnockdown, parseChargeKnockdownFollowup, parseGrappleRestrainRider, parseOnHitProneRider } from "./generate-generalized.mjs";
 import { createEmptyIrEntry } from "./ir-schema.mjs";
 import { detectFeatures, deriveCapability } from "./classify.mjs";
 import { resolveCanonicalWeapon, buildCanonicalWeaponIndex } from "./canonical.mjs";
@@ -295,6 +295,39 @@ test("C9 affliction riders recognize disease and paralysis and exclude prone or 
 		description: "If the target is a creature, it must succeed on a DC 12 Strength saving throw or be knocked prone."
 	}), null);
 	assert.equal(parseAfflictionRider({
+		name: "Bite",
+		description: "If the target is a Large or smaller creature, it must succeed on a DC 16 Dexterity saving throw or be swallowed. While swallowed, the creature is blinded and restrained."
+	}), null);
+});
+
+test("C8 grapple/restrain riders recognize escape DC setup and exclude swallow or conditional finishers", () => {
+	const tentacles = parseGrappleRestrainRider({
+		name: "Tentacles",
+		description: "Hit: 4 (1d4 + 2) kinetic damage, and the target is grappled (escape DC 12). Until this grapple ends, the dianoga can't use its tentacles on another target."
+	});
+	assert.equal(tentacles?.family, "grapple-restrain");
+	assert.equal(tentacles?.escapeDc, 12);
+	assert.deepEqual(tentacles?.conditions, ["grappled"]);
+
+	const claw = parseGrappleRestrainRider({
+		name: "Claw",
+		description: "Hit: 11 (2d6 + 4) kinetic damage. The target is grappled (escape DC 15) if that claw isn't already grappling a creature. Until the grapple ends, the creature is restrained."
+	});
+	assert.equal(claw?.escapeDc, 15);
+	assert.deepEqual(claw?.conditions, ["grappled", "restrained"]);
+
+	const biteSave = parseGrappleRestrainRider({
+		name: "Bite",
+		description: "If the target is a creature, it must succeed on a DC 11 Strength saving throw or be grappled."
+	});
+	assert.equal(biteSave?.saveDc, 11);
+	assert.equal(biteSave?.escapeDc, 11);
+
+	assert.equal(parseGrappleRestrainRider({
+		name: "Gnash",
+		description: "Melee Weapon Attack: +4 to hit, reach 5 ft. one target grappled by the rat. Hit: 9 (2d6 + 2) kinetic damage."
+	}), null);
+	assert.equal(parseGrappleRestrainRider({
 		name: "Bite",
 		description: "If the target is a Large or smaller creature, it must succeed on a DC 16 Dexterity saving throw or be swallowed. While swallowed, the creature is blinded and restrained."
 	}), null);
