@@ -10,6 +10,7 @@ import yaml from "js-yaml";
 import { loadAndCloneCanonicalWeapon } from "./canonical.mjs";
 import { stripBlockquotes } from "./classify.mjs";
 import { parseCreatureTypeFromDescriptorPart, folderIdForCreatureType, resolveCreatureTypeFolderLabel } from "./creature-type-folders.mjs";
+import { embedForceTechPowers, embedSuperiorityManeuvers } from "./embed-casting.mjs";
 import { resolvePinnedItemIdentity } from "./identity.mjs";
 import { COMMITTED_PACK_SOURCE, ROOT } from "./paths.mjs";
 
@@ -1238,7 +1239,19 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 	const exactFeatures = productionContext?.exactFeatures || null;
 	const identityActor = productionContext?.identityActor || null;
 
+	const CASTING_FEAT_NAMES = new Set([
+		"Forcecasting",
+		"Techcasting",
+		"Innate Forcecasting",
+		"Innate Techcasting",
+		"Superiority"
+	]);
+
 	const addFeat = (name, sourceSection) => {
+		if ( CASTING_FEAT_NAMES.has(name)
+			&& (irEntry.features?.hasForce || irEntry.features?.hasTech || irEntry.features?.hasSuperiority) ) {
+			return;
+		}
 		let entry = parsed.featureEntries.find(feature =>
 			feature.name === name && feature.section === sourceSection
 		) || parsed.featureEntries.find(feature => feature.name === name) || null;
@@ -1384,6 +1397,25 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 	if ( irEntry.features?.hasSave && !attacks.length ) {
 		exceptions.push({ type: "save-only-action-not-fully-emitted", note: "save text detected; skeleton actor scalars only" });
 	}
+
+	actor.items = items;
+	const forceTechEmbed = embedForceTechPowers({
+		actor,
+		body: text,
+		irEntry,
+		actorIdentity: identityActor,
+		nonproduction
+	});
+	exceptions.push(...forceTechEmbed.exceptions);
+	const superiorityEmbed = embedSuperiorityManeuvers({
+		actor,
+		body: text,
+		irEntry,
+		actorIdentity: identityActor,
+		nonproduction
+	});
+	exceptions.push(...superiorityEmbed.exceptions);
+
 	const softUnsupportedMechanics = [];
 	const softMechanics = new Set([
 		"qualified-defense-parsing",
@@ -1393,6 +1425,15 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 		"swarm-squad-ammo-policy",
 		"legendary-actions"
 	]);
+	const forceEmbeddedOk = forceTechEmbed.embedded.some(e => e.castType === "force" && e.kind === "power");
+	const techEmbeddedOk = forceTechEmbed.embedded.some(e => e.castType === "tech" && e.kind === "power");
+	const superiorityEmbeddedOk = superiorityEmbed.embedded.some(e => e.kind === "maneuver")
+		|| (superiorityEmbed.parsed && !(superiorityEmbed.parsed.maneuvers || []).length);
+	if ( forceEmbeddedOk ) softMechanics.add("force-power-embedding-incomplete");
+	if ( techEmbeddedOk ) softMechanics.add("tech-power-embedding-incomplete");
+	if ( superiorityEmbeddedOk || !irEntry.features?.hasSuperiority ) softMechanics.add("superiority-embedding-incomplete");
+	if ( forceEmbeddedOk || techEmbeddedOk ) softMechanics.add("power-list-embedding");
+
 	for ( const mechanic of irEntry.unsupportedMechanics || [] ) {
 		// Soft classifier flags that do not block descriptive production emission.
 		if ( softMechanics.has(mechanic) ) {
@@ -1404,8 +1445,16 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 	if ( softUnsupportedMechanics.length ) {
 		actor.flags.sw5e.snvMonsters.softUnsupportedMechanics = softUnsupportedMechanics;
 	}
+	actor.flags.sw5e.snvMonsters.forceTechEmbedding = {
+		forcePowers: forceTechEmbed.embedded.filter(e => e.castType === "force"),
+		techPowers: forceTechEmbed.embedded.filter(e => e.castType === "tech"),
+		missingCanonical: forceTechEmbed.exceptions.filter(e => e.type === "canonical-match-missing")
+	};
+	actor.flags.sw5e.snvMonsters.superiorityEmbedding = {
+		maneuvers: superiorityEmbed.embedded,
+		missingCanonical: superiorityEmbed.exceptions.filter(e => e.type === "canonical-match-missing")
+	};
 
-	actor.items = items;
 	return {
 		actor,
 		exceptions,
@@ -1415,6 +1464,8 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 			hp: parsed.hp.value,
 			cr: parsed.cr,
 			size: parsed.descriptor.size
-		}
+		},
+		forceTechEmbed,
+		superiorityEmbed
 	};
 }

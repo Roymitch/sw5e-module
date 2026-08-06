@@ -30,8 +30,22 @@ export function detectFeatures(body) {
 	const hasBonusActions = /Bonus Actions/i.test(text);
 	const hasRecharge = /\(Recharge/i.test(text) || /recharge\s*\d/i.test(text);
 	const hasLimitedUses = /\d+\s*\/\s*day/i.test(text) || /\bcharges\b/i.test(text);
-	const hasForce = /force points|forcecaster|forcecasting/i.test(text);
-	const hasTech = /tech points|techcaster|techcasting/i.test(text);
+	const hasForce = /\b\d+(?:st|nd|rd|th)-level forcecaster\b/i.test(text)
+		|| /\bforce points\b/i.test(text)
+		|| /\*{1,3}(?:Innate\s+)?Forcecasting\b/i.test(text)
+		|| /\bforcecasting ability\b/i.test(text)
+		|| /innately cast(?:s|ing)?[^.]*\bforce power\b/i.test(text);
+	const hasTech = /\b\d+(?:st|nd|rd|th)-level techcaster\b/i.test(text)
+		|| /\btech points\b/i.test(text)
+		|| /\*{1,3}(?:Innate\s+)?Techcasting\b/i.test(text)
+		|| /\btechcasting ability\b/i.test(text)
+		|| /innately cast(?:s|ing)?[^.]*\btech power\b/i.test(text);
+	const hasSuperiority = /\bsuperiority (?:die|dice)\b/i.test(text)
+		|| /\bmaneuver save DC\b/i.test(text)
+		|| /\bmaneuver ability\b/i.test(text)
+		|| /\*{1,3}Superiority\b/i.test(text)
+		|| /knows the following maneuvers/i.test(text)
+		|| /expends? (?:a |one )?superiority die/i.test(text);
 	const hasSwarm = /\bswarm\b/i.test(text);
 	const hasSquad = /\bsquad\b/i.test(text);
 	const hasQualifiedDefense = /Damage (?:Resistances|Immunities|Vulnerabilities)|Condition Immunities/i.test(text)
@@ -52,6 +66,7 @@ export function detectFeatures(body) {
 		hasLimitedUses,
 		hasForce,
 		hasTech,
+		hasSuperiority,
 		hasSwarm,
 		hasSquad,
 		hasQualifiedDefense,
@@ -91,13 +106,17 @@ export function deriveCapability(features, { parseFailed } = {}) {
 	if ( features.hasMythic ) unsupportedMechanics.push("mythic-actions");
 	if ( features.hasForce ) unsupportedMechanics.push("force-power-embedding-incomplete");
 	if ( features.hasTech ) unsupportedMechanics.push("tech-power-embedding-incomplete");
+	if ( features.hasSuperiority ) unsupportedMechanics.push("superiority-embedding-incomplete");
 	if ( features.hasSwarm || features.hasSquad ) unsupportedMechanics.push("swarm-squad-ammo-policy");
 	if ( features.hasQualifiedDefense ) unsupportedMechanics.push("qualified-defense-parsing");
 	if ( features.hasRecharge ) unsupportedMechanics.push("recharge-activity");
 	if ( features.hasLimitedUses ) unsupportedMechanics.push("limited-uses-activity");
 	if ( features.hasBonusActions ) unsupportedMechanics.push("bonus-action-activity");
 	if ( features.hasReactions ) unsupportedMechanics.push("reaction-activity");
-	if ( features.hasPowerList ) unsupportedMechanics.push("power-list-embedding");
+	// power-list-embedding is covered by Force/Tech embedding once casting traits are parsed
+	if ( features.hasPowerList && !features.hasForce && !features.hasTech ) {
+		unsupportedMechanics.push("power-list-embedding");
+	}
 
 	const complex = unsupportedMechanics.length > 0;
 	if ( !features.hasAttack && !features.hasSave && complex ) {
