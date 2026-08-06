@@ -332,6 +332,52 @@ test("bounded anatomy natural names emit natural mwak/rwak and keep out-of-scope
 	}
 });
 
+test("C10 Multiattack nonattack emits description-only feat without attack activity", () => {
+	const body = `
+*Huge beast*
+- Armor Class 14
+- Hit Points 126 (12d12 + 48)
+- Speed 40 ft.
+| STR | DEX | CON | INT | WIS | CHA |
+| 22 (+6) | 12 (+1) | 18 (+4) | 2 (-4) | 12 (+1) | 6 (-2) |
+- Challenge 7 (2900 XP)
+### Actions
+**Multiattack.** The beast makes two attacks: one with its bite and one with its tail.
+**Bite.** *Melee Weapon Attack:* +9 to hit, reach 10 ft., one target. *Hit:* 22 (3d10 + 6) kinetic damage.
+**Tail.** *Melee Weapon Attack:* +9 to hit, reach 10 ft., one target. *Hit:* 28 (4d10 + 6) kinetic damage.
+`;
+	const ir = createEmptyIrEntry({
+		sourceName: "Synthetic Multiattack Beast",
+		semanticKey: "snv:Beasts:synthetic-multiattack-beast",
+		section: "Beasts",
+		parseStatus: "parsed-valid",
+		capabilityStatus: "fully-supported",
+		outputSelection: "selected-edge-case",
+		productionReadiness: "sandbox-only",
+		features: detectFeatures(body)
+	});
+	const { actor } = generateGeneralizedActor({
+		irEntry: ir,
+		body,
+		nonproduction: false,
+		productionContext: {
+			batch: "n3b-p3",
+			exactFeatures: {
+				passives: [],
+				nonAttackActions: ["Multiattack"],
+				weaponAttacks: ["Bite", "Tail"]
+			}
+		}
+	});
+	const multi = actor.items.find(item => item.name === "Multiattack");
+	assert.ok(multi);
+	assert.equal(multi.type, "feat");
+	assert.equal(Object.keys(multi.system?.activities || {}).length, 0);
+	assert.match(multi.system?.description?.value || "", /two attacks/i);
+	assert.equal(actor.items.filter(item => item.type === "weapon").length, 2);
+	assert.equal(actor.items.find(item => item.name === "Tail")?.system.type.value, "natural");
+});
+
 test("canonical resolution indexes equipment weapons", () => {
 	const idx = buildCanonicalWeaponIndex();
 	assert.ok(idx.count > 10);
