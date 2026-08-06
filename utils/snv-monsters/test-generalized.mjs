@@ -290,6 +290,14 @@ test("C9 affliction riders recognize disease and paralysis and exclude prone or 
 	assert.equal(vornskr?.duration, "1 minute");
 	assert.equal(vornskr?.repeatSave, "end-of-turn");
 
+	const dianoga = parseAfflictionRider({
+		name: "Bite",
+		description: "If the target is a creature, it must succeed on a DC 12 Constitution saving throw or be poisoned for 1 minute. Until the poison ends, the target is paralyzed. The target can repeat the saving throw at the end of each of its turns, ending the poison on itself on a success."
+	});
+	assert.equal(dianoga?.family, "affliction-poison-paralysis");
+	assert.equal(dianoga?.saveDc, 12);
+	assert.equal(dianoga?.linkedCondition, "paralyzed");
+
 	assert.equal(parseAfflictionRider({
 		name: "Bite",
 		description: "If the target is a creature, it must succeed on a DC 12 Strength saving throw or be knocked prone."
@@ -405,7 +413,7 @@ test("C7 on-hit prone riders recognize Bite/Stomp/Tail and exclude charge, grapp
 });
 
 test("bounded anatomy natural names emit natural mwak/rwak and keep out-of-scope names non-natural", () => {
-	const positiveMelee = ["Bite", "Claw", "Claws", "Slam", "Tentacle", "Gore", "Sting", "Beak", "Talons", "Hooves", "Tusk", "Tusks", "Tail", "Ram", "Stomp"];
+	const positiveMelee = ["Bite", "Claw", "Claws", "Slam", "Tentacle", "Tentacles", "Gore", "Sting", "Beak", "Talons", "Hooves", "Tusk", "Tusks", "Tail", "Ram", "Stomp"];
 	for ( const attackName of positiveMelee ) {
 		const body = singleAttackBody({
 			name: attackName,

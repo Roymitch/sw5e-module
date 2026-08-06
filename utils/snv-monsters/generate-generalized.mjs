@@ -58,6 +58,7 @@ const NATURAL_MELEE_WEAPON_NAMES = new Set([
 	"claws",
 	"slam",
 	"tentacle",
+	"tentacles",
 	"gore",
 	"sting",
 	"beak",
@@ -540,6 +541,23 @@ export function parseAfflictionRider(attack) {
 			saveDc: Number(paralysis[1]),
 			condition: "paralyzed",
 			duration: paralysis[2].trim(),
+			repeatSave: "end-of-turn",
+			runtimeAutomation: false
+		};
+	}
+
+	const poisonParalysis = text.match(
+		/DC\s+(\d+)\s+Constitution saving throw or be poisoned for ([^.]+)\.\s*Until the poison ends, the target is paralyzed\.\s*The target can repeat the saving throw at the end of each of its turns, ending the poison on itself on a success/i
+	);
+	if ( poisonParalysis ) {
+		return {
+			family: "affliction-poison-paralysis",
+			attackName: titleCase(String(attack?.name || "").trim()),
+			saveAbility: "con",
+			saveDc: Number(poisonParalysis[1]),
+			condition: "poisoned",
+			linkedCondition: "paralyzed",
+			duration: poisonParalysis[2].trim(),
 			repeatSave: "end-of-turn",
 			runtimeAutomation: false
 		};
