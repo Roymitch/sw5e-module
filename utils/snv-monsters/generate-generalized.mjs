@@ -459,6 +459,35 @@ function isNaturalWeaponAttackName(name) {
 	return NATURAL_MELEE_WEAPON_NAMES.has(String(name || "").trim().toLowerCase());
 }
 
+/**
+ * Recognize the bounded C6 Charge family only:
+ * move + named attack hit + extra damage + Strength save or prone,
+ * with no named bonus follow-up attack (C5) and no plain on-hit prone rider (C7).
+ */
+export function parseChargeDamageKnockdown(featureName, description) {
+	if ( String(featureName || "").trim().toLowerCase() !== "charge" ) return null;
+	const text = String(description || "");
+	if ( /trampling charge/i.test(text) ) return null;
+	if ( /\bbonus action\b/i.test(text) ) return null;
+	if ( /\bif the target is prone\b/i.test(text) && /\bcan make\b/i.test(text) ) return null;
+	const match = text.match(
+		/moves at least\s+(\d+)\s+feet(?:\s+straight)?\s+toward a target(?:\s+and then|\s+and)\s+hits it with an?\s+([A-Za-z][A-Za-z '-]*?)\s+attack on (?:the same |that )?turn,\s*(?:the|that) target takes an extra\s+\d+\s*\(([^)]+)\)\s+([a-z]+)\s+damage\.\s*If the target is a(?:\s+(Large or smaller))?(?:\s*creature)?,?\s*it must succeed on a DC\s+(\d+)\s+Strength saving throw or be knocked prone\./i
+	);
+	if ( !match ) return null;
+	return {
+		family: "charge-damage-knockdown",
+		moveFeet: Number(match[1]),
+		triggerAttack: titleCase(match[2].trim()),
+		extraDamage: cleanFormula(match[3]),
+		damageType: String(match[4] || "").toLowerCase(),
+		saveAbility: "str",
+		saveDc: Number(match[6]),
+		condition: "prone",
+		targetRestriction: match[5] && /large or smaller/i.test(match[5]) ? "large-or-smaller" : null,
+		runtimeAutomation: false
+	};
+}
+
 function buildFeatItem({ featScaffold, actorId, itemId, name, description, img, sourceSection, nonproduction, approvedBatch = null }) {
 	const item = deepClone(featScaffold);
 	item._id = itemId;
@@ -469,6 +498,7 @@ function buildFeatItem({ featScaffold, actorId, itemId, name, description, img, 
 	item.folder = null;
 	item.flags = item.flags || {};
 	item.flags.sw5e = item.flags.sw5e || {};
+	const chargeDamageKnockdown = parseChargeDamageKnockdown(name, description);
 	item.flags.sw5e.snvMonsters = {
 		prototype: nonproduction,
 		classification: "non-weapon",
@@ -477,7 +507,8 @@ function buildFeatItem({ featScaffold, actorId, itemId, name, description, img, 
 		prePublication: nonproduction,
 		trackedPack: "snv-monsters",
 		sandboxTemp: nonproduction,
-		approvedBatch: nonproduction ? null : approvedBatch
+		approvedBatch: nonproduction ? null : approvedBatch,
+		...(chargeDamageKnockdown ? { chargeDamageKnockdown } : {})
 	};
 	const activationType = activationTypeForFeature(sourceSection, description);
 	item.system.description.value = toHtmlParagraph(description);

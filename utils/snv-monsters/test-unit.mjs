@@ -58,12 +58,15 @@ test("write guard refuses committed pack", () => {
 test("production batch descriptors stay fail-closed and path-scoped", () => {
 	const n3a = getProductionBatchDescriptor("n3a");
 	const p2 = getProductionBatchDescriptor("n3b-p2");
+	const p3 = getProductionBatchDescriptor("n3b-p3");
 	assert.equal(n3a.artifactPrefix, "n3a");
 	assert.equal(p2.approvedSemanticKeys.length, 2);
+	assert.equal(p3.approvedSemanticKeys.length, 1);
 	assert.throws(() => getProductionBatchDescriptor("not-a-batch"));
 	assert.throws(() => assertAllowedOutputRoot(COMMITTED_PACK_SOURCE, { allowProductionWrite: true }));
 	assert.throws(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/blurrg.yml"), "n3b-p2"));
 	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/aryx.yml"), "n3b-p2"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/moof.yml"), "n3b-p3"));
 });
 
 test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {
@@ -92,6 +95,27 @@ test("production identity plans preserve n3a seeds and support n3b-p2 counts", (
 	assert.equal(counts.actors, 2);
 	assert.equal(counts.items, 3);
 	assert.equal(counts.activities, 3);
+});
+
+test("production identity plans support n3b-p3 Moof counts", () => {
+	const plan = buildProductionIdentityPlan("n3b-p3", {
+		actors: [
+			{
+				name: "Moof",
+				semanticKey: "snv:Beasts:moof",
+				traitsAndActions: {
+					passives: ["Beast of Burden", "Charge"],
+					nonAttackActions: [],
+					weaponAttacks: ["Gore"]
+				}
+			}
+		]
+	}, loadProductionIdentityMap());
+	const counts = summarizeIdentityAddition(plan);
+	assert.equal(Object.keys(plan.actors).length, 1);
+	assert.equal(counts.actors, 1);
+	assert.equal(counts.items, 3);
+	assert.equal(counts.activities, 1);
 });
 
 test("production validators fail closed on malformed ledgers", () => {

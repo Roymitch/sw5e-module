@@ -2,7 +2,7 @@
  * Tracked generalized-generator unit tests (synthetic fixtures only).
  */
 import assert from "node:assert/strict";
-import { generateGeneralizedActor } from "./generate-generalized.mjs";
+import { generateGeneralizedActor, parseChargeDamageKnockdown } from "./generate-generalized.mjs";
 import { createEmptyIrEntry } from "./ir-schema.mjs";
 import { detectFeatures, deriveCapability } from "./classify.mjs";
 import { resolveCanonicalWeapon, buildCanonicalWeaponIndex } from "./canonical.mjs";
@@ -117,6 +117,81 @@ test("fractional challenge ratings emit finite numeric CR values", () => {
 	assert.equal(actor.system.details.cr, 0.25);
 	assert.equal(parsedStatBlock.cr, 0.25);
 	assert.equal(typeof actor.system.details.cr, "number");
+});
+
+test("C6 Charge damage-plus-knockdown metadata recognizes Moof/Reek and excludes follow-up or damage-only Charges", () => {
+	const moof = parseChargeDamageKnockdown(
+		"Charge",
+		"If the moof moves at least 20 feet straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 11 (2d10) kinetic damage. If the target is a creature, it must succeed on a DC 14 Strength saving throw or be knocked prone."
+	);
+	assert.equal(moof?.family, "charge-damage-knockdown");
+	assert.equal(moof?.triggerAttack, "Gore");
+	assert.equal(moof?.extraDamage, "2d10");
+	assert.equal(moof?.saveDc, 14);
+	assert.equal(moof?.targetRestriction, null);
+	assert.equal(moof?.runtimeAutomation, false);
+
+	const reek = parseChargeDamageKnockdown(
+		"Charge",
+		"If the reek moves at least 20 feet straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 9 (2d8) kinetic damage. If the target is a Large or smaller, it must succeed on a DC 15 Strength saving throw or be knocked prone."
+	);
+	assert.equal(reek?.targetRestriction, "large-or-smaller");
+	assert.equal(reek?.saveDc, 15);
+
+	assert.equal(parseChargeDamageKnockdown(
+		"Charge",
+		"If the mott moves at least 15 feet straight toward a target and then hits it with a ram attack on the same turn, the target takes an extra 3 (1d6) kinetic damage."
+	), null);
+	assert.equal(parseChargeDamageKnockdown(
+		"Charge",
+		"If the dewback moves at least 20 feet straight toward a creature and then hits it with a bite attack on the same turn, that target must succeed on a DC 14 Strength saving throw or be knocked prone. If the target is prone, the dewback can make one claw attack against it as a bonus action."
+	), null);
+	assert.equal(parseChargeDamageKnockdown(
+		"Trampling Charge",
+		"If the acklay moves at least 20 feet straight toward a creature and then hits it with a claw attack on the same turn, that target must succeed on a DC 14 Strength saving throw or be knocked prone."
+	), null);
+
+	const body = `
+*Large beast*
+- Armor Class 12
+- Hit Points 45 (6d10 + 12)
+- Speed 40 ft.
+| STR | DEX | CON | INT | WIS | CHA |
+| 18 (+4) | 10 (+0) | 14 (+2) | 2 (-4) | 10 (+0) | 5 (-3) |
+- Challenge 2 (450 XP)
+### Traits
+**Charge.** If the moof moves at least 20 feet straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 11 (2d10) kinetic damage. If the target is a creature, it must succeed on a DC 14 Strength saving throw or be knocked prone.
+### Actions
+**Gore.** *Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 13 (2d8 + 4) kinetic damage.
+`;
+	const ir = createEmptyIrEntry({
+		sourceName: "Synthetic Moof Charge",
+		semanticKey: "snv:Beasts:synthetic-moof-charge",
+		section: "Beasts",
+		parseStatus: "parsed-valid",
+		capabilityStatus: "fully-supported",
+		outputSelection: "selected-edge-case",
+		productionReadiness: "sandbox-only",
+		features: detectFeatures(body)
+	});
+	const { actor } = generateGeneralizedActor({
+		irEntry: ir,
+		body,
+		nonproduction: false,
+		productionContext: {
+			batch: "n3b-p3",
+			exactFeatures: {
+				passives: ["Charge"],
+				nonAttackActions: [],
+				weaponAttacks: ["Gore"]
+			}
+		}
+	});
+	const charge = actor.items.find(item => item.name === "Charge");
+	assert.ok(charge);
+	assert.equal(charge.flags.sw5e.snvMonsters.chargeDamageKnockdown?.family, "charge-damage-knockdown");
+	assert.equal(charge.flags.sw5e.snvMonsters.chargeDamageKnockdown?.extraDamage, "2d10");
+	assert.equal(actor.items.filter(item => item.type === "weapon").length, 1);
 });
 
 test("bounded anatomy natural names emit natural mwak and keep out-of-scope names non-natural", () => {
