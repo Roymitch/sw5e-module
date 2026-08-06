@@ -8,10 +8,12 @@ import yaml from "js-yaml";
 import { assertFourDimensionalAccounting } from "./classify.mjs";
 import {
 	buildProductionIdentityPlan,
+	folderKeyForSemanticKey,
 	listBatchCandidates,
 	loadIdentityMap,
 	loadProductionIdentityMap,
 	N3A_BEASTS_FOLDER_KEY,
+	packSubdirForSemanticKey,
 	resolvePinnedItemIdentity,
 	summarizeIdentityAddition,
 	summarizeIdentityMap
@@ -54,7 +56,7 @@ function readYaml(filePath) {
 }
 
 function expectedYamlRelativePath(semanticKey) {
-	return `packs/_source/snv-monsters/beasts/${semanticKey.split(":").at(-1)}.yml`;
+	return `packs/_source/snv-monsters/${packSubdirForSemanticKey(semanticKey)}/${semanticKey.split(":").at(-1)}.yml`;
 }
 
 function listExpectedNames(ledger) {
@@ -308,7 +310,10 @@ export function validateProductionIdentityExtension(batch, map = loadProductionI
 			continue;
 		}
 		if ( actual.id !== actor.id ) failures.push(`identity actor id drift ${semanticKey}`);
-		if ( actual.folderId !== beastsFolderId ) failures.push(`identity folder drift ${semanticKey}`);
+		const expectedFolderKey = folderKeyForSemanticKey(semanticKey);
+		const expectedFolderId = map.folders?.[expectedFolderKey]?.id || beastsFolderId;
+		if ( actual.folderId !== expectedFolderId ) failures.push(`identity folder drift ${semanticKey}`);
+		if ( actor.folderId !== expectedFolderId ) failures.push(`identity plan folder drift ${semanticKey}`);
 		for ( const expectedItem of Object.values(actor.items || {}) ) {
 			const actualItem = resolvePinnedItemIdentity(actual, expectedItem.name, expectedItem.type);
 			if ( actualItem.id !== expectedItem.id ) failures.push(`identity item id drift ${semanticKey}/${expectedItem.name}`);
@@ -365,7 +370,7 @@ export function validateProductionPostwrite(batch, outputRoot, ledger, map = loa
 			failures.push(`missing actor identity ${candidate.semanticKey}`);
 			continue;
 		}
-		const filePath = path.resolve(ROOT, outputRoot, "beasts", `${candidate.semanticKey.split(":").at(-1)}.yml`);
+		const filePath = path.resolve(ROOT, outputRoot, packSubdirForSemanticKey(candidate.semanticKey), `${candidate.semanticKey.split(":").at(-1)}.yml`);
 		if ( !fs.existsSync(filePath) ) {
 			failures.push(`missing YAML ${toRepoRelative(filePath)}`);
 			continue;

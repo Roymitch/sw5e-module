@@ -525,16 +525,17 @@ export function parseAfflictionRider(attack) {
 	if ( /\bStrength saving throw\b/i.test(text) && /\bknocked prone\b/i.test(text) ) return null;
 
 	const disease = text.match(
-		/DC\s+(\d+)\s+Constitution saving throw or become infected with ([^.]+)\./i
+		/DC\s+(\d+)\s+Constitution saving throw(?: against disease)? or become (?:infected with ([^.]+)|poisoned until the disease is cured)/i
 	);
 	if ( disease ) {
+		const diseaseName = (disease[2] || "disease").trim();
 		return {
 			family: "affliction-disease",
 			attackName: titleCase(String(attack?.name || "").trim()),
 			saveAbility: "con",
 			saveDc: Number(disease[1]),
-			condition: "diseased",
-			diseaseName: disease[2].trim(),
+			condition: disease[2] ? "diseased" : "poisoned",
+			diseaseName,
 			durationClass: "long-rest-progression",
 			runtimeAutomation: false
 		};
@@ -661,10 +662,10 @@ export function parseSwallowOnHitRider(attack) {
 export function parseComplexActionLimitation(featureName, description) {
 	const name = String(featureName || "").trim().toLowerCase();
 	const text = String(description || "");
-	if ( name === "tentacle slam" ) {
+	if ( name === "tentacle slam" || name === "grapple slam" ) {
 		const save = text.match(/DC\s+(\d+)\s+Constitution saving throw/i);
 		return {
-			family: "tentacle-slam",
+			family: name === "grapple slam" ? "grapple-slam" : "tentacle-slam",
 			featureName: titleCase(String(featureName || "").trim()),
 			saveAbility: "con",
 			saveDc: save ? Number(save[1]) : null,
@@ -758,7 +759,7 @@ export function parseChargeDamageKnockdown(featureName, description) {
  */
 export function parseChargeKnockdownFollowup(featureName, description) {
 	const name = String(featureName || "").trim().toLowerCase();
-	if ( name !== "charge" && name !== "trampling charge" ) return null;
+	if ( name !== "charge" && name !== "trampling charge" && name !== "savage leap" ) return null;
 	const text = String(description || "");
 	if ( /takes an extra\s+\d+\s*\(/i.test(text) ) return null;
 	const match = text.match(

@@ -503,6 +503,47 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			productionReadiness: "prototype-validated",
 			packPhase: "n3b-p12-tracked"
 		}
+	}),
+	"n3a-p1": Object.freeze({
+		batch: "n3a-p1",
+		artifactPrefix: "n3a-p1",
+		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
+		approvedSemanticKeys: [
+			"snv:Aberrations:ngok",
+			"snv:Aberrations:rakghoul",
+			"snv:Aberrations:rakghoul-hulking",
+			"snv:Aberrations:rakling"
+		],
+		approvedYamlRelativePaths: [
+			"packs/_source/snv-monsters/aberrations/ngok.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-hulking.yml",
+			"packs/_source/snv-monsters/aberrations/rakling.yml"
+		],
+		allowedTrackedRelativePaths: [
+			"utils/snv-monsters/identity.mjs",
+			"utils/snv-monsters/generate.mjs",
+			"utils/snv-monsters/production-write.mjs",
+			"utils/snv-monsters/validate.mjs",
+			"utils/snv-monsters/write-guard.mjs",
+			"utils/snv-monsters/cli.mjs",
+			"utils/snv-monsters/test-unit.mjs",
+			"utils/snv-monsters/generate-generalized.mjs",
+			"utils/snv-monsters/test-generalized.mjs",
+			"utils/snv-monsters/manifests/identity-map.json",
+			"packs/_source/snv-monsters/aberrations/_folder.yml",
+			"packs/_source/snv-monsters/aberrations/ngok.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-hulking.yml",
+			"packs/_source/snv-monsters/aberrations/rakling.yml"
+		],
+		expectedIdentityAdditions: { actors: 4, items: 18, activities: 7 },
+		requireWorkingTreeClean: false,
+		productionMetadata: {
+			outputSelection: "selected-n3a-p1",
+			productionReadiness: "prototype-validated",
+			packPhase: "n3a-p1-aberrations"
+		}
 	})
 });
 

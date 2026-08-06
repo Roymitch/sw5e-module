@@ -555,6 +555,13 @@ test("N3f swallow and Tentacle Slam limitations preserve facts without automatio
 	assert.equal(slam?.saveDc, 15);
 	assert.equal(slam?.runtimeAutomation, false);
 
+	const grappleSlam = parseComplexActionLimitation(
+		"Grapple Slam",
+		"The ng'ok slams creatures grappled by it into each other or a solid surface. Each creature must succeed on a DC 13 Constitution saving throw or take 10 (2d6 + 3) kinetic damage and be stunned until the end of the ng'ok's next turn."
+	);
+	assert.equal(grappleSlam?.family, "grapple-slam");
+	assert.equal(grappleSlam?.saveDc, 13);
+
 	const swallowAction = parseComplexActionLimitation(
 		"Swallow",
 		"The rancor makes one bite attack against a Medium or smaller creature it is grappling. If the attack hits, the target takes the bite's damage, the target is swallowed, and the grapple ends. While swallowed, the creature is blinded and restrained, it has total cover against attacks and other effects outside the rancor, and it takes 21 (6d6) acid damage at the start of each of the rancor's turns. If the rancor takes 25 damage or more on a single turn from a creature inside it, the rancor must succeed on a DC 20 Constitution saving throw at the end of that turn or regurgitate all swallowed creatures."
@@ -563,6 +570,21 @@ test("N3f swallow and Tentacle Slam limitations preserve facts without automatio
 	assert.equal(swallowAction?.targetSizeMax, "Medium");
 	assert.equal(swallowAction?.ongoingAcidFormula, "6d6");
 	assert.equal(swallowAction?.runtimeAutomation, false);
+
+	const savage = parseChargeKnockdownFollowup(
+		"Savage Leap",
+		"If the rakghoul moves at least 20 feet toward a creature and then hits it with a claw attack on the same turn, the target must succeed on a DC 12 Strength saving throw or be knocked prone. If the target is prone, the rakghoul can make one bite attack against it as a bonus action."
+	);
+	assert.equal(savage?.family, "charge-knockdown-followup");
+	assert.equal(savage?.followUpAttack, "Bite");
+	assert.equal(savage?.saveDc, 12);
+
+	const plague = parseAfflictionRider({
+		name: "Bite",
+		description: "Hit: 9 (2d6 + 2) kinetic damage. If the target is a humanoid creature, it must succeed on a DC 12 Constitution saving throw or become infected with the Rakghoul Plague."
+	});
+	assert.equal(plague?.family, "affliction-disease");
+	assert.equal(plague?.diseaseName, "the Rakghoul Plague");
 });
 
 test("C10 Multiattack nonattack emits description-only feat without attack activity", () => {

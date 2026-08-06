@@ -97,6 +97,9 @@ test("production batch descriptors stay fail-closed and path-scoped", () => {
 	const p12 = getProductionBatchDescriptor("n3b-p12");
 	assert.equal(p12.approvedSemanticKeys.length, 8);
 	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/ghest.yml"), "n3b-p12"));
+	const ap1 = getProductionBatchDescriptor("n3a-p1");
+	assert.equal(ap1.approvedSemanticKeys.length, 4);
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "aberrations/ngok.yml"), "n3a-p1"));
 });
 
 test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {
@@ -339,6 +342,23 @@ test("production identity plans support n3b-p12 counts", () => {
 	assert.equal(counts.actors, 8);
 	assert.equal(counts.items, 42);
 	assert.equal(counts.activities, 18);
+});
+
+test("production identity plans support n3a-p1 aberration counts", () => {
+	const plan = buildProductionIdentityPlan("n3a-p1", {
+		actors: [
+			{ name: "Ng'ok", semanticKey: "snv:Aberrations:ngok", traitsAndActions: { passives: ["Limited Telepathy", "Stench"], nonAttackActions: ["Multiattack", "Grapple Slam"], weaponAttacks: ["Bite", "Claws"] } },
+			{ name: "Rakghoul", semanticKey: "snv:Aberrations:rakghoul", traitsAndActions: { passives: ["Rakghoul Plague", "Savage Leap"], nonAttackActions: [], weaponAttacks: ["Bite", "Claws"] } },
+			{ name: "Rakghoul, Hulking", semanticKey: "snv:Aberrations:rakghoul-hulking", traitsAndActions: { passives: ["Aggressive", "Rakghoul Plague", "Savage Leap"], nonAttackActions: ["Multiattack"], weaponAttacks: ["Bite", "Claws"] } },
+			{ name: "Rakling", semanticKey: "snv:Aberrations:rakling", traitsAndActions: { passives: ["Savage Leap"], nonAttackActions: [], weaponAttacks: ["Claws"] } }
+		]
+	}, loadProductionIdentityMap());
+	const counts = summarizeIdentityAddition(plan);
+	assert.equal(Object.keys(plan.actors).length, 4);
+	assert.equal(counts.actors, 4);
+	assert.equal(counts.items, 18);
+	assert.equal(counts.activities, 7);
+	assert.equal(plan.actors["snv:Aberrations:ngok"].folderId, "9b15e7dfce3031e1");
 });
 
 test("production validators fail closed on malformed ledgers", () => {

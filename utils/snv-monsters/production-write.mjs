@@ -3,7 +3,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { ClassicLevel } from "classic-level";
 import { generateProductionBatch } from "./generate.mjs";
-import { listBatchCandidates, loadProductionIdentityMap } from "./identity.mjs";
+import { listBatchCandidates, loadProductionIdentityMap, packSubdirForSemanticKey } from "./identity.mjs";
 import { parseAuthoritativeSource } from "./parse.mjs";
 import { COMMITTED_PACK_SOURCE, ROOT } from "./paths.mjs";
 import {
@@ -194,7 +194,7 @@ export function runPrewriteValidation({ batch, batchLedgerPath, outputRoot = COM
 	const identityMap = loadProductionIdentityMap();
 	const identity = validateProductionIdentityExtension(batch, identityMap, ledger);
 	const expectedYamlPaths = listBatchCandidates(ledger).map(candidate =>
-		path.resolve(ROOT, outputRoot, "beasts", `${candidate.semanticKey.split(":").at(-1)}.yml`)
+		path.resolve(ROOT, outputRoot, packSubdirForSemanticKey(candidate.semanticKey), `${candidate.semanticKey.split(":").at(-1)}.yml`)
 	);
 	const preexistingYaml = expectedYamlPaths
 		.filter(filePath => fs.existsSync(filePath))

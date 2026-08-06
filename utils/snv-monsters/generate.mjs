@@ -7,7 +7,7 @@ import path from "node:path";
 import yaml from "js-yaml";
 import { EDGE_CASE_SELECTION } from "./edge-cases.mjs";
 import { generateGeneralizedActor } from "./generate-generalized.mjs";
-import { buildProductionIdentityPlan, listBatchCandidates, loadIdentityMap, loadProductionIdentityMap, resolveActorId, summarizeIdentityAddition } from "./identity.mjs";
+import { buildProductionIdentityPlan, listBatchCandidates, loadIdentityMap, loadProductionIdentityMap, packSubdirForSemanticKey, resolveActorId, summarizeIdentityAddition } from "./identity.mjs";
 import { normalizeName, sha256 } from "./parse-helpers.mjs";
 import {
 	COMMITTED_PACK_SOURCE,
@@ -255,7 +255,7 @@ function ensureCommittedPackRoot(outputRoot) {
 }
 
 function candidateYamlPath(root, semanticKey) {
-	return path.join(root, "beasts", `${semanticKey.split(":").at(-1)}.yml`);
+	return path.join(root, packSubdirForSemanticKey(semanticKey), `${semanticKey.split(":").at(-1)}.yml`);
 }
 
 export function generateProductionBatch({
@@ -313,7 +313,10 @@ export function generateProductionBatch({
 		});
 		const yamlText = `${yaml.dump(actor, DUMP)}\n`;
 		generatedDocs[targetPath] = yamlText;
-		if ( write ) fs.writeFileSync(targetPath, yamlText, "utf8");
+		if ( write ) {
+			fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+			fs.writeFileSync(targetPath, yamlText, "utf8");
+		}
 		emitted.push({
 			semanticKey: candidate.semanticKey,
 			name: candidate.name,

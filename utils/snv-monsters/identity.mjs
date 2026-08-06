@@ -21,8 +21,35 @@ export const N3B_P9_ORIGIN = "n3b-p9-approved";
 export const N3B_P10_ORIGIN = "n3b-p10-approved";
 export const N3B_P11_ORIGIN = "n3b-p11-approved";
 export const N3B_P12_ORIGIN = "n3b-p12-approved";
+export const N3A_P1_ORIGIN = "n3a-p1-approved";
 export const N3A_BATCH = "n3a";
 export const N3A_BEASTS_FOLDER_KEY = "snv-folder:Beasts";
+export const N3A_ABERRATIONS_FOLDER_KEY = "snv-folder:Aberrations";
+export const N3A_ABERRATIONS_FOLDER_ORIGIN = "n3a-aberrations-folder";
+
+const SECTION_PACK_SUBDIRS = Object.freeze({
+	Beasts: "beasts",
+	Aberrations: "aberrations",
+	Droids: "droids",
+	"Constructs/Vehicles": "constructs-and-vehicles",
+	Humanoids: "humanoids",
+	"Humanoids (Force Users)": "humanoids-force-users",
+	Undead: "undead",
+	Elemental: "elemental"
+});
+
+export function packSubdirForSemanticKey(semanticKey) {
+	const section = String(semanticKey || "").split(":")[1] || "";
+	if ( SECTION_PACK_SUBDIRS[section] ) return SECTION_PACK_SUBDIRS[section];
+	return section.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "misc";
+}
+
+export function folderKeyForSemanticKey(semanticKey) {
+	const section = String(semanticKey || "").split(":")[1] || "";
+	if ( section === "Aberrations" ) return N3A_ABERRATIONS_FOLDER_KEY;
+	if ( section === "Beasts" ) return N3A_BEASTS_FOLDER_KEY;
+	return `snv-folder:${section}`;
+}
 const PRODUCTION_ORIGINS = Object.freeze({
 	n3a: N3A_ORIGIN,
 	"n3b-p2": N3B_P2_ORIGIN,
@@ -36,7 +63,8 @@ const PRODUCTION_ORIGINS = Object.freeze({
 	"n3b-p9": N3B_P9_ORIGIN,
 	"n3b-p10": N3B_P10_ORIGIN,
 	"n3b-p11": N3B_P11_ORIGIN,
-	"n3b-p12": N3B_P12_ORIGIN
+	"n3b-p12": N3B_P12_ORIGIN,
+	"n3a-p1": N3A_P1_ORIGIN
 });
 
 function shortHash(seed) {
@@ -123,6 +151,9 @@ export function listBatchCandidates(ledger) {
 function filterToBaselinePins(map) {
 	return {
 		...map,
+		folders: Object.fromEntries(
+			Object.entries(map.folders || {}).filter(([, folder]) => !folder.origin || folder.origin === N1_ORIGIN)
+		),
 		actors: Object.fromEntries(
 			Object.entries(map.actors || {}).filter(([, actor]) => actor.origin === N1_ORIGIN)
 		)
@@ -195,11 +226,16 @@ export function summarizeIdentityAddition(proposed = {}) {
 export function buildProductionIdentityPlan(batch, ledger, map = loadProductionIdentityMap()) {
 	getProductionBatchDescriptor(batch);
 	const candidates = listBatchCandidates(ledger);
-	const folderId = getOrThrow(map.folders, N3A_BEASTS_FOLDER_KEY, "folder pin").id;
+	const defaultFolderKey = ledger?.folderAssignment?.folderSemanticKey || N3A_BEASTS_FOLDER_KEY;
 	const origin = productionOrigin(batch);
 	const actors = {};
 
 	for ( const candidate of candidates ) {
+		const folderKey = candidate.folderAssignment?.folderSemanticKey
+			|| folderKeyForSemanticKey(candidate.semanticKey)
+			|| defaultFolderKey;
+		const folderId = candidate.folderAssignment?.folderId
+			|| getOrThrow(map.folders, folderKey, "folder pin").id;
 		const actorId = createProductionActorId(batch, candidate.semanticKey);
 		const actor = {
 			id: actorId,
