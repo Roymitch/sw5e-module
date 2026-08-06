@@ -73,6 +73,9 @@ test("production batch descriptors stay fail-closed and path-scoped", () => {
 	const p1 = getProductionBatchDescriptor("n3b-p1");
 	assert.equal(p1.approvedSemanticKeys.length, 2);
 	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/gundark-adolescent.yml"), "n3b-p1"));
+	const p5 = getProductionBatchDescriptor("n3b-p5");
+	assert.equal(p5.approvedSemanticKeys.length, 2);
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/nerf.yml"), "n3b-p5"));
 });
 
 test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {
@@ -152,6 +155,36 @@ test("production identity plans support n3b-p4 counts", () => {
 	assert.equal(counts.actors, 2);
 	assert.equal(counts.items, 6);
 	assert.equal(counts.activities, 2);
+});
+
+test("production identity plans support n3b-p5 counts", () => {
+	const plan = buildProductionIdentityPlan("n3b-p5", {
+		actors: [
+			{
+				name: "Nerf",
+				semanticKey: "snv:Beasts:nerf",
+				traitsAndActions: {
+					passives: ["Charge"],
+					nonAttackActions: [],
+					weaponAttacks: ["Gore", "Spit"]
+				}
+			},
+			{
+				name: "Fambaa",
+				semanticKey: "snv:Beasts:fambaa",
+				traitsAndActions: {
+					passives: ["Amphibious", "Siege Monster", "Sure-Footed"],
+					nonAttackActions: [],
+					weaponAttacks: ["Bite", "Stomp"]
+				}
+			}
+		]
+	}, loadProductionIdentityMap());
+	const counts = summarizeIdentityAddition(plan);
+	assert.equal(Object.keys(plan.actors).length, 2);
+	assert.equal(counts.actors, 2);
+	assert.equal(counts.items, 8);
+	assert.equal(counts.activities, 4);
 });
 
 test("production validators fail closed on malformed ledgers", () => {
