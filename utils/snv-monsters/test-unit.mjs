@@ -79,6 +79,9 @@ test("production batch descriptors stay fail-closed and path-scoped", () => {
 	const p6 = getProductionBatchDescriptor("n3b-p6");
 	assert.equal(p6.approvedSemanticKeys.length, 2);
 	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/scrange.yml"), "n3b-p6"));
+	const p7 = getProductionBatchDescriptor("n3b-p7");
+	assert.equal(p7.approvedSemanticKeys.length, 6);
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/fathier.yml"), "n3b-p7"));
 });
 
 test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {
@@ -218,6 +221,24 @@ test("production identity plans support n3b-p6 counts", () => {
 	assert.equal(counts.actors, 2);
 	assert.equal(counts.items, 14);
 	assert.equal(counts.activities, 4);
+});
+
+test("production identity plans support n3b-p7 counts", () => {
+	const plan = buildProductionIdentityPlan("n3b-p7", {
+		actors: [
+			{ name: "Fathier", semanticKey: "snv:Beasts:fathier", traitsAndActions: { passives: ["Keen Hearing", "Trampling Charge"], nonAttackActions: [], weaponAttacks: ["Hooves"] } },
+			{ name: "Tusk Cat", semanticKey: "snv:Beasts:tusk-cat", traitsAndActions: { passives: ["Keen Sight and Smell", "Trampling Charge"], nonAttackActions: [], weaponAttacks: ["Hooves", "Tusks"] } },
+			{ name: "Ronto", semanticKey: "snv:Beasts:ronto", traitsAndActions: { passives: ["Keen Hearing and Smell", "Trampling Charge"], nonAttackActions: [], weaponAttacks: ["Slam", "Stomp"] } },
+			{ name: "Acklay, Adolescent", semanticKey: "snv:Beasts:acklay-adolescent", traitsAndActions: { passives: ["Amphibious", "Trampling Charge"], nonAttackActions: [], weaponAttacks: ["Bite", "Claw"] } },
+			{ name: "Bantha, Adolescent", semanticKey: "snv:Beasts:bantha-adolescent", traitsAndActions: { passives: ["Trampling Charge"], nonAttackActions: [], weaponAttacks: ["Ram", "Stomp"] } },
+			{ name: "Bantha, Adult", semanticKey: "snv:Beasts:bantha-adult", traitsAndActions: { passives: ["Trampling Charge"], nonAttackActions: [], weaponAttacks: ["Ram", "Stomp"] } }
+		]
+	}, loadProductionIdentityMap());
+	const counts = summarizeIdentityAddition(plan);
+	assert.equal(Object.keys(plan.actors).length, 6);
+	assert.equal(counts.actors, 6);
+	assert.equal(counts.items, 21);
+	assert.equal(counts.activities, 11);
 });
 
 test("production validators fail closed on malformed ledgers", () => {

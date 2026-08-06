@@ -264,6 +264,52 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			productionReadiness: "prototype-validated",
 			packPhase: "n3b-p6-tracked"
 		}
+	}),
+	"n3b-p7": Object.freeze({
+		batch: "n3b-p7",
+		artifactPrefix: "n3b-p7",
+		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
+		approvedSemanticKeys: [
+			"snv:Beasts:fathier",
+			"snv:Beasts:tusk-cat",
+			"snv:Beasts:ronto",
+			"snv:Beasts:acklay-adolescent",
+			"snv:Beasts:bantha-adolescent",
+			"snv:Beasts:bantha-adult"
+		],
+		approvedYamlRelativePaths: [
+			"packs/_source/snv-monsters/beasts/fathier.yml",
+			"packs/_source/snv-monsters/beasts/tusk-cat.yml",
+			"packs/_source/snv-monsters/beasts/ronto.yml",
+			"packs/_source/snv-monsters/beasts/acklay-adolescent.yml",
+			"packs/_source/snv-monsters/beasts/bantha-adolescent.yml",
+			"packs/_source/snv-monsters/beasts/bantha-adult.yml"
+		],
+		allowedTrackedRelativePaths: [
+			"utils/snv-monsters/identity.mjs",
+			"utils/snv-monsters/generate.mjs",
+			"utils/snv-monsters/production-write.mjs",
+			"utils/snv-monsters/validate.mjs",
+			"utils/snv-monsters/write-guard.mjs",
+			"utils/snv-monsters/cli.mjs",
+			"utils/snv-monsters/test-unit.mjs",
+			"utils/snv-monsters/generate-generalized.mjs",
+			"utils/snv-monsters/test-generalized.mjs",
+			"utils/snv-monsters/manifests/identity-map.json",
+			"packs/_source/snv-monsters/beasts/fathier.yml",
+			"packs/_source/snv-monsters/beasts/tusk-cat.yml",
+			"packs/_source/snv-monsters/beasts/ronto.yml",
+			"packs/_source/snv-monsters/beasts/acklay-adolescent.yml",
+			"packs/_source/snv-monsters/beasts/bantha-adolescent.yml",
+			"packs/_source/snv-monsters/beasts/bantha-adult.yml"
+		],
+		expectedIdentityAdditions: { actors: 6, items: 21, activities: 11 },
+		requireWorkingTreeClean: false,
+		productionMetadata: {
+			outputSelection: "selected-n3b-p7",
+			productionReadiness: "prototype-validated",
+			packPhase: "n3b-p7-tracked"
+		}
 	})
 });
 
