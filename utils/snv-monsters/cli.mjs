@@ -168,7 +168,8 @@ async function main() {
 			const result = runBaselineGate({
 				batch: args.batch,
 				batchLedgerPath: args["batch-ledger"],
-				expectedHead: args["expected-head"]
+				expectedHead: args["expected-head"],
+				artifactPrefix: args["artifact-prefix"]
 			});
 			console.log(JSON.stringify(result, null, 2));
 			if ( !result.ok ) process.exit(1);
@@ -179,7 +180,8 @@ async function main() {
 				batch: args.batch,
 				batchLedgerPath: args["batch-ledger"],
 				outputRoot: args["output-root"],
-				expectedHead: args["expected-head"]
+				expectedHead: args["expected-head"],
+				artifactPrefix: args["artifact-prefix"]
 			});
 			console.log(JSON.stringify(result, null, 2));
 			if ( !result.ok ) process.exit(1);
@@ -190,7 +192,8 @@ async function main() {
 				batch: args.batch,
 				batchLedgerPath: args["batch-ledger"],
 				outputRoot: args["output-root"],
-				expectedHead: args["expected-head"]
+				expectedHead: args["expected-head"],
+				artifactPrefix: args["artifact-prefix"]
 			});
 			console.log(JSON.stringify(result, null, 2));
 			if ( !result.ok ) process.exit(1);
@@ -205,7 +208,8 @@ async function main() {
 				batch: args.batch,
 				batchLedgerPath: args["batch-ledger"],
 				outputRoot: args["output-root"],
-				expectedHead: args["expected-head"]
+				expectedHead: args["expected-head"],
+				artifactPrefix: args["artifact-prefix"]
 			});
 			console.log(JSON.stringify(result, null, 2));
 			if ( !result.ok ) process.exit(1);
@@ -216,7 +220,8 @@ async function main() {
 				batch: args.batch,
 				batchLedgerPath: args["batch-ledger"],
 				outputRoot: args["output-root"],
-				expectedHead: args["expected-head"]
+				expectedHead: args["expected-head"],
+				artifactPrefix: args["artifact-prefix"]
 			});
 			console.log(JSON.stringify(result, null, 2));
 			if ( !result.ok ) process.exit(1);
@@ -227,7 +232,8 @@ async function main() {
 				batch: args.batch,
 				batchLedgerPath: args["batch-ledger"],
 				outputRoot: args["output-root"],
-				expectedHead: args["expected-head"]
+				expectedHead: args["expected-head"],
+				artifactPrefix: args["artifact-prefix"]
 			});
 			console.log(JSON.stringify(result, null, 2));
 			if ( !result.ok ) process.exit(1);
@@ -237,7 +243,8 @@ async function main() {
 			const result = await runCompiledValidate({
 				pack: args.pack,
 				batch: args.batch,
-				batchLedgerPath: args["batch-ledger"]
+				batchLedgerPath: args["batch-ledger"],
+				artifactPrefix: args["artifact-prefix"]
 			});
 			console.log(JSON.stringify(result, null, 2));
 			if ( !result.ok ) process.exit(1);

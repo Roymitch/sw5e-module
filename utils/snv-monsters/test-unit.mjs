@@ -6,10 +6,20 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { assertFourDimensionalAccounting, classifyFourDimensional } from "./classify.mjs";
-import { assertNoPinnedIdMutation, loadIdentityMap, summarizeIdentityMap } from "./identity.mjs";
+import {
+	assertNoPinnedIdMutation,
+	buildProductionIdentityPlan,
+	createN3aActorId,
+	createProductionActorId,
+	loadIdentityMap,
+	loadProductionIdentityMap,
+	summarizeIdentityAddition,
+	summarizeIdentityMap
+} from "./identity.mjs";
 import { parseMarkdownToIr, splitCreatureBlocks } from "./parse.mjs";
-import { validateIdentityPins, validateWriteGuard } from "./validate.mjs";
-import { assertAllowedOutputRoot } from "./write-guard.mjs";
+import { COMMITTED_PACK_SOURCE } from "./paths.mjs";
+import { validateCompiledPackData, validateIdentityPins, validateProductionPostwrite, validateWriteGuard } from "./validate.mjs";
+import { assertAllowedOutputRoot, assertApprovedProductionYamlPath, getProductionBatchDescriptor } from "./write-guard.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURE = path.join(HERE, "fixtures/synthetic-statblock-corpus.md");
@@ -43,6 +53,56 @@ test("pinned identity mutation is refused", () => {
 test("write guard refuses committed pack", () => {
 	assert.equal(validateWriteGuard().ok, true);
 	assert.throws(() => assertAllowedOutputRoot("packs/_source/snv-monsters"));
+});
+
+test("production batch descriptors stay fail-closed and path-scoped", () => {
+	const n3a = getProductionBatchDescriptor("n3a");
+	const p2 = getProductionBatchDescriptor("n3b-p2");
+	assert.equal(n3a.artifactPrefix, "n3a");
+	assert.equal(p2.approvedSemanticKeys.length, 2);
+	assert.throws(() => getProductionBatchDescriptor("not-a-batch"));
+	assert.throws(() => assertAllowedOutputRoot(COMMITTED_PACK_SOURCE, { allowProductionWrite: true }));
+	assert.throws(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/blurrg.yml"), "n3b-p2"));
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/aryx.yml"), "n3b-p2"));
+});
+
+test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {
+	const semanticKey = "snv:Beasts:blurrg";
+	assert.equal(createProductionActorId("n3a", semanticKey), createN3aActorId(semanticKey));
+	const plan = buildProductionIdentityPlan("n3b-p2", {
+		finalCandidates: [
+			{
+				name: "Aryx",
+				semanticKey: "snv:Beasts:aryx",
+				passives: [],
+				nonAttackActions: [],
+				weaponAttacks: ["Beak", "Talons"]
+			},
+			{
+				name: "Ewok Pony",
+				semanticKey: "snv:Beasts:ewok-pony",
+				passives: [],
+				nonAttackActions: [],
+				weaponAttacks: ["Hooves"]
+			}
+		]
+	}, loadProductionIdentityMap());
+	const counts = summarizeIdentityAddition(plan);
+	assert.equal(Object.keys(plan.actors).length, 2);
+	assert.equal(counts.actors, 2);
+	assert.equal(counts.items, 3);
+	assert.equal(counts.activities, 3);
+});
+
+test("production validators fail closed on malformed ledgers", () => {
+	const identityMap = loadProductionIdentityMap();
+	const malformedLedger = {};
+	const postwrite = validateProductionPostwrite("n3b-p2", COMMITTED_PACK_SOURCE, malformedLedger, identityMap);
+	assert.equal(postwrite.ok, false);
+	assert.ok(postwrite.failures.some(failure => /candidate ledger missing finalCandidates\/actors/i.test(failure)));
+	const compiled = validateCompiledPackData([], malformedLedger, identityMap);
+	assert.equal(compiled.ok, false);
+	assert.ok(compiled.failures.some(failure => /candidate ledger missing finalCandidates\/actors/i.test(failure)));
 });
 
 test("synthetic fixture 4D classify: not-selected is not generator-unsupported", () => {

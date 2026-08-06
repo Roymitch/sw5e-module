@@ -5,11 +5,17 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import { IDENTITY_MAP_PATH } from "./paths.mjs";
+import { getProductionBatchDescriptor } from "./write-guard.mjs";
 
 const N1_ORIGIN = "n1-committed";
 export const N3A_ORIGIN = "n3a-approved";
+export const N3B_P2_ORIGIN = "n3b-p2-approved";
 export const N3A_BATCH = "n3a";
 export const N3A_BEASTS_FOLDER_KEY = "snv-folder:Beasts";
+const PRODUCTION_ORIGINS = Object.freeze({
+	n3a: N3A_ORIGIN,
+	"n3b-p2": N3B_P2_ORIGIN
+});
 
 function shortHash(seed) {
 	return crypto.createHash("sha256").update(String(seed)).digest("hex").slice(0, 16);
@@ -64,17 +70,32 @@ function getOrThrow(object, key, label) {
 	return value;
 }
 
-function normalizeCandidateList(ledger) {
-	const candidates = ledger?.finalCandidates || [];
-	if ( !Array.isArray(candidates) || !candidates.length ) {
-		throw new Error("[snv-monsters] candidate ledger is missing finalCandidates");
-	}
-	return candidates.map(candidate => ({
+function productionOrigin(batch) {
+	getProductionBatchDescriptor(batch);
+	const origin = PRODUCTION_ORIGINS[batch];
+	if ( !origin ) throw new Error(`[snv-monsters] unsupported production identity origin for batch: ${batch}`);
+	return origin;
+}
+
+function normalizeCandidate(candidate) {
+	return {
 		...candidate,
-		passives: Array.isArray(candidate.passives) ? candidate.passives : [],
-		nonAttackActions: Array.isArray(candidate.nonAttackActions) ? candidate.nonAttackActions : [],
-		weaponAttacks: Array.isArray(candidate.weaponAttacks) ? candidate.weaponAttacks : []
-	}));
+		name: candidate.name || candidate.sourceName,
+		sourceName: candidate.sourceName || candidate.name,
+		passives: [...(candidate.passives || candidate.traitsAndActions?.passives || [])],
+		nonAttackActions: [...(candidate.nonAttackActions || candidate.traitsAndActions?.nonAttackActions || [])],
+		weaponAttacks: [...(candidate.weaponAttacks || candidate.traitsAndActions?.weaponAttacks || [])]
+	};
+}
+
+export function listBatchCandidates(ledger) {
+	const candidates = Array.isArray(ledger?.finalCandidates)
+		? ledger.finalCandidates
+		: (Array.isArray(ledger?.actors) ? ledger.actors : []);
+	if ( !candidates.length ) {
+		throw new Error("[snv-monsters] candidate ledger is missing finalCandidates/actors");
+	}
+	return candidates.map(normalizeCandidate);
 }
 
 function filterToBaselinePins(map) {
@@ -114,16 +135,31 @@ export function getPinnedFolder(semanticKey, map = loadIdentityMap()) {
 	return map.folders?.[semanticKey] ?? null;
 }
 
+export function createProductionActorId(batch, actorSemanticKey) {
+	getProductionBatchDescriptor(batch);
+	return shortHash(`${batch}-actor:${actorSemanticKey}`);
+}
+
+export function createProductionItemId(batch, actorSemanticKey, itemName) {
+	getProductionBatchDescriptor(batch);
+	return shortHash(`${batch}-item:${actorSemanticKey}:${itemName}`);
+}
+
+export function createProductionActivityId(batch, actorSemanticKey, weaponName) {
+	getProductionBatchDescriptor(batch);
+	return shortHash(`${batch}-activity:${actorSemanticKey}:${weaponName}:attack`);
+}
+
 export function createN3aActorId(actorSemanticKey) {
-	return shortHash(`n3a-actor:${actorSemanticKey}`);
+	return createProductionActorId(N3A_BATCH, actorSemanticKey);
 }
 
 export function createN3aItemId(actorSemanticKey, itemName) {
-	return shortHash(`n3a-item:${actorSemanticKey}:${itemName}`);
+	return createProductionItemId(N3A_BATCH, actorSemanticKey, itemName);
 }
 
 export function createN3aActivityId(actorSemanticKey, weaponName) {
-	return shortHash(`n3a-activity:${actorSemanticKey}:${weaponName}:attack`);
+	return createProductionActivityId(N3A_BATCH, actorSemanticKey, weaponName);
 }
 
 export function summarizeIdentityAddition(proposed = {}) {
@@ -134,13 +170,15 @@ export function summarizeIdentityAddition(proposed = {}) {
 	return { actors: actors.length, items, activities };
 }
 
-export function buildN3aIdentityPlan(ledger, map = loadProductionIdentityMap()) {
-	const candidates = normalizeCandidateList(ledger);
+export function buildProductionIdentityPlan(batch, ledger, map = loadProductionIdentityMap()) {
+	getProductionBatchDescriptor(batch);
+	const candidates = listBatchCandidates(ledger);
 	const folderId = getOrThrow(map.folders, N3A_BEASTS_FOLDER_KEY, "folder pin").id;
+	const origin = productionOrigin(batch);
 	const actors = {};
 
 	for ( const candidate of candidates ) {
-		const actorId = createN3aActorId(candidate.semanticKey);
+		const actorId = createProductionActorId(batch, candidate.semanticKey);
 		const actor = {
 			id: actorId,
 			name: candidate.name,
@@ -148,11 +186,11 @@ export function buildN3aIdentityPlan(ledger, map = loadProductionIdentityMap()) 
 			key: `!actors!${actorId}`,
 			items: {},
 			pinned: true,
-			origin: N3A_ORIGIN,
-			batch: N3A_BATCH
+			origin,
+			batch
 		};
 		for ( const itemName of [...candidate.passives, ...candidate.nonAttackActions] ) {
-			const itemId = createN3aItemId(candidate.semanticKey, itemName);
+			const itemId = createProductionItemId(batch, candidate.semanticKey, itemName);
 			actor.items[itemId] = {
 				id: itemId,
 				name: itemName,
@@ -160,12 +198,12 @@ export function buildN3aIdentityPlan(ledger, map = loadProductionIdentityMap()) 
 				key: `!actors.items!${actorId}.${itemId}`,
 				activities: {},
 				pinned: true,
-				origin: N3A_ORIGIN
+				origin
 			};
 		}
 		for ( const itemName of candidate.weaponAttacks ) {
-			const itemId = createN3aItemId(candidate.semanticKey, itemName);
-			const activityId = createN3aActivityId(candidate.semanticKey, itemName);
+			const itemId = createProductionItemId(batch, candidate.semanticKey, itemName);
+			const activityId = createProductionActivityId(batch, candidate.semanticKey, itemName);
 			actor.items[itemId] = {
 				id: itemId,
 				name: itemName,
@@ -175,11 +213,11 @@ export function buildN3aIdentityPlan(ledger, map = loadProductionIdentityMap()) 
 					[activityId]: {
 						id: activityId,
 						pinned: true,
-						origin: N3A_ORIGIN
+						origin
 					}
 				},
 				pinned: true,
-				origin: N3A_ORIGIN
+				origin
 			};
 		}
 		actors[candidate.semanticKey] = actor;
@@ -189,6 +227,10 @@ export function buildN3aIdentityPlan(ledger, map = loadProductionIdentityMap()) 
 	assertNoPinnedIdMutation(proposed, map);
 	assertNoIdentityCollisions(proposed, map);
 	return proposed;
+}
+
+export function buildN3aIdentityPlan(ledger, map = loadProductionIdentityMap()) {
+	return buildProductionIdentityPlan(N3A_BATCH, ledger, map);
 }
 
 export function mergeIdentityMap(baseMap, extension) {

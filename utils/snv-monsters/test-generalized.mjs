@@ -42,6 +42,24 @@ const syntheticBody = `
 **Skitter.** The creature moves 10 ft. without provoking opportunity attacks.
 `;
 
+function singleAttackBody({ name, attackText, hitText = "6 (1d6+3) kinetic damage." }) {
+	return `
+*Small beast, unaligned*
+- Armor Class 13
+- Hit Points 22 (4d6+8)
+- Speed 30 ft.
+
+| STR | DEX | CON | INT | WIS | CHA |
+| --- | --- | --- | --- | --- | --- |
+| 12 (+1) | 16 (+3) | 14 (+2) | 2 (-4) | 12 (+1) | 6 (-2) |
+
+- Challenge 1 (200 XP)
+
+### Actions
+**${name}.** ${attackText} *Hit:* ${hitText}
+`;
+}
+
 test("feature detection: natural attack, senses, reaction", () => {
 	const f = detectFeatures(syntheticBody);
 	assert.equal(f.hasBasicScalars, true);
@@ -78,6 +96,72 @@ test("generalized generator emits natural weapon + activity without N1 semantic 
 	assert.equal(actor.flags.sw5e.snvMonsters.nonproduction, true);
 	assert.ok(exceptions.some(e => e.mechanic === "reaction-activity" || e.type === "unsupported-mechanic"));
 	assert.throws(() => assertAllowedOutputRoot("packs/_source/snv-monsters"));
+});
+
+test("fractional challenge ratings emit finite numeric CR values", () => {
+	const body = singleAttackBody({
+		name: "Bite",
+		attackText: "*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target."
+	}).replace("Challenge 1 (200 XP)", "Challenge 1/4 (50 XP)");
+	const ir = createEmptyIrEntry({
+		sourceName: "Synthetic Fractional CR",
+		semanticKey: "snv:Beasts:synthetic-fractional-cr",
+		section: "Beasts",
+		parseStatus: "parsed-valid",
+		capabilityStatus: "fully-supported",
+		outputSelection: "selected-edge-case",
+		productionReadiness: "sandbox-only",
+		features: detectFeatures(body)
+	});
+	const { actor, parsedStatBlock } = generateGeneralizedActor({ irEntry: ir, body });
+	assert.equal(actor.system.details.cr, 0.25);
+	assert.equal(parsedStatBlock.cr, 0.25);
+	assert.equal(typeof actor.system.details.cr, "number");
+});
+
+test("bounded anatomy natural names emit natural mwak and keep out-of-scope names non-natural", () => {
+	const positiveCases = ["Bite", "Claw", "Slam", "Tentacle", "Gore", "Sting", "Beak", "Talons", "Hooves", "Tusk", "Tusks"];
+	for ( const attackName of positiveCases ) {
+		const body = singleAttackBody({
+			name: attackName,
+			attackText: "*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target."
+		});
+		const ir = createEmptyIrEntry({
+			sourceName: `Synthetic ${attackName}`,
+			semanticKey: `snv:Beasts:synthetic-${attackName.toLowerCase()}`,
+			section: "Beasts",
+			parseStatus: "parsed-valid",
+			capabilityStatus: "fully-supported",
+			outputSelection: "selected-edge-case",
+			productionReadiness: "sandbox-only",
+			features: detectFeatures(body)
+		});
+		const { actor } = generateGeneralizedActor({ irEntry: ir, body });
+		assert.equal(actor.items.length, 1, attackName);
+		assert.equal(actor.items[0].system.type.value, "natural", attackName);
+		assert.equal(actor.items[0].system.actionType, "mwak", attackName);
+	}
+
+	for ( const [attackName, attackText] of [
+		["Tail", "*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target."],
+		["Spit", "*Ranged Weapon Attack:* +5 to hit, range 30/60 ft., one target."],
+		["Stone", "*Ranged Weapon Attack:* +5 to hit, range 30/60 ft., one target."]
+	] ) {
+		const body = singleAttackBody({ name: attackName, attackText });
+		const ir = createEmptyIrEntry({
+			sourceName: `Synthetic ${attackName}`,
+			semanticKey: `snv:Beasts:synthetic-${attackName.toLowerCase().replace(/\s+/g, "-")}`,
+			section: "Beasts",
+			parseStatus: "parsed-valid",
+			capabilityStatus: "partially-supported",
+			outputSelection: "selected-edge-case",
+			productionReadiness: "sandbox-only",
+			features: detectFeatures(body)
+		});
+		const { actor } = generateGeneralizedActor({ irEntry: ir, body });
+		assert.equal(actor.items.length, 1, attackName);
+		assert.notEqual(actor.items[0].system.type.value, "natural", attackName);
+	}
 });
 
 test("canonical resolution indexes equipment weapons", () => {

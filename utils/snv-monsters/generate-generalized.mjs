@@ -52,6 +52,20 @@ const SKILL_KEY_MAP = {
 	Survival: "sur"
 };
 
+const NATURAL_MELEE_WEAPON_NAMES = new Set([
+	"bite",
+	"claw",
+	"slam",
+	"tentacle",
+	"gore",
+	"sting",
+	"beak",
+	"talons",
+	"hooves",
+	"tusk",
+	"tusks"
+]);
+
 let SCAFFOLDS = null;
 
 function tempId(seed) {
@@ -133,7 +147,17 @@ function parseAc(text) {
 
 function parseCr(text) {
 	const match = text.match(/Challenge\**\s+([0-9/]+)/i);
-	return match ? match[1] : "0";
+	if ( !match ) return "0";
+	const raw = match[1];
+	// Fractional CRs must be numeric (0.25) so YAML cannot emit sexagesimal `1/4`
+	// and dnd5e Actor5e validation receives a finite number.
+	if ( raw.includes("/") ) {
+		const [numerator, denominator] = raw.split("/").map(Number);
+		if ( !Number.isFinite(numerator) || !Number.isFinite(denominator) || denominator === 0 ) return 0;
+		return numerator / denominator;
+	}
+	// Preserve integer CR strings for existing N3a deterministic parity (`'0'`, `'2'`).
+	return raw;
 }
 
 function parseProficiencyBonus(text) {
@@ -431,7 +455,11 @@ function activationTypeForFeature(section, text) {
 	return "";
 }
 
-function buildFeatItem({ featScaffold, actorId, itemId, name, description, img, sourceSection, nonproduction }) {
+function isNaturalWeaponAttackName(name) {
+	return NATURAL_MELEE_WEAPON_NAMES.has(String(name || "").trim().toLowerCase());
+}
+
+function buildFeatItem({ featScaffold, actorId, itemId, name, description, img, sourceSection, nonproduction, approvedBatch = null }) {
 	const item = deepClone(featScaffold);
 	item._id = itemId;
 	item._key = `!actors.items!${actorId}.${itemId}`;
@@ -449,7 +477,7 @@ function buildFeatItem({ featScaffold, actorId, itemId, name, description, img, 
 		prePublication: nonproduction,
 		trackedPack: "snv-monsters",
 		sandboxTemp: nonproduction,
-		approvedBatch: nonproduction ? null : "n3a"
+		approvedBatch: nonproduction ? null : approvedBatch
 	};
 	const activationType = activationTypeForFeature(sourceSection, description);
 	item.system.description.value = toHtmlParagraph(description);
@@ -484,7 +512,7 @@ function buildFeatItem({ featScaffold, actorId, itemId, name, description, img, 
 	return item;
 }
 
-function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, description, img, isNatural, nonproduction }) {
+function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, description, img, isNatural, nonproduction, approvedBatch = null }) {
 	const item = deepClone(weaponScaffold);
 	const activityTemplate = deepClone(Object.values(weaponScaffold.system.activities || {})[0]);
 	item._id = itemId;
@@ -506,7 +534,7 @@ function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, 
 		prePublication: nonproduction,
 		trackedPack: "snv-monsters",
 		sandboxTemp: nonproduction,
-		approvedBatch: nonproduction ? null : "n3a"
+		approvedBatch: nonproduction ? null : approvedBatch
 	};
 	item.system.description.value = toHtmlParagraph(description);
 	item.system.description.chat = "";
@@ -615,12 +643,16 @@ function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, 
 	return item;
 }
 
-function buildActorFromScaffold(actorScaffold, { irEntry, actorId, parsed, artwork, nonproduction }) {
+function buildActorFromScaffold(actorScaffold, { irEntry, actorId, parsed, artwork, nonproduction, productionBatch = null, productionMetadata = null }) {
 	const actor = deepClone(actorScaffold);
 	const tokenDimensions = SIZE_TO_TOKEN_DIMENSIONS[parsed.descriptor.size] || SIZE_TO_TOKEN_DIMENSIONS.med;
-	// Preserve the validated production metadata shape for approved N3a emits.
-	const outputSelection = nonproduction ? irEntry.outputSelection : "selected-n1-parity";
-	const productionReadiness = nonproduction ? irEntry.productionReadiness : "prototype-validated";
+	const metadata = productionMetadata || {
+		outputSelection: "selected-n1-parity",
+		productionReadiness: "prototype-validated",
+		packPhase: "n3a-tracked"
+	};
+	const outputSelection = nonproduction ? irEntry.outputSelection : metadata.outputSelection;
+	const productionReadiness = nonproduction ? irEntry.productionReadiness : metadata.productionReadiness;
 	actor._id = actorId;
 	actor._key = `!actors!${actorId}`;
 	actor.name = irEntry.sourceName;
@@ -723,7 +755,7 @@ function buildActorFromScaffold(actorScaffold, { irEntry, actorId, parsed, artwo
 		prePublication: nonproduction,
 		trackedPack: "snv-monsters",
 		collectionId: "sw5e-module.snv-monsters",
-		packPhase: nonproduction ? "n2-sandbox" : "n3a-tracked",
+		packPhase: nonproduction ? "n2-sandbox" : metadata.packPhase,
 		reviewState: nonproduction ? "sandbox" : "offline-generated-awaiting-validation",
 		worldCleanupFlag: nonproduction ? "snv-n2-sandbox-test" : ""
 	};
@@ -764,7 +796,9 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 		actorId: id,
 		parsed,
 		artwork: productionContext?.artwork || null,
-		nonproduction
+		nonproduction,
+		productionBatch: productionContext?.batch || null,
+		productionMetadata: productionContext?.metadata || null
 	});
 	const items = [];
 	const exceptions = [];
@@ -786,12 +820,13 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 			description: entry.text,
 			img: resolveFeatureImage(name, "feat", actor.img),
 			sourceSection,
-			nonproduction
+			nonproduction,
+			approvedBatch: productionContext?.batch || null
 		}));
 	};
 
 	const addWeapon = attack => {
-		const isNatural = /bite|claw|slam|tentacle|gore|sting/i.test(attack.name);
+		const isNatural = isNaturalWeaponAttackName(attack.name);
 		const itemIdentity = identityActor ? resolvePinnedItemIdentity(identityActor, attack.name, "weapon") : null;
 		const activityId = itemIdentity ? Object.values(itemIdentity.activities || {})[0]?.id : tempId(`${id}:${attack.name}:attack`);
 		const canon = !isNatural ? loadAndCloneCanonicalWeapon(attack.name) : { ok: false };
@@ -838,7 +873,8 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 			description: attack.description || entriesByName.get(attack.name)?.text || attack.hit,
 			img: resolveFeatureImage(attack.name, "weapon", actor.img),
 			isNatural,
-			nonproduction
+			nonproduction,
+			approvedBatch: productionContext?.batch || null
 		}));
 	};
 

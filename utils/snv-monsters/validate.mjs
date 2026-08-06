@@ -7,7 +7,8 @@ import path from "node:path";
 import yaml from "js-yaml";
 import { assertFourDimensionalAccounting } from "./classify.mjs";
 import {
-	buildN3aIdentityPlan,
+	buildProductionIdentityPlan,
+	listBatchCandidates,
 	loadIdentityMap,
 	loadProductionIdentityMap,
 	N3A_BEASTS_FOLDER_KEY,
@@ -18,7 +19,10 @@ import {
 import { COMMITTED_PACK_SOURCE, EXPECTED_COMPLETE_ENTRIES, ROOT } from "./paths.mjs";
 import {
 	assertAllowedOutputRoot,
+	assertApprovedProductionYamlPath,
 	assertApprovedN3aYamlPath,
+	getAllowedTrackedRelativePaths,
+	getProductionBatchDescriptor,
 	isCommittedPackPath,
 	N3A_ALLOWED_TRACKED_RELATIVE_PATHS,
 	toRepoRelative
@@ -54,7 +58,15 @@ function expectedYamlRelativePath(semanticKey) {
 }
 
 function listExpectedNames(ledger) {
-	return (ledger.finalCandidates || []).map(candidate => candidate.name);
+	return safeListBatchCandidates(ledger).map(candidate => candidate.name);
+}
+
+function safeListBatchCandidates(ledger) {
+	try {
+		return listBatchCandidates(ledger);
+	} catch {
+		return [];
+	}
 }
 
 function compareLists(actual, expected) {
@@ -201,9 +213,19 @@ export function validateWriteGuard() {
 		failures.push(`n3a production root should be allowed when explicitly authorized: ${error.message}`);
 	}
 	try {
+		assertAllowedOutputRoot(COMMITTED_PACK_SOURCE, { allowProductionWrite: true, batch: "n3b-p2" });
+	} catch ( error ) {
+		failures.push(`n3b-p2 production root should be allowed when explicitly authorized: ${error.message}`);
+	}
+	try {
 		assertApprovedN3aYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/blurrg.yml"));
 	} catch ( error ) {
 		failures.push(`approved N3a YAML should be allowed: ${error.message}`);
+	}
+	try {
+		assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/aryx.yml"), "n3b-p2");
+	} catch ( error ) {
+		failures.push(`approved n3b-p2 YAML should be allowed: ${error.message}`);
 	}
 	if ( !isCommittedPackPath("packs/_source/snv-monsters") ) {
 		failures.push("isCommittedPackPath false for pack source root");
@@ -223,31 +245,61 @@ export function validateTrackedChangesInScope(statusLines, allowedRelativePaths 
 	return { ok: failures.length === 0, failures, statusLines };
 }
 
-export function validateN3aCandidateLedger(ledger) {
+export function validateProductionCandidateLedger(batch, ledger) {
 	const failures = [];
-	const names = listExpectedNames(ledger);
-	if ( ledger?.counts?.exactFullyEligible !== 7 ) failures.push("candidate ledger exactFullyEligible must remain 7");
-	if ( !compareLists(names, APPROVED_N3A_NAMES) ) {
-		failures.push(`candidate list drift: ${names.join(", ")}`);
+	const descriptor = getProductionBatchDescriptor(batch);
+	const candidates = safeListBatchCandidates(ledger);
+	const semanticKeys = candidates.map(candidate => candidate.semanticKey);
+	const expectedPaths = candidates.map(candidate => expectedYamlRelativePath(candidate.semanticKey));
+	if ( !candidates.length ) failures.push("candidate ledger missing finalCandidates/actors");
+	if ( candidates.length !== descriptor.approvedSemanticKeys.length ) {
+		failures.push(`candidate count ${candidates.length} !== ${descriptor.approvedSemanticKeys.length}`);
 	}
-	for ( const candidate of ledger.finalCandidates || [] ) {
+	if ( !compareLists(semanticKeys, descriptor.approvedSemanticKeys) ) {
+		failures.push(`candidate semantic key drift: ${semanticKeys.join(", ")}`);
+	}
+	if ( !compareLists(expectedPaths, descriptor.approvedYamlRelativePaths) ) {
+		failures.push(`candidate path drift: ${expectedPaths.join(", ")}`);
+	}
+	if ( ledger?.slice?.batchId && ledger.slice.batchId !== batch ) {
+		failures.push(`candidate ledger batch ${ledger.slice.batchId} !== ${batch}`);
+	}
+	for ( const candidate of candidates ) {
 		const expectedPath = expectedYamlRelativePath(candidate.semanticKey);
-		if ( !N3A_ALLOWED_TRACKED_RELATIVE_PATHS.includes(expectedPath) ) {
+		if ( !descriptor.approvedYamlRelativePaths.includes(expectedPath) ) {
 			failures.push(`candidate path not allowlisted: ${expectedPath}`);
 		}
 	}
-	return { ok: failures.length === 0, failures, names };
+	return { ok: failures.length === 0, failures, semanticKeys, names: listExpectedNames(ledger) };
 }
 
-export function validateN3aIdentityExtension(map = loadProductionIdentityMap(), ledger) {
+export function validateN3aCandidateLedger(ledger) {
 	const failures = [];
-	const candidateValidation = validateN3aCandidateLedger(ledger);
+	const candidateValidation = validateProductionCandidateLedger("n3a", ledger);
 	failures.push(...candidateValidation.failures);
-	const plan = buildN3aIdentityPlan(ledger, map);
+	if ( ledger?.counts?.exactFullyEligible !== 7 ) failures.push("candidate ledger exactFullyEligible must remain 7");
+	if ( !compareLists(candidateValidation.names, APPROVED_N3A_NAMES) ) {
+		failures.push(`candidate list drift: ${candidateValidation.names.join(", ")}`);
+	}
+	return { ok: failures.length === 0, failures, names: candidateValidation.names };
+}
+
+export function validateProductionIdentityExtension(batch, map = loadProductionIdentityMap(), ledger) {
+	const failures = [];
+	const descriptor = getProductionBatchDescriptor(batch);
+	const candidateValidation = validateProductionCandidateLedger(batch, ledger);
+	failures.push(...candidateValidation.failures);
+	const plan = buildProductionIdentityPlan(batch, ledger, map);
 	const counts = summarizeIdentityAddition(plan);
-	if ( counts.actors !== 7 ) failures.push(`identity actor additions ${counts.actors} !== 7`);
-	if ( counts.items !== 24 ) failures.push(`identity item additions ${counts.items} !== 24`);
-	if ( counts.activities !== 7 ) failures.push(`identity activity additions ${counts.activities} !== 7`);
+	if ( counts.actors !== descriptor.expectedIdentityAdditions.actors ) {
+		failures.push(`identity actor additions ${counts.actors} !== ${descriptor.expectedIdentityAdditions.actors}`);
+	}
+	if ( counts.items !== descriptor.expectedIdentityAdditions.items ) {
+		failures.push(`identity item additions ${counts.items} !== ${descriptor.expectedIdentityAdditions.items}`);
+	}
+	if ( counts.activities !== descriptor.expectedIdentityAdditions.activities ) {
+		failures.push(`identity activity additions ${counts.activities} !== ${descriptor.expectedIdentityAdditions.activities}`);
+	}
 	const beastsFolderId = map.folders?.[N3A_BEASTS_FOLDER_KEY]?.id;
 	for ( const [semanticKey, actor] of Object.entries(plan.actors || {}) ) {
 		const actual = map.actors?.[semanticKey];
@@ -270,14 +322,21 @@ export function validateN3aIdentityExtension(map = loadProductionIdentityMap(), 
 	return { ok: failures.length === 0, failures, counts };
 }
 
-export function validateN3aGeneratedManifest(manifest, ledger, map = loadProductionIdentityMap()) {
+export function validateN3aIdentityExtension(map = loadProductionIdentityMap(), ledger) {
+	return validateProductionIdentityExtension("n3a", map, ledger);
+}
+
+export function validateProductionGeneratedManifest(batch, manifest, ledger, map = loadProductionIdentityMap()) {
 	const failures = [];
-	const candidateValidation = validateN3aCandidateLedger(ledger);
+	const descriptor = getProductionBatchDescriptor(batch);
+	const candidateValidation = validateProductionCandidateLedger(batch, ledger);
 	failures.push(...candidateValidation.failures);
-	if ( manifest.batch !== "n3a" ) failures.push(`manifest batch ${manifest.batch} !== n3a`);
-	if ( manifest.emitted.length !== 7 ) failures.push(`manifest emit count ${manifest.emitted.length} !== 7`);
+	if ( manifest.batch !== batch ) failures.push(`manifest batch ${manifest.batch} !== ${batch}`);
+	if ( manifest.emitted.length !== descriptor.approvedSemanticKeys.length ) {
+		failures.push(`manifest emit count ${manifest.emitted.length} !== ${descriptor.approvedSemanticKeys.length}`);
+	}
 	if ( manifest.exceptions?.length ) failures.push(`manifest exceptions present: ${manifest.exceptions.length}`);
-	for ( const candidate of ledger.finalCandidates || [] ) {
+	for ( const candidate of safeListBatchCandidates(ledger) ) {
 		const actorIdentity = map.actors?.[candidate.semanticKey];
 		const emitted = manifest.emitted.find(entry => entry.semanticKey === candidate.semanticKey);
 		if ( !actorIdentity || !emitted ) {
@@ -292,9 +351,15 @@ export function validateN3aGeneratedManifest(manifest, ledger, map = loadProduct
 	return { ok: failures.length === 0, failures };
 }
 
-export function validateN3aPostwrite(outputRoot, ledger, map = loadProductionIdentityMap()) {
+export function validateN3aGeneratedManifest(manifest, ledger, map = loadProductionIdentityMap()) {
+	return validateProductionGeneratedManifest("n3a", manifest, ledger, map);
+}
+
+export function validateProductionPostwrite(batch, outputRoot, ledger, map = loadProductionIdentityMap()) {
 	const failures = [];
-	for ( const candidate of ledger.finalCandidates || []) {
+	const candidateValidation = validateProductionCandidateLedger(batch, ledger);
+	failures.push(...candidateValidation.failures);
+	for ( const candidate of safeListBatchCandidates(ledger) ) {
 		const actorIdentity = map.actors?.[candidate.semanticKey];
 		if ( !actorIdentity ) {
 			failures.push(`missing actor identity ${candidate.semanticKey}`);
@@ -311,7 +376,11 @@ export function validateN3aPostwrite(outputRoot, ledger, map = loadProductionIde
 	return { ok: failures.length === 0, failures };
 }
 
-export function validateN3aDeterministicRerun(firstManifest, rerunManifest) {
+export function validateN3aPostwrite(outputRoot, ledger, map = loadProductionIdentityMap()) {
+	return validateProductionPostwrite("n3a", outputRoot, ledger, map);
+}
+
+export function validateProductionDeterministicRerun(firstManifest, rerunManifest) {
 	const failures = [];
 	if ( firstManifest.emitted.length !== rerunManifest.emitted.length ) {
 		failures.push(`rerun emit count drift ${firstManifest.emitted.length} !== ${rerunManifest.emitted.length}`);
@@ -328,8 +397,15 @@ export function validateN3aDeterministicRerun(firstManifest, rerunManifest) {
 	return { ok: failures.length === 0, failures };
 }
 
+export function validateN3aDeterministicRerun(firstManifest, rerunManifest) {
+	return validateProductionDeterministicRerun(firstManifest, rerunManifest);
+}
+
 export function validateCompiledPackData(records, ledger, map = loadProductionIdentityMap()) {
 	const failures = [];
+	const batch = ledger?.slice?.batchId || "n3a";
+	const candidateValidation = validateProductionCandidateLedger(batch, ledger);
+	failures.push(...candidateValidation.failures);
 	const actorRecords = records.filter(record => record.key.startsWith("!actors!"));
 	const itemRecords = records.filter(record => record.key.startsWith("!actors.items!"));
 	const folderRecords = records.filter(record => record.key.startsWith("!folders!"));
@@ -341,7 +417,7 @@ export function validateCompiledPackData(records, ledger, map = loadProductionId
 	if ( folderRecords.length !== Object.keys(map.folders || {}).length ) {
 		failures.push(`compiled folder count ${folderRecords.length} !== ${Object.keys(map.folders || {}).length}`);
 	}
-	for ( const candidate of ledger.finalCandidates || [] ) {
+	for ( const candidate of safeListBatchCandidates(ledger) ) {
 		const actorIdentity = map.actors?.[candidate.semanticKey];
 		const actorDoc = actorRecords.find(record => record.value?._id === actorIdentity?.id)?.value;
 		if ( !actorDoc ) {

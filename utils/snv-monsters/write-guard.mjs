@@ -16,26 +16,92 @@ const FORBIDDEN_PREFIXES = [
 	path.resolve(ROOT, "packs/_source")
 ];
 
-export const N3A_ALLOWED_TRACKED_RELATIVE_PATHS = [
-	"utils/snv-monsters/identity.mjs",
-	"utils/snv-monsters/generate-generalized.mjs",
-	"utils/snv-monsters/generate.mjs",
-	"utils/snv-monsters/production-write.mjs",
-	"utils/snv-monsters/validate.mjs",
-	"utils/snv-monsters/write-guard.mjs",
-	"utils/snv-monsters/cli.mjs",
-	"utils/snv-monsters/manifests/identity-map.json",
-	"packs/_source/snv-monsters/beasts/blurrg.yml",
-	"packs/_source/snv-monsters/beasts/fyrnock.yml",
-	"packs/_source/snv-monsters/beasts/jakrab.yml",
-	"packs/_source/snv-monsters/beasts/kath-hound.yml",
-	"packs/_source/snv-monsters/beasts/massiff.yml",
-	"packs/_source/snv-monsters/beasts/stintaril.yml",
-	"packs/_source/snv-monsters/beasts/zalaaca.yml"
-];
+const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
+	n3a: Object.freeze({
+		batch: "n3a",
+		artifactPrefix: "n3a",
+		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
+		approvedSemanticKeys: [
+			"snv:Beasts:blurrg",
+			"snv:Beasts:fyrnock",
+			"snv:Beasts:jakrab",
+			"snv:Beasts:kath-hound",
+			"snv:Beasts:massiff",
+			"snv:Beasts:stintaril",
+			"snv:Beasts:zalaaca"
+		],
+		approvedYamlRelativePaths: [
+			"packs/_source/snv-monsters/beasts/blurrg.yml",
+			"packs/_source/snv-monsters/beasts/fyrnock.yml",
+			"packs/_source/snv-monsters/beasts/jakrab.yml",
+			"packs/_source/snv-monsters/beasts/kath-hound.yml",
+			"packs/_source/snv-monsters/beasts/massiff.yml",
+			"packs/_source/snv-monsters/beasts/stintaril.yml",
+			"packs/_source/snv-monsters/beasts/zalaaca.yml"
+		],
+		allowedTrackedRelativePaths: [
+			"utils/snv-monsters/identity.mjs",
+			"utils/snv-monsters/generate-generalized.mjs",
+			"utils/snv-monsters/generate.mjs",
+			"utils/snv-monsters/production-write.mjs",
+			"utils/snv-monsters/validate.mjs",
+			"utils/snv-monsters/write-guard.mjs",
+			"utils/snv-monsters/cli.mjs",
+			"utils/snv-monsters/manifests/identity-map.json",
+			"packs/_source/snv-monsters/beasts/blurrg.yml",
+			"packs/_source/snv-monsters/beasts/fyrnock.yml",
+			"packs/_source/snv-monsters/beasts/jakrab.yml",
+			"packs/_source/snv-monsters/beasts/kath-hound.yml",
+			"packs/_source/snv-monsters/beasts/massiff.yml",
+			"packs/_source/snv-monsters/beasts/stintaril.yml",
+			"packs/_source/snv-monsters/beasts/zalaaca.yml"
+		],
+		expectedIdentityAdditions: { actors: 7, items: 24, activities: 7, folders: 0 },
+		requireWorkingTreeClean: true,
+		productionMetadata: {
+			outputSelection: "selected-n1-parity",
+			productionReadiness: "prototype-validated",
+			packPhase: "n3a-tracked"
+		}
+	}),
+	"n3b-p2": Object.freeze({
+		batch: "n3b-p2",
+		artifactPrefix: "n3b-p2",
+		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
+		approvedSemanticKeys: [
+			"snv:Beasts:aryx",
+			"snv:Beasts:ewok-pony"
+		],
+		approvedYamlRelativePaths: [
+			"packs/_source/snv-monsters/beasts/aryx.yml",
+			"packs/_source/snv-monsters/beasts/ewok-pony.yml"
+		],
+		allowedTrackedRelativePaths: [
+			"utils/snv-monsters/identity.mjs",
+			"utils/snv-monsters/generate.mjs",
+			"utils/snv-monsters/production-write.mjs",
+			"utils/snv-monsters/validate.mjs",
+			"utils/snv-monsters/write-guard.mjs",
+			"utils/snv-monsters/cli.mjs",
+			"utils/snv-monsters/test-unit.mjs",
+			"utils/snv-monsters/generate-generalized.mjs",
+			"utils/snv-monsters/test-generalized.mjs",
+			"utils/snv-monsters/manifests/identity-map.json",
+			"packs/_source/snv-monsters/beasts/aryx.yml",
+			"packs/_source/snv-monsters/beasts/ewok-pony.yml"
+		],
+		expectedIdentityAdditions: { actors: 2, items: 3, activities: 3, folders: 0 },
+		requireWorkingTreeClean: false,
+		productionMetadata: {
+			outputSelection: "selected-n3b-p2",
+			productionReadiness: "prototype-validated",
+			packPhase: "n3b-p2-tracked"
+		}
+	})
+});
 
-export const N3A_ALLOWED_PRODUCTION_YAMLS = N3A_ALLOWED_TRACKED_RELATIVE_PATHS
-	.filter(relativePath => relativePath.startsWith("packs/_source/snv-monsters/beasts/"))
+export const N3A_ALLOWED_TRACKED_RELATIVE_PATHS = [...PRODUCTION_BATCH_DESCRIPTORS.n3a.allowedTrackedRelativePaths];
+export const N3A_ALLOWED_PRODUCTION_YAMLS = PRODUCTION_BATCH_DESCRIPTORS.n3a.approvedYamlRelativePaths
 	.map(relativePath => path.resolve(ROOT, relativePath));
 
 function isUnder(parent, child) {
@@ -56,6 +122,24 @@ export function isAllowedN3aTrackedPath(candidate) {
 	return isExactAllowedTrackedPath(path.resolve(ROOT, candidate));
 }
 
+export function getProductionBatchDescriptor(batch) {
+	const descriptor = PRODUCTION_BATCH_DESCRIPTORS[batch];
+	if ( !descriptor ) throw new Error(`[snv-monsters] unsupported production batch: ${batch}`);
+	return descriptor;
+}
+
+export function listApprovedProductionBatches() {
+	return Object.keys(PRODUCTION_BATCH_DESCRIPTORS);
+}
+
+export function getAllowedTrackedRelativePaths(batch) {
+	return [...getProductionBatchDescriptor(batch).allowedTrackedRelativePaths];
+}
+
+export function getApprovedProductionYamlRelativePaths(batch) {
+	return [...getProductionBatchDescriptor(batch).approvedYamlRelativePaths];
+}
+
 /**
  * @param {string} outputRoot
  * @param {{ allowProductionWrite?: boolean }} [opts]
@@ -70,8 +154,12 @@ export function assertAllowedOutputRoot(outputRoot, opts = {}) {
 	for ( const forbidden of FORBIDDEN_PREFIXES ) {
 		if ( isUnder(forbidden, resolved) ) {
 			if ( opts.allowProductionWrite === true ) {
-				if ( opts.batch === "n3a" && resolved === path.resolve(COMMITTED_PACK_SOURCE) ) return resolved;
-				throw new Error("[snv-monsters] production pack/source write is only authorized for the exact N3a pack source root.");
+				if ( !opts.batch ) {
+					throw new Error("[snv-monsters] production pack/source write requires an explicit approved batch name.");
+				}
+				const descriptor = getProductionBatchDescriptor(opts.batch);
+				if ( resolved === descriptor.productionRoot ) return resolved;
+				throw new Error(`[snv-monsters] production pack/source write is only authorized for the exact ${descriptor.batch} pack source root.`);
 			}
 			throw new Error(
 				`[snv-monsters] REFUSED: cannot write under ${path.relative(ROOT, forbidden) || forbidden} during N2. `
@@ -96,10 +184,16 @@ export function isCommittedPackPath(candidate) {
 		|| isUnder(path.resolve(ROOT, "packs/snv-monsters"), resolved);
 }
 
-export function assertApprovedN3aYamlPath(candidate) {
+export function assertApprovedProductionYamlPath(candidate, batch) {
 	const resolved = path.resolve(ROOT, candidate);
-	if ( !N3A_ALLOWED_PRODUCTION_YAMLS.includes(resolved) ) {
-		throw new Error(`[snv-monsters] REFUSED: non-approved N3a YAML path ${toRepoRelative(resolved)}`);
+	const allowed = getApprovedProductionYamlRelativePaths(batch)
+		.map(relativePath => path.resolve(ROOT, relativePath));
+	if ( !allowed.includes(resolved) ) {
+		throw new Error(`[snv-monsters] REFUSED: non-approved ${batch} YAML path ${toRepoRelative(resolved)}`);
 	}
 	return resolved;
+}
+
+export function assertApprovedN3aYamlPath(candidate) {
+	return assertApprovedProductionYamlPath(candidate, "n3a");
 }

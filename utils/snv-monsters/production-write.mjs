@@ -3,36 +3,43 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { ClassicLevel } from "classic-level";
 import { generateProductionBatch } from "./generate.mjs";
-import { loadProductionIdentityMap } from "./identity.mjs";
+import { listBatchCandidates, loadProductionIdentityMap } from "./identity.mjs";
 import { parseAuthoritativeSource } from "./parse.mjs";
-import { ROOT } from "./paths.mjs";
+import { COMMITTED_PACK_SOURCE, ROOT } from "./paths.mjs";
 import {
 	validateCompiledPackData,
-	validateN3aCandidateLedger,
-	validateN3aDeterministicRerun,
-	validateN3aGeneratedManifest,
-	validateN3aIdentityExtension,
-	validateN3aPostwrite,
+	validateProductionCandidateLedger,
+	validateProductionDeterministicRerun,
+	validateProductionGeneratedManifest,
+	validateProductionIdentityExtension,
+	validateProductionPostwrite,
 	validateTrackedChangesInScope
 } from "./validate.mjs";
+import { getAllowedTrackedRelativePaths, getProductionBatchDescriptor } from "./write-guard.mjs";
 
 export const N3_AUDIT_DIR = path.join(ROOT, "ai/audits/snv-monsters-compendium/n3");
 
 function ensureBatch(batch) {
-	if ( batch !== "n3a" ) throw new Error(`[snv-monsters] unsupported production batch: ${batch}`);
+	return getProductionBatchDescriptor(batch);
 }
 
-function artifactPath(filename) {
+function artifactFilename(batch, suffix, artifactPrefix = null) {
+	const descriptor = ensureBatch(batch);
+	const prefix = artifactPrefix || descriptor.artifactPrefix;
+	return `${prefix}-${suffix}`;
+}
+
+function artifactPath(batch, suffix, artifactPrefix = null) {
 	fs.mkdirSync(N3_AUDIT_DIR, { recursive: true });
-	return path.join(N3_AUDIT_DIR, filename);
+	return path.join(N3_AUDIT_DIR, artifactFilename(batch, suffix, artifactPrefix));
 }
 
-function writeJsonArtifact(filename, data) {
-	fs.writeFileSync(artifactPath(filename), `${JSON.stringify(data, null, 2)}\n`, "utf8");
+function writeJsonArtifact(batch, suffix, data, artifactPrefix = null) {
+	fs.writeFileSync(artifactPath(batch, suffix, artifactPrefix), `${JSON.stringify(data, null, 2)}\n`, "utf8");
 }
 
-function writeMarkdownArtifact(filename, text) {
-	fs.writeFileSync(artifactPath(filename), `${String(text).trimEnd()}\n`, "utf8");
+function writeMarkdownArtifact(batch, suffix, text, artifactPrefix = null) {
+	fs.writeFileSync(artifactPath(batch, suffix, artifactPrefix), `${String(text).trimEnd()}\n`, "utf8");
 }
 
 function git(args) {
@@ -72,23 +79,27 @@ function loadBatchLedger(batchLedgerPath) {
 	return JSON.parse(fs.readFileSync(resolved, "utf8"));
 }
 
-function loadWriteResult() {
-	const filePath = artifactPath("n3a-write-result.json");
-	if ( !fs.existsSync(filePath) ) throw new Error("[snv-monsters] missing n3a-write-result.json for rerun comparison");
+function loadWriteResult(batch, artifactPrefix = null) {
+	const filePath = artifactPath(batch, "write-result.json", artifactPrefix);
+	if ( !fs.existsSync(filePath) ) throw new Error(`[snv-monsters] missing ${path.basename(filePath)} for rerun comparison`);
 	return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
 
 function buildBaselineMarkdown(result) {
 	return [
-		"# N3a Baseline Gate",
+		`# ${result.batch.toUpperCase()} Baseline Gate`,
 		"",
 		`- Repo: \`${result.repoRoot}\``,
 		`- Branch: \`${result.branch}\``,
 		`- HEAD: \`${result.head}\``,
 		`- origin/v.next: \`${result.originHead}\``,
 		`- Ahead/behind: \`${result.aheadBehind}\``,
+		`- Expected head: \`${result.expectedHead || "(not enforced)"}\``,
+		`- Expected head ok: \`${result.expectedHeadOk}\``,
 		`- Working tree clean: \`${result.workingTreeClean}\``,
-		`- Tracked status within N3a scope: \`${result.trackedScope.ok}\``,
+		`- Working tree rule: \`${result.workingTreeRule}\``,
+		`- Working tree condition ok: \`${result.workingTreeConditionOk}\``,
+		`- Tracked status within batch scope: \`${result.trackedScope.ok}\``,
 		`- Foundry running: \`${result.foundryRunning}\``,
 		`- Candidate ledger valid: \`${result.candidateLedger.ok}\``,
 		"",
@@ -99,7 +110,7 @@ function buildBaselineMarkdown(result) {
 }
 
 function currentBaseline(batch, batchLedgerPath, expectedHead) {
-	ensureBatch(batch);
+	const descriptor = ensureBatch(batch);
 	const ledger = loadBatchLedger(batchLedgerPath);
 	const repoRoot = git(["rev-parse", "--show-toplevel"]);
 	const branch = git(["branch", "--show-current"]);
@@ -107,9 +118,12 @@ function currentBaseline(batch, batchLedgerPath, expectedHead) {
 	const originHead = git(["rev-parse", "origin/v.next"]);
 	const aheadBehind = git(["rev-list", "--left-right", "--count", "origin/v.next...HEAD"]);
 	const statusLines = getStatusLines();
-	const trackedScope = validateTrackedChangesInScope(statusLines);
-	const candidateLedger = validateN3aCandidateLedger(ledger);
+	const trackedScope = validateTrackedChangesInScope(statusLines, getAllowedTrackedRelativePaths(batch));
+	const candidateLedger = validateProductionCandidateLedger(batch, ledger);
 	const foundryProcesses = getFoundryProcesses();
+	const workingTreeClean = statusLines.length === 0;
+	const workingTreeConditionOk = descriptor.requireWorkingTreeClean ? workingTreeClean : trackedScope.ok;
+	const expectedHeadOk = expectedHead ? (head === expectedHead && originHead === expectedHead) : true;
 	const result = {
 		batch,
 		repoRoot,
@@ -118,17 +132,20 @@ function currentBaseline(batch, batchLedgerPath, expectedHead) {
 		originHead,
 		aheadBehind,
 		statusLines,
-		workingTreeClean: statusLines.length === 0,
+		workingTreeClean,
+		workingTreeRule: descriptor.requireWorkingTreeClean ? "clean" : "allowlisted-in-scope",
+		workingTreeConditionOk,
 		trackedScope,
 		foundryProcesses,
 		foundryRunning: foundryProcesses.length > 0,
 		candidateLedger,
-		expectedHead,
+		expectedHead: expectedHead || null,
+		expectedHeadOk,
 		ok: path.resolve(repoRoot) === path.resolve(ROOT)
 			&& branch === "v.next"
-			&& head === expectedHead
-			&& originHead === expectedHead
 			&& aheadBehind === "0\t0"
+			&& expectedHeadOk
+			&& workingTreeConditionOk
 			&& !foundryProcesses.length
 			&& candidateLedger.ok
 			&& trackedScope.ok
@@ -142,24 +159,25 @@ function currentIr() {
 	return parsed.ir;
 }
 
-export function runBaselineGate({ batch, batchLedgerPath, expectedHead }) {
+export function runBaselineGate({ batch, batchLedgerPath, expectedHead, artifactPrefix = null }) {
 	const { result } = currentBaseline(batch, batchLedgerPath, expectedHead);
-	writeMarkdownArtifact("n3a-baseline-gate.md", buildBaselineMarkdown(result));
+	writeMarkdownArtifact(batch, "baseline-gate.md", buildBaselineMarkdown(result), artifactPrefix);
 	return result;
 }
 
-export function runDryRun({ batch, batchLedgerPath, outputRoot, expectedHead }) {
+export function runDryRun({ batch, batchLedgerPath, outputRoot, expectedHead, artifactPrefix = null }) {
 	const { ledger, result: baseline } = currentBaseline(batch, batchLedgerPath, expectedHead);
 	const ir = currentIr();
 	const identityMap = loadProductionIdentityMap();
 	const manifest = generateProductionBatch({
+		batch,
 		outputRoot,
 		identityMap,
 		irEntries: ir.entries,
 		batchLedger: ledger,
 		write: false
 	});
-	const generated = validateN3aGeneratedManifest(manifest, ledger, identityMap);
+	const generated = validateProductionGeneratedManifest(batch, manifest, ledger, identityMap);
 	const report = {
 		baseline,
 		generated,
@@ -167,15 +185,15 @@ export function runDryRun({ batch, batchLedgerPath, outputRoot, expectedHead }) 
 		exceptionCount: manifest.exceptions.length
 	};
 	report.ok = baseline.ok && generated.ok && manifest.exceptions.length === 0;
-	writeJsonArtifact("n3a-dry-run.json", report);
+	writeJsonArtifact(batch, "dry-run.json", report, artifactPrefix);
 	return report;
 }
 
-export function runPrewriteValidation({ batch, batchLedgerPath, outputRoot, expectedHead }) {
+export function runPrewriteValidation({ batch, batchLedgerPath, outputRoot = COMMITTED_PACK_SOURCE, expectedHead, artifactPrefix = null }) {
 	const { ledger, result: baseline } = currentBaseline(batch, batchLedgerPath, expectedHead);
 	const identityMap = loadProductionIdentityMap();
-	const identity = validateN3aIdentityExtension(identityMap, ledger);
-	const expectedYamlPaths = ledger.finalCandidates.map(candidate =>
+	const identity = validateProductionIdentityExtension(batch, identityMap, ledger);
+	const expectedYamlPaths = listBatchCandidates(ledger).map(candidate =>
 		path.resolve(ROOT, outputRoot, "beasts", `${candidate.semanticKey.split(":").at(-1)}.yml`)
 	);
 	const preexistingYaml = expectedYamlPaths
@@ -187,22 +205,23 @@ export function runPrewriteValidation({ batch, batchLedgerPath, outputRoot, expe
 		preexistingYaml,
 		ok: baseline.ok && identity.ok && preexistingYaml.length === 0
 	};
-	writeJsonArtifact("n3a-prewrite-validation.json", report);
+	writeJsonArtifact(batch, "prewrite-validation.json", report, artifactPrefix);
 	return report;
 }
 
-export function runProductionWrite({ batch, batchLedgerPath, outputRoot, expectedHead }) {
+export function runProductionWrite({ batch, batchLedgerPath, outputRoot, expectedHead, artifactPrefix = null }) {
 	const { ledger, result: baseline } = currentBaseline(batch, batchLedgerPath, expectedHead);
 	const ir = currentIr();
 	const identityMap = loadProductionIdentityMap();
 	const manifest = generateProductionBatch({
+		batch,
 		outputRoot,
 		identityMap,
 		irEntries: ir.entries,
 		batchLedger: ledger,
 		write: true
 	});
-	const generated = validateN3aGeneratedManifest(manifest, ledger, identityMap);
+	const generated = validateProductionGeneratedManifest(batch, manifest, ledger, identityMap);
 	const report = {
 		baseline,
 		generated,
@@ -210,47 +229,48 @@ export function runProductionWrite({ batch, batchLedgerPath, outputRoot, expecte
 		exceptions: manifest.exceptions,
 		ok: baseline.ok && generated.ok && manifest.exceptions.length === 0
 	};
-	writeJsonArtifact("n3a-write-result.json", report);
+	writeJsonArtifact(batch, "write-result.json", report, artifactPrefix);
 	return report;
 }
 
-export function runPostwriteValidation({ batch, batchLedgerPath, outputRoot, expectedHead }) {
+export function runPostwriteValidation({ batch, batchLedgerPath, outputRoot, expectedHead, artifactPrefix = null }) {
 	const { ledger, result: baseline } = currentBaseline(batch, batchLedgerPath, expectedHead);
 	const identityMap = loadProductionIdentityMap();
-	const postwrite = validateN3aPostwrite(outputRoot, ledger, identityMap);
+	const postwrite = validateProductionPostwrite(batch, outputRoot, ledger, identityMap);
 	const report = {
 		baseline,
 		postwrite,
 		ok: baseline.ok && postwrite.ok
 	};
-	writeJsonArtifact("n3a-postwrite-validation.json", report);
+	writeJsonArtifact(batch, "postwrite-validation.json", report, artifactPrefix);
 	return report;
 }
 
-export function runRerunCheck({ batch, batchLedgerPath, outputRoot, expectedHead }) {
+export function runRerunCheck({ batch, batchLedgerPath, outputRoot, expectedHead, artifactPrefix = null }) {
 	const { ledger, result: baseline } = currentBaseline(batch, batchLedgerPath, expectedHead);
-	const writeResult = loadWriteResult();
+	const writeResult = loadWriteResult(batch, artifactPrefix);
 	const ir = currentIr();
 	const identityMap = loadProductionIdentityMap();
 	const rerunManifest = generateProductionBatch({
+		batch,
 		outputRoot,
 		identityMap,
 		irEntries: ir.entries,
 		batchLedger: ledger,
 		write: false
 	});
-	const rerun = validateN3aDeterministicRerun({ emitted: writeResult.emitted }, rerunManifest);
+	const rerun = validateProductionDeterministicRerun({ emitted: writeResult.emitted }, rerunManifest);
 	const report = {
 		baseline,
 		rerun,
 		emitted: rerunManifest.emitted,
 		ok: baseline.ok && rerun.ok
 	};
-	writeJsonArtifact("n3a-deterministic-rerun.json", report);
+	writeJsonArtifact(batch, "deterministic-rerun.json", report, artifactPrefix);
 	return report;
 }
 
-export async function runCompiledValidate({ pack, batch, batchLedgerPath }) {
+export async function runCompiledValidate({ pack, batch, batchLedgerPath, artifactPrefix = null }) {
 	ensureBatch(batch);
 	if ( pack !== "snv-monsters" ) throw new Error(`[snv-monsters] unsupported compiled-validate pack: ${pack}`);
 	const ledger = loadBatchLedger(batchLedgerPath);
@@ -270,18 +290,36 @@ export async function runCompiledValidate({ pack, batch, batchLedgerPath }) {
 		compiled,
 		ok: compiled.ok
 	};
-	writeJsonArtifact("n3a-compiled-validation.json", report);
+	writeJsonArtifact(batch, "compiled-validation.json", report, artifactPrefix);
 	return report;
 }
 
-export function writeBuildResultMarkdown(text) {
-	writeMarkdownArtifact("n3a-build-result.md", text);
+function normalizeLegacyReportArtifactArgs(batchOrText, textOrArtifactPrefix, maybeArtifactPrefix) {
+	if ( textOrArtifactPrefix === undefined ) {
+		return {
+			batch: "n3a",
+			text: batchOrText,
+			artifactPrefix: null
+		};
+	}
+	return {
+		batch: batchOrText,
+		text: textOrArtifactPrefix,
+		artifactPrefix: maybeArtifactPrefix || null
+	};
 }
 
-export function writeRegressionMarkdown(text) {
-	writeMarkdownArtifact("n3a-regression-tests.md", text);
+export function writeBuildResultMarkdown(batchOrText, textOrArtifactPrefix, maybeArtifactPrefix = null) {
+	const { batch, text, artifactPrefix } = normalizeLegacyReportArtifactArgs(batchOrText, textOrArtifactPrefix, maybeArtifactPrefix);
+	writeMarkdownArtifact(batch, "build-result.md", text, artifactPrefix);
 }
 
-export function writeImplementationReport(text) {
-	writeMarkdownArtifact("n3a-implementation-report.md", text);
+export function writeRegressionMarkdown(batchOrText, textOrArtifactPrefix, maybeArtifactPrefix = null) {
+	const { batch, text, artifactPrefix } = normalizeLegacyReportArtifactArgs(batchOrText, textOrArtifactPrefix, maybeArtifactPrefix);
+	writeMarkdownArtifact(batch, "regression-tests.md", text, artifactPrefix);
+}
+
+export function writeImplementationReport(batchOrText, textOrArtifactPrefix, maybeArtifactPrefix = null) {
+	const { batch, text, artifactPrefix } = normalizeLegacyReportArtifactArgs(batchOrText, textOrArtifactPrefix, maybeArtifactPrefix);
+	writeMarkdownArtifact(batch, "implementation-report.md", text, artifactPrefix);
 }

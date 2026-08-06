@@ -7,7 +7,7 @@ import path from "node:path";
 import yaml from "js-yaml";
 import { EDGE_CASE_SELECTION } from "./edge-cases.mjs";
 import { generateGeneralizedActor } from "./generate-generalized.mjs";
-import { buildN3aIdentityPlan, loadIdentityMap, loadProductionIdentityMap, resolveActorId, summarizeIdentityAddition } from "./identity.mjs";
+import { buildProductionIdentityPlan, listBatchCandidates, loadIdentityMap, loadProductionIdentityMap, resolveActorId, summarizeIdentityAddition } from "./identity.mjs";
 import { normalizeName, sha256 } from "./parse-helpers.mjs";
 import {
 	COMMITTED_PACK_SOURCE,
@@ -18,7 +18,7 @@ import {
 	SNV_FINAL_PATH
 } from "./paths.mjs";
 import { splitCreatureBlocks } from "./parse.mjs";
-import { assertAllowedOutputRoot, assertApprovedN3aYamlPath } from "./write-guard.mjs";
+import { assertAllowedOutputRoot, assertApprovedProductionYamlPath, getProductionBatchDescriptor } from "./write-guard.mjs";
 
 const DUMP = { lineWidth: -1, noRefs: true, quotingType: "'", forceQuotes: false };
 
@@ -236,8 +236,8 @@ function summarizeExceptions(exceptions) {
 	};
 }
 
-export function attemptProductionWrite(outputRoot = COMMITTED_PACK_SOURCE) {
-	return generateProductionBatch({ outputRoot, write: true });
+export function attemptProductionWrite(outputRoot = COMMITTED_PACK_SOURCE, batch = "n3a") {
+	return generateProductionBatch({ batch, outputRoot, write: true });
 }
 
 /** @deprecated use generateSandbox */
@@ -259,6 +259,7 @@ function candidateYamlPath(root, semanticKey) {
 }
 
 export function generateProductionBatch({
+	batch = "n3a",
 	outputRoot = COMMITTED_PACK_SOURCE,
 	identityMap = loadProductionIdentityMap(),
 	irEntries = [],
@@ -266,39 +267,43 @@ export function generateProductionBatch({
 	batchLedger,
 	write = false
 } = {}) {
-	if ( !batchLedger?.finalCandidates?.length ) {
-		throw new Error("[snv-monsters] batch ledger with finalCandidates is required");
-	}
+	const descriptor = getProductionBatchDescriptor(batch);
 	const root = ensureCommittedPackRoot(outputRoot);
-	if ( write ) assertAllowedOutputRoot(outputRoot, { allowProductionWrite: true, batch: "n3a" });
+	if ( write ) assertAllowedOutputRoot(outputRoot, { allowProductionWrite: true, batch });
 	const markdown = snvMarkdown
 		|| (fs.existsSync(SNV_FINAL_PATH) ? fs.readFileSync(SNV_FINAL_PATH, "utf8") : "");
 	if ( !markdown ) throw new Error("[snv-monsters] authoritative SnV markdown is required for production generation");
 	const bodies = loadBodiesByName(markdown);
-	const identityPlan = buildN3aIdentityPlan(batchLedger, identityMap);
+	const candidates = listBatchCandidates(batchLedger);
+	const identityPlan = buildProductionIdentityPlan(batch, batchLedger, identityMap);
 	const emitted = [];
 	const exceptions = [];
 	const generatedDocs = {};
 
-	for ( const candidate of batchLedger.finalCandidates ) {
+	for ( const candidate of candidates ) {
+		if ( !descriptor.approvedSemanticKeys.includes(candidate.semanticKey) ) {
+			throw new Error(`[snv-monsters] non-approved semantic key in ${batch}: ${candidate.semanticKey}`);
+		}
 		const irEntry = irEntries.find(entry => entry.semanticKey === candidate.semanticKey);
 		if ( !irEntry ) throw new Error(`[snv-monsters] missing IR entry for ${candidate.semanticKey}`);
 		const body = bodies.get(irEntry.normalizedName || normalizeName(candidate.name));
 		if ( !body ) throw new Error(`[snv-monsters] missing source body for ${candidate.name}`);
 		const actorIdentity = identityMap.actors?.[candidate.semanticKey] || identityPlan.actors?.[candidate.semanticKey];
 		if ( !actorIdentity ) throw new Error(`[snv-monsters] missing actor identity for ${candidate.semanticKey}`);
-		const targetPath = assertApprovedN3aYamlPath(candidateYamlPath(root, candidate.semanticKey));
+		const targetPath = assertApprovedProductionYamlPath(candidateYamlPath(root, candidate.semanticKey), batch);
 		const { actor, exceptions: actorExceptions, attacksParsed, parsedStatBlock } = generateGeneralizedActor({
 			irEntry,
 			body,
 			actorId: actorIdentity.id,
 			nonproduction: false,
 			productionContext: {
+				batch,
 				identityActor: actorIdentity,
 				artwork: {
 					...candidate.artwork,
 					folderId: actorIdentity.folderId
 				},
+				metadata: descriptor.productionMetadata,
 				exactFeatures: {
 					passives: candidate.passives || [],
 					nonAttackActions: candidate.nonAttackActions || [],
@@ -335,7 +340,7 @@ export function generateProductionBatch({
 	}
 
 	return {
-		batch: "n3a",
+		batch,
 		outputRoot: root,
 		emitted,
 		exceptions,
