@@ -25,6 +25,7 @@ export const N3A_P1_ORIGIN = "n3a-p1-approved";
 export const N3A_P2_ORIGIN = "n3a-p2-approved";
 export const N3A_P3_ORIGIN = "n3a-p3-approved";
 export const N3A_P4_ORIGIN = "n3a-p4-approved";
+export const N3A_P5_ORIGIN = "n3a-p5-approved";
 export const N3A_BATCH = "n3a";
 export const N3A_BEASTS_FOLDER_KEY = "snv-folder:Beasts";
 export const N3A_ABERRATIONS_FOLDER_KEY = "snv-folder:Aberrations";
@@ -70,7 +71,8 @@ const PRODUCTION_ORIGINS = Object.freeze({
 	"n3a-p1": N3A_P1_ORIGIN,
 	"n3a-p2": N3A_P2_ORIGIN,
 	"n3a-p3": N3A_P3_ORIGIN,
-	"n3a-p4": N3A_P4_ORIGIN
+	"n3a-p4": N3A_P4_ORIGIN,
+	"n3a-p5": N3A_P5_ORIGIN
 });
 
 function shortHash(seed) {

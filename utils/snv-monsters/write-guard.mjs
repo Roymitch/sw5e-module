@@ -655,6 +655,43 @@ const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({
 			productionReadiness: "prototype-validated",
 			packPhase: "n3a-p4-aberrations"
 		}
+	}),
+	"n3a-p5": Object.freeze({
+		batch: "n3a-p5",
+		artifactPrefix: "n3a-p5",
+		productionRoot: path.resolve(COMMITTED_PACK_SOURCE),
+		approvedSemanticKeys: [
+			"snv:Aberrations:mnggal-mnggal-lake-of",
+			"snv:Aberrations:rakghoul-eyeless",
+			"snv:Aberrations:tsalak"
+		],
+		approvedYamlRelativePaths: [
+			"packs/_source/snv-monsters/aberrations/mnggal-mnggal-lake-of.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-eyeless.yml",
+			"packs/_source/snv-monsters/aberrations/tsalak.yml"
+		],
+		allowedTrackedRelativePaths: [
+			"utils/snv-monsters/identity.mjs",
+			"utils/snv-monsters/generate.mjs",
+			"utils/snv-monsters/production-write.mjs",
+			"utils/snv-monsters/validate.mjs",
+			"utils/snv-monsters/write-guard.mjs",
+			"utils/snv-monsters/cli.mjs",
+			"utils/snv-monsters/test-unit.mjs",
+			"utils/snv-monsters/generate-generalized.mjs",
+			"utils/snv-monsters/test-generalized.mjs",
+			"utils/snv-monsters/manifests/identity-map.json",
+			"packs/_source/snv-monsters/aberrations/mnggal-mnggal-lake-of.yml",
+			"packs/_source/snv-monsters/aberrations/rakghoul-eyeless.yml",
+			"packs/_source/snv-monsters/aberrations/tsalak.yml"
+		],
+		expectedIdentityAdditions: { actors: 3, items: 30, activities: 3 },
+		requireWorkingTreeClean: false,
+		productionMetadata: {
+			outputSelection: "selected-n3a-p5",
+			productionReadiness: "prototype-validated",
+			packPhase: "n3a-p5-aberrations"
+		}
 	})
 });
 

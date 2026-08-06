@@ -74,7 +74,8 @@ const NATURAL_MELEE_WEAPON_NAMES = new Set([
 	"gigantic claw",
 	"attach",
 	"strangling tentacle",
-	"pseudopod"
+	"pseudopod",
+	"tendril"
 ]);
 
 const NATURAL_RANGED_WEAPON_NAMES = new Set([
@@ -394,7 +395,7 @@ function activityDamageParts(formula, damageType) {
 
 function parseAttackEntry(entry) {
 	const attackMatch = entry.text.match(
-		/\*?(Melee(?:\s+or\s+Ranged)?|Ranged) Weapon Attack:\*?\s*([+-]\d+)\s*to hit,\s*(.*?)\.\s*\*?Hit:\*?\s*([^]+)$/i
+		/\*?(Melee(?:\s+or\s+Ranged)?|Ranged) Weapon Attack:\*?\s*([+-]\d+)(?:\s*to hit)?,\s*(.*?)\.\s*\*?Hit:\*?\s*([^]+)$/i
 	);
 	if ( !attackMatch ) return null;
 	const targetingClause = attackMatch[3].trim();
@@ -1224,7 +1225,19 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 	const identityActor = productionContext?.identityActor || null;
 
 	const addFeat = (name, sourceSection) => {
-		const entry = entriesByName.get(name);
+		let entry = parsed.featureEntries.find(feature =>
+			feature.name === name && feature.section === sourceSection
+		) || parsed.featureEntries.find(feature => feature.name === name) || null;
+		if ( !entry && name === "Legendary Actions" ) {
+			const match = text.match(/###\s+Legendary Actions\b([\s\S]*?)(?=###\s+|\pagebreakNum|$)/i);
+			if ( match ) {
+				entry = {
+					name,
+					section: "legendary-actions",
+					text: match[1].replace(/\s+/g, " ").trim()
+				};
+			}
+		}
 		if ( !entry ) {
 			if ( exactFeatures ) throw new Error(`[snv-monsters] missing required source feature ${irEntry.sourceName}/${name}`);
 			return;
@@ -1237,7 +1250,7 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 			name,
 			description: entry.text,
 			img: resolveFeatureImage(name, "feat", actor.img),
-			sourceSection,
+			sourceSection: entry.section || sourceSection,
 			nonproduction,
 			approvedBatch: productionContext?.batch || null
 		}));
@@ -1363,7 +1376,8 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 		"reaction-activity",
 		"limited-uses-activity",
 		"recharge-activity",
-		"swarm-squad-ammo-policy"
+		"swarm-squad-ammo-policy",
+		"legendary-actions"
 	]);
 	for ( const mechanic of irEntry.unsupportedMechanics || [] ) {
 		// Soft classifier flags that do not block descriptive production emission.
