@@ -76,6 +76,9 @@ test("production batch descriptors stay fail-closed and path-scoped", () => {
 	const p5 = getProductionBatchDescriptor("n3b-p5");
 	assert.equal(p5.approvedSemanticKeys.length, 2);
 	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/nerf.yml"), "n3b-p5"));
+	const p6 = getProductionBatchDescriptor("n3b-p6");
+	assert.equal(p6.approvedSemanticKeys.length, 2);
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/scrange.yml"), "n3b-p6"));
 });
 
 test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {
@@ -184,6 +187,36 @@ test("production identity plans support n3b-p5 counts", () => {
 	assert.equal(Object.keys(plan.actors).length, 2);
 	assert.equal(counts.actors, 2);
 	assert.equal(counts.items, 8);
+	assert.equal(counts.activities, 4);
+});
+
+test("production identity plans support n3b-p6 counts", () => {
+	const plan = buildProductionIdentityPlan("n3b-p6", {
+		actors: [
+			{
+				name: "Scrange",
+				semanticKey: "snv:Beasts:scrange",
+				traitsAndActions: {
+					passives: ["Ambusher", "Bioluminescent", "Hold Breath", "Mud Camouflage", "Surprise Attack"],
+					nonAttackActions: ["Multiattack"],
+					weaponAttacks: ["Bite", "Tail"]
+				}
+			},
+			{
+				name: "Fambaa Howdah",
+				semanticKey: "snv:Beasts:fambaa-howdah",
+				traitsAndActions: {
+					passives: ["Amphibious", "Howdah", "Siege Monster", "Sure-Footed"],
+					nonAttackActions: [],
+					weaponAttacks: ["Bite", "Stomp"]
+				}
+			}
+		]
+	}, loadProductionIdentityMap());
+	const counts = summarizeIdentityAddition(plan);
+	assert.equal(Object.keys(plan.actors).length, 2);
+	assert.equal(counts.actors, 2);
+	assert.equal(counts.items, 14);
 	assert.equal(counts.activities, 4);
 });
 
