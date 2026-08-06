@@ -630,6 +630,69 @@ export function parseAdditionalSaveDamageRider(attack) {
 }
 
 /**
+ * Recognize swallow-on-hit stacks for honest limitation metadata.
+ * Preserves DC/damage facts without runtime automation.
+ */
+export function parseSwallowOnHitRider(attack) {
+	const text = String(attack?.description || attack?.hit || "");
+	if ( !/\bswallowed\b/i.test(text) ) return null;
+	const save = text.match(/DC\s+(\d+)\s+(Dexterity|Strength) saving throw or be swallowed/i);
+	const acid = text.match(/takes\s+\d+\s*\(([^)]+)\)\s+acid damage at the start of each/i);
+	const regurgitate = text.match(/takes\s+(\d+)\s+damage or more on a single turn[\s\S]*?DC\s+(\d+)\s+Constitution/i);
+	const capacity = text.match(/no more than (\w+) targets? swallowed/i);
+	return {
+		family: "swallow-on-hit",
+		attackName: titleCase(String(attack?.name || "").trim()),
+		saveAbility: save ? save[2].slice(0, 3).toLowerCase() : null,
+		saveDc: save ? Number(save[1]) : null,
+		ongoingAcidFormula: acid ? cleanFormula(acid[1]) : null,
+		regurgitateDamageThreshold: regurgitate ? Number(regurgitate[1]) : null,
+		regurgitateSaveDc: regurgitate ? Number(regurgitate[2]) : null,
+		capacityNote: capacity ? capacity[1] : null,
+		runtimeAutomation: false,
+		limitation: "Swallow containment, ongoing acid, and regurgitation are description-preserved only."
+	};
+}
+
+/**
+ * Recognize bounded complex nonattack actions that remain description-complete
+ * without full automation (Tentacle Slam, Swallow follow-up action).
+ */
+export function parseComplexActionLimitation(featureName, description) {
+	const name = String(featureName || "").trim().toLowerCase();
+	const text = String(description || "");
+	if ( name === "tentacle slam" ) {
+		const save = text.match(/DC\s+(\d+)\s+Constitution saving throw/i);
+		return {
+			family: "tentacle-slam",
+			featureName: titleCase(String(featureName || "").trim()),
+			saveAbility: "con",
+			saveDc: save ? Number(save[1]) : null,
+			requiresGrappledTargets: true,
+			runtimeAutomation: false,
+			limitation: "Batch save/stun against currently grappled targets is description-preserved only."
+		};
+	}
+	if ( name === "swallow" ) {
+		const size = text.match(/against a ([A-Za-z]+) or smaller creature it is grappling/i);
+		const acid = text.match(/takes\s+\d+\s*\(([^)]+)\)\s+acid damage at the start of each/i);
+		const regurgitate = text.match(/takes\s+(\d+)\s+damage or more on a single turn[\s\S]*?DC\s+(\d+)\s+Constitution/i);
+		return {
+			family: "swallow-action",
+			featureName: "Swallow",
+			requiresGrappledTarget: true,
+			targetSizeMax: size ? size[1] : null,
+			ongoingAcidFormula: acid ? cleanFormula(acid[1]) : null,
+			regurgitateDamageThreshold: regurgitate ? Number(regurgitate[1]) : null,
+			regurgitateSaveDc: regurgitate ? Number(regurgitate[2]) : null,
+			runtimeAutomation: false,
+			limitation: "Swallow follow-up attack, containment, ongoing acid, and regurgitation are description-preserved only."
+		};
+	}
+	return null;
+}
+
+/**
  * Recognize bounded C8 attack-line grapple/restrain with optional escape DC.
  * Excludes swallow stacks, detachable appendages, and grapple-conditional finishers.
  */
@@ -730,6 +793,7 @@ function buildFeatItem({ featScaffold, actorId, itemId, name, description, img, 
 	item.flags.sw5e = item.flags.sw5e || {};
 	const chargeDamageKnockdown = parseChargeDamageKnockdown(name, description);
 	const chargeKnockdownFollowup = parseChargeKnockdownFollowup(name, description);
+	const complexActionLimitation = parseComplexActionLimitation(name, description);
 	item.flags.sw5e.snvMonsters = {
 		prototype: nonproduction,
 		classification: "non-weapon",
@@ -740,7 +804,8 @@ function buildFeatItem({ featScaffold, actorId, itemId, name, description, img, 
 		sandboxTemp: nonproduction,
 		approvedBatch: nonproduction ? null : approvedBatch,
 		...(chargeDamageKnockdown ? { chargeDamageKnockdown } : {}),
-		...(chargeKnockdownFollowup ? { chargeKnockdownFollowup } : {})
+		...(chargeKnockdownFollowup ? { chargeKnockdownFollowup } : {}),
+		...(complexActionLimitation ? { complexActionLimitation } : {})
 	};
 	const activationType = activationTypeForFeature(sourceSection, description);
 	item.system.description.value = toHtmlParagraph(description);
@@ -811,6 +876,11 @@ function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, 
 		description: description || attack.description || attack.hit,
 		hit: description || attack.hit
 	});
+	const swallowOnHit = parseSwallowOnHitRider({
+		...attack,
+		description: description || attack.description || attack.hit,
+		hit: description || attack.hit
+	});
 	item.flags.sw5e.snvMonsters = {
 		prototype: nonproduction,
 		classification: isNatural ? "natural" : "source-specific",
@@ -828,7 +898,8 @@ function buildWeaponItem({ weaponScaffold, actorId, itemId, activityId, attack, 
 		...(afflictionRider ? { afflictionRider } : {}),
 		...(grappleRestrain ? { grappleRestrain } : {}),
 		...(grappleConditionalTarget ? { grappleConditionalTarget } : {}),
-		...(additionalSaveDamage ? { additionalSaveDamage } : {})
+		...(additionalSaveDamage ? { additionalSaveDamage } : {}),
+		...(swallowOnHit ? { swallowOnHit } : {})
 	};
 	item.system.description.value = toHtmlParagraph(description);
 	item.system.description.chat = "";

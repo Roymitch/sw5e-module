@@ -2,7 +2,7 @@
  * Tracked generalized-generator unit tests (synthetic fixtures only).
  */
 import assert from "node:assert/strict";
-import { generateGeneralizedActor, parseAdditionalSaveDamageRider, parseAfflictionRider, parseChargeDamageKnockdown, parseChargeKnockdownFollowup, parseGrappleConditionalTarget, parseGrappleRestrainRider, parseOnHitProneRider } from "./generate-generalized.mjs";
+import { generateGeneralizedActor, parseAdditionalSaveDamageRider, parseAfflictionRider, parseChargeDamageKnockdown, parseChargeKnockdownFollowup, parseComplexActionLimitation, parseGrappleConditionalTarget, parseGrappleRestrainRider, parseOnHitProneRider, parseSwallowOnHitRider } from "./generate-generalized.mjs";
 import { createEmptyIrEntry } from "./ir-schema.mjs";
 import { detectFeatures, deriveCapability } from "./classify.mjs";
 import { resolveCanonicalWeapon, buildCanonicalWeaponIndex } from "./canonical.mjs";
@@ -534,6 +534,35 @@ test("C11 grapple-conditional targets, Crush save-for-half, and short poison rid
 	assert.equal(crush.system.type.value, "natural");
 	assert.equal(crush.flags.sw5e.snvMonsters.grappleConditionalTarget?.grapplerLabel, "gundark");
 	assert.equal(crush.flags.sw5e.snvMonsters.additionalSaveDamage?.saveDc, 17);
+});
+
+test("N3f swallow and Tentacle Slam limitations preserve facts without automation", () => {
+	const swallow = parseSwallowOnHitRider({
+		name: "Bite",
+		description: "If the target is a Large or smaller creature, it must succeed on a DC 16 Dexterity saving throw or be swallowed. While swallowed, the creature is blinded and restrained, it has total cover against attacks and other effects outside the ghest, and it takes 10 (3d6) acid damage at the start of each of the ghest's turns. If the ghest takes 25 damage or more on a single turn from a creature inside it, the ghest must succeed on a DC 14 Constitution saving throw at the end of that turn or regurgitate all swallowed creatures. The ghest can have no more than two targets swallowed at a time."
+	});
+	assert.equal(swallow?.family, "swallow-on-hit");
+	assert.equal(swallow?.saveDc, 16);
+	assert.equal(swallow?.ongoingAcidFormula, "3d6");
+	assert.equal(swallow?.regurgitateDamageThreshold, 25);
+	assert.equal(swallow?.runtimeAutomation, false);
+
+	const slam = parseComplexActionLimitation(
+		"Tentacle Slam",
+		"The dianoga slams creatures grappled by it into each other or a solid surface. Each creature must succeed on a DC 15 Constitution saving throw or take 10 (2d6 + 3) kinetic damage and be stunned until the end of the dianoga's next turn."
+	);
+	assert.equal(slam?.family, "tentacle-slam");
+	assert.equal(slam?.saveDc, 15);
+	assert.equal(slam?.runtimeAutomation, false);
+
+	const swallowAction = parseComplexActionLimitation(
+		"Swallow",
+		"The rancor makes one bite attack against a Medium or smaller creature it is grappling. If the attack hits, the target takes the bite's damage, the target is swallowed, and the grapple ends. While swallowed, the creature is blinded and restrained, it has total cover against attacks and other effects outside the rancor, and it takes 21 (6d6) acid damage at the start of each of the rancor's turns. If the rancor takes 25 damage or more on a single turn from a creature inside it, the rancor must succeed on a DC 20 Constitution saving throw at the end of that turn or regurgitate all swallowed creatures."
+	);
+	assert.equal(swallowAction?.family, "swallow-action");
+	assert.equal(swallowAction?.targetSizeMax, "Medium");
+	assert.equal(swallowAction?.ongoingAcidFormula, "6d6");
+	assert.equal(swallowAction?.runtimeAutomation, false);
 });
 
 test("C10 Multiattack nonattack emits description-only feat without attack activity", () => {
