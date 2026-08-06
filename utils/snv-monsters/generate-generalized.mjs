@@ -55,6 +55,7 @@ const SKILL_KEY_MAP = {
 const NATURAL_MELEE_WEAPON_NAMES = new Set([
 	"bite",
 	"claw",
+	"claws",
 	"slam",
 	"tentacle",
 	"gore",
@@ -727,7 +728,7 @@ function buildActorFromScaffold(actorScaffold, { irEntry, actorId, parsed, artwo
 	actor._key = `!actors!${actorId}`;
 	actor.name = irEntry.sourceName;
 	actor.type = "npc";
-	actor.img = artwork?.avatarPath || "icons/svg/mystery-man.svg";
+	actor.img = artwork?.avatarPath || "systems/dnd5e/icons/svg/actors/npc.svg";
 	actor.folder = artwork?.folderId || null;
 	actor.effects = [];
 	actor.items = [];

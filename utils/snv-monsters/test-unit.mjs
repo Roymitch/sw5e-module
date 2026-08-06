@@ -70,6 +70,9 @@ test("production batch descriptors stay fail-closed and path-scoped", () => {
 	const p4 = getProductionBatchDescriptor("n3b-p4");
 	assert.equal(p4.approvedSemanticKeys.length, 2);
 	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/sibian-hound.yml"), "n3b-p4"));
+	const p1 = getProductionBatchDescriptor("n3b-p1");
+	assert.equal(p1.approvedSemanticKeys.length, 2);
+	assert.doesNotThrow(() => assertApprovedProductionYamlPath(path.join(COMMITTED_PACK_SOURCE, "beasts/gundark-adolescent.yml"), "n3b-p1"));
 });
 
 test("production identity plans preserve n3a seeds and support n3b-p2 counts", () => {

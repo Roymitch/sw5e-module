@@ -266,7 +266,7 @@ test("C7 on-hit prone riders recognize Bite/Stomp/Tail and exclude charge, grapp
 });
 
 test("bounded anatomy natural names emit natural mwak and keep out-of-scope names non-natural", () => {
-	const positiveCases = ["Bite", "Claw", "Slam", "Tentacle", "Gore", "Sting", "Beak", "Talons", "Hooves", "Tusk", "Tusks"];
+	const positiveCases = ["Bite", "Claw", "Claws", "Slam", "Tentacle", "Gore", "Sting", "Beak", "Talons", "Hooves", "Tusk", "Tusks"];
 	for ( const attackName of positiveCases ) {
 		const body = singleAttackBody({
 			name: attackName,
