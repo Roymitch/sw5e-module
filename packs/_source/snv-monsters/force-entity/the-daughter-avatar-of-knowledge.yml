@@ -1,7 +1,7 @@
 _id: 2f6ac4ac68f57b75
 name: The Daughter, Avatar of Knowledge
 type: npc
-img: systems/dnd5e/icons/svg/actors/npc.svg
+img: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
 folder: f4d85328dc1b5e69
 items:
   - _id: d35184df0bb6e858
@@ -18,7 +18,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix-02
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Avoidance.webp
     effects: []
     folder: null
@@ -119,8 +119,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix-02
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
     effects: []
     folder: null
     system:
@@ -221,8 +221,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix-02
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
     effects: []
     folder: null
     system:
@@ -320,12 +320,12 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix-02
+          approvedBatch: fts-trait-gap-fix
           limitedUses:
             family: per-day
             max: 3
             runtimeAutomation: true
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+    img: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
     effects: []
     folder: null
     system:
@@ -423,7 +423,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix-02
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Force Resistance.webp
     effects: []
     folder: null
@@ -522,8 +522,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix-02
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
     effects: []
     folder: null
     system:
@@ -623,8 +623,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix-02
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
     effects: []
     folder: null
     system:
@@ -722,8 +722,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix-02
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
     effects: []
     folder: null
     system:
@@ -812,6 +812,313 @@ items:
       compendiumSource: null
       duplicateSource: null
     _key: "!actors.items!2f6ac4ac68f57b75.4a6327892b1a9e48"
+  - _id: f4715aa0e211595e
+    name: Aura of Empowerment
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>Invigorating energy radiates from the avatar in a 30-foot radius. Until the effect ends, any number of
+          creatures within range chosen by the avatar (including the avatar) deal an extra die of damage with weapon
+          attacks and force powers, and all of their attacks are considered enhanced.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!2f6ac4ac68f57b75.f4715aa0e211595e"
+  - _id: ee67252d889c6cbd
+    name: Aura of Purification
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>Purifying energy radiates from the avatar in a 30-foot radius. Until the effect ends, any number of
+          creatures within range chosen by the avatar (including the avatar) can’t become diseased, have resistance to
+          all damage, and have immunity to all conditions.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!2f6ac4ac68f57b75.ee67252d889c6cbd"
+  - _id: 88c22f8f8d1b62a0
+    name: Aura of Resilience
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>Hope and vitality radiates from the avatar in a 30-foot radius. Until the effect ends, any number of
+          creatures within range chosen by the avatar (including the avatar) have advantage on Wisdom saving throws and
+          death saving throws, and regain the maximum number of hit points possible from any healing. Additionally,
+          attacks that target these creatures do so with disadvantage.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!2f6ac4ac68f57b75.88c22f8f8d1b62a0"
   - _id: 3b6efb2a3da8c1f0
     name: Multiattack (Humanoid Form)
     type: feat
@@ -826,8 +1133,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix-02
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
     effects: []
     folder: null
     system:
@@ -925,8 +1232,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix-02
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
     effects: []
     folder: null
     system:
@@ -1024,8 +1331,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix-02
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
     effects: []
     folder: null
     system:
@@ -1127,7 +1434,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-fix-02
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
     effects: []
     folder: null
@@ -3132,7 +3439,7 @@ prototypeToken:
     negative: false
     priority: 0
   texture:
-    src: systems/dnd5e/icons/svg/actors/npc.svg
+    src: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Token.webp
     tint: "#ffffff"
     scaleX: 1
     scaleY: 1
@@ -3674,7 +3981,7 @@ flags:
       schemaVersion: fts-ir-0.1
       parseStatus: parsed-valid
       capabilityStatus: partially-supported
-      outputSelection: selected-fts-fix-02
+      outputSelection: selected-fts-trait-gap-fix
       productionReadiness: prototype-validated
       nonproduction: false
       sandboxTemp: false
@@ -3686,20 +3993,28 @@ flags:
       generatedStatus: production
       manualOverrideStatus: false
       artwork:
-        path: systems/dnd5e/icons/svg/actors/npc.svg
-        tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
-        approval: approved-fallback
+        path: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Avatar.webp
+        tokenPath: modules/sw5e-module/icons/packs/monsters/284_-_The_Daughter_2C_Avatar_of_Knowledge/Token.webp
+        approval: approved
         source: module-existing
         loreConfidence: supported-by-exact-local-folder-name
+        directory: 284_-_The_Daughter_2C_Avatar_of_Knowledge
+        identityMatch: exact
+        tier: 1
+        exception: null
+        replacementStatus: null
+        externalProvenance: null
+        reviewAuthority: null
+        provenance: null
       lastGeneratedHash: 266fad399c50b6f97a5316aa4b8fa758f7b40fe7a281c2ef3f399cd7a41592fd
       prePublication: false
       trackedPack: snv-monsters
       collectionId: sw5e-module.snv-monsters
-      packPhase: fts-fix-02
+      packPhase: fts-trait-gap-fix
       reviewState: offline-generated-awaiting-validation
       worldCleanupFlag: ""
       folderTaxonomy: foundry-creature-type
-      creatureTypeFolder: Custom Type
+      creatureTypeFolder: Force Entity
       softUnsupportedMechanics:
         - legendary-actions
         - force-power-embedding-incomplete
@@ -3793,11 +4108,6 @@ flags:
       superiorityEmbedding:
         maneuvers: []
         missingCanonical: []
-      folderAssignment:
-        label: Force Entity
-        folderId: f4d85328dc1b5e69
-        folderSemanticKey: snv-folder:Force Entity
-        taxonomy: foundry-creature-type
 ownership:
   default: 0
 _stats:

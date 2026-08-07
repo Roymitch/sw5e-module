@@ -1,7 +1,7 @@
 _id: 998464e8c611971a
 name: Jedi Knight, Focused Adept
 type: npc
-img: systems/dnd5e/icons/svg/actors/npc.svg
+img: modules/sw5e-module/icons/packs/monsters/332_-_Jedi_Knight_2C_Focused_Adept/Avatar.webp
 folder: a907e6b54e75b9d3
 items:
   - _id: 581f1e56cdb6f3bf
@@ -18,8 +18,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/332_-_Jedi_Knight_2C_Focused_Adept/Avatar.webp
     effects: []
     folder: null
     system:
@@ -119,8 +119,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/332_-_Jedi_Knight_2C_Focused_Adept/Avatar.webp
     effects: []
     folder: null
     system:
@@ -220,7 +220,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Cunning Action.webp
     effects: []
     folder: null
@@ -319,8 +319,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/332_-_Jedi_Knight_2C_Focused_Adept/Avatar.webp
     effects: []
     folder: null
     system:
@@ -404,6 +404,303 @@ items:
       compendiumSource: null
       duplicateSource: null
     _key: "!actors.items!998464e8c611971a.ee15b3d0339fbb67"
+  - _id: 1cb74726898b5a7b
+    name: Deflection
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/332_-_Jedi_Knight_2C_Focused_Adept/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>When the adept is the target of an attack, it adds 4 (1d8) to its AC against the attack.<br></p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!998464e8c611971a.1cb74726898b5a7b"
+  - _id: 310733de29a42086
+    name: Double Strike
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/332_-_Jedi_Knight_2C_Focused_Adept/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The adept adds 4 (1d8) to the damage of one attack.<br></p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!998464e8c611971a.310733de29a42086"
+  - _id: 61abeaeeb4d16879
+    name: Slow Time
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/332_-_Jedi_Knight_2C_Focused_Adept/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The adept's speed increases by 5 x 1d8 until the end of its current turn.<br></p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!998464e8c611971a.61abeaeeb4d16879"
   - _id: cc9bbc12c179fdf6
     name: Multiattack
     type: feat
@@ -418,7 +715,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
@@ -530,7 +827,7 @@ items:
           sandboxTemp: false
           prePublication: false
           trackedPack: snv-monsters
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
           sourceActionNames:
             - Lightfoil
           duplicateActionProhibited: true
@@ -706,33 +1003,28 @@ items:
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
     _key: "!actors.items!998464e8c611971a.42d9a21983144604"
-  - name: Unarmed Strike
+  - _id: 572465d35338b6c7
+    name: Unarmed Strike
+    type: weapon
+    sort: 0
     flags:
-      sw5e-importer:
-        timestamp: "?"
-        importer_version: 3
-        uid: Weapon.name-unarmed_strike.equipmentCategory-weapon
       sw5e:
-        reload:
-          types: []
         snvMonsters:
-          classification: manufactured
-          kind: weaponCarried
-          canonicalMatch: packs/_source/equipment/weapons/natural-weapons/unarmed-strike.yml
-          ammoModel: itemUses
-          sandboxTemp: false
-          prePublication: false
-          trackedPack: snv-monsters
-          approvedBatch: fts-auto-03
+          prototype: false
+          classification: natural
+          kind: weaponNatural
           sourceActionNames:
             - Unarmed Strike
           duplicateActionProhibited: true
-      dnd5e:
-        riders:
-          activity: []
-          effect: []
-    type: weapon
-    img: modules/sw5e-module/icons/packs/Naturals/UnarmedStrike.webp
+          canonicalWeaponSource: null
+          ammoSource: null
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/332_-_Jedi_Knight_2C_Focused_Adept/Avatar.webp
+    effects: []
+    folder: null
     system:
       description:
         value: <p>*Melee Weapon Attack:* +8 to hit, reach 5 ft., one target. *Hit:* 7 (1d4 + 5) kinetic damage.</p>
@@ -741,7 +1033,7 @@ items:
         custom: SnV
       quantity: 1
       weight:
-        value: 0
+        value: 1
         units: lb
       price:
         value: 0
@@ -750,56 +1042,25 @@ items:
       equipped: false
       rarity: ""
       identified: true
-      type:
-        value: natural
-        subtype: ""
-        baseItem: unarmedstrike
       activation:
         type: action
         cost: 1
         condition: ""
-      target:
-        value: "1"
-        width: null
-        units: ""
-        type: enemy
-        prompt: false
-      range:
-        value: null
-        long: null
-        units: ft
-      actionType: mwak
-      damage:
-        parts:
-          - - 1d4+5
-            - kinetic
-        versatile: ""
-        base:
-          custom:
-            enabled: false
-          denomination: 1
-          number: 1
-          scaling:
-            number: 1
-            mode: ""
-          types:
-            - kinetic
-      weaponClass: ""
-      ammo:
-        types: []
-        target: ""
-        value: null
-        use: null
-      properties: []
-      unidentified:
-        description: ""
-      container: null
-      attuned: false
       duration:
         value: ""
         units: ""
       cover: null
       crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 5
+        long: null
+        units: ft
       uses:
         value: null
         max: ""
@@ -811,26 +1072,27 @@ items:
         target: null
         amount: null
         scale: false
-      ability: null
-      attack:
-        bonus: "8"
-        flat: true
+      ability: str
+      actionType: mwak
       chatFlavor: ""
       critical:
         threshold: null
         damage: ""
-      enchantment: null
+      damage:
+        parts:
+          - - 1d4+5
+            - kinetic
+        versatile: ""
       formula: ""
       save:
         ability: ""
         dc: null
         scaling: spell
-      summons: null
       armor:
-        value: null
+        value: 10
       hp:
-        value: null
-        max: null
+        value: 0
+        max: 0
         dt: null
         conditions: ""
       modify:
@@ -839,14 +1101,38 @@ items:
         modSlots: 4
         items: []
         changes: {}
+      weaponClass: ""
+      ammo:
+        target: null
+        value: null
+        use: null
+        types: []
+      properties: []
+      proficient: 1
+      type:
+        value: natural
+        subtype: ""
+        baseItem: ""
+      unidentified:
+        description: ""
+      attack:
+        bonus: ""
+        flat: false
+      container: null
+      attuned: false
+      enchantment: null
+      summons: null
       magicalBonus: null
-      proficient: null
       firingArc: ""
       activities:
         93a6facd51b6ab29:
           _id: 93a6facd51b6ab29
+          type: attack
           activation:
             type: action
+            value: 1
+            condition: ""
+            override: false
           attack:
             ability: ""
             bonus: "8"
@@ -854,8 +1140,10 @@ items:
             type:
               classification: weapon
               value: melee
+            critical: {}
           damage:
             critical: {}
+            includeBase: false
             parts:
               - number: 1
                 denomination: 4
@@ -872,42 +1160,45 @@ items:
           description: {}
           duration:
             units: inst
-          img: null
+            concentration: false
+            override: false
+          effects: []
           range:
             override: false
             units: ft
+            value: "5"
           target:
-            affects:
-              count: "1"
-              type: enemy
-              choice: false
-              special: ""
-            override: false
-            prompt: false
             template:
-              count: ""
               contiguous: false
-              stationary: false
-              type: ""
-              size: ""
-              width: ""
-              height: ""
               units: ft
-          type: attack
+              type: ""
+            affects:
+              choice: false
+              type: creature
+              count: "1"
+            override: false
+            prompt: true
+          consumption:
+            targets: []
+            scaling:
+              allowed: false
+            spellSlot: true
+          uses:
+            spent: 0
+            max: ""
+            recovery: []
+          sort: 0
       attackBonus: "8"
-    effects: []
-    _id: 572465d35338b6c7
-    folder: null
-    sort: 0
     ownership:
       default: 0
     _stats:
-      systemId: dnd5e
-      systemVersion: 5.2.5
-      coreVersion: "12.331"
-      createdTime: 1720296019804
-      modifiedTime: 1739121084621
-      lastModifiedBy: dnd5ebuilder0000
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
       duplicateSource: null
     _key: "!actors.items!998464e8c611971a.572465d35338b6c7"
   - _id: 6009545f1c27dc58
@@ -5786,7 +6077,7 @@ prototypeToken:
     negative: false
     priority: 0
   texture:
-    src: systems/dnd5e/icons/svg/actors/npc.svg
+    src: modules/sw5e-module/icons/packs/monsters/332_-_Jedi_Knight_2C_Focused_Adept/Token.webp
     tint: "#ffffff"
     scaleX: 1
     scaleY: 1
@@ -6328,7 +6619,7 @@ flags:
       schemaVersion: fts-ir-0.1
       parseStatus: parsed-valid
       capabilityStatus: partially-supported
-      outputSelection: selected-fts-auto-03
+      outputSelection: selected-fts-trait-gap-fix
       productionReadiness: prototype-validated
       nonproduction: false
       sandboxTemp: false
@@ -6338,16 +6629,24 @@ flags:
       generatedStatus: production
       manualOverrideStatus: false
       artwork:
-        path: systems/dnd5e/icons/svg/actors/npc.svg
-        tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
-        approval: approved-fallback
+        path: modules/sw5e-module/icons/packs/monsters/332_-_Jedi_Knight_2C_Focused_Adept/Avatar.webp
+        tokenPath: modules/sw5e-module/icons/packs/monsters/332_-_Jedi_Knight_2C_Focused_Adept/Token.webp
+        approval: approved
         source: module-existing
         loreConfidence: supported-by-exact-local-folder-name
+        directory: 332_-_Jedi_Knight_2C_Focused_Adept
+        identityMatch: exact
+        tier: 1
+        exception: null
+        replacementStatus: null
+        externalProvenance: null
+        reviewAuthority: null
+        provenance: null
       lastGeneratedHash: 8ba0c6868e21da6a1eec0048950ea313e930a8c4a07a2bca75ffeedb883f97e7
       prePublication: false
       trackedPack: snv-monsters
       collectionId: sw5e-module.snv-monsters
-      packPhase: fts-auto-03
+      packPhase: fts-trait-gap-fix
       reviewState: offline-generated-awaiting-validation
       worldCleanupFlag: ""
       folderTaxonomy: foundry-creature-type

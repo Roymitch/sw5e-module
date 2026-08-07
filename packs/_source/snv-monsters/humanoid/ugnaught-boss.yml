@@ -1,7 +1,7 @@
 _id: 15590120a421b0ad
 name: Ugnaught Boss
 type: npc
-img: systems/dnd5e/icons/svg/actors/npc.svg
+img: modules/sw5e-module/icons/packs/monsters/441_-_Ugnaught_Boss/Avatar.webp
 folder: a907e6b54e75b9d3
 items:
   - _id: bec355834b205ed3
@@ -18,7 +18,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-14
+          approvedBatch: fts-weapon-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Aura of Command.webp
     effects: []
     folder: null
@@ -119,7 +119,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-14
+          approvedBatch: fts-weapon-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
@@ -233,7 +233,7 @@ items:
           sandboxTemp: false
           prePublication: false
           trackedPack: snv-monsters
-          approvedBatch: fts-auto-14
+          approvedBatch: fts-weapon-gap-fix
           sourceActionNames:
             - Blaster Carbine
           duplicateActionProhibited: true
@@ -416,6 +416,204 @@ items:
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
     _key: "!actors.items!15590120a421b0ad.6e4d1c3b66dc7312"
+  - _id: cbbe068c74de90cb
+    name: Tusks
+    type: weapon
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: natural
+          kind: weaponNatural
+          sourceActionNames:
+            - Tusks
+          duplicateActionProhibited: true
+          canonicalWeaponSource: null
+          ammoSource: null
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-weapon-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/441_-_Ugnaught_Boss/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>*Melee Weapon Attack:* +3 to hit, reach 5 ft., one target. *Hit:* 4 (1d6 + 1) kinetic damage.</p>
+        chat: ""
+      source:
+        custom: SnV
+      quantity: 1
+      weight:
+        value: 1
+        units: lb
+      price:
+        value: 0
+        denomination: gc
+      attunement: ""
+      equipped: false
+      rarity: ""
+      identified: true
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 5
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: str
+      actionType: mwak
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 1d6+1
+            - kinetic
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      armor:
+        value: 10
+      hp:
+        value: 0
+        max: 0
+        dt: null
+        conditions: ""
+      modify:
+        chassis: none
+        augmentSlots: 0
+        modSlots: 4
+        items: []
+        changes: {}
+      weaponClass: ""
+      ammo:
+        target: null
+        value: null
+        use: null
+        types: []
+      properties: []
+      proficient: 1
+      type:
+        value: natural
+        subtype: ""
+        baseItem: ""
+      unidentified:
+        description: ""
+      attack:
+        bonus: ""
+        flat: false
+      container: null
+      attuned: false
+      enchantment: null
+      summons: null
+      magicalBonus: null
+      firingArc: ""
+      activities:
+        8c1d03eee29c1759:
+          _id: 8c1d03eee29c1759
+          type: attack
+          activation:
+            type: action
+            value: 1
+            condition: ""
+            override: false
+          attack:
+            ability: ""
+            bonus: "3"
+            flat: true
+            type:
+              classification: weapon
+              value: melee
+            critical: {}
+          damage:
+            critical: {}
+            includeBase: false
+            parts:
+              - number: 1
+                denomination: 6
+                bonus: "+1"
+                types:
+                  - kinetic
+                custom:
+                  enabled: false
+                  formula: ""
+                scaling:
+                  mode: ""
+                  number: null
+                  formula: ""
+          description: {}
+          duration:
+            units: inst
+            concentration: false
+            override: false
+          effects: []
+          range:
+            override: false
+            units: ft
+            value: "5"
+          target:
+            template:
+              contiguous: false
+              units: ft
+              type: ""
+            affects:
+              choice: false
+              type: creature
+              count: "1"
+            override: false
+            prompt: true
+          consumption:
+            targets: []
+            scaling:
+              allowed: false
+            spellSlot: true
+          uses:
+            spent: 0
+            max: ""
+            recovery: []
+          sort: 0
+      attackBonus: "3"
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!15590120a421b0ad.cbbe068c74de90cb"
   - _id: 4cdadb2a37afb36c
     _key: "!actors.items!15590120a421b0ad.4cdadb2a37afb36c"
     name: Techcasting
@@ -535,7 +733,7 @@ prototypeToken:
     negative: false
     priority: 0
   texture:
-    src: systems/dnd5e/icons/svg/actors/npc.svg
+    src: modules/sw5e-module/icons/packs/monsters/441_-_Ugnaught_Boss/Token.webp
     tint: "#ffffff"
     scaleX: 1
     scaleY: 1
@@ -1077,7 +1275,7 @@ flags:
       schemaVersion: fts-ir-0.1
       parseStatus: parsed-valid
       capabilityStatus: partially-supported
-      outputSelection: selected-fts-auto-14
+      outputSelection: selected-fts-weapon-gap-fix
       productionReadiness: prototype-validated
       nonproduction: false
       sandboxTemp: false
@@ -1087,16 +1285,24 @@ flags:
       generatedStatus: production
       manualOverrideStatus: false
       artwork:
-        path: systems/dnd5e/icons/svg/actors/npc.svg
-        tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
-        approval: approved-fallback
+        path: modules/sw5e-module/icons/packs/monsters/441_-_Ugnaught_Boss/Avatar.webp
+        tokenPath: modules/sw5e-module/icons/packs/monsters/441_-_Ugnaught_Boss/Token.webp
+        approval: approved
         source: module-existing
         loreConfidence: supported-by-exact-local-folder-name
+        directory: 441_-_Ugnaught_Boss
+        identityMatch: exact
+        tier: 1
+        exception: null
+        replacementStatus: null
+        externalProvenance: null
+        reviewAuthority: null
+        provenance: null
       lastGeneratedHash: aad3308abef309d0d4b63bb3bf8580a2fc90b437b58367cf33cc4b4bea1d8296
       prePublication: false
       trackedPack: snv-monsters
       collectionId: sw5e-module.snv-monsters
-      packPhase: fts-auto-14
+      packPhase: fts-weapon-gap-fix
       reviewState: offline-generated-awaiting-validation
       worldCleanupFlag: ""
       folderTaxonomy: foundry-creature-type

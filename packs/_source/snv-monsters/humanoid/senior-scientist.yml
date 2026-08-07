@@ -1,9 +1,221 @@
 _id: 4f08a86235876f43
 name: Senior Scientist
 type: npc
-img: systems/dnd5e/icons/svg/actors/npc.svg
+img: modules/sw5e-module/icons/packs/monsters/296_-_Senior_Scientist/Avatar.webp
 folder: a907e6b54e75b9d3
 items:
+  - _id: 40fd791a4ad6c55a
+    name: Sonic Pistol
+    type: weapon
+    img: modules/sw5e-module/icons/packs/Simple%20Blasters/SonicPistol.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:52:13.4504546+00:00"
+        importer_version: 3
+        uid: Weapon.name-sonic_pistol.equipmentCategory-weapon
+      sw5e:
+        properties:
+          powerCell: range 30/120
+          rel: 16
+          disruptive: true
+          reload: 16
+        reload:
+          types:
+            - powerCell
+        snvMonsters:
+          classification: manufactured
+          kind: weaponCarried
+          canonicalMatch: packs/_source/equipment/weapons/simple-blasters/sonic-pistol.yml
+          ammoModel: itemUses
+          sandboxTemp: false
+          prePublication: false
+          trackedPack: snv-monsters
+          approvedBatch: fts-weapon-gap-fix
+          sourceActionNames:
+            - Sonic Pistol
+          duplicateActionProhibited: true
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+    system:
+      description:
+        value: <p>*Ranged Weapon Attack:* +6 to hit, range 40/160 ft., one target. *Hit:* 5 (1d6 + 2) sonic damage.</p>
+        chat: ""
+      source:
+        custom: SnV
+      quantity: 1
+      weight:
+        value: 2
+        units: lb
+      price:
+        value: 375
+        denomination: gc
+      attunement: ""
+      equipped: false
+      rarity: ""
+      identified: true
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      cover: null
+      crewed: false
+      target:
+        value: "1"
+        width: null
+        units: ""
+        type: enemy
+        prompt: false
+      range:
+        value: 40
+        long: 160
+        units: ft
+      uses:
+        value: null
+        max: "16"
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: ""
+        amount: null
+        scale: false
+      ability: ""
+      actionType: rwak
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 1d6+2
+            - sonic
+        versatile: ""
+        base:
+          custom: {}
+          scaling:
+            number: 1
+            mode: ""
+          denomination: 4
+          number: 1
+          types:
+            - thunder
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      armor:
+        value: 10
+      hp:
+        value: 0
+        max: 0
+        dt: null
+        conditions: ""
+      modify:
+        chassis: none
+        augmentSlots: 0
+        modSlots: 4
+        items: []
+        changes: {}
+      weaponClass: sidearm
+      ammo:
+        target: null
+        value: null
+        use: null
+        types:
+          - powerCell
+      properties:
+        - powerCell
+        - disruptive
+        - rel
+      proficient: null
+      type:
+        value: simpleBL
+        subtype: ""
+        baseItem: sonicpistol
+      unidentified:
+        description: ""
+      attack:
+        bonus: "6"
+        flat: true
+      container: null
+      attuned: false
+      enchantment: null
+      summons: null
+      magicalBonus: null
+      firingArc: ""
+      activities:
+        ed454cd38b6a64f9:
+          _id: ed454cd38b6a64f9
+          activation:
+            type: action
+          attack:
+            ability: ""
+            bonus: "6"
+            flat: true
+            type:
+              classification: weapon
+              value: ranged
+          damage:
+            critical: {}
+            parts:
+              - number: 1
+                denomination: 6
+                bonus: "+2"
+                types:
+                  - sonic
+                custom:
+                  enabled: false
+                  formula: ""
+                scaling:
+                  mode: ""
+                  number: null
+                  formula: ""
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            override: false
+            units: ft
+            value: "30"
+          target:
+            template:
+              contiguous: false
+              units: ft
+              type: ""
+            affects:
+              choice: false
+              type: ""
+            override: false
+            prompt: false
+          type: attack
+          consumption:
+            targets:
+              - type: itemUses
+                target: ""
+                value: "1"
+      attackBonus: "6"
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493961237
+      modifiedTime: 1739121083882
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+    _key: "!actors.items!4f08a86235876f43.40fd791a4ad6c55a"
   - _id: 09e933ba62b9b439
     _key: "!actors.items!4f08a86235876f43.09e933ba62b9b439"
     name: Techcasting
@@ -4895,7 +5107,7 @@ prototypeToken:
     negative: false
     priority: 0
   texture:
-    src: systems/dnd5e/icons/svg/actors/npc.svg
+    src: modules/sw5e-module/icons/packs/monsters/296_-_Senior_Scientist/Token.webp
     tint: "#ffffff"
     scaleX: 1
     scaleY: 1
@@ -5437,7 +5649,7 @@ flags:
       schemaVersion: fts-ir-0.1
       parseStatus: parsed-valid
       capabilityStatus: partially-supported
-      outputSelection: selected-fts-auto-13
+      outputSelection: selected-fts-weapon-gap-fix
       productionReadiness: prototype-validated
       nonproduction: false
       sandboxTemp: false
@@ -5447,16 +5659,24 @@ flags:
       generatedStatus: production
       manualOverrideStatus: false
       artwork:
-        path: systems/dnd5e/icons/svg/actors/npc.svg
-        tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
-        approval: approved-fallback
+        path: modules/sw5e-module/icons/packs/monsters/296_-_Senior_Scientist/Avatar.webp
+        tokenPath: modules/sw5e-module/icons/packs/monsters/296_-_Senior_Scientist/Token.webp
+        approval: approved
         source: module-existing
         loreConfidence: supported-by-exact-local-folder-name
+        directory: 296_-_Senior_Scientist
+        identityMatch: exact
+        tier: 1
+        exception: null
+        replacementStatus: null
+        externalProvenance: null
+        reviewAuthority: null
+        provenance: null
       lastGeneratedHash: 7ef05af754139b750a6129783bfbff2fa8d89690b41642e539f5c5ae755e45ef
       prePublication: false
       trackedPack: snv-monsters
       collectionId: sw5e-module.snv-monsters
-      packPhase: fts-auto-13
+      packPhase: fts-weapon-gap-fix
       reviewState: offline-generated-awaiting-validation
       worldCleanupFlag: ""
       folderTaxonomy: foundry-creature-type

@@ -11,6 +11,7 @@ import { detectFeatures } from "./classify.mjs";
 import { generateGeneralizedActor, parseSkills } from "./generate-generalized.mjs";
 import { createEmptyIrEntry } from "./ir-schema.mjs";
 import { parseForcecasting, parseTechcasting } from "./parse-casting.mjs";
+import { classifySourceFeatures } from "./fts-populate.mjs";
 let passed = 0;
 function test(name, fn) {
 	try {
@@ -297,6 +298,17 @@ flags:
 		resetArtworkCachesForTests();
 		fs.rmSync(tempRoot, { recursive: true, force: true });
 	}
+});
+
+test("double-star Action weapon lines are counted for exactFeatures", () => {
+	const features = classifySourceFeatures(`
+*Medium humanoid*
+***Techcasting.*** The chemist is a techcaster.
+### Actions
+**Hold-Out Blaster.** *Ranged Weapon Attack:* +5 to hit, range 30/120 ft., one target. *Hit:* 4 (1d4 + 2) energy damage.
+**Electrobaton.** *Melee Weapon Attack:* +3 to hit, reach 5 ft., one target. *Hit:* 3 (1d4 + 1) kinetic damage.
+`);
+	assert.deepEqual(features.weaponAttacks.sort(), ["Electrobaton", "Hold-Out Blaster"].sort());
 });
 
 if ( !process.exitCode ) console.log(`\n${passed} fts embedding tests passed`);

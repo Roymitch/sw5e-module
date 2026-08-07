@@ -1,9 +1,207 @@
 _id: ee6e792545979848
 name: Chemist
 type: npc
-img: systems/dnd5e/icons/svg/actors/npc.svg
+img: modules/sw5e-module/icons/packs/monsters/294_-_Chemist/Avatar.webp
 folder: a907e6b54e75b9d3
 items:
+  - _id: 6084b87631abf6b5
+    name: Hold-Out Blaster
+    type: weapon
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: source-specific
+          kind: weaponSourceSpecific
+          sourceActionNames:
+            - Hold-Out Blaster
+          duplicateActionProhibited: true
+          canonicalWeaponSource: null
+          ammoSource: null
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-weapon-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/294_-_Chemist/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>*Ranged Weapon Attack:* +5 to hit, range 30/120 ft., one target. *Hit:* 4 (1d4 + 2) energy damage.</p>
+        chat: ""
+      source:
+        custom: SnV
+      quantity: 1
+      weight:
+        value: 1
+        units: lb
+      price:
+        value: 0
+        denomination: gc
+      attunement: ""
+      equipped: false
+      rarity: ""
+      identified: true
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 30
+        long: 120
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: dex
+      actionType: rwak
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 1d4+2
+            - energy
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      armor:
+        value: 10
+      hp:
+        value: 0
+        max: 0
+        dt: null
+        conditions: ""
+      modify:
+        chassis: none
+        augmentSlots: 0
+        modSlots: 4
+        items: []
+        changes: {}
+      weaponClass: ""
+      ammo:
+        target: null
+        value: null
+        use: null
+        types: []
+      properties: []
+      proficient: 1
+      type:
+        value: simpleM
+        subtype: ""
+        baseItem: ""
+      unidentified:
+        description: ""
+      attack:
+        bonus: ""
+        flat: false
+      container: null
+      attuned: false
+      enchantment: null
+      summons: null
+      magicalBonus: null
+      firingArc: ""
+      activities:
+        283c0f9d1a2f6520:
+          _id: 283c0f9d1a2f6520
+          type: attack
+          activation:
+            type: action
+            value: 1
+            condition: ""
+            override: false
+          attack:
+            ability: ""
+            bonus: "5"
+            flat: true
+            type:
+              classification: weapon
+              value: ranged
+            critical: {}
+          damage:
+            critical: {}
+            includeBase: false
+            parts:
+              - number: 1
+                denomination: 4
+                bonus: "+2"
+                types:
+                  - energy
+                custom:
+                  enabled: false
+                  formula: ""
+                scaling:
+                  mode: ""
+                  number: null
+                  formula: ""
+          description: {}
+          duration:
+            units: inst
+            concentration: false
+            override: false
+          effects: []
+          range:
+            override: false
+            units: ft
+            value: "30"
+          target:
+            template:
+              contiguous: false
+              units: ft
+              type: ""
+            affects:
+              choice: false
+              type: creature
+              count: "1"
+            override: false
+            prompt: true
+          consumption:
+            targets: []
+            scaling:
+              allowed: false
+            spellSlot: true
+          uses:
+            spent: 0
+            max: ""
+            recovery: []
+          sort: 0
+      attackBonus: "5"
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!ee6e792545979848.6084b87631abf6b5"
   - _id: b0993e4c01414353
     _key: "!actors.items!ee6e792545979848.b0993e4c01414353"
     name: Techcasting
@@ -3621,7 +3819,7 @@ prototypeToken:
     negative: false
     priority: 0
   texture:
-    src: systems/dnd5e/icons/svg/actors/npc.svg
+    src: modules/sw5e-module/icons/packs/monsters/294_-_Chemist/Token.webp
     tint: "#ffffff"
     scaleX: 1
     scaleY: 1
@@ -4163,7 +4361,7 @@ flags:
       schemaVersion: fts-ir-0.1
       parseStatus: parsed-valid
       capabilityStatus: partially-supported
-      outputSelection: selected-fts-auto-10
+      outputSelection: selected-fts-weapon-gap-fix
       productionReadiness: prototype-validated
       nonproduction: false
       sandboxTemp: false
@@ -4172,16 +4370,24 @@ flags:
       generatedStatus: production
       manualOverrideStatus: false
       artwork:
-        path: systems/dnd5e/icons/svg/actors/npc.svg
-        tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
-        approval: approved-fallback
+        path: modules/sw5e-module/icons/packs/monsters/294_-_Chemist/Avatar.webp
+        tokenPath: modules/sw5e-module/icons/packs/monsters/294_-_Chemist/Token.webp
+        approval: approved
         source: module-existing
         loreConfidence: supported-by-exact-local-folder-name
+        directory: 294_-_Chemist
+        identityMatch: exact
+        tier: 1
+        exception: null
+        replacementStatus: null
+        externalProvenance: null
+        reviewAuthority: null
+        provenance: null
       lastGeneratedHash: 6ddc97a62c87d6d8b8e5b9d4f8b36f6e6e8d8d525dbabd08ae2520b1efa6b0f5
       prePublication: false
       trackedPack: snv-monsters
       collectionId: sw5e-module.snv-monsters
-      packPhase: fts-auto-10
+      packPhase: fts-weapon-gap-fix
       reviewState: offline-generated-awaiting-validation
       worldCleanupFlag: ""
       folderTaxonomy: foundry-creature-type

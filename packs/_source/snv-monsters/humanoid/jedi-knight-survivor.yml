@@ -1,7 +1,7 @@
 _id: a00a3a6108c1aab6
 name: Jedi Knight Survivor
 type: npc
-img: systems/dnd5e/icons/svg/actors/npc.svg
+img: modules/sw5e-module/icons/packs/monsters/330_-_Jedi_Knight_Survivor/Avatar.webp
 folder: a907e6b54e75b9d3
 items:
   - _id: 1b797a67085631d3
@@ -18,7 +18,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Cunning Action.webp
     effects: []
     folder: null
@@ -117,8 +117,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/330_-_Jedi_Knight_Survivor/Avatar.webp
     effects: []
     folder: null
     system:
@@ -216,7 +216,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Force Resistance.webp
     effects: []
     folder: null
@@ -301,6 +301,303 @@ items:
       compendiumSource: null
       duplicateSource: null
     _key: "!actors.items!a00a3a6108c1aab6.0c6b49776a2d0559"
+  - _id: c24e9c52d46a2ea4
+    name: Deflection
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/330_-_Jedi_Knight_Survivor/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>When the survivor is the target of an attack, it adds 4 (1d8) to its AC against the attack.<br></p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!a00a3a6108c1aab6.c24e9c52d46a2ea4"
+  - _id: 49cdb0ea54f33d1c
+    name: Double Strike
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/330_-_Jedi_Knight_Survivor/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The survivor adds 4 (1d8) to the damage of one attack.<br></p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!a00a3a6108c1aab6.49cdb0ea54f33d1c"
+  - _id: a4f08f41633efb6d
+    name: Slow Time
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/330_-_Jedi_Knight_Survivor/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The survivor's speed increases by 5 x 1d8 until the end of its current turn.<br></p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!a00a3a6108c1aab6.a4f08f41633efb6d"
   - _id: 152b0dc8973c8731
     name: Multiattack
     type: feat
@@ -315,7 +612,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
@@ -427,7 +724,7 @@ items:
           sandboxTemp: false
           prePublication: false
           trackedPack: snv-monsters
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
           sourceActionNames:
             - Lightfoil
           duplicateActionProhibited: true
@@ -631,7 +928,7 @@ items:
           sandboxTemp: false
           prePublication: false
           trackedPack: snv-monsters
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
           sourceActionNames:
             - Blaster Pistol
           duplicateActionProhibited: true
@@ -4868,7 +5165,7 @@ prototypeToken:
     negative: false
     priority: 0
   texture:
-    src: systems/dnd5e/icons/svg/actors/npc.svg
+    src: modules/sw5e-module/icons/packs/monsters/330_-_Jedi_Knight_Survivor/Token.webp
     tint: "#ffffff"
     scaleX: 1
     scaleY: 1
@@ -5410,7 +5707,7 @@ flags:
       schemaVersion: fts-ir-0.1
       parseStatus: parsed-valid
       capabilityStatus: partially-supported
-      outputSelection: selected-fts-auto-03
+      outputSelection: selected-fts-trait-gap-fix
       productionReadiness: prototype-validated
       nonproduction: false
       sandboxTemp: false
@@ -5419,16 +5716,24 @@ flags:
       generatedStatus: production
       manualOverrideStatus: false
       artwork:
-        path: systems/dnd5e/icons/svg/actors/npc.svg
-        tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
-        approval: approved-fallback
+        path: modules/sw5e-module/icons/packs/monsters/330_-_Jedi_Knight_Survivor/Avatar.webp
+        tokenPath: modules/sw5e-module/icons/packs/monsters/330_-_Jedi_Knight_Survivor/Token.webp
+        approval: approved
         source: module-existing
         loreConfidence: supported-by-exact-local-folder-name
+        directory: 330_-_Jedi_Knight_Survivor
+        identityMatch: exact
+        tier: 1
+        exception: null
+        replacementStatus: null
+        externalProvenance: null
+        reviewAuthority: null
+        provenance: null
       lastGeneratedHash: 75b5edd239435e395fde294339501b4ee35b326cbe74b206e482daf4954ced6b
       prePublication: false
       trackedPack: snv-monsters
       collectionId: sw5e-module.snv-monsters
-      packPhase: fts-auto-03
+      packPhase: fts-trait-gap-fix
       reviewState: offline-generated-awaiting-validation
       worldCleanupFlag: ""
       folderTaxonomy: foundry-creature-type

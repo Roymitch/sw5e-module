@@ -1,7 +1,7 @@
 _id: 75e58d2039975098
 name: Rebel Jedi Master
 type: npc
-img: systems/dnd5e/icons/svg/actors/npc.svg
+img: modules/sw5e-module/icons/packs/monsters/337_-_Rebel_Jedi_Master/Avatar.webp
 folder: a907e6b54e75b9d3
 items:
   - _id: 5572a4dec9fbd492
@@ -18,8 +18,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-rem-02
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/337_-_Rebel_Jedi_Master/Avatar.webp
     effects: []
     folder: null
     system:
@@ -117,7 +117,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-rem-02
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Avoidance.webp
     effects: []
     folder: null
@@ -218,8 +218,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-rem-02
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/337_-_Rebel_Jedi_Master/Avatar.webp
     effects: []
     folder: null
     system:
@@ -319,8 +319,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-rem-02
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/337_-_Rebel_Jedi_Master/Avatar.webp
     effects: []
     folder: null
     system:
@@ -418,12 +418,12 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-rem-02
+          approvedBatch: fts-trait-gap-fix
           limitedUses:
             family: per-day
             max: 3
             runtimeAutomation: true
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+    img: modules/sw5e-module/icons/packs/monsters/337_-_Rebel_Jedi_Master/Avatar.webp
     effects: []
     folder: null
     system:
@@ -507,6 +507,303 @@ items:
       compendiumSource: null
       duplicateSource: null
     _key: "!actors.items!75e58d2039975098.448742e41624fdc8"
+  - _id: a4284eb72b265a21
+    name: Deflection
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/337_-_Rebel_Jedi_Master/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>When the jedi master is the target of an attack, it adds 4 (1d8) to its AC against the attack.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!75e58d2039975098.a4284eb72b265a21"
+  - _id: eb764ad404e97a91
+    name: Double Strike
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/337_-_Rebel_Jedi_Master/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The jedi master adds 9 (2d8) to the damage of one attack.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!75e58d2039975098.eb764ad404e97a91"
+  - _id: c15bf0ad1c4fd1ea
+    name: Slow Time
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/337_-_Rebel_Jedi_Master/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The jedi master's speed increases by 5 x 1d8 until the end of its current turn.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!75e58d2039975098.c15bf0ad1c4fd1ea"
   - _id: 3f5a24d11eab7c6d
     name: Multiattack
     type: feat
@@ -521,7 +818,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-rem-02
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
@@ -620,8 +917,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-rem-02
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/337_-_Rebel_Jedi_Master/Avatar.webp
     effects: []
     folder: null
     system:
@@ -738,7 +1035,7 @@ items:
           sandboxTemp: false
           prePublication: false
           trackedPack: snv-monsters
-          approvedBatch: fts-rem-02
+          approvedBatch: fts-trait-gap-fix
           sourceActionNames:
             - Lightfoil
           duplicateActionProhibited: true
@@ -942,7 +1239,7 @@ items:
           sandboxTemp: false
           prePublication: false
           trackedPack: snv-monsters
-          approvedBatch: fts-rem-02
+          approvedBatch: fts-trait-gap-fix
           sourceActionNames:
             - Blaster Pistol
           duplicateActionProhibited: true
@@ -5868,7 +6165,7 @@ prototypeToken:
     negative: false
     priority: 0
   texture:
-    src: systems/dnd5e/icons/svg/actors/npc.svg
+    src: modules/sw5e-module/icons/packs/monsters/337_-_Rebel_Jedi_Master/Token.webp
     tint: "#ffffff"
     scaleX: 1
     scaleY: 1
@@ -6410,7 +6707,7 @@ flags:
       schemaVersion: fts-ir-0.1
       parseStatus: parsed-valid
       capabilityStatus: partially-supported
-      outputSelection: selected-fts-rem-02
+      outputSelection: selected-fts-trait-gap-fix
       productionReadiness: prototype-validated
       nonproduction: false
       sandboxTemp: false
@@ -6421,16 +6718,24 @@ flags:
       generatedStatus: production
       manualOverrideStatus: false
       artwork:
-        path: systems/dnd5e/icons/svg/actors/npc.svg
-        tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
-        approval: approved-fallback
+        path: modules/sw5e-module/icons/packs/monsters/337_-_Rebel_Jedi_Master/Avatar.webp
+        tokenPath: modules/sw5e-module/icons/packs/monsters/337_-_Rebel_Jedi_Master/Token.webp
+        approval: approved
         source: module-existing
         loreConfidence: supported-by-exact-local-folder-name
+        directory: 337_-_Rebel_Jedi_Master
+        identityMatch: exact
+        tier: 1
+        exception: null
+        replacementStatus: null
+        externalProvenance: null
+        reviewAuthority: null
+        provenance: null
       lastGeneratedHash: 67f7022ad099c4d31700748ff6bf896620a4fa172ab84a12e325d2170a315c92
       prePublication: false
       trackedPack: snv-monsters
       collectionId: sw5e-module.snv-monsters
-      packPhase: fts-rem-02
+      packPhase: fts-trait-gap-fix
       reviewState: offline-generated-awaiting-validation
       worldCleanupFlag: ""
       folderTaxonomy: foundry-creature-type

@@ -1,7 +1,7 @@
 _id: 94e765f50a486cab
 name: Mistryl Prime
 type: npc
-img: systems/dnd5e/icons/svg/actors/npc.svg
+img: modules/sw5e-module/icons/packs/monsters/268_-_Mistryl_Prime/Avatar.webp
 folder: a907e6b54e75b9d3
 items:
   - _id: da0abd3521a75316
@@ -18,7 +18,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-12
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Assassinate.webp
     effects: []
     folder: null
@@ -119,7 +119,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-12
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Cunning Action.webp
     effects: []
     folder: null
@@ -218,7 +218,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-12
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Disruptive.webp
     effects: []
     folder: null
@@ -320,8 +320,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-12
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/268_-_Mistryl_Prime/Avatar.webp
     effects: []
     folder: null
     system:
@@ -421,12 +421,12 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-12
+          approvedBatch: fts-trait-gap-fix
           limitedUses:
             family: per-day
             max: 3
             runtimeAutomation: true
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+    img: modules/sw5e-module/icons/packs/monsters/268_-_Mistryl_Prime/Avatar.webp
     effects: []
     folder: null
     system:
@@ -524,8 +524,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-12
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/268_-_Mistryl_Prime/Avatar.webp
     effects: []
     folder: null
     system:
@@ -625,7 +625,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-12
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Sneak Attack.webp
     effects: []
     folder: null
@@ -726,8 +726,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-12
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/268_-_Mistryl_Prime/Avatar.webp
     effects: []
     folder: null
     system:
@@ -813,6 +813,310 @@ items:
       compendiumSource: null
       duplicateSource: null
     _key: "!actors.items!94e765f50a486cab.ec314ce53c79facc"
+  - _id: eeed1a26e4397c1c
+    name: "Focus Strike: Disarming Strike"
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/268_-_Mistryl_Prime/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>When the mistryl hits with a melee weapon attack, it can expend one focus point to force the target to make
+          a DC 17 Strength saving throw. On a failed save, the creature drops one melee weapon of the mistryl's choice
+          that it is wielding.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!94e765f50a486cab.eeed1a26e4397c1c"
+  - _id: 3276ac286662ec40
+    name: "Focus Strike: Open Strike"
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/268_-_Mistryl_Prime/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>When the mistryl hits with a melee weapon attack, it can expend one focus point to force the target to make
+          a DC 17 Strength or Dexterity saving throw (the creature chooses the ability to use) or be knocked prone.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!94e765f50a486cab.3276ac286662ec40"
+  - _id: e9f0336b2b754fb4
+    name: "Focus Strike: Stunning Strike"
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/268_-_Mistryl_Prime/Avatar.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>When the mistryl hits with a melee weapon attack, it can expend one focus point to force the target to make
+          a DC 17 Constitution saving throw or become stunned until the end of its next turn.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!94e765f50a486cab.e9f0336b2b754fb4"
   - _id: e9612c2e3e286bbe
     name: Multiattack
     type: feat
@@ -827,7 +1131,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-12
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
@@ -936,7 +1240,7 @@ items:
           sandboxTemp: false
           prePublication: false
           trackedPack: snv-monsters
-          approvedBatch: fts-auto-12
+          approvedBatch: fts-trait-gap-fix
           sourceActionNames:
             - Electrowhip
           duplicateActionProhibited: true
@@ -1142,7 +1446,7 @@ items:
           sandboxTemp: false
           prePublication: false
           trackedPack: snv-monsters
-          approvedBatch: fts-auto-12
+          approvedBatch: fts-trait-gap-fix
           sourceActionNames:
             - Techblade
           duplicateActionProhibited: true
@@ -1326,33 +1630,28 @@ items:
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
     _key: "!actors.items!94e765f50a486cab.9e0cfce998bacda6"
-  - name: Unarmed Strike
+  - _id: 100c648c649db994
+    name: Unarmed Strike
+    type: weapon
+    sort: 0
     flags:
-      sw5e-importer:
-        timestamp: "?"
-        importer_version: 3
-        uid: Weapon.name-unarmed_strike.equipmentCategory-weapon
       sw5e:
-        reload:
-          types: []
         snvMonsters:
-          classification: manufactured
-          kind: weaponCarried
-          canonicalMatch: packs/_source/equipment/weapons/natural-weapons/unarmed-strike.yml
-          ammoModel: itemUses
-          sandboxTemp: false
-          prePublication: false
-          trackedPack: snv-monsters
-          approvedBatch: fts-auto-12
+          prototype: false
+          classification: natural
+          kind: weaponNatural
           sourceActionNames:
             - Unarmed Strike
           duplicateActionProhibited: true
-      dnd5e:
-        riders:
-          activity: []
-          effect: []
-    type: weapon
-    img: modules/sw5e-module/icons/packs/Naturals/UnarmedStrike.webp
+          canonicalWeaponSource: null
+          ammoSource: null
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/268_-_Mistryl_Prime/Avatar.webp
+    effects: []
+    folder: null
     system:
       description:
         value: <p>*Melee Weapon Attack:* +10 to hit, reach 5 ft., one target. *Hit:* 9 (1d8 + 5) kinetic damage.</p>
@@ -1361,7 +1660,7 @@ items:
         custom: SnV
       quantity: 1
       weight:
-        value: 0
+        value: 1
         units: lb
       price:
         value: 0
@@ -1370,56 +1669,25 @@ items:
       equipped: false
       rarity: ""
       identified: true
-      type:
-        value: natural
-        subtype: ""
-        baseItem: unarmedstrike
       activation:
         type: action
         cost: 1
         condition: ""
-      target:
-        value: "1"
-        width: null
-        units: ""
-        type: enemy
-        prompt: false
-      range:
-        value: null
-        long: null
-        units: ft
-      actionType: mwak
-      damage:
-        parts:
-          - - 1d8+5
-            - kinetic
-        versatile: ""
-        base:
-          custom:
-            enabled: false
-          denomination: 1
-          number: 1
-          scaling:
-            number: 1
-            mode: ""
-          types:
-            - kinetic
-      weaponClass: ""
-      ammo:
-        types: []
-        target: ""
-        value: null
-        use: null
-      properties: []
-      unidentified:
-        description: ""
-      container: null
-      attuned: false
       duration:
         value: ""
         units: ""
       cover: null
       crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 5
+        long: null
+        units: ft
       uses:
         value: null
         max: ""
@@ -1431,26 +1699,27 @@ items:
         target: null
         amount: null
         scale: false
-      ability: null
-      attack:
-        bonus: "10"
-        flat: true
+      ability: str
+      actionType: mwak
       chatFlavor: ""
       critical:
         threshold: null
         damage: ""
-      enchantment: null
+      damage:
+        parts:
+          - - 1d8+5
+            - kinetic
+        versatile: ""
       formula: ""
       save:
         ability: ""
         dc: null
         scaling: spell
-      summons: null
       armor:
-        value: null
+        value: 10
       hp:
-        value: null
-        max: null
+        value: 0
+        max: 0
         dt: null
         conditions: ""
       modify:
@@ -1459,14 +1728,38 @@ items:
         modSlots: 4
         items: []
         changes: {}
+      weaponClass: ""
+      ammo:
+        target: null
+        value: null
+        use: null
+        types: []
+      properties: []
+      proficient: 1
+      type:
+        value: natural
+        subtype: ""
+        baseItem: ""
+      unidentified:
+        description: ""
+      attack:
+        bonus: ""
+        flat: false
+      container: null
+      attuned: false
+      enchantment: null
+      summons: null
       magicalBonus: null
-      proficient: null
       firingArc: ""
       activities:
         32480eec2204dc0c:
           _id: 32480eec2204dc0c
+          type: attack
           activation:
             type: action
+            value: 1
+            condition: ""
+            override: false
           attack:
             ability: ""
             bonus: "10"
@@ -1474,8 +1767,10 @@ items:
             type:
               classification: weapon
               value: melee
+            critical: {}
           damage:
             critical: {}
+            includeBase: false
             parts:
               - number: 1
                 denomination: 8
@@ -1492,42 +1787,45 @@ items:
           description: {}
           duration:
             units: inst
-          img: null
+            concentration: false
+            override: false
+          effects: []
           range:
             override: false
             units: ft
+            value: "5"
           target:
-            affects:
-              count: "1"
-              type: enemy
-              choice: false
-              special: ""
-            override: false
-            prompt: false
             template:
-              count: ""
               contiguous: false
-              stationary: false
-              type: ""
-              size: ""
-              width: ""
-              height: ""
               units: ft
-          type: attack
+              type: ""
+            affects:
+              choice: false
+              type: creature
+              count: "1"
+            override: false
+            prompt: true
+          consumption:
+            targets: []
+            scaling:
+              allowed: false
+            spellSlot: true
+          uses:
+            spent: 0
+            max: ""
+            recovery: []
+          sort: 0
       attackBonus: "10"
-    effects: []
-    _id: 100c648c649db994
-    folder: null
-    sort: 0
     ownership:
       default: 0
     _stats:
-      systemId: dnd5e
-      systemVersion: 5.2.5
-      coreVersion: "12.331"
-      createdTime: 1720296019804
-      modifiedTime: 1739121084621
-      lastModifiedBy: dnd5ebuilder0000
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
       duplicateSource: null
     _key: "!actors.items!94e765f50a486cab.100c648c649db994"
   - _id: 4f24d893d63b983f
@@ -1560,7 +1858,7 @@ items:
           sandboxTemp: false
           prePublication: false
           trackedPack: snv-monsters
-          approvedBatch: fts-auto-12
+          approvedBatch: fts-trait-gap-fix
           sourceActionNames:
             - Hold-Out
           duplicateActionProhibited: true
@@ -1762,8 +2060,8 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-12
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          approvedBatch: fts-trait-gap-fix
+    img: modules/sw5e-module/icons/packs/monsters/268_-_Mistryl_Prime/Avatar.webp
     effects: []
     folder: null
     system:
@@ -3661,7 +3959,7 @@ prototypeToken:
     negative: false
     priority: 0
   texture:
-    src: systems/dnd5e/icons/svg/actors/npc.svg
+    src: modules/sw5e-module/icons/packs/monsters/268_-_Mistryl_Prime/Token.webp
     tint: "#ffffff"
     scaleX: 1
     scaleY: 1
@@ -4203,7 +4501,7 @@ flags:
       schemaVersion: fts-ir-0.1
       parseStatus: parsed-valid
       capabilityStatus: partially-supported
-      outputSelection: selected-fts-auto-12
+      outputSelection: selected-fts-trait-gap-fix
       productionReadiness: prototype-validated
       nonproduction: false
       sandboxTemp: false
@@ -4214,16 +4512,24 @@ flags:
       generatedStatus: production
       manualOverrideStatus: false
       artwork:
-        path: systems/dnd5e/icons/svg/actors/npc.svg
-        tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
-        approval: approved-fallback
+        path: modules/sw5e-module/icons/packs/monsters/268_-_Mistryl_Prime/Avatar.webp
+        tokenPath: modules/sw5e-module/icons/packs/monsters/268_-_Mistryl_Prime/Token.webp
+        approval: approved
         source: module-existing
         loreConfidence: supported-by-exact-local-folder-name
+        directory: 268_-_Mistryl_Prime
+        identityMatch: exact
+        tier: 1
+        exception: null
+        replacementStatus: null
+        externalProvenance: null
+        reviewAuthority: null
+        provenance: null
       lastGeneratedHash: 1feb2b8a6b240a5132b63572daf6732e2488c2d07c123b8c082ee5a6cd60ff5e
       prePublication: false
       trackedPack: snv-monsters
       collectionId: sw5e-module.snv-monsters
-      packPhase: fts-auto-12
+      packPhase: fts-trait-gap-fix
       reviewState: offline-generated-awaiting-validation
       worldCleanupFlag: ""
       folderTaxonomy: foundry-creature-type

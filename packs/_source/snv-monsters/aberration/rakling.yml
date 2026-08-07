@@ -18,7 +18,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: n3a-p1
+          approvedBatch: fts-rakling-actions-fix
           chargeKnockdownFollowup:
             family: charge-knockdown-followup
             featureName: Savage Leap
@@ -136,7 +136,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: n3a-p1
+          approvedBatch: fts-rakling-actions-fix
     img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
     effects: []
     folder: null
@@ -850,6 +850,39 @@ system:
     lair:
       value: false
       initiative: 0
+  powercasting:
+    force:
+      points:
+        value: 0
+        max: null
+        temp: null
+        tempmax: null
+        bonuses:
+          level: ""
+          overall: ""
+      schools:
+        lgt:
+          attr: wis
+          dc: null
+        uni:
+          attr: ""
+          dc: null
+        drk:
+          attr: cha
+          dc: null
+    tech:
+      points:
+        value: 0
+        max: null
+        temp: null
+        tempmax: null
+        bonuses:
+          level: ""
+          overall: ""
+      schools:
+        tec:
+          attr: int
+          dc: null
 flags:
   sw5e:
     dataVersion: 1.2.4
@@ -859,14 +892,14 @@ flags:
       notProductionIdentity: false
       sourceEntry: Rakling
       sourceSection: Aberrations
-      sourceOrder: 500
+      sourceOrder: 0
       sourceHash: bb1b9088a35c714c69e0a84a497b23b60d61f6bca7eb764b63fab8edac3d9bbb
       semanticKey: snv:Aberrations:rakling
-      generatorVersion: n2-2026-08-04
-      schemaVersion: n2-ir-0.1
+      generatorVersion: fts-2026-08-06
+      schemaVersion: fts-ir-0.1
       parseStatus: parsed-valid
       capabilityStatus: fully-supported
-      outputSelection: selected-n3a-p1
+      outputSelection: selected-fts-rakling-actions-fix
       productionReadiness: prototype-validated
       nonproduction: false
       sandboxTemp: false
@@ -876,18 +909,33 @@ flags:
       artwork:
         path: systems/dnd5e/icons/svg/actors/npc.svg
         tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
-        approval: approved-fallback
-        source: module-existing
-        loreConfidence: supported-by-exact-local-folder-name
+        approval: approved-generic-fallback
+        source: approved-generic-fallback
+        loreConfidence: generic-fallback
+        directory: null
+        identityMatch: none
+        tier: 4
+        exception: npc-svg-fallback
+        replacementStatus: needs-replacement
+        externalProvenance: null
+        reviewAuthority: null
+        provenance: null
       lastGeneratedHash: bb1b9088a35c714c69e0a84a497b23b60d61f6bca7eb764b63fab8edac3d9bbb
       prePublication: false
       trackedPack: snv-monsters
       collectionId: sw5e-module.snv-monsters
-      packPhase: n3a-p1-aberrations
+      packPhase: fts-rakling-actions-fix
       reviewState: offline-generated-awaiting-validation
       worldCleanupFlag: ""
       folderTaxonomy: foundry-creature-type
       creatureTypeFolder: Aberration
+      forceTechEmbedding:
+        forcePowers: []
+        techPowers: []
+        missingCanonical: []
+      superiorityEmbedding:
+        maneuvers: []
+        missingCanonical: []
 ownership:
   default: 0
 _stats:

@@ -130,7 +130,8 @@ const NATURAL_MELEE_WEAPON_NAMES = new Set([
 	"attach",
 	"strangling tentacle",
 	"pseudopod",
-	"tendril"
+	"tendril",
+	"unarmed strike"
 ]);
 
 const NATURAL_RANGED_WEAPON_NAMES = new Set([
@@ -1426,11 +1427,14 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 			weaponDoc.folder = null;
 			weaponDoc.flags = weaponDoc.flags || {};
 			weaponDoc.flags.sw5e = weaponDoc.flags.sw5e || {};
+			const canonPath = String(canon.resolved?.canonical?.path || "").replace(/\\/g, "/");
+			const canonType = weaponDoc.system?.type?.value;
+			const isCanonNatural = canonType === "natural" || canonPath.includes("/natural-weapons/");
 			weaponDoc.flags.sw5e.snvMonsters = {
-				classification: "manufactured",
-				kind: "weaponCarried",
+				classification: isCanonNatural ? "natural" : "manufactured",
+				kind: isCanonNatural ? "weaponNatural" : "weaponCarried",
 				canonicalMatch: canon.resolved.canonical.path,
-				ammoModel: "itemUses",
+				ammoModel: isCanonNatural ? null : "itemUses",
 				sandboxTemp: nonproduction,
 				prePublication: nonproduction,
 				trackedPack: "snv-monsters",

@@ -760,4 +760,35 @@ The beast can take 3 legendary actions.
 	assert.equal(exceptions.some(e => e.mechanic === "legendary-actions"), false);
 });
 
+test("Unarmed Strike remains natural, not manufactured", () => {
+	const body = `
+*Medium humanoid*
+- Armor Class 14
+- Hit Points 30 (4d8+8)
+- Speed 30 ft.
+| STR | DEX | CON | INT | WIS | CHA |
+| 14 (+2) | 14 (+2) | 14 (+2) | 10 (+0) | 12 (+1) | 10 (+0) |
+- Challenge 1 (200 XP)
+### Actions
+**Unarmed Strike.** *Melee Weapon Attack:* +4 to hit, reach 5 ft., one target. *Hit:* 5 (1d4+2) kinetic damage.
+`;
+	const f = detectFeatures(body);
+	const ir = createEmptyIrEntry({
+		sourceName: "Synthetic Brawler",
+		semanticKey: "snv:Humanoids:synthetic-brawler",
+		features: f,
+		unsupportedMechanics: deriveCapability(f).unsupportedMechanics,
+		parseStatus: "parsed-valid",
+		capabilityStatus: "generator-supported",
+		outputSelection: "selected-edge-case",
+		productionReadiness: "prototype-validated"
+	});
+	const { actor } = generateGeneralizedActor({ irEntry: ir, body });
+	const strike = (actor.items || []).find(i => i.name === "Unarmed Strike");
+	assert.ok(strike, "Unarmed Strike item present");
+	assert.equal(strike.system?.type?.value, "natural");
+	assert.equal(strike.flags?.sw5e?.snvMonsters?.classification, "natural");
+	assert.equal(strike.flags?.sw5e?.snvMonsters?.kind, "weaponNatural");
+});
+
 if ( !process.exitCode ) console.log(`\n${passed} generalized tests passed`);

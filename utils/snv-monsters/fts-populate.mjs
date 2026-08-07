@@ -7,6 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import yaml from "js-yaml";
 import crypto from "node:crypto";
+import { fileURLToPath } from "node:url";
 import { resolveExactMonsterArtwork } from "./artwork.mjs";
 import {
 	CREATURE_TYPE_FOLDERS,
@@ -47,32 +48,48 @@ function parseDescriptorType(body) {
 }
 
 /** Minimal feature split for production exactFeatures accounting. */
-function classifySourceFeatures(body) {
+export function classifySourceFeatures(body) {
 	const text = stripBlockquotes(body);
 	const weaponAttacks = [];
 	const nonAttackActions = [];
 	const passives = [];
 	// Actions only — Legendary/Reaction weapon lines must not pollute Actions accounting.
 	const actionBlock = text.match(/###\s+Actions\b([\s\S]*?)(?=###\s+|\pagebreakNum|$)/i)?.[1] || "";
-	// Accept trailing period or SnV omissions (`***Name***` without `.`).
-	const featureNameRe = /\*\*\*([^*]+?)\.?\*\*\*/g;
-	// Weapon Attack lines may use +hit OR Rapid/save-only wording (no +N required).
-	const attackNameRe = /\*\*\*([^*]+?)\.?\*\*\*\s*\*?(?:Melee|Ranged) Weapon Attack:/gi;
-	let match;
-	while ( (match = attackNameRe.exec(actionBlock)) ) {
-		weaponAttacks.push(match[1].trim());
+	// Triple-star may omit the inner period; double-star requires `**Name.**` so stat-block
+	// labels like `**Armor Class**` are not treated as features.
+	const featureNameRes = [
+		/\*\*\*([^*]+?)\.?\*\*\*/g,
+		/\*\*([^*]+?)\.\*\*/g
+	];
+	const attackNameRes = [
+		/\*\*\*([^*]+?)\.?\*\*\*\s*\*?(?:Melee|Ranged) Weapon Attack:/gi,
+		/\*\*([^*]+?)\.\*\*\s*\*?(?:Melee|Ranged) Weapon Attack:/gi
+	];
+	for ( const attackNameRe of attackNameRes ) {
+		let match;
+		while ( (match = attackNameRe.exec(actionBlock)) ) {
+			weaponAttacks.push(match[1].trim());
+		}
 	}
-	const actionNames = [...actionBlock.matchAll(featureNameRe)].map(m => m[1].trim());
+	const actionNames = [];
+	for ( const featureNameRe of featureNameRes ) {
+		actionNames.push(...[...actionBlock.matchAll(featureNameRe)].map(m => m[1].trim()));
+	}
 	for ( const name of actionNames ) {
 		if ( weaponAttacks.includes(name) ) continue;
+		if ( /^the target must/i.test(name) ) continue;
 		nonAttackActions.push(name);
 	}
 	const traitRegion = text.split(/###\s+Actions\b/i)[0] || text;
-	for ( const m of traitRegion.matchAll(featureNameRe) ) {
-		const name = m[1].trim();
-		if ( /^(?:Innate\s+)?(?:Force|Tech)casting$/i.test(name) ) continue;
-		if ( /^Superiority$/i.test(name) ) continue;
-		passives.push(name);
+	for ( const featureNameRe of featureNameRes ) {
+		for ( const m of traitRegion.matchAll(featureNameRe) ) {
+			const name = m[1].trim();
+			if ( /^(?:Innate\s+)?(?:Force|Tech)casting$/i.test(name) ) continue;
+			if ( /^Superiority$/i.test(name) ) continue;
+			if ( /^the target must/i.test(name) ) continue;
+			if ( /^(Armor Class|Hit Points|Speed|Challenge|Proficiency Bonus|Saving Throws|Skills|Damage|Condition|Senses|Languages)\b/i.test(name) ) continue;
+			passives.push(name);
+		}
 	}
 	return {
 		passives: [...new Set(passives)],
@@ -443,9 +460,17 @@ function writeBatch(batchId) {
 				missingCanonical: (forceTechEmbed?.exceptions || []).filter(e => e.type === "canonical-match-missing")
 			});
 		} catch ( err ) {
-			// Drop identity pin for actors that never landed on disk in this write.
-			delete map.actors[candidate.semanticKey];
-			failures.push({ name: candidate.name, hard: [{ type: "generator-throw", message: String(err?.message || err) }] });
+			// Drop identity pins only for actors that never landed on disk.
+			// Remount failures must not erase existing production pins.
+			const yamlExists = fs.existsSync(path.join(ROOT, candidate.yamlPath));
+			if ( !yamlExists ) {
+				delete map.actors[candidate.semanticKey];
+			}
+			failures.push({
+				name: candidate.name,
+				hard: [{ type: "generator-throw", message: String(err?.message || err) }],
+				identityPinPreserved: yamlExists
+			});
 		}
 	}
 	fs.writeFileSync(mapPath, `${JSON.stringify(map, null, 2)}\n`);
@@ -469,24 +494,27 @@ export function registerDynamicBatch(batchId, names, note = null) {
 	return BATCHES[batchId];
 }
 
-const args = process.argv.slice(2);
-const mode = args[0];
-const batchId = args[1];
-if ( mode === "--prepare" ) {
-	const { ledgerPath, ledger } = buildLedger(batchId);
-	console.log(JSON.stringify({ ledgerPath, actors: ledger.counts }, null, 2));
-} else if ( mode === "--write" ) {
-	writeBatch(batchId);
-} else if ( mode === "--write-names" ) {
-	// node fts-populate.mjs --write-names <batchId> Name1|Name2|...
-	const names = String(args[2] || "").split("|").map(s => s.trim()).filter(Boolean);
-	if ( !batchId || !names.length ) {
-		console.error("Usage: node utils/snv-monsters/fts-populate.mjs --write-names <batchId> Name1|Name2|...");
+const isDirectRun = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if ( isDirectRun ) {
+	const args = process.argv.slice(2);
+	const mode = args[0];
+	const batchId = args[1];
+	if ( mode === "--prepare" ) {
+		const { ledgerPath, ledger } = buildLedger(batchId);
+		console.log(JSON.stringify({ ledgerPath, actors: ledger.counts }, null, 2));
+	} else if ( mode === "--write" ) {
+		writeBatch(batchId);
+	} else if ( mode === "--write-names" ) {
+		// node fts-populate.mjs --write-names <batchId> Name1|Name2|...
+		const names = String(args[2] || "").split("|").map(s => s.trim()).filter(Boolean);
+		if ( !batchId || !names.length ) {
+			console.error("Usage: node utils/snv-monsters/fts-populate.mjs --write-names <batchId> Name1|Name2|...");
+			process.exit(1);
+		}
+		registerDynamicBatch(batchId, names);
+		writeBatch(batchId);
+	} else {
+		console.error("Usage: node utils/snv-monsters/fts-populate.mjs --prepare|--write <batchId> | --write-names <batchId> Name1|...");
 		process.exit(1);
 	}
-	registerDynamicBatch(batchId, names);
-	writeBatch(batchId);
-} else {
-	console.error("Usage: node utils/snv-monsters/fts-populate.mjs --prepare|--write <batchId> | --write-names <batchId> Name1|...");
-	process.exit(1);
 }

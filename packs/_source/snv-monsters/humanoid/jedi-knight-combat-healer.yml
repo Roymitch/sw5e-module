@@ -18,7 +18,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
     img: modules/sw5e-module/icons/packs/Monster Traits/Cunning Action.webp
     effects: []
     folder: null
@@ -117,7 +117,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
@@ -218,7 +218,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
@@ -319,7 +319,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
@@ -406,6 +406,209 @@ items:
       compendiumSource: null
       duplicateSource: null
     _key: "!actors.items!e1a77db85862a670.a41a41c6ca98d073"
+  - _id: 237ccdb68952e83d
+    name: Distant Power
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>When the healer casts a power that has a range of 5 feet or greater, it can spend 1 additional force point
+          to double the range of the power. Alternatively, when the healer casts a power that has a range of touch, it
+          can spend 1 additional force point to make the range of the power 30 feet.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!e1a77db85862a670.237ccdb68952e83d"
+  - _id: 346b63a9baa20439
+    name: Quickened Power
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        snvMonsters:
+          prototype: false
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          prePublication: false
+          trackedPack: snv-monsters
+          sandboxTemp: false
+          approvedBatch: fts-trait-gap-fix
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>When the healer casts a power that has a casting time of 1 action, it can spend 2 additional force points
+          to change the casting time to 1 bonus action for this casting.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: SnV
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!e1a77db85862a670.346b63a9baa20439"
   - _id: 707cb583efc17a7d
     name: Preserve Life (4/Day)
     type: feat
@@ -420,7 +623,7 @@ items:
           prePublication: false
           trackedPack: snv-monsters
           sandboxTemp: false
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
           limitedUses:
             family: per-day
             max: 4
@@ -539,7 +742,7 @@ items:
           sandboxTemp: false
           prePublication: false
           trackedPack: snv-monsters
-          approvedBatch: fts-auto-03
+          approvedBatch: fts-trait-gap-fix
           sourceActionNames:
             - Lightfoil
           duplicateActionProhibited: true
@@ -6876,7 +7079,7 @@ flags:
       schemaVersion: fts-ir-0.1
       parseStatus: parsed-valid
       capabilityStatus: partially-supported
-      outputSelection: selected-fts-auto-03
+      outputSelection: selected-fts-trait-gap-fix
       productionReadiness: prototype-validated
       nonproduction: false
       sandboxTemp: false
@@ -6889,14 +7092,22 @@ flags:
       artwork:
         path: systems/dnd5e/icons/svg/actors/npc.svg
         tokenPath: systems/dnd5e/icons/svg/actors/npc.svg
-        approval: approved-fallback
-        source: module-existing
-        loreConfidence: supported-by-exact-local-folder-name
+        approval: approved-generic-fallback
+        source: approved-generic-fallback
+        loreConfidence: generic-fallback
+        directory: null
+        identityMatch: none
+        tier: 4
+        exception: npc-svg-fallback
+        replacementStatus: needs-replacement
+        externalProvenance: null
+        reviewAuthority: null
+        provenance: null
       lastGeneratedHash: ba5c0484079ea9678015ec60b310d2f56792cfa925998728bd09e0d0e7aaacbf
       prePublication: false
       trackedPack: snv-monsters
       collectionId: sw5e-module.snv-monsters
-      packPhase: fts-auto-03
+      packPhase: fts-trait-gap-fix
       reviewState: offline-generated-awaiting-validation
       worldCleanupFlag: ""
       folderTaxonomy: foundry-creature-type
