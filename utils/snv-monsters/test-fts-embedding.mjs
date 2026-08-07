@@ -3,7 +3,9 @@
  */
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import { resolveExactMonsterArtwork } from "./artwork.mjs";
+import os from "node:os";
+import path from "node:path";
+import { formatMonsterArtworkFolderName, resetArtworkCachesForTests, resolveExactMonsterArtwork } from "./artwork.mjs";
 import { buildCanonicalPowerIndex, loadAndCloneCanonicalPower, resolveCanonicalPower } from "./canonical-powers.mjs";
 import { detectFeatures } from "./classify.mjs";
 import { generateGeneralizedActor, parseSkills } from "./generate-generalized.mjs";
@@ -230,4 +232,71 @@ test("generic NPC fallback is approved production art with replacement status", 
 	assert.match(art.avatarPath, /npc\.svg$/);
 });
 
-console.log(`\n${passed} fts embedding tests passed`);
+test("generated artwork folder names preserve exact-name scan encoding", () => {
+	assert.equal(
+		formatMonsterArtworkFolderName(400, "Purge Trooper, Commander"),
+		"400_-_Purge_Trooper_2C__Commander"
+	);
+	assert.equal(
+		formatMonsterArtworkFolderName(401, "Beggar's Canyon Womp Rat"),
+		"401_-_Beggar_27s_Canyon_Womp_Rat"
+	);
+	assert.equal(
+		formatMonsterArtworkFolderName(402, "Hunter's"),
+		"402_-_Hunter_27s_"
+	);
+});
+
+test("exact-folder scan preserves generated artwork provenance from current actor state", () => {
+	const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "snv-artwork-"));
+	const iconRoot = path.join(tempRoot, "icons");
+	const packRoot = path.join(tempRoot, "pack");
+	const folderName = formatMonsterArtworkFolderName(777, "Purge Trooper, Commander");
+	const actorPath = path.join(packRoot, "humanoid", "purge-trooper-commander.yml");
+	const avatarPath = `modules/sw5e-module/icons/packs/monsters/${folderName}/Avatar.webp`;
+	const tokenPath = `modules/sw5e-module/icons/packs/monsters/${folderName}/Token.webp`;
+	fs.mkdirSync(path.join(iconRoot, folderName), { recursive: true });
+	fs.mkdirSync(path.dirname(actorPath), { recursive: true });
+	fs.writeFileSync(path.join(iconRoot, folderName, "Avatar.webp"), "avatar");
+	fs.writeFileSync(path.join(iconRoot, folderName, "Token.webp"), "token");
+	fs.writeFileSync(actorPath, `name: Purge Trooper, Commander
+img: ${avatarPath}
+prototypeToken:
+  texture:
+    src: ${tokenPath}
+flags:
+  sw5e:
+    snvMonsters:
+      artwork:
+        path: ${avatarPath}
+        tokenPath: ${tokenPath}
+        approval: generated-original-reviewed
+        source: ai-generated-original
+        reviewAuthority: automated-baseline-review
+        provenance:
+          tool: GenerateImage
+          generatedOn: 2026-08-07
+          unofficialFanContent: true
+`);
+	try {
+		resetArtworkCachesForTests();
+		const art = resolveExactMonsterArtwork("Purge Trooper, Commander", {
+			folderId: "a907e6b54e75b9d3",
+			roots: {
+				monsterIconRoot: iconRoot,
+				packSourceRoot: packRoot,
+				eligibilityLedgerPath: path.join(tempRoot, "missing-ledger.json")
+			}
+		});
+		assert.equal(art.tier, 1);
+		assert.equal(art.approvalStatus, "generated-original-reviewed");
+		assert.equal(art.source, "ai-generated-original");
+		assert.equal(art.reviewAuthority, "automated-baseline-review");
+		assert.equal(art.provenance?.unofficialFanContent, true);
+	} finally {
+		resetArtworkCachesForTests();
+		fs.rmSync(tempRoot, { recursive: true, force: true });
+	}
+});
+
+if ( !process.exitCode ) console.log(`\n${passed} fts embedding tests passed`);

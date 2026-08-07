@@ -1274,25 +1274,29 @@ function buildActorFromScaffold(actorScaffold, { irEntry, actorId, parsed, artwo
 			path: artwork.avatarPath,
 			tokenPath: artwork.tokenPath,
 			approval: artwork.approvalStatus || "approved",
-			source: artwork.tier === 3
+			source: artwork.source || (artwork.tier === 3
 				? "external-redistributable"
 				: artwork.tier === 4
 					? "approved-generic-fallback"
-					: "module-existing",
+					: "module-existing"),
 			loreConfidence: artwork.loreAccuracy || "supported-by-exact-local-folder-name",
 			directory: artwork.directory || null,
 			identityMatch: artwork.identityMatch || null,
 			tier: artwork.tier ?? null,
 			exception: artwork.artworkException || null,
 			replacementStatus: artwork.artworkReplacementStatus || null,
-			externalProvenance: artwork.externalProvenance || null
+			externalProvenance: artwork.externalProvenance || null,
+			reviewAuthority: artwork.reviewAuthority || null,
+			provenance: artwork.provenance || null
 		} : {
 			path: actor.img,
 			approval: "approved-generic-fallback",
 			source: "approved-generic-fallback",
 			exception: "npc-svg-fallback",
 			replacementStatus: "needs-replacement",
-			tier: 4
+			tier: 4,
+			reviewAuthority: null,
+			provenance: null
 		},
 		lastGeneratedHash: irEntry.rawSourceHash,
 		prePublication: nonproduction,
@@ -1377,7 +1381,7 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 			feature.name === name && feature.section === sourceSection
 		) || parsed.featureEntries.find(feature => feature.name === name) || null;
 		if ( !entry && name === "Legendary Actions" ) {
-			const match = text.match(/###\s+Legendary Actions\b([\s\S]*?)(?=###\s+|\pagebreakNum|$)/i);
+			const match = text.match(/###\s+Legendary Actions\b([\s\S]*?)(?=###\s+|\\pagebreakNum|$)/i);
 			if ( match ) {
 				entry = {
 					name,
