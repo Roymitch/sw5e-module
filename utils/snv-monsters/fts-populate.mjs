@@ -287,17 +287,21 @@ function pinIdentity(batchId, ledger, spec) {
 				key: `!folders!${folder.id}`,
 				pinned: true,
 				origin: "n3-folder-taxonomy",
-				folderTaxonomy: "foundry-creature-type"
+				folderTaxonomy: "foundry-creature-type",
+				reservedUntilPopulated: true
 			};
-		}
-		if ( map.folders[folder.semanticKey]?.reservedUntilPopulated ) {
-			delete map.folders[folder.semanticKey].reservedUntilPopulated;
-			map.folders[folder.semanticKey].origin = "n3-folder-taxonomy";
 		}
 	}
 	for ( const candidate of ledger.finalCandidates ) {
 		const folder = getCreatureTypeFolder(candidate.folderAssignment.folderName);
-		if ( folder ) ensureCreatureTypeFolderYaml(folder);
+		if ( !folder ) continue;
+		ensureCreatureTypeFolderYaml(folder);
+		const pin = map.folders[folder.semanticKey];
+		if ( pin?.reservedUntilPopulated ) {
+			delete pin.reservedUntilPopulated;
+			// Preserve N1 baseline folder origins (Beast/Construct/Droid/Humanoid).
+			if ( pin.origin !== "n1-committed" ) pin.origin = "n3-folder-taxonomy";
+		}
 	}
 	const actors = {};
 	for ( const candidate of ledger.finalCandidates ) {
