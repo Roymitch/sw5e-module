@@ -52,19 +52,23 @@ function classifySourceFeatures(body) {
 	const weaponAttacks = [];
 	const nonAttackActions = [];
 	const passives = [];
-	const attackNameRe = /\*\*\*([^*]+)\.\*\*\*\s*\*?(?:Melee|Ranged) Weapon Attack:\*?\s*[+-]\d+/gi;
+	// Actions only — Legendary/Reaction weapon lines must not pollute Actions accounting.
+	const actionBlock = text.match(/###\s+Actions\b([\s\S]*?)(?=###\s+|\pagebreakNum|$)/i)?.[1] || "";
+	// Accept trailing period or SnV omissions (`***Name***` without `.`).
+	const featureNameRe = /\*\*\*([^*]+?)\.?\*\*\*/g;
+	// Weapon Attack lines may use +hit OR Rapid/save-only wording (no +N required).
+	const attackNameRe = /\*\*\*([^*]+?)\.?\*\*\*\s*\*?(?:Melee|Ranged) Weapon Attack:/gi;
 	let match;
-	while ( (match = attackNameRe.exec(text)) ) {
+	while ( (match = attackNameRe.exec(actionBlock)) ) {
 		weaponAttacks.push(match[1].trim());
 	}
-	const actionBlock = text.match(/###\s+Actions\b([\s\S]*?)(?=###\s+|\pagebreakNum|$)/i)?.[1] || "";
-	const actionNames = [...actionBlock.matchAll(/\*\*\*([^*]+)\.\*\*\*/g)].map(m => m[1].trim());
+	const actionNames = [...actionBlock.matchAll(featureNameRe)].map(m => m[1].trim());
 	for ( const name of actionNames ) {
 		if ( weaponAttacks.includes(name) ) continue;
 		nonAttackActions.push(name);
 	}
 	const traitRegion = text.split(/###\s+Actions\b/i)[0] || text;
-	for ( const m of traitRegion.matchAll(/\*\*\*([^*]+)\.\*\*\*/g) ) {
+	for ( const m of traitRegion.matchAll(featureNameRe) ) {
 		const name = m[1].trim();
 		if ( /^(?:Innate\s+)?(?:Force|Tech)casting$/i.test(name) ) continue;
 		if ( /^Superiority$/i.test(name) ) continue;

@@ -426,7 +426,7 @@ function parseFeatureEntries(text) {
 			flush();
 			continue;
 		}
-		const named = line.match(/^\*{2,3}([^*]+?)\.\*{2,3}\s*(.*)$/);
+		const named = line.match(/^\*{2,3}([^*]+?)\.?\*{2,3}\s*(.*)$/);
 		if ( named ) {
 			flush();
 			current = { section, name: named[1].trim(), text: named[2].trim() };
@@ -486,23 +486,29 @@ function parseAttackEntry(entry) {
 	const withoutHit = withHit ? null : entry.text.match(
 		/\*?(Melee(?:\s+or\s+Ranged)?|Ranged) Weapon Attack:\*?\s*([+-]\d+)(?:\s*to hit)?,\s*(.*?)\.\s*(.+)$/i
 	);
+	// Rapid / save-resolution weapon lines omit +hit (e.g. Carbine Rifle Rapid N).
+	const rapidOrSave = (withHit || withoutHit) ? null : entry.text.match(
+		/\*?(Melee(?:\s+or\s+Ranged)?|Ranged) Weapon Attack:\*?\s*(?:Rapid\s+\d+\s*,\s*)?(.*?)\.\s*(.+)$/i
+	);
 	const attackMatch = withHit || withoutHit;
-	if ( !attackMatch ) return null;
-	const targetingClause = attackMatch[3].trim();
-	const hitText = (attackMatch[4] || "").replace(/\s+/g, " ").trim().replace(/\.*$/, "");
+	if ( !attackMatch && !rapidOrSave ) return null;
+	const kindSource = attackMatch ? attackMatch[1] : rapidOrSave[1];
+	const targetingClause = (attackMatch ? attackMatch[3] : rapidOrSave[2]).trim();
+	const hitText = ((attackMatch ? attackMatch[4] : rapidOrSave[3]) || "").replace(/\s+/g, " ").trim().replace(/\.*$/, "");
 	const reachMatch = targetingClause.match(/reach\s+(\d+)\s*ft\.?/i);
 	const rangeMatch = targetingClause.match(/(?:range\s+|or\s+)(\d+)(?:\/(\d+))?\s*ft\.?/i);
-	const dualMode = /melee\s+or\s+ranged/i.test(attackMatch[1]);
-	const kind = dualMode ? "ranged" : attackMatch[1].toLowerCase();
+	const dualMode = /melee\s+or\s+ranged/i.test(kindSource);
+	const kind = dualMode ? "ranged" : kindSource.toLowerCase();
 	const damage = parseDamageFormula(hitText);
+	const bonus = attackMatch ? attackMatch[2] : "+0";
 	return {
 		name: entry.name,
 		section: entry.section,
 		description: entry.text,
 		kind,
 		dualMode,
-		bonus: attackMatch[2],
-		flatBonus: String(attackMatch[2]).replace(/^\+/, ""),
+		bonus,
+		flatBonus: String(bonus).replace(/^\+/, ""),
 		reach: reachMatch ? Number(reachMatch[1]) : null,
 		range: rangeMatch ? Number(rangeMatch[1]) : null,
 		long: rangeMatch?.[2] ? Number(rangeMatch[2]) : null,
@@ -511,7 +517,8 @@ function parseAttackEntry(entry) {
 		hit: hitText,
 		damageFormula: damage.formula || "",
 		damageType: damage.type || "kinetic",
-		damageOptional: !withHit
+		damageOptional: !withHit,
+		attackRollOptional: Boolean(rapidOrSave)
 	};
 }
 
