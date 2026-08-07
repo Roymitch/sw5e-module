@@ -236,6 +236,45 @@ function buildLedger(batchId) {
 	return { ledger, ledgerPath, spec };
 }
 
+function ensureCreatureTypeFolderYaml(folder) {
+	const dir = path.join(COMMITTED_PACK_SOURCE, folder.packSubdir);
+	fs.mkdirSync(dir, { recursive: true });
+	const folderPath = path.join(dir, "_folder.yml");
+	if ( fs.existsSync(folderPath) ) return;
+	const doc = {
+		type: "Actor",
+		folder: null,
+		name: folder.label,
+		color: null,
+		sorting: "a",
+		_id: folder.id,
+		description: `SnV Monsters Compendium folder (${folder.label} Creature Type)`,
+		sort: folder.sort,
+		flags: {
+			sw5e: {
+				snvMonsters: {
+					semanticKey: folder.semanticKey,
+					folderTaxonomy: "foundry-creature-type",
+					prototypePack: true,
+					prePublication: true
+				}
+			}
+		},
+		_stats: {
+			duplicateSource: null,
+			exportSource: null,
+			coreVersion: "13.351",
+			systemId: "dnd5e",
+			systemVersion: "5.2.5",
+			createdTime: null,
+			modifiedTime: null,
+			lastModifiedBy: null
+		},
+		_key: `!folders!${folder.id}`
+	};
+	fs.writeFileSync(folderPath, `${yaml.dump(doc, DUMP)}\n`);
+}
+
 function pinIdentity(batchId, ledger, spec) {
 	const mapPath = path.join(ROOT, "utils/snv-monsters/manifests/identity-map.json");
 	const map = loadProductionIdentityMap(mapPath);
@@ -251,6 +290,14 @@ function pinIdentity(batchId, ledger, spec) {
 				folderTaxonomy: "foundry-creature-type"
 			};
 		}
+		if ( map.folders[folder.semanticKey]?.reservedUntilPopulated ) {
+			delete map.folders[folder.semanticKey].reservedUntilPopulated;
+			map.folders[folder.semanticKey].origin = "n3-folder-taxonomy";
+		}
+	}
+	for ( const candidate of ledger.finalCandidates ) {
+		const folder = getCreatureTypeFolder(candidate.folderAssignment.folderName);
+		if ( folder ) ensureCreatureTypeFolderYaml(folder);
 	}
 	const actors = {};
 	for ( const candidate of ledger.finalCandidates ) {

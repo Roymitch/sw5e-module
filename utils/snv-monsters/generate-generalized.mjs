@@ -480,12 +480,16 @@ function activityDamageParts(formula, damageType) {
 }
 
 function parseAttackEntry(entry) {
-	const attackMatch = entry.text.match(
+	const withHit = entry.text.match(
 		/\*?(Melee(?:\s+or\s+Ranged)?|Ranged) Weapon Attack:\*?\s*([+-]\d+)(?:\s*to hit)?,\s*(.*?)\.\s*\*?Hit:?\*?\s*([^]+)$/i
 	);
+	const withoutHit = withHit ? null : entry.text.match(
+		/\*?(Melee(?:\s+or\s+Ranged)?|Ranged) Weapon Attack:\*?\s*([+-]\d+)(?:\s*to hit)?,\s*(.*?)\.\s*(.+)$/i
+	);
+	const attackMatch = withHit || withoutHit;
 	if ( !attackMatch ) return null;
 	const targetingClause = attackMatch[3].trim();
-	const hitText = attackMatch[4].replace(/\s+/g, " ").trim().replace(/\.*$/, "");
+	const hitText = (attackMatch[4] || "").replace(/\s+/g, " ").trim().replace(/\.*$/, "");
 	const reachMatch = targetingClause.match(/reach\s+(\d+)\s*ft\.?/i);
 	const rangeMatch = targetingClause.match(/(?:range\s+|or\s+)(\d+)(?:\/(\d+))?\s*ft\.?/i);
 	const dualMode = /melee\s+or\s+ranged/i.test(attackMatch[1]);
@@ -505,8 +509,9 @@ function parseAttackEntry(entry) {
 		targetCount: parseTargetCount(targetingClause),
 		targetType: /target/i.test(targetingClause) ? "creature" : "",
 		hit: hitText,
-		damageFormula: damage.formula,
-		damageType: damage.type
+		damageFormula: damage.formula || "",
+		damageType: damage.type || "kinetic",
+		damageOptional: !withHit
 	};
 }
 
