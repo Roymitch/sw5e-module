@@ -7,6 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import yaml from "js-yaml";
 import crypto from "node:crypto";
+import { resolveExactMonsterArtwork } from "./artwork.mjs";
 import {
 	CREATURE_TYPE_FOLDERS,
 	getCreatureTypeFolder,
@@ -188,13 +189,7 @@ function buildLedger(batchId) {
 			nonAttackActions: features.nonAttackActions,
 			weaponAttacks: features.weaponAttacks,
 			traitsAndActions: features,
-			artwork: {
-				avatarPath: "systems/dnd5e/icons/svg/actors/npc.svg",
-				tokenPath: "systems/dnd5e/icons/svg/actors/npc.svg",
-				approvalStatus: "approved-fallback",
-				folderId: folder.id,
-				artworkException: "npc-svg-fallback"
-			},
+			artwork: resolveExactMonsterArtwork(name, { folderId: folder.id }),
 			folderAssignment: {
 				folderName: folder.label,
 				folderId: folder.id,

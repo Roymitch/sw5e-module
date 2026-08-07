@@ -3,6 +3,7 @@
  */
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { resolveExactMonsterArtwork } from "./artwork.mjs";
 import { buildCanonicalPowerIndex, loadAndCloneCanonicalPower, resolveCanonicalPower } from "./canonical-powers.mjs";
 import { detectFeatures } from "./classify.mjs";
 import { generateGeneralizedActor, parseSkills } from "./generate-generalized.mjs";
@@ -204,6 +205,17 @@ test("runtime automation must not read deprecated SpellData#preparation API", ()
 	// Harness scripts must not inspect the deprecated getter path for display.
 	const embed = fs.readFileSync(new URL("./embed-casting.mjs", import.meta.url), "utf8");
 	assert.equal(/system\.preparation\?\.(mode|prepared)/.test(embed), false);
+});
+
+test("exact-folder artwork resolves approved local Avatar/Token over npc.svg", () => {
+	const art = resolveExactMonsterArtwork("Navy Trooper", { folderId: "a907e6b54e75b9d3" });
+	assert.equal(art.artworkException, null);
+	assert.match(art.avatarPath, /036_-_Navy_Trooper\/Avatar\.webp$/);
+	assert.match(art.tokenPath, /036_-_Navy_Trooper\/Token\.webp$/);
+	assert.equal(art.approvalStatus, "approved");
+	const hyphenated = resolveExactMonsterArtwork("Front Line Soldier", { folderId: "a907e6b54e75b9d3" });
+	assert.equal(hyphenated.artworkException, null);
+	assert.match(hyphenated.avatarPath, /371_-_Front-Line_Soldier\/Avatar\.webp$/);
 });
 
 console.log(`\n${passed} fts embedding tests passed`);
