@@ -213,9 +213,21 @@ test("exact-folder artwork resolves approved local Avatar/Token over npc.svg", (
 	assert.match(art.avatarPath, /036_-_Navy_Trooper\/Avatar\.webp$/);
 	assert.match(art.tokenPath, /036_-_Navy_Trooper\/Token\.webp$/);
 	assert.equal(art.approvalStatus, "approved");
+	assert.equal(art.tier, 1);
 	const hyphenated = resolveExactMonsterArtwork("Front Line Soldier", { folderId: "a907e6b54e75b9d3" });
 	assert.equal(hyphenated.artworkException, null);
 	assert.match(hyphenated.avatarPath, /371_-_Front-Line_Soldier\/Avatar\.webp$/);
+});
+
+test("generic NPC fallback is approved production art with replacement status", () => {
+	const art = resolveExactMonsterArtwork("Completely Fictional SnV Monster XYZ", {
+		folderId: "a907e6b54e75b9d3"
+	});
+	assert.equal(art.tier, 4);
+	assert.equal(art.approvalStatus, "approved-generic-fallback");
+	assert.equal(art.artworkException, "npc-svg-fallback");
+	assert.equal(art.artworkReplacementStatus, "needs-replacement");
+	assert.match(art.avatarPath, /npc\.svg$/);
 });
 
 console.log(`\n${passed} fts embedding tests passed`);

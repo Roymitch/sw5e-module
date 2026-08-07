@@ -1274,12 +1274,25 @@ function buildActorFromScaffold(actorScaffold, { irEntry, actorId, parsed, artwo
 			path: artwork.avatarPath,
 			tokenPath: artwork.tokenPath,
 			approval: artwork.approvalStatus || "approved",
-			source: "module-existing",
-			loreConfidence: artwork.loreAccuracy || "supported-by-exact-local-folder-name"
+			source: artwork.tier === 3
+				? "external-redistributable"
+				: artwork.tier === 4
+					? "approved-generic-fallback"
+					: "module-existing",
+			loreConfidence: artwork.loreAccuracy || "supported-by-exact-local-folder-name",
+			directory: artwork.directory || null,
+			identityMatch: artwork.identityMatch || null,
+			tier: artwork.tier ?? null,
+			exception: artwork.artworkException || null,
+			replacementStatus: artwork.artworkReplacementStatus || null,
+			externalProvenance: artwork.externalProvenance || null
 		} : {
 			path: actor.img,
-			approval: "fallback",
-			source: "generator-default"
+			approval: "approved-generic-fallback",
+			source: "approved-generic-fallback",
+			exception: "npc-svg-fallback",
+			replacementStatus: "needs-replacement",
+			tier: 4
 		},
 		lastGeneratedHash: irEntry.rawSourceHash,
 		prePublication: nonproduction,
