@@ -1324,6 +1324,7 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 	const exceptions = [];
 	const exactFeatures = productionContext?.exactFeatures || null;
 	const identityActor = productionContext?.identityActor || null;
+	const emittedFeatNames = new Set();
 
 	const CASTING_FEAT_NAMES = new Set([
 		"Forcecasting",
@@ -1336,6 +1337,15 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 	const addFeat = (name, sourceSection) => {
 		if ( CASTING_FEAT_NAMES.has(name)
 			&& (irEntry.features?.hasForce || irEntry.features?.hasTech || irEntry.features?.hasSuperiority) ) {
+			return;
+		}
+		if ( emittedFeatNames.has(name) ) {
+			exceptions.push({
+				type: "duplicate-source-feature-name",
+				feature: name,
+				sourceSection,
+				note: "same feature name appeared in multiple source sections; emitted once"
+			});
 			return;
 		}
 		let entry = parsed.featureEntries.find(feature =>
@@ -1367,6 +1377,7 @@ export function generateGeneralizedActor({ irEntry, body, actorId = null, nonpro
 			nonproduction,
 			approvedBatch: productionContext?.batch || null
 		}));
+		emittedFeatNames.add(name);
 	};
 
 	const addWeapon = attack => {
