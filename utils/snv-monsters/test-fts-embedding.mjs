@@ -108,6 +108,7 @@ At-will: *force disarm, force push/pull*  <br>
 	const { actor, exceptions, forceTechEmbed } = generateGeneralizedActor({ irEntry: ir, body });
 	assert.equal(actor.system.details.powerForceLevel, 1);
 	assert.equal(actor.system.powercasting.force.points.max, 5);
+	assert.equal(actor.system.powercasting.force.points.value, 5);
 	const spells = actor.items.filter(i => i.type === "spell");
 	assert.ok(spells.length >= 3, `expected embedded spells, got ${spells.map(s => s.name)}`);
 	assert.ok(spells.every(s => Object.keys(s.system.activities || {}).length > 0));
@@ -145,6 +146,7 @@ At-will: *on/off* <br>
 	const { actor, exceptions } = generateGeneralizedActor({ irEntry: ir, body });
 	assert.equal(actor.system.details.powerTechLevel, 3);
 	assert.equal(actor.system.powercasting.tech.points.max, 15);
+	assert.equal(actor.system.powercasting.tech.points.value, 15);
 	const spells = actor.items.filter(i => i.type === "spell");
 	assert.ok(spells.length >= 2);
 	assert.ok(spells.some(s => s.system.consume?.target === "powercasting.tech.points.value" || s.system.level === 0));

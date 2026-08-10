@@ -134,6 +134,7 @@ test("forcecasting parsing tolerates the Albek typo block and standard forcecast
 	assert.equal(wrath.level, 10);
 	assert.equal(wrath.abilityKey, "cha");
 	assert.equal(wrath.attackBonus, 9);
+	assert.ok(Number.isFinite(wrath.points) && wrath.points > 0, "authored Force points must parse");
 	assert.ok(wrath.powerNames.includes("Burse Of Speed"));
 	assert.ok(wrath.powerNames.includes("Force Push/Pull"));
 });

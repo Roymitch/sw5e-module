@@ -28,6 +28,10 @@ import {
 	getPendingOrCurrentAttributeValue,
 	installPowerPointDiscountAttributeConsume
 } from "../power-point-discount-consume.mjs";
+import {
+	countOwnedPowersKnown,
+	resolvePreparedPowersKnownMax
+} from "../powercasting-known.mjs";
 
 const PRECALCULATED_SPELLCASTING_KEY = "sw5e-preCalculatedSpellcastingClasses";
 let baseActorTabsContextWrapped = false;
@@ -540,6 +544,9 @@ function preparePowercasting() {
 					obj.maxClassLevel = level;
 					obj.maxClassProg = "full";
 				}
+
+				// Powers Known numerator from qualifying owned power Items (same authority as characters).
+				obj.powersKnownCur = countOwnedPowersKnown(_this, castType);
 			} else {
 				// Translate the list of classes into power-casting progression
 				for (const cls of _this.itemTypes?.class ?? []) {
@@ -565,12 +572,8 @@ function preparePowercasting() {
 					}
 				}
 
-				// Calculate known powers
-				for (const pwr of _this.itemTypes?.spell ?? []) {
-					const { properties, school } = pwr?.system ?? {};
-					if (properties?.has("freeLearn")) continue;
-					if (school in CONFIG.DND5E.powerCasting[castType].schools) obj.powersKnownCur++;
-				}
+				// Powers Known numerator from qualifying owned power Items.
+				obj.powersKnownCur = countOwnedPowersKnown(_this, castType);
 			}
 		}
 
@@ -611,7 +614,12 @@ function preparePowercasting() {
 					hasOverride: reconciledPool.hasOverride,
 					effectiveMax: reconciledPool.max
 				};
-				target.known.max = obj.powersKnownMax;
+				const sourceKnownMax = _this._source?.system?.powercasting?.[castType]?.known?.max;
+				target.known.max = resolvePreparedPowersKnownMax({
+					isNPC: true,
+					sourceKnownMax,
+					computedPowersKnownMax: obj.powersKnownMax
+				});
 				target.level = obj.casterLevel;
 				target.limit = obj.limit;
 				target.maxPowerLevel = obj.maxPowerLevel;
@@ -632,11 +640,11 @@ function preparePowercasting() {
 				};
 				const sourcePowercasting = _this._source?.system?.powercasting?.[castType] ?? {};
 				const sourceKnown = sourcePowercasting.known ?? {};
-				let effectiveKnownMax = sourceKnown.max ?? obj.powersKnownMax;
-				if ( sourceKnown.max === 0 && obj.powersKnownMax > 0 ) {
-					effectiveKnownMax = obj.powersKnownMax;
-				}
-				target.known.max = effectiveKnownMax;
+				target.known.max = resolvePreparedPowersKnownMax({
+					isNPC: false,
+					sourceKnownMax: sourceKnown.max,
+					computedPowersKnownMax: obj.powersKnownMax
+				});
 				target.level ??= obj.casterLevel;
 				target.limit ??= obj.limit;
 				target.maxPowerLevel ??= obj.maxPowerLevel;

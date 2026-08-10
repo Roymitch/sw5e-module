@@ -572,7 +572,11 @@ function cleanPackEntry(data, { clearSourceId=true, ownership=0 }={}) {
 	if ( data.system?.save?.dc === 0 ) data.system.save.dc = null;
 	if ( data.system?.capacity?.value === 0 ) data.system.capacity.value = null;
 	if ( data.system?.strength === 0 ) data.system.strength = null;
-	if ( data.system?.powercasting ) delete data.system.powercasting;
+	// Preserve Actor Force/Tech point pools and known.max overrides for SW5e NPC/character packs.
+	// Strip stray powercasting blobs from non-Actor pack entries only.
+	if ( data.system?.powercasting && !["character", "npc", "vehicle"].includes(data.type) ) {
+		delete data.system.powercasting;
+	}
 
 	// Remove mystery-man.svg from Actors
 	if ( ["character", "npc"].includes(data.type) && data.img === "icons/svg/mystery-man.svg" ) {
