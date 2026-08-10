@@ -1,11 +1,11 @@
-_id: 9edc886797b5c129
-name: Ng'ok
+_id: 6031b17646cff69a
+name: Sithspawn Spider
 type: npc
 img: systems/dnd5e/icons/svg/actors/npc.svg
 folder: 97379aa171754463
 items:
-  - _id: b4b0164816fcd3a1
-    name: Limited Telepathy
+  - _id: 62b17d8f2a7fa7c4
+    name: Disruptive
     type: feat
     sort: 0
     flags:
@@ -15,23 +15,318 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:aberration:sithspawn-spider
+    img: modules/sw5e-module/icons/packs/Monster Traits/Disruptive.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>When a creature is forced to make a Constitution saving throw to maintain concentration due to taking
+          damage from the sithspawn, the DC for the check equals 10 or the full damage taken, whichever number is
+          higher, instead of only half.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6031b17646cff69a.62b17d8f2a7fa7c4"
+  - _id: 2662efce71decb28
+    name: Force Resistance
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:aberration:sithspawn-spider
+    img: modules/sw5e-module/icons/packs/Monster Traits/Force Resistance.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The sithspawn has advantage on saving throws against force powers and resistance to damage dealt by force
+          powers.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6031b17646cff69a.2662efce71decb28"
+  - _id: 263dedd59b876de7
+    name: Sith-Born
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:aberration:sithspawn-spider
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>Dark forcecasters and Sith (species) have advantage on Animal Handling checks on the Sithspawn Spider.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6031b17646cff69a.263dedd59b876de7"
+  - _id: 9ae4f7ae5b20edb8
+    name: Phasewalk
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:aberration:sithspawn-spider
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>The ng'ok can transmit simple messages and images to any creature within 120 ft. of it that can understand
-          a language through the force. This form of telepathy doesn't allow the receiving creature to telepathically
-          respond.</p>
+          <p>As a bonus action, the sithspawn spider becomes invisible and intangible. Attacking doesn’t end this
+          invisibility. While invisible, the sithspawn spider has advantage on Dexterity (Stealth) checks and gains the
+          following: *Damage Resistances:* acid, cold, fire, lightning, sonic; kinetic and energy damage from unenhanced
+          attacks *Condition Immunities:* paralyzed, petrified, prone, restrained, stunned The phasewalk ends when the
+          spider chooses to end it as a bonus action or when the spider dies.</p>
         chat: ""
       requirements: ""
       source:
         custom: Vesh's Galactic Holodex
       activation:
-        type: ""
-        cost: null
+        type: bonus
+        cost: 1
         condition: ""
       duration:
         value: ""
@@ -102,9 +397,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.b4b0164816fcd3a1"
-  - _id: c5603f775acfa118
-    name: Stench
+    _key: "!actors.items!6031b17646cff69a.9ae4f7ae5b20edb8"
+  - _id: d36e2c3a3fd1cb69
+    name: Incorporeal Movement (During Phasewalk Only)
     type: feat
     sort: 0
     flags:
@@ -114,16 +409,15 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Monster Traits/Stench.webp
+          sourceSemanticKey: vgh:aberration:sithspawn-spider
+    img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>Any creature other than a ng'ok that starts its turn within 5 feet of the ng'ok must succeed on a DC 15
-          Constitution saving throw or be poisoned until the start of the creature's next turn. On a successful saving
-          throw, the creature is immune to the stench of all ng'oks for 1 hour.</p>
+          <p>The sithspawn spider can move through other creatures and objects as if they were difficult terrain. It
+          takes 5 (1d10) force damage if it ends its turn inside an object.</p>
         chat: ""
       requirements: ""
       source:
@@ -201,8 +495,202 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c5603f775acfa118"
-  - _id: 49d0e12911ee535f
+    _key: "!actors.items!6031b17646cff69a.d36e2c3a3fd1cb69"
+  - _id: c5436d8e86102850
+    name: Spider Climb
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:aberration:sithspawn-spider
+    img: modules/sw5e-module/icons/packs/Monster Traits/Spider Climb.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The spider can climb difficult surfaces, including upside down on ceilings, without needing to make an
+          ability check.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6031b17646cff69a.c5436d8e86102850"
+  - _id: d2175bb0710e62fe
+    name: Web Walker
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:aberration:sithspawn-spider
+    img: modules/sw5e-module/icons/packs/Monster Traits/Web Walker.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The spider ignores movement restrictions caused by webbing.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6031b17646cff69a.d2175bb0710e62fe"
+  - _id: 461c96fd429c13fe
     name: Multiattack
     type: feat
     sort: 0
@@ -213,112 +701,15 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:aberration:sithspawn-spider
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
     system:
       description:
-        value: "<p>The ng'ok makes three attacks: one with its bite and two with its claws.</p>"
-        chat: ""
-      requirements: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: ""
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: ""
-      actionType: ""
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
-        value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      prerequisites:
-        level: null
-      properties: []
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.49d0e12911ee535f"
-  - _id: c2cd0ed011a42306
-    name: Grapple Slam
-    type: feat
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: non-weapon
-          kind: featAction
-          sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
-    img: systems/dnd5e/icons/svg/actors/npc.svg
-    effects: []
-    folder: null
-    system:
-      description:
         value: >-
-          <p>The ng'ok slams creatures grappled by it into each other or a solid surface. Each creature must succeed on
-          a DC 14 Constitution saving throw or take 10 (2d6+3) kinetic damage and be stunned until the end of the
-          ng'ok's next turn. On a successful save, the target takes half the kinetic damage and isn't stunned.</p>
+          <p>The sithspawn makes two bite attacks. It can make a ghostly snare attack in place of one of its bite
+          attacks.</p>
         chat: ""
       requirements: ""
       source:
@@ -396,8 +787,8 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c2cd0ed011a42306"
-  - _id: 9e1c5ae2e4fd3f6e
+    _key: "!actors.items!6031b17646cff69a.461c96fd429c13fe"
+  - _id: 324d17658f08982e
     name: Bite
     type: weapon
     sort: 0
@@ -409,19 +800,18 @@ items:
           kind: weaponNatural
           sourceActionNames:
             - Bite
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:aberration:sithspawn-spider
     img: modules/sw5e-module/icons/packs/Naturals/Teeth.webp
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is a creature, it must succeed on a DC 15 Constitution saving throw against disease or become poisoned until
-          the disease is cured. Every 24 hours that elapse, the target must repeat the saving throw, reducing its hit
-          point maximum by 5 (1d10) on a failure. The disease is cured on a success. The target dies if the disease
-          reduces its hit point maximum to 0. This reduction to the target's hit point maximum lasts until the disease
-          is cured.</p>
+          <p>*Melee Weapon Attack:* +9 to hit, reach 5 ft., one target. *Hit:* 16 (2d10 + 5) kinetic plus 13 (3d8)
+          poison damage, or half poison damage with a successful DC 15 Constitution saving throw. If the poison damage
+          reduces the target to 0 hit points, the target is stable but poisoned and paralyzed for 1 hour, even after
+          regaining hit points. While using Phasewalk, the spider’s bite and poison do half damage to targets that
+          aren’t affected by Ghostly Snare.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -474,8 +864,8 @@ items:
         damage: ""
       damage:
         parts:
-          - - 2d8+3
-            - kinetic
+          - - 3d8
+            - poison
         versatile: ""
       formula: ""
       save:
@@ -519,8 +909,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        fa04c0c0c5498243:
-          _id: fa04c0c0c5498243
+        cbfb5b5ef15db08d:
+          _id: cbfb5b5ef15db08d
           type: attack
           activation:
             type: action
@@ -529,7 +919,7 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "9"
             flat: true
             type:
               classification: weapon
@@ -539,11 +929,11 @@ items:
             critical: {}
             includeBase: false
             parts:
-              - number: 2
+              - number: 3
                 denomination: 8
-                bonus: "+3"
+                bonus: ""
                 types:
-                  - kinetic
+                  - poison
                 custom:
                   enabled: false
                   formula: ""
@@ -582,7 +972,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "6"
+      attackBonus: "9"
     ownership:
       default: 0
     _stats:
@@ -594,29 +984,31 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.9e1c5ae2e4fd3f6e"
-  - _id: 93854eb0d910db2b
-    name: Claws
+    _key: "!actors.items!6031b17646cff69a.324d17658f08982e"
+  - _id: 64812462f842ad22
+    name: Ghostly Snare
     type: weapon
     sort: 0
     flags:
       sw5e:
         veshsGalacticHolodex:
           embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
+          classification: source-specific-manufactured-weapon
+          kind: weaponSourceSpecific
           sourceActionNames:
-            - Claws
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
+            - Ghostly Snare
+          sourceSemanticKey: vgh:aberration:sithspawn-spider
+    img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 10 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is Medium or smaller, it is grappled (escape DC 13) and restrained until the grapple ends. The ng'ok has two
-          claws, each of which can grapple one target.</p>
+          <p>*Ranged Weapon Attack:* +9 to hit, range 40/160, one target. *Hit:* The target is restrained by ghostly
+          webbing. While restrained in this way, the target is invisible to all creatures except sithspawn spiders, and
+          it has resistance to acid, cold, fire, lightning, and thunder damage. A creature restrained by Ghostly Snare
+          can escape by using an action to make a successful DC 14 Strength check, or the webs can be attacked and
+          destroyed (AC 10; hp 5).</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -647,9 +1039,9 @@ items:
         type: ""
         prompt: true
       range:
-        value: 10
+        value: null
         long: null
-        units: ft
+        units: ""
       uses:
         value: null
         max: ""
@@ -661,16 +1053,14 @@ items:
         target: null
         amount: null
         scale: false
-      ability: str
-      actionType: mwak
+      ability: dex
+      actionType: rwak
       chatFlavor: ""
       critical:
         threshold: null
         damage: ""
       damage:
-        parts:
-          - - 2d8+3
-            - kinetic
+        parts: []
         versatile: ""
       formula: ""
       save:
@@ -699,7 +1089,7 @@ items:
       properties: []
       proficient: 1
       type:
-        value: natural
+        value: simpleM
         subtype: ""
         baseItem: ""
       unidentified:
@@ -714,8 +1104,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        064a719e0a048c49:
-          _id: 064a719e0a048c49
+        17819379c86c448c:
+          _id: 17819379c86c448c
           type: attack
           activation:
             type: action
@@ -724,28 +1114,16 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "9"
             flat: true
             type:
               classification: weapon
-              value: melee
+              value: ranged
             critical: {}
           damage:
             critical: {}
             includeBase: false
-            parts:
-              - number: 2
-                denomination: 8
-                bonus: "+3"
-                types:
-                  - kinetic
-                custom:
-                  enabled: false
-                  formula: ""
-                scaling:
-                  mode: ""
-                  number: null
-                  formula: ""
+            parts: []
           description: {}
           duration:
             units: inst
@@ -754,8 +1132,8 @@ items:
           effects: []
           range:
             override: false
-            units: ft
-            value: "10"
+            units: ""
+            value: ""
           target:
             template:
               contiguous: false
@@ -777,7 +1155,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "6"
+      attackBonus: "9"
     ownership:
       default: 0
     _stats:
@@ -789,11 +1167,11 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.93854eb0d910db2b"
+    _key: "!actors.items!6031b17646cff69a.64812462f842ad22"
 effects: []
 prototypeToken:
   flags: {}
-  name: Ng'ok
+  name: Sithspawn Spider
   displayName: 40
   width: 2
   height: 2
@@ -870,42 +1248,42 @@ prototypeToken:
 system:
   abilities:
     str:
-      value: 16
+      value: 15
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     dex:
-      value: 11
+      value: 20
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     con:
-      value: 19
+      value: 17
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     int:
-      value: 6
+      value: 14
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     wis:
-      value: 13
+      value: 14
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     cha:
-      value: 6
+      value: 8
       proficient: 0
       max: null
       bonuses:
@@ -927,15 +1305,15 @@ system:
       max: null
   attributes:
     ac:
-      flat: 14
+      flat: 15
       calc: natural
       formula: ""
     hp:
-      value: 114
-      max: 114
+      value: 119
+      max: 119
       temp: 0
       tempmax: 0
-      formula: 12d10+48
+      formula: 14d10+42
     init:
       ability: ""
       bonus: "0"
@@ -945,17 +1323,17 @@ system:
         mode: 0
     movement:
       burrow: 0
-      climb: 0
+      climb: 50
       fly: 0
       swim: 0
-      walk: 30
+      walk: 50
       units: ft
       hover: false
     attunement:
       max: 3
     senses:
-      darkvision: 120
-      blindsight: 0
+      darkvision: 60
+      blindsight: 10
       tremorsense: 0
       truesight: 0
       units: ft
@@ -1014,7 +1392,7 @@ system:
     biography:
       value: ""
       public: ""
-    alignment: Unaligned
+    alignment: Neutral Dark
     species: null
     type:
       value: aberration
@@ -1022,7 +1400,7 @@ system:
       swarm: ""
       custom: ""
     environment: ""
-    cr: 5
+    cr: 10
     powerForceLevel: 0
     powerTechLevel: 0
     superiorityLevel: 0
@@ -1166,7 +1544,7 @@ system:
         max: null
         mode: 0
     prc:
-      value: 0
+      value: 1
       ability: wis
       bonuses:
         check: ""
@@ -1367,17 +1745,18 @@ flags:
       sourceIdentity: veshs-galactic-holodex
       sourceFile: ai/Veshs_Galactic_Holodex.md
       sourceSection: Beastiary
-      sourceHash: 32DE97952BE959711CEC3D7A8675CB29A3CEE5E85C09B1661BD0BE0C92D8B452
-      semanticKey: vgh:aberration:ngok
+      sourceHash: 5A65A6A950F926A02FDBF185EC4554DB0C71095F9666AACEF2075EC67205792F
+      semanticKey: vgh:aberration:sithspawn-spider
       generatorVersion: vgh-phase2-2026-08-07
-      sourceEntry: Ng'ok
+      sourceEntry: Sithspawn Spider
       trackedPack: veshs-galactic-holodex
       collectionId: sw5e-module.veshs-galactic-holodex
       parseStatus: parsed-valid
-      capabilityStatus: fully-supported
+      capabilityStatus: partially-supported
       outputSelection: selected-population
-      productionReadiness: prototype-validated
-      unsupportedMechanics: []
+      productionReadiness: requires-runtime-validation
+      unsupportedMechanics:
+        - qualified-defense-parsing
       generatedStatus: production
       creatureTypeFolder: Aberration
       forceTechEmbedding:
@@ -1398,5 +1777,5 @@ _stats:
   lastModifiedBy: null
   compendiumSource: null
   duplicateSource: null
-_key: "!actors!9edc886797b5c129"
+_key: "!actors!6031b17646cff69a"
 

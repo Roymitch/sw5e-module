@@ -1,11 +1,11 @@
-_id: 9edc886797b5c129
-name: Ng'ok
+_id: cd0fb178fde4ccef
+name: Greater Challat Eater Swarm
 type: npc
 img: systems/dnd5e/icons/svg/actors/npc.svg
-folder: 97379aa171754463
+folder: 6f8e5fbcb21cb696
 items:
-  - _id: b4b0164816fcd3a1
-    name: Limited Telepathy
+  - _id: 2a00e41e1d5102f0
+    name: Potent Poison
     type: feat
     sort: 0
     flags:
@@ -15,16 +15,211 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:beast:greater-challat-eater-swarm
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The challat eater swarm's poison affects corporeal undead who are otherwise immune to poison.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!cd0fb178fde4ccef.2a00e41e1d5102f0"
+  - _id: 2cff8c834c01768a
+    name: Swarm
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:beast:greater-challat-eater-swarm
+    img: modules/sw5e-module/icons/packs/Monster Traits/Swarm.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The swarm can occupy another creature's space and vice versa, and the swarm can move through any opening
+          large enough for a Tiny insect. The swarm can't regain hit points or gain temporary hit points.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!cd0fb178fde4ccef.2cff8c834c01768a"
+  - _id: 422b6051c64d3071
+    name: Weight of Wings
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:beast:greater-challat-eater-swarm
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>The ng'ok can transmit simple messages and images to any creature within 120 ft. of it that can understand
-          a language through the force. This form of telepathy doesn't allow the receiving creature to telepathically
-          respond.</p>
+          <p>A creature in a space occupied by the challat eater swarm has its speed reduced by half, and must succeed
+          on a DC 16 Dexterity saving throw or become blinded. Both effects end when the creature doesn't share a space
+          with the swarm at the end of the creature's turn. If a creature succeeds on its saving throw, it is immune to
+          the swarm's blindness (but not the speed reduction) for 24 hours.</p>
         chat: ""
       requirements: ""
       source:
@@ -102,107 +297,8 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.b4b0164816fcd3a1"
-  - _id: c5603f775acfa118
-    name: Stench
-    type: feat
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: non-weapon
-          kind: featPassiveOrRider
-          sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Monster Traits/Stench.webp
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>Any creature other than a ng'ok that starts its turn within 5 feet of the ng'ok must succeed on a DC 15
-          Constitution saving throw or be poisoned until the start of the creature's next turn. On a successful saving
-          throw, the creature is immune to the stench of all ng'oks for 1 hour.</p>
-        chat: ""
-      requirements: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      activation:
-        type: ""
-        cost: null
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: ""
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: ""
-      actionType: ""
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
-        value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      prerequisites:
-        level: null
-      properties: []
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c5603f775acfa118"
-  - _id: 49d0e12911ee535f
+    _key: "!actors.items!cd0fb178fde4ccef.422b6051c64d3071"
+  - _id: 3e9ed24f5cf1f74a
     name: Multiattack
     type: feat
     sort: 0
@@ -213,13 +309,13 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:beast:greater-challat-eater-swarm
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
     system:
       description:
-        value: "<p>The ng'ok makes three attacks: one with its bite and two with its claws.</p>"
+        value: <p>The Challat Eater Swarm makes a bite attack against every creature in its space.</p>
         chat: ""
       requirements: ""
       source:
@@ -297,131 +393,30 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.49d0e12911ee535f"
-  - _id: c2cd0ed011a42306
-    name: Grapple Slam
-    type: feat
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: non-weapon
-          kind: featAction
-          sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
-    img: systems/dnd5e/icons/svg/actors/npc.svg
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>The ng'ok slams creatures grappled by it into each other or a solid surface. Each creature must succeed on
-          a DC 14 Constitution saving throw or take 10 (2d6+3) kinetic damage and be stunned until the end of the
-          ng'ok's next turn. On a successful save, the target takes half the kinetic damage and isn't stunned.</p>
-        chat: ""
-      requirements: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: ""
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: ""
-      actionType: ""
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
-        value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      prerequisites:
-        level: null
-      properties: []
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c2cd0ed011a42306"
-  - _id: 9e1c5ae2e4fd3f6e
-    name: Bite
+    _key: "!actors.items!cd0fb178fde4ccef.3e9ed24f5cf1f74a"
+  - _id: cfcdd9007b4ffe2a
+    name: Bites
     type: weapon
     sort: 0
     flags:
       sw5e:
         veshsGalacticHolodex:
           embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
+          classification: source-specific-manufactured-weapon
+          kind: weaponSourceSpecific
           sourceActionNames:
-            - Bite
-          sourceSemanticKey: vgh:aberration:ngok
+            - Bites
+          sourceSemanticKey: vgh:beast:greater-challat-eater-swarm
     img: modules/sw5e-module/icons/packs/Naturals/Teeth.webp
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is a creature, it must succeed on a DC 15 Constitution saving throw against disease or become poisoned until
-          the disease is cured. Every 24 hours that elapse, the target must repeat the saving throw, reducing its hit
-          point maximum by 5 (1d10) on a failure. The disease is cured on a success. The target dies if the disease
-          reduces its hit point maximum to 0. This reduction to the target's hit point maximum lasts until the disease
-          is cured.</p>
+          <p>*Melee Weapon Attack:* +6 to hit, reach 0 ft., every target in its space, one target. *Hit:* 24 (6d6 + 3)
+          kinetic damage, or 13 (3d6 + 3) kinetic damage if the swarm has half of its hit points or fewer. The target
+          must make a DC 15 Constitution saving throw or take 5d6 poison damage and become poisoned for 1d4 rounds. On a
+          successful saving throw, the target takes half damage and is not poisoned.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -452,9 +447,9 @@ items:
         type: ""
         prompt: true
       range:
-        value: 5
+        value: 0
         long: null
-        units: ft
+        units: ""
       uses:
         value: null
         max: ""
@@ -474,7 +469,7 @@ items:
         damage: ""
       damage:
         parts:
-          - - 2d8+3
+          - - 6d6+3
             - kinetic
         versatile: ""
       formula: ""
@@ -504,7 +499,7 @@ items:
       properties: []
       proficient: 1
       type:
-        value: natural
+        value: simpleM
         subtype: ""
         baseItem: ""
       unidentified:
@@ -519,8 +514,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        fa04c0c0c5498243:
-          _id: fa04c0c0c5498243
+        86b832b11e03fbfc:
+          _id: 86b832b11e03fbfc
           type: attack
           activation:
             type: action
@@ -539,8 +534,8 @@ items:
             critical: {}
             includeBase: false
             parts:
-              - number: 2
-                denomination: 8
+              - number: 6
+                denomination: 6
                 bonus: "+3"
                 types:
                   - kinetic
@@ -559,8 +554,8 @@ items:
           effects: []
           range:
             override: false
-            units: ft
-            value: "5"
+            units: ""
+            value: ""
           target:
             template:
               contiguous: false
@@ -594,209 +589,14 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.9e1c5ae2e4fd3f6e"
-  - _id: 93854eb0d910db2b
-    name: Claws
-    type: weapon
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
-          sourceActionNames:
-            - Claws
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 10 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is Medium or smaller, it is grappled (escape DC 13) and restrained until the grapple ends. The ng'ok has two
-          claws, each of which can grapple one target.</p>
-        chat: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      quantity: 1
-      weight:
-        value: 1
-        units: lb
-      price:
-        value: 0
-        denomination: gc
-      attunement: ""
-      equipped: false
-      rarity: ""
-      identified: true
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: 10
-        long: null
-        units: ft
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: str
-      actionType: mwak
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts:
-          - - 2d8+3
-            - kinetic
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      armor:
-        value: 10
-      hp:
-        value: 0
-        max: 0
-        dt: null
-        conditions: ""
-      modify:
-        chassis: none
-        augmentSlots: 0
-        modSlots: 4
-        items: []
-        changes: {}
-      weaponClass: ""
-      ammo:
-        target: null
-        value: null
-        use: null
-        types: []
-      properties: []
-      proficient: 1
-      type:
-        value: natural
-        subtype: ""
-        baseItem: ""
-      unidentified:
-        description: ""
-      attack:
-        bonus: ""
-        flat: false
-      container: null
-      attuned: false
-      enchantment: null
-      summons: null
-      magicalBonus: null
-      firingArc: ""
-      activities:
-        064a719e0a048c49:
-          _id: 064a719e0a048c49
-          type: attack
-          activation:
-            type: action
-            value: 1
-            condition: ""
-            override: false
-          attack:
-            ability: ""
-            bonus: "6"
-            flat: true
-            type:
-              classification: weapon
-              value: melee
-            critical: {}
-          damage:
-            critical: {}
-            includeBase: false
-            parts:
-              - number: 2
-                denomination: 8
-                bonus: "+3"
-                types:
-                  - kinetic
-                custom:
-                  enabled: false
-                  formula: ""
-                scaling:
-                  mode: ""
-                  number: null
-                  formula: ""
-          description: {}
-          duration:
-            units: inst
-            concentration: false
-            override: false
-          effects: []
-          range:
-            override: false
-            units: ft
-            value: "10"
-          target:
-            template:
-              contiguous: false
-              units: ft
-              type: ""
-            affects:
-              choice: false
-              type: creature
-              count: "1"
-            override: false
-            prompt: true
-          consumption:
-            targets: []
-            scaling:
-              allowed: false
-            spellSlot: true
-          uses:
-            spent: 0
-            max: ""
-            recovery: []
-          sort: 0
-      attackBonus: "6"
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.93854eb0d910db2b"
+    _key: "!actors.items!cd0fb178fde4ccef.cfcdd9007b4ffe2a"
 effects: []
 prototypeToken:
   flags: {}
-  name: Ng'ok
+  name: Greater Challat Eater Swarm
   displayName: 40
-  width: 2
-  height: 2
+  width: 3
+  height: 3
   lockRotation: false
   rotation: 0
   actorLink: false
@@ -870,42 +670,42 @@ prototypeToken:
 system:
   abilities:
     str:
-      value: 16
+      value: 1
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     dex:
-      value: 11
+      value: 16
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     con:
-      value: 19
+      value: 10
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     int:
-      value: 6
+      value: 1
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     wis:
-      value: 13
+      value: 15
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     cha:
-      value: 6
+      value: 12
       proficient: 0
       max: null
       bonuses:
@@ -927,15 +727,15 @@ system:
       max: null
   attributes:
     ac:
-      flat: 14
+      flat: 15
       calc: natural
       formula: ""
     hp:
-      value: 114
-      max: 114
+      value: 84
+      max: 84
       temp: 0
       tempmax: 0
-      formula: 12d10+48
+      formula: 13d12
     init:
       ability: ""
       bonus: "0"
@@ -946,15 +746,15 @@ system:
     movement:
       burrow: 0
       climb: 0
-      fly: 0
+      fly: 40
       swim: 0
-      walk: 30
+      walk: 5
       units: ft
-      hover: false
+      hover: true
     attunement:
       max: 3
     senses:
-      darkvision: 120
+      darkvision: 60
       blindsight: 0
       tremorsense: 0
       truesight: 0
@@ -1014,15 +814,15 @@ system:
     biography:
       value: ""
       public: ""
-    alignment: Unaligned
+    alignment: Chaotic Dark
     species: null
     type:
-      value: aberration
+      value: beast
       subtype: ""
-      swarm: ""
+      swarm: tiny
       custom: ""
     environment: ""
-    cr: 5
+    cr: 8
     powerForceLevel: 0
     powerTechLevel: 0
     superiorityLevel: 0
@@ -1030,7 +830,7 @@ system:
       custom: Vesh's Galactic Holodex
       label: Vesh's Galactic Holodex
   traits:
-    size: lg
+    size: huge
     di:
       value: []
       bypasses: []
@@ -1367,19 +1167,21 @@ flags:
       sourceIdentity: veshs-galactic-holodex
       sourceFile: ai/Veshs_Galactic_Holodex.md
       sourceSection: Beastiary
-      sourceHash: 32DE97952BE959711CEC3D7A8675CB29A3CEE5E85C09B1661BD0BE0C92D8B452
-      semanticKey: vgh:aberration:ngok
+      sourceHash: B1A5B51ABDE9350C307EDCB3E3C8C1B75032E5FBC279DC8B02A33CC187DDD26E
+      semanticKey: vgh:beast:greater-challat-eater-swarm
       generatorVersion: vgh-phase2-2026-08-07
-      sourceEntry: Ng'ok
+      sourceEntry: Greater Challat Eater Swarm
       trackedPack: veshs-galactic-holodex
       collectionId: sw5e-module.veshs-galactic-holodex
       parseStatus: parsed-valid
-      capabilityStatus: fully-supported
+      capabilityStatus: partially-supported
       outputSelection: selected-population
-      productionReadiness: prototype-validated
-      unsupportedMechanics: []
+      productionReadiness: requires-runtime-validation
+      unsupportedMechanics:
+        - swarm-squad-ammo-policy
+        - qualified-defense-parsing
       generatedStatus: production
-      creatureTypeFolder: Aberration
+      creatureTypeFolder: Beast
       forceTechEmbedding:
         forcePowers: []
         techPowers: []
@@ -1398,5 +1200,5 @@ _stats:
   lastModifiedBy: null
   compendiumSource: null
   duplicateSource: null
-_key: "!actors!9edc886797b5c129"
+_key: "!actors!cd0fb178fde4ccef"
 

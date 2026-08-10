@@ -1,10 +1,10 @@
-_id: f16ffad8fe11249f
-name: Emperor's Wrath
+_id: 9cc34f6b82b40f76
+name: Force Crusader
 type: npc
 img: systems/dnd5e/icons/svg/actors/npc.svg
 folder: 569b095af4903164
 items:
-  - _id: 436a0e747121ee11
+  - _id: 339e8f9a942b6f7c
     name: Force-Empowered Strikes
     type: feat
     sort: 0
@@ -15,13 +15,13 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
-        value: <p>The wrath deals an additional 2d8 necrotic damage when it attacks with its lightsabers (included).</p>
+        value: <p>The Force Crusader deals an additional 2d8 force damage when it hits with a weapon attack (included).</p>
         chat: ""
       requirements: ""
       source:
@@ -99,8 +99,107 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!f16ffad8fe11249f.436a0e747121ee11"
-  - _id: 10dab8f316a8d5d9
+    _key: "!actors.items!9cc34f6b82b40f76.339e8f9a942b6f7c"
+  - _id: 808b305ea7dceb45
+    name: Force Harmony
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:force-crusader
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>When a creature makes a force attack roll against the Crusader of either light or dark, the caster must
+          make a Wisdom or Charisma saving throw (its choice) against the Crusader's Force save DC. On a failed save,
+          the caster must choose a new target or lose the power.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!9cc34f6b82b40f76.808b305ea7dceb45"
+  - _id: ebd6920bb5a8db94
     name: Force Resistance
     type: feat
     sort: 0
@@ -111,13 +210,13 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
     img: modules/sw5e-module/icons/packs/Monster Traits/Force Resistance.webp
     effects: []
     folder: null
     system:
       description:
-        value: <p>The wrath has advantage on saving throws against force powers and other force effects.</p>
+        value: <p>The Force Crusader has advantage on saving throws against force powers and effects.</p>
         chat: ""
       requirements: ""
       source:
@@ -195,9 +294,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!f16ffad8fe11249f.10dab8f316a8d5d9"
-  - _id: ff44de3ea8abbaed
-    name: Fury of the Emperor
+    _key: "!actors.items!9cc34f6b82b40f76.ebd6920bb5a8db94"
+  - _id: 94736b31ed577d4a
+    name: Force Resonance
     type: feat
     sort: 0
     flags:
@@ -207,117 +306,15 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>When the wrath is reduced to half its max hit points (75) it gains resistance to kinetic and energy damage
-          from unenhanced weapons. Additionally, whenever the wrath hits a creature with an attack, the next attack it
-          makes against that creature has advantage, and that creature provokes opportunity attacks from the wrath even
-          if it uses the disengage action. Finally, creatures provoke opportunity attacks when they enter the wrath's
-          reach.</p>
-        chat: ""
-      requirements: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      activation:
-        type: ""
-        cost: null
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: ""
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: ""
-      actionType: ""
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
-        value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      prerequisites:
-        level: null
-      properties: []
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!f16ffad8fe11249f.ff44de3ea8abbaed"
-  - _id: 183f9d6f1ca7e21f
-    name: Jar'kai Assault
-    type: feat
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: non-weapon
-          kind: featPassiveOrRider
-          sourceSection: traits
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-    img: systems/dnd5e/icons/svg/actors/npc.svg
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>The wrath can enter a defensive stance as a bonus action that lasts until the start of its next turn. When
-          it does so, it can make an additional 5 opportunity attacks without using its reaction, and can make
-          opportunity attacks against any creature that moves more than 5 feet while within its reach.</p>
+          <p>As a bonus action when its hitpoints get below half (140), the Crusader gains temporary hit points equal to
+          the number of hostile creatures within 120 feet of it x 10.</p>
         chat: ""
       requirements: ""
       source:
@@ -395,9 +392,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!f16ffad8fe11249f.183f9d6f1ca7e21f"
-  - _id: 2d455f0bcc0834a8
-    name: The Way of the Acklay (1/day)
+    _key: "!actors.items!9cc34f6b82b40f76.94736b31ed577d4a"
+  - _id: 6fc7833c119b131e
+    name: Legendary Resistance (3/Day)
     type: feat
     sort: 0
     flags:
@@ -407,114 +404,13 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>The wrath can enter this destructive stance as a bonus action. When the wrath deals damage, it adds 3 to
-          its damage rolls. Additionally, when it hits a creature, it can move up to 5 feet without provoking
-          opportunity attacks. This stance lasts for one minute.</p>
-        chat: ""
-      requirements: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      activation:
-        type: bonus
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: ""
-      uses:
-        value: 1
-        max: "1"
-        per: day
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: ""
-      actionType: ""
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
-        value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      prerequisites:
-        level: null
-      properties: []
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!f16ffad8fe11249f.2d455f0bcc0834a8"
-  - _id: 02c5945184bff0ad
-    name: Twin Strike (4/day)
-    type: feat
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: non-weapon
-          kind: featPassiveOrRider
-          sourceSection: traits
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-    img: systems/dnd5e/icons/svg/actors/npc.svg
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>Once per turn when the wrath misses with a melee weapon attack, it can make another melee weapon attack
-          against the same target, no action required.</p>
+        value: <p>If the Force Crusader fails a saving throw, it can choose to succeed instead.</p>
         chat: ""
       requirements: ""
       source:
@@ -539,8 +435,8 @@ items:
         long: null
         units: ""
       uses:
-        value: 4
-        max: "4"
+        value: 3
+        max: "3"
         per: day
         recovery: ""
         prompt: true
@@ -592,8 +488,206 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!f16ffad8fe11249f.02c5945184bff0ad"
-  - _id: 479736d95b739b90
+    _key: "!actors.items!9cc34f6b82b40f76.6fc7833c119b131e"
+  - _id: 826c5630169ae27d
+    name: Two-Weapon Fighting
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:force-crusader
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The Force Crusader can add it's ability modifier to the damage of its offhand attack. Additionally, it
+          gains a +1 to AC while two-weapon fighting, and can make two weapon attacks when it makes an opportunity
+          attack.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!9cc34f6b82b40f76.826c5630169ae27d"
+  - _id: 2c6c0bd3754f18f4
+    name: Warcaster
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:force-crusader
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The Force Crusader has advantage on concentration checks to maintain powers. Additionally, when a creature
+          provokes an opportunity attack, the Force Crusader can cast a power instead of making an attack, as long as
+          the power has a casting time of one action and only targets that creature.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!9cc34f6b82b40f76.2c6c0bd3754f18f4"
+  - _id: 4f88da7203e7ff5d
     name: Multiattack
     type: feat
     sort: 0
@@ -604,15 +698,15 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>The Emperor's Wrath uses either its Mad Dash if it is available or casts an at-will power and then makes
-          two lightsaber attacks.</p>
+          <p>The crusader uses its Malevolent Force Bond if available, then makes three lightfoil attacks or makes one
+          attack and casts one force power.</p>
         chat: ""
       requirements: ""
       source:
@@ -690,9 +784,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!f16ffad8fe11249f.479736d95b739b90"
-  - _id: 615a7ca77059b3ff
-    name: Mad Dash (Recharge 5 or 6)
+    _key: "!actors.items!9cc34f6b82b40f76.4f88da7203e7ff5d"
+  - _id: f9e58c552b9ff757
+    name: Malevolent Force Bond (Recharge 5 or 6)
     type: feat
     sort: 0
     flags:
@@ -702,16 +796,17 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>The wrath rushes up to 30 feet to an unoccupied space it can see without provoking opportunity attacks.
-          Each creature within 5 feet of its path must make a DC 18 Dexterity saving throw. On a failure, a creature
-          takes the Wrath's normal lightsaber damage. On a success, a creature takes half damage.</p>
+          <p>The Crusader chooses two creatures it can see and creates a force bond between them. Both creatures must
+          succeed on a DC 21 Wisdom saving throw. If both targets fail, any damage taken by one creature is also taken
+          by the other. If only one target fails, whenever the other takes damage the failed target takes the same
+          amount. The targets may repeat the saving throw at the end of their turns, ending the effect on a success.</p>
         chat: ""
       requirements: ""
       source:
@@ -789,43 +884,41 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!f16ffad8fe11249f.615a7ca77059b3ff"
-  - _id: 40c289c2dc6bec24
-    name: Lightsaber
+    _key: "!actors.items!9cc34f6b82b40f76.f9e58c552b9ff757"
+  - _id: 8791083c14cca1d3
+    name: Lightfoil
     type: weapon
-    img: modules/sw5e-module/icons/packs/Simple%20Lightweapons/Lightsaber.webp
+    img: modules/sw5e-module/icons/packs/Martial%20Lightweapons/Lightfoil.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:54.4005016+00:00"
+        timestamp: "2023-03-09T01:51:54.4015+00:00"
         importer_version: 3
-        uid: Weapon.name-lightsaber.equipmentCategory-weapon
+        uid: Weapon.name-lightfoil.equipmentCategory-weapon
       sw5e:
         properties:
+          fin: true
           hidden: true
           luminous: true
-          ver: true
         reload:
           types: []
         veshsGalacticHolodex:
           classification: canonical-manufactured-weapon
           embeddedFromCanonical: true
           sourceActionNames:
-            - Lightsaber
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+            - Lightfoil
+          sourceSemanticKey: vgh:humanoid:force-crusader
       dnd5e:
         riders:
           activity: []
           effect: []
       core:
-        sourceId: Compendium.sw5e-module.equipment.Item.TjTDmB8pIYSLkQvw
+        sourceId: Compendium.sw5e-module.equipment.Item.s3PoP2XP6eNKibCh
     system:
       description:
-        value: >-
-          <p>*Melee Weapon Attack:* +11 to hit, reach 5 ft., one target. *Hit:* 10 (1d8+6) energy damage plus 9 (2d8)
-          necrotic damage.</p>
+        value: <p>The Crusader makes one lightfoil attack.</p>
         chat: ""
       source:
         custom: PHB
@@ -834,7 +927,7 @@ items:
         value: 0
         units: lb
       price:
-        value: 450
+        value: 475
         denomination: gc
       attunement: ""
       equipped: false
@@ -880,21 +973,13 @@ items:
         parts:
           - - 1d8+6
             - energy
-        versatile:
-          custom: {}
-          types:
-            - energy
-          scaling:
-            mode: ""
-            number: 1
-          number: 2
-          denomination: 4
+        versatile: ""
         base:
           custom: {}
           scaling:
             number: 1
             mode: ""
-          denomination: 6
+          denomination: 8
           number: 1
           types:
             - energy
@@ -923,18 +1008,18 @@ items:
         use: null
         types: []
       properties:
+        - fin
         - hidden
         - luminous
-        - ver
       proficient: null
       type:
-        value: simpleLW
+        value: martialLW
         subtype: ""
-        baseItem: lightsaber
+        baseItem: lightfoil
       unidentified:
         description: ""
       attack:
-        bonus: "11"
+        bonus: "13"
         flat: true
       container: null
       attuned: false
@@ -943,13 +1028,13 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        51101c83fcec5886:
-          _id: 51101c83fcec5886
+        623f0c4f875c267f:
+          _id: 623f0c4f875c267f
           activation:
             type: action
           attack:
             ability: ""
-            bonus: "11"
+            bonus: "13"
             flat: true
             type:
               classification: weapon
@@ -987,33 +1072,34 @@ items:
             override: false
             prompt: false
           type: attack
-      attackBonus: "11"
+      attackBonus: "13"
     ownership:
       default: 0
     _stats:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493982793
+      createdTime: 1674493982805
       modifiedTime: 1739121084250
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-    _key: "!actors.items!f16ffad8fe11249f.40c289c2dc6bec24"
-  - _id: a863b95c721ca1c9
-    _key: "!actors.items!f16ffad8fe11249f.a863b95c721ca1c9"
+    _key: "!actors.items!9cc34f6b82b40f76.8791083c14cca1d3"
+  - _id: 420f992c282e2fc2
+    _key: "!actors.items!9cc34f6b82b40f76.420f992c282e2fc2"
     name: Forcecasting
     type: feat
     img: systems/dnd5e/icons/svg/items/feature.svg
     system:
       description:
         value: >-
-          <p>The Emperor's Wrath is an 10th-level forcecaster. Its forcecasting ability is Charisma (power save DC 17,
-          +9 to hit with force attacks) and it has 44 force points. The Emperor's Wrath knows the following force
-          powers:<br>*At-will:* affect mind, force disarm, force push/pull, mind trick, saber reflect, saber throw,
-          saber ward<br><br><br>*1st-level:* burse of speed, disperse force, fear, force jump, force
-          propel<br><br><br>*2nd-level:* battle meditation, force throw, rescue, stun<br><br><br>*3rd-level:* choke,
-          force repulse, force scream, knight speed, sever force<br><br><br>*4th-level:* dominate beast, force immunity,
-          freedom of movement<br><br><br>*5th-level:* dominate mind, improved force scream, telekinesis</p>
+          <p>The Force Crusader is a 17th-level forcecaster. Its forcecasting ability is either Charisma or Wisdom (its
+          choice) (power save DC 21, +13 to hit with force attacks) and it has 57 force points. The Force Crusader knows
+          the following force powers: <br><br>*At-will:* burst, force push/pull, saber reflect, shock,
+          turbulence<br><br><br>*1st-level:* burst of speed, phasestrike, sap vitality, tremor<br><br><br>*2nd-level:*
+          animate weapon, drain vitality, force throw, phasewalk<br><br><br>*3rd-level:* convulsion, force lightning,
+          knight speed, sever force, telekinetic storm<br><br><br>*4th-level:* drain life, force immunity, shocking
+          shield<br><br><br>*5th-level:* improved phasestrike, siphon life, stasis<br><br><br>*6th-level:* force chain
+          lightning, telekinetic burst<br><br><br>*7th-level:* force lightning cone, whirlwind</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -1075,187 +1161,47 @@ items:
         veshsGalacticHolodex:
           castingTrait: true
           castType: force
-          parsedLevel: 10
-          parsedPoints: 44
-          parsedAbility: cha
-          parsedSaveDc: 17
-          parsedAttackBonus: 9
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-  - _id: 20416ba574bfe396
-    name: Affect Mind
+          parsedLevel: 17
+          parsedPoints: 57
+          parsedAbility: null
+          parsedSaveDc: 21
+          parsedAttackBonus: 13
+          sourceSemanticKey: vgh:humanoid:force-crusader
+  - _id: 4659f4e569c04378
+    name: Burst
     type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/AffectMind.webp
+    img: modules/sw5e-module/icons/packs/Force%20Powers/Burst.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1377525+00:00"
+        timestamp: "2023-03-09T01:51:59.1407516+00:00"
         importer_version: 3
-        uid: Power.name-affect_mind.level-0
-      sw5e:
-        migratedProperties:
-          - concentration
-        veshsGalacticHolodex:
-          embeddedFromCanonical: true
-          family: power
-          canonicalName: Affect Mind
-          castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-          tierLabel: At-will
-          tierKind: at-will
+        uid: Power.name-burst.level-0
       dnd5e:
         riders:
           activity: []
           effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Burst
+          castType: force
+          sourceSemanticKey: vgh:humanoid:force-crusader
+          tierLabel: At-will
+          tierKind: at-will
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.oMQr9mzRJTjD71Xc
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.CJiHSga5F10ZTKMg
     system:
       description:
         value: >-
-          <p>Choose a target within range that isn't hostile toward you. The target must make a Wisdom saving throw. On
-          a failed save, you have advantage on all Charisma checks directed at that target. </p>
+          <p>You cause the earth to burst from beneath your feet. Each creature within range, other than you, must
+          succeed on a Dexterity saving throw or take [[/r 1d8]] kinetic damage.</p>
 
-          <p>On a successful save, the creature does not realize that you tried to use the Force to influence its mood,
-          but it becomes immune to this power for one day. This power has no effect on droids or constructs.</p>
-        chat: ""
-      source:
-        custom: PHB
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: "1"
-        units: minute
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: 30
-        long: null
-        units: ft
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: null
-      actionType: save
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: wis
-        dc: null
-        scaling: spell
-      level: 0
-      school: uni
-      materials:
-        value: ""
-        consumed: false
-        cost: 0
-        supply: 0
-      scaling:
-        mode: none
-        formula: null
-      properties:
-        - concentration
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      activities:
-        sw5e0save0000000:
-          _id: sw5e0save0000000
-          activation:
-            condition: ""
-            type: action
-          damage:
-            parts: []
-          description: {}
-          duration:
-            units: minute
-            value: "1"
-          img: null
-          range:
-            units: ft
-            value: "30"
-          save:
-            ability: wis
-            dc:
-              calculation: spellcasting
-              formula: ""
-          target:
-            template:
-              type: ""
-              units: ""
-          type: save
-      method: powerCasting
-      prepared: true
-    ownership:
-      default: 0
-    _stats:
-      systemId: dnd5e
-      systemVersion: 5.2.5
-      coreVersion: "12.331"
-      createdTime: 1674493979314
-      modifiedTime: 1739121089377
-      lastModifiedBy: dnd5ebuilder0000
-      duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.oMQr9mzRJTjD71Xc
-    _key: "!actors.items!f16ffad8fe11249f.20416ba574bfe396"
-  - _id: f403e71cd2882f64
-    name: Force Disarm
-    type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/ForceDisarm.webp
-    effects: []
-    folder: null
-    sort: 0
-    flags:
-      sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1497461+00:00"
-        importer_version: 3
-        uid: Power.name-force_disarm.level-0
-      dnd5e:
-        riders:
-          activity: []
-          effect: []
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromCanonical: true
-          family: power
-          canonicalName: Force Disarm
-          castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-          tierLabel: At-will
-          tierKind: at-will
-      core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.UGOvTjxVyAHq5n23
-    system:
-      description:
-        value: >-
-          <p>You select a weapon or object being worn or carried by a Large or smaller creature within range. The
-          creature must make a Strength or Dexterity saving throw (the creature chooses the ability to use). If the item
-          is being carried, this save is made with advantage. On a failed save, the item is pulled directly to you. If
-          you have a free hand, you catch the weapon. Otherwise, it lands at your feet.</p>
+          <p>This power's damage increases by [[/r 1d8]] when you reach 5th level ([[/r 2d8]]), 11th level ([[/r 3d8]]),
+          and 17th level ([[/r 4d8]]).</p>
         chat: ""
       source:
         custom: PHB
@@ -1275,9 +1221,9 @@ items:
         type: ""
         prompt: true
       range:
-        value: 30
+        value: null
         long: null
-        units: ft
+        units: self
       uses:
         value: null
         max: ""
@@ -1296,11 +1242,13 @@ items:
         threshold: null
         damage: ""
       damage:
-        parts: []
+        parts:
+          - - 1d8
+            - kinetic
         versatile: ""
       formula: ""
       save:
-        ability: str
+        ability: dex
         dc: null
         scaling: spell
       level: 0
@@ -1311,7 +1259,7 @@ items:
         cost: 0
         supply: 0
       scaling:
-        mode: none
+        mode: atwill
         formula: null
       attack:
         bonus: ""
@@ -1326,16 +1274,25 @@ items:
             condition: ""
             type: action
           damage:
-            parts: []
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 1
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - kinetic
           description: {}
           duration:
             units: inst
           img: null
           range:
-            units: ft
-            value: "30"
+            override: false
+            units: self
           save:
-            ability: str
+            ability: dex
             dc:
               calculation: spellcasting
               formula: ""
@@ -1352,13 +1309,13 @@ items:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493979246
+      createdTime: 1674493979188
       modifiedTime: 1739121089377
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.UGOvTjxVyAHq5n23
-    _key: "!actors.items!f16ffad8fe11249f.f403e71cd2882f64"
-  - _id: 382b4ccaf5c80d0e
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.CJiHSga5F10ZTKMg
+    _key: "!actors.items!9cc34f6b82b40f76.4659f4e569c04378"
+  - _id: 7308afba079e83d4
     name: Force Push/Pull
     type: spell
     img: modules/sw5e-module/icons/packs/Force%20Powers/ForcePush-Pull.webp
@@ -1380,7 +1337,7 @@ items:
           family: power
           canonicalName: Force Push/Pull
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: At-will
           tierKind: at-will
       core:
@@ -1519,152 +1476,8 @@ items:
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
       compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.SGD86ViLobKDYUJl
-    _key: "!actors.items!f16ffad8fe11249f.382b4ccaf5c80d0e"
-  - _id: f98a4fec2cdb0241
-    name: Mind Trick
-    type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/MindTrick.webp
-    effects: []
-    folder: null
-    sort: 0
-    flags:
-      sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1177642+00:00"
-        importer_version: 3
-        uid: Power.name-mind_trick.level-0
-      sw5e:
-        migratedProperties:
-          - concentration
-        veshsGalacticHolodex:
-          embeddedFromCanonical: true
-          family: power
-          canonicalName: Mind Trick
-          castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-          tierLabel: At-will
-          tierKind: at-will
-      dnd5e:
-        riders:
-          activity: []
-          effect: []
-      core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.sU7NH8OPJTyosMM7
-    system:
-      description:
-        value: >-
-          <p>Choose a target within range that isn't hostile toward you. The target must make a Wisdom saving throw. On
-          a failed save, the target has disadvantage on Wisdom (Perception) and Intelligence (Investigation) checks.
-          </p>
-
-          <p>On a successful save, the creature realizes that you tried to use the Force to influence its awareness and
-          becomes hostile toward you. A creature prone to violence might attack you. Another creature might seek
-          retribution in other ways (at the GM's discretion), depending on the nature of your interaction with it. This
-          power has no effect on droids or constructs.</p>
-        chat: ""
-      source:
-        custom: PHB
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: "1"
-        units: minute
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: 30
-        long: null
-        units: ft
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: null
-      actionType: save
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: wis
-        dc: null
-        scaling: spell
-      level: 0
-      school: uni
-      materials:
-        value: ""
-        consumed: false
-        cost: 0
-        supply: 0
-      scaling:
-        mode: none
-        formula: null
-      properties:
-        - concentration
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      activities:
-        sw5e0save0000000:
-          _id: sw5e0save0000000
-          activation:
-            condition: ""
-            type: action
-          damage:
-            parts: []
-          description: {}
-          duration:
-            units: minute
-            value: "1"
-          img: null
-          range:
-            units: ft
-            value: "30"
-          save:
-            ability: wis
-            dc:
-              calculation: spellcasting
-              formula: ""
-          target:
-            template:
-              type: ""
-              units: ""
-          type: save
-      method: powerCasting
-      prepared: true
-    ownership:
-      default: 0
-    _stats:
-      systemId: dnd5e
-      systemVersion: 5.2.5
-      coreVersion: "12.331"
-      createdTime: 1674493979328
-      modifiedTime: 1739121089377
-      lastModifiedBy: dnd5ebuilder0000
-      duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.sU7NH8OPJTyosMM7
-    _key: "!actors.items!f16ffad8fe11249f.f98a4fec2cdb0241"
-  - _id: e21e2c5e1ca415c0
+    _key: "!actors.items!9cc34f6b82b40f76.7308afba079e83d4"
+  - _id: ad0f859866589a5f
     name: Saber Reflect
     type: spell
     img: modules/sw5e-module/icons/packs/Force%20Powers/SaberReflect.webp
@@ -1686,7 +1499,7 @@ items:
           family: power
           canonicalName: Saber Reflect
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: At-will
           tierKind: at-will
       core:
@@ -1807,19 +1620,19 @@ items:
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
       compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.Tan8Tf3aHUBWfJxa
-    _key: "!actors.items!f16ffad8fe11249f.e21e2c5e1ca415c0"
-  - _id: faf3f963aa72bd96
-    name: Saber Throw
+    _key: "!actors.items!9cc34f6b82b40f76.ad0f859866589a5f"
+  - _id: 63f29927889cc4bb
+    name: Shock
     type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/SaberThrow.webp
+    img: modules/sw5e-module/icons/packs/Force%20Powers/Shock.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1227611+00:00"
+        timestamp: "2023-03-09T01:51:59.1247609+00:00"
         importer_version: 3
-        uid: Power.name-saber_throw.level-0
+        uid: Power.name-shock.level-0
       dnd5e:
         riders:
           activity: []
@@ -1828,25 +1641,22 @@ items:
         veshsGalacticHolodex:
           embeddedFromCanonical: true
           family: power
-          canonicalName: Saber Throw
+          canonicalName: Shock
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: At-will
           tierKind: at-will
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.Iz5rbsgDhG8ttxtD
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.HNZGubklAqLXpp0N
     system:
       description:
         value: >-
-          <p>As a part of the action used to cast this power, you must make a ranged force attack with a lightweapon or
-          vibroweapon against one target within the power's range, otherwise the power fails. On a hit, the target takes
-          [[/r 1d8]] damage of the same type as the weapon's damage. The weapon then immediately returns to your
-          hand.</p>
+          <p>You hurl a bolt of lightning at a target within range, making a ranged force attack. On a hit, the target
+          takes [[/r 1d10]] lightning damage. The lightning ignites flammable objects in the area that aren't being worn
+          or carried.</p>
 
-          <p>This power can hit multiple targets when you reach higher levels: two targets at 5th level, three targets
-          at 11th level, and four targets at 17th level. Each target must be within 30 feet of the previous target, you
-          must make a separate attack roll for each target, and the last target must be no further than 30 feet away
-          from you. You can not hit the same target twice in succession.</p>
+          <p>This power's damage increases by [[/r 1d10]] when you reach 5th level ([[/r 2d10]]), 11th level ([[/r
+          3d10]]), and 17th level ([[/r 4d10]]).</p>
         chat: ""
       source:
         custom: PHB
@@ -1866,7 +1676,7 @@ items:
         type: ""
         prompt: true
       range:
-        value: 30
+        value: 120
         long: null
         units: ft
       uses:
@@ -1888,8 +1698,8 @@ items:
         damage: ""
       damage:
         parts:
-          - - 1d8
-            - damage
+          - - 1d10
+            - lightning
         versatile: ""
       formula: ""
       save:
@@ -1897,14 +1707,14 @@ items:
         dc: null
         scaling: spell
       level: 0
-      school: uni
+      school: drk
       materials:
         value: ""
         consumed: false
         cost: 0
         supply: 0
       scaling:
-        mode: none
+        mode: atwill
         formula: null
       attack:
         bonus: ""
@@ -1930,20 +1740,20 @@ items:
             parts:
               - custom:
                   enabled: false
-                denomination: 8
+                denomination: 10
                 number: 1
                 scaling:
                   mode: ""
                   number: 1
                 types:
-                  - ""
+                  - lightning
           description: {}
           duration:
             units: inst
           img: null
           range:
             units: ft
-            value: "30"
+            value: "120"
           target:
             template:
               type: ""
@@ -1957,24 +1767,24 @@ items:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493979205
+      createdTime: 1674493979201
       modifiedTime: 1739121089377
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.Iz5rbsgDhG8ttxtD
-    _key: "!actors.items!f16ffad8fe11249f.faf3f963aa72bd96"
-  - _id: 482728ccc84bf396
-    name: Saber Ward
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.HNZGubklAqLXpp0N
+    _key: "!actors.items!9cc34f6b82b40f76.63f29927889cc4bb"
+  - _id: f4e32c14e559abc1
+    name: Turbulence
     type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/SaberWard.webp
+    img: modules/sw5e-module/icons/packs/Force%20Powers/Turbulence.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1227611+00:00"
+        timestamp: "2023-03-09T01:51:59.1287582+00:00"
         importer_version: 3
-        uid: Power.name-saber_ward.level-0
+        uid: Power.name-turbulence.level-0
       dnd5e:
         riders:
           activity: []
@@ -1983,18 +1793,20 @@ items:
         veshsGalacticHolodex:
           embeddedFromCanonical: true
           family: power
-          canonicalName: Saber Ward
+          canonicalName: Turbulence
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: At-will
           tierKind: at-will
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.bZDYZR9owRmB6Vjd
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.MWvP01mz7uIDxgTo
     system:
       description:
         value: >-
-          <p>You take a defensive stance. Until the end of your next turn, you have resistance against kinetic, energy,
-          and ion damage dealt by weapons.</p>
+          <p>Choose one creature, or choose two creatures that are within 5 feet of each other, within range. A target
+          must succeed on a Dexterity saving throw or take [[/r 1d6]] force damage.</p>
+
+          <p>This power's damage increases by [[/r 1d6]] when you reach 5th, 11th, and 17th level.</p>
         chat: ""
       source:
         custom: PHB
@@ -2003,20 +1815,20 @@ items:
         cost: 1
         condition: ""
       duration:
-        value: "1"
-        units: round
+        value: ""
+        units: inst
       cover: null
       crewed: false
       target:
-        value: ""
+        value: "1"
         width: null
         units: ""
-        type: ""
+        type: creature
         prompt: true
       range:
-        value: null
+        value: 60
         long: null
-        units: self
+        units: ft
       uses:
         value: null
         max: ""
@@ -2029,28 +1841,30 @@ items:
         amount: null
         scale: false
       ability: null
-      actionType: other
+      actionType: save
       chatFlavor: ""
       critical:
         threshold: null
         damage: ""
       damage:
-        parts: []
+        parts:
+          - - 1d6
+            - force
         versatile: ""
       formula: ""
       save:
-        ability: ""
+        ability: dex
         dc: null
         scaling: spell
       level: 0
-      school: uni
+      school: lgt
       materials:
         value: ""
         consumed: false
         cost: 0
         supply: 0
       scaling:
-        mode: none
+        mode: atwill
         formula: null
       attack:
         bonus: ""
@@ -2059,26 +1873,40 @@ items:
       summons: null
       properties: []
       activities:
-        sw5e0utility0000:
-          _id: sw5e0utility0000
+        sw5e0save0000000:
+          _id: sw5e0save0000000
           activation:
             condition: ""
             type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 6
+                number: 1
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - force
           description: {}
           duration:
-            units: round
-            value: "1"
+            units: inst
           img: null
           range:
-            override: false
-            units: self
-          roll:
-            formula: ""
+            units: ft
+            value: "60"
+          save:
+            ability: dex
+            dc:
+              calculation: spellcasting
+              formula: ""
           target:
             template:
-              type: ""
+              size: "1"
+              type: creature
               units: ""
-          type: utility
+          type: save
       method: powerCasting
       prepared: true
     ownership:
@@ -2087,13 +1915,13 @@ items:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493979279
+      createdTime: 1674493979218
       modifiedTime: 1739121089377
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.bZDYZR9owRmB6Vjd
-    _key: "!actors.items!f16ffad8fe11249f.482728ccc84bf396"
-  - _id: a6fda54bbd4e23f4
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.MWvP01mz7uIDxgTo
+    _key: "!actors.items!9cc34f6b82b40f76.f4e32c14e559abc1"
+  - _id: 9350a7c3bfd81b08
     name: Burst of Speed
     type: spell
     img: modules/sw5e-module/icons/packs/Force%20Powers/BurstOfSpeed.webp
@@ -2115,7 +1943,7 @@ items:
           family: power
           canonicalName: Burst of Speed
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: 1st-level
           tierKind: leveled
       core:
@@ -2233,185 +2061,28 @@ items:
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
       compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.ptGikKdrqC2Wyjlo
-    _key: "!actors.items!f16ffad8fe11249f.a6fda54bbd4e23f4"
-  - _id: cea140defb3872d7
-    name: Disperse Force
+    _key: "!actors.items!9cc34f6b82b40f76.9350a7c3bfd81b08"
+  - _id: 61aa1699b1151883
+    name: Phasestrike
     type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/DisperseForce.webp
+    img: modules/sw5e-module/icons/packs/Force%20Powers/Phasestrike.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1457493+00:00"
+        timestamp: "2023-03-09T01:51:59.1187641+00:00"
         importer_version: 3
-        uid: Power.name-disperse_force.level-1
-      dnd5e:
-        riders:
-          activity: []
-          effect: []
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromCanonical: true
-          family: power
-          canonicalName: Disperse Force
-          castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-          tierLabel: 1st-level
-          tierKind: leveled
-      core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.floXp4sveE2n4Vtc
-    system:
-      description:
-        value: >-
-          <p><em><strong>Prerequisite</strong>: Saber Ward</em></p>
-
-          <p>This power absorbs damage from certain incoming attacks, lessening its effect on you and distributing it
-          throughout your body. You have resistance to the triggering damage type until the start of your next turn.
-          Also, you gain 5 temporary hit points to potentially absorb the attack. These temporary hit points last until
-          the start of your next turn.</p>
-
-          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 2nd level or
-          higher, the temporary hit points increases by 5 for each slot level above 1st.</p>
-        chat: ""
-      source:
-        custom: PHB
-      activation:
-        type: reaction
-        cost: 1
-        condition: when you take cold, energy, fire, ion, lightning, or sonic damage
-      duration:
-        value: "1"
-        units: round
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: self
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: attribute
-        target: powercasting.force.points.value
-        amount: 2
-        scale: true
-      ability: null
-      actionType: heal
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts:
-          - - "5"
-            - temphp
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      level: 1
-      school: uni
-      materials:
-        value: ""
-        consumed: false
-        cost: 0
-        supply: 0
-      scaling:
-        mode: level
-        formula: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      properties: []
-      activities:
-        sw5e0heal0000000:
-          _id: sw5e0heal0000000
-          activation:
-            condition: when you take cold, energy, fire, ion, lightning, or sonic damage
-            type: reaction
-          description: {}
-          duration:
-            units: round
-            value: "1"
-          healing:
-            custom:
-              enabled: true
-              formula: "5"
-            denomination: null
-            number: null
-            scaling:
-              mode: ""
-              number: 1
-            types:
-              - temphp
-          img: null
-          range:
-            override: false
-            units: self
-          target:
-            template:
-              type: ""
-              units: ""
-          type: heal
-          consumption:
-            spellSlot: false
-            targets:
-              - scaling:
-                  formula: ""
-                  mode: amount
-                target: powercasting.force.points.value
-                type: attribute
-                value: "2"
-      method: powerCasting
-      prepared: true
-    ownership:
-      default: 0
-    _stats:
-      systemId: dnd5e
-      systemVersion: 5.2.5
-      coreVersion: "12.331"
-      createdTime: 1674493979291
-      modifiedTime: 1739121089377
-      lastModifiedBy: dnd5ebuilder0000
-      duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.floXp4sveE2n4Vtc
-    _key: "!actors.items!f16ffad8fe11249f.cea140defb3872d7"
-  - _id: 01529b72bbde0f34
-    name: Fear
-    type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/Fear.webp
-    effects: []
-    folder: null
-    sort: 0
-    flags:
-      sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1477482+00:00"
-        importer_version: 3
-        uid: Power.name-fear.level-1
+        uid: Power.name-phasestrike.level-1
       sw5e:
         migratedProperties:
           - concentration
         veshsGalacticHolodex:
           embeddedFromCanonical: true
           family: power
-          canonicalName: Fear
+          canonicalName: Phasestrike
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: 1st-level
           tierKind: leveled
       dnd5e:
@@ -2419,174 +2090,25 @@ items:
           activity: []
           effect: []
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.fDzm8b06fCuenc9g
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.K12Chef5elrSirFL
     system:
       description:
         value: >-
-          <p>You awaken the sense of mortality in one creature you can see within range. The target must succeed on a
-          Wisdom saving throw or become frightened for the duration. A target with 25 hit points or fewer makes the
-          saving throw with disadvantage. A frightened creature can repeat this save at the end of each of its turns,
-          ending this effect on a success. This power has no effect on constructs or droids.</p>
+          <p>Until the power ends, your movement doesn't provoke opportunity attacks.</p>
+
+          <p>Once before the power ends, you can give yourself advantage on one weapon attack roll on your turn. That
+          attack deals an extra [[/r 1d8]] force damage on a hit. Whether you hit or miss, your walking speed increases
+          by 30 feet until the end of that turn.</p>
         chat: ""
       source:
         custom: PHB
       activation:
-        type: action
+        type: bonus
         cost: 1
         condition: ""
       duration:
         value: "1"
         units: minute
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: 60
-        long: null
-        units: ft
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: attribute
-        target: powercasting.force.points.value
-        amount: 2
-        scale: true
-      ability: null
-      actionType: save
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: wis
-        dc: null
-        scaling: spell
-      level: 1
-      school: drk
-      materials:
-        value: ""
-        consumed: false
-        cost: 0
-        supply: 0
-      scaling:
-        mode: none
-        formula: null
-      properties:
-        - concentration
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      activities:
-        sw5e0save0000000:
-          _id: sw5e0save0000000
-          activation:
-            condition: ""
-            type: action
-          damage:
-            parts: []
-          description: {}
-          duration:
-            units: minute
-            value: "1"
-          img: null
-          range:
-            units: ft
-            value: "60"
-          save:
-            ability: wis
-            dc:
-              calculation: spellcasting
-              formula: ""
-          target:
-            template:
-              type: ""
-              units: ""
-          type: save
-          consumption:
-            spellSlot: false
-            targets:
-              - scaling:
-                  formula: ""
-                  mode: amount
-                target: powercasting.force.points.value
-                type: attribute
-                value: "2"
-      method: powerCasting
-      prepared: true
-    ownership:
-      default: 0
-    _stats:
-      systemId: dnd5e
-      systemVersion: 5.2.5
-      coreVersion: "12.331"
-      createdTime: 1674493979290
-      modifiedTime: 1739121089377
-      lastModifiedBy: dnd5ebuilder0000
-      duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.fDzm8b06fCuenc9g
-    _key: "!actors.items!f16ffad8fe11249f.01529b72bbde0f34"
-  - _id: af1739b1c8d8a90b
-    name: Force Jump
-    type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/ForceJump.webp
-    effects: []
-    folder: null
-    sort: 0
-    flags:
-      sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1507454+00:00"
-        importer_version: 3
-        uid: Power.name-force_jump.level-1
-      dnd5e:
-        riders:
-          activity: []
-          effect: []
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromCanonical: true
-          family: power
-          canonicalName: Force Jump
-          castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-          tierLabel: 1st-level
-          tierKind: leveled
-      core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.rEG7wo8eGnk3h2DA
-    system:
-      description:
-        value: >-
-          <p><em><strong>Prerequisite</strong>: Force Leap</em></p>
-
-          <p>Using the Force to augment the strength in your legs, you leap up to 30 feet to an unoccupied space you can
-          see, provided you have a direct path to the space.</p>
-
-          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 2nd level or
-          higher, your jump distance increases by 5 feet for each slot level above 1st.</p>
-        chat: ""
-      source:
-        custom: PHB
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: inst
       cover: null
       crewed: false
       target:
@@ -2617,7 +2139,9 @@ items:
         threshold: null
         damage: ""
       damage:
-        parts: []
+        parts:
+          - - 1d8
+            - force
         versatile: ""
       formula: ""
       save:
@@ -2632,34 +2156,47 @@ items:
         cost: 0
         supply: 0
       scaling:
-        mode: level
+        mode: none
         formula: null
+      properties:
+        - concentration
       attack:
         bonus: ""
         flat: false
       enchantment: null
       summons: null
-      properties: []
       activities:
-        sw5e0utility0000:
-          _id: sw5e0utility0000
+        sw5e0damage00000:
+          _id: sw5e0damage00000
           activation:
             condition: ""
-            type: action
+            type: bonus
+          damage:
+            critical:
+              allow: true
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 1
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - force
           description: {}
           duration:
-            units: inst
+            units: minute
+            value: "1"
           img: null
           range:
             override: false
             units: self
-          roll:
-            formula: ""
           target:
             template:
               type: ""
               units: ""
-          type: utility
+          type: damage
           consumption:
             spellSlot: false
             targets:
@@ -2677,24 +2214,24 @@ items:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493979325
+      createdTime: 1674493979208
       modifiedTime: 1739121089377
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.rEG7wo8eGnk3h2DA
-    _key: "!actors.items!f16ffad8fe11249f.af1739b1c8d8a90b"
-  - _id: 4ad96790dafc512d
-    name: Force Propel
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.K12Chef5elrSirFL
+    _key: "!actors.items!9cc34f6b82b40f76.61aa1699b1151883"
+  - _id: 7e4e7573f3a629c7
+    name: Sap Vitality
     type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/ForcePropel.webp
+    img: modules/sw5e-module/icons/packs/Force%20Powers/SapVitality.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1527446+00:00"
+        timestamp: "2023-03-09T01:51:59.1227611+00:00"
         importer_version: 3
-        uid: Power.name-force_propel.level-1
+        uid: Power.name-sap_vitality.level-1
       dnd5e:
         riders:
           activity: []
@@ -2703,28 +2240,21 @@ items:
         veshsGalacticHolodex:
           embeddedFromCanonical: true
           family: power
-          canonicalName: Force Propel
+          canonicalName: Sap Vitality
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: 1st-level
           tierKind: leveled
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.NcoLNmky58vBd4lJ
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.jVU9F4W0jwQNvP9R
     system:
       description:
         value: >-
-          <p><em><strong>Prerequisite</strong>: Force Push/Pull</em></p>
-
-          <p>Choose one or more creatures or objects not being worn or carried within 60 feet that weigh up to a
-          combined total of 15 pounds. The creatures or objects immediately move 60 feet in a direction of your choice.
-          If the creatures or objects end this movement in the air, they immediately fall to the ground. If the
-          creatures or objects collide with any one target during its travel, both the creatures or objects and the
-          target take [[/r 3d8]] kinetic damage. If the target is a creature, it must make a Dexterity saving throw. On
-          a failed save, it takes the kinetic damage, or half as much on a successful one.</p>
+          <p>Make a melee force attack against a creature you can reach. On a hit, the target takes [[/r 3d10]] necrotic
+          damage.</p>
 
           <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 2nd level or
-          higher, the maximum weight increases by 15 pounds and the damage increases by [[/r 1d8]] for each slot level
-          above 1st.</p>
+          higher, the damage increases by [[/r 1d10]] for each slot level above 1st.</p>
         chat: ""
       source:
         custom: PHB
@@ -2744,9 +2274,180 @@ items:
         type: ""
         prompt: true
       range:
-        value: 60
+        value: null
+        long: null
+        units: touch
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 2
+        scale: true
+      ability: null
+      actionType: mpak
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 3d10
+            - necrotic
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 1
+      school: drk
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: 1d10
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      properties: []
+      activities:
+        sw5e0attack00000:
+          _id: sw5e0attack00000
+          activation:
+            condition: ""
+            type: action
+          attack:
+            ability: ""
+            bonus: ""
+            flat: false
+            type:
+              classification: spell
+              value: melee
+          damage:
+            critical: {}
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 10
+                number: 3
+                scaling:
+                  mode: whole
+                  number: 1
+                types:
+                  - necrotic
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            override: false
+            units: touch
+          target:
+            template:
+              type: ""
+              units: ""
+          type: attack
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "2"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979298
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.jVU9F4W0jwQNvP9R
+    _key: "!actors.items!9cc34f6b82b40f76.7e4e7573f3a629c7"
+  - _id: 83014782eb832358
+    name: Tremor
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/Tremor.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1277594+00:00"
+        importer_version: 3
+        uid: Power.name-tremor.level-1
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Tremor
+          castType: force
+          sourceSemanticKey: vgh:humanoid:force-crusader
+          tierLabel: 1st-level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.bct8YCHrR4OKN6v2
+    system:
+      description:
+        value: >-
+          <p><em><strong>Prerequisite</strong>: Burst</em></p>
+
+          <p>You cause a tremor in the ground within range. Each creature other than you in a 5-foot-radius sphere
+          centered on that point must make a Dexterity saving throw. On a failed save, a creature takes [[/r 1d8]]
+          kinetic damage and is knocked prone. On a successful save, the creature takes half as much damage and isn't
+          knocked prone. If the ground in that area is loose earth or stone, it becomes difficult terrain until cleared,
+          with each 5-foot-diameter portion requiring at least 1 minute to clear by hand.</p>
+
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 2nd level or
+          higher, the damage increases by [[/r 1d8]] for each slot level above 1st.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      cover: null
+      crewed: false
+      target:
+        value: "5"
+        width: null
+        units: ft
+        type: sphere
+        prompt: true
+        affects:
+          count: ""
+          type: ""
+        template:
+          count: ""
+      range:
+        value: 10
         long: null
         units: ft
+        special: ""
       uses:
         value: null
         max: ""
@@ -2766,7 +2467,7 @@ items:
         damage: ""
       damage:
         parts:
-          - - 3d8
+          - - 1d8
             - kinetic
         versatile: ""
       formula: ""
@@ -2801,7 +2502,7 @@ items:
               - custom:
                   enabled: false
                 denomination: 8
-                number: 3
+                number: 1
                 scaling:
                   mode: whole
                   number: 1
@@ -2813,7 +2514,7 @@ items:
           img: null
           range:
             units: ft
-            value: "60"
+            value: "10"
           save:
             ability: dex
             dc:
@@ -2821,8 +2522,8 @@ items:
               formula: ""
           target:
             template:
-              type: ""
-              units: ""
+              size: "5"
+              type: sphere
           type: save
           consumption:
             spellSlot: false
@@ -2841,59 +2542,65 @@ items:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493979220
+      createdTime: 1674493979280
       modifiedTime: 1739121089377
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.NcoLNmky58vBd4lJ
-    _key: "!actors.items!f16ffad8fe11249f.4ad96790dafc512d"
-  - _id: 4ac9402df4caa2c6
-    name: Battle Meditation
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.bct8YCHrR4OKN6v2
+    _key: "!actors.items!9cc34f6b82b40f76.83014782eb832358"
+  - _id: a6edfa341a2e75dc
+    name: Animate Weapon
     type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/BattleMeditation.webp
+    img: modules/sw5e-module/icons/packs/Force%20Powers/AnimateWeapon.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1397517+00:00"
+        timestamp: "2023-03-09T01:51:59.1377525+00:00"
         importer_version: 3
-        uid: Power.name-battle_meditation.level-2
-      sw5e:
-        migratedProperties:
-          - concentration
-        veshsGalacticHolodex:
-          embeddedFromCanonical: true
-          family: power
-          canonicalName: Battle Meditation
-          castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-          tierLabel: 2nd-level
-          tierKind: leveled
+        uid: Power.name-animate_weapon.level-2
       dnd5e:
         riders:
           activity: []
           effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Animate Weapon
+          castType: force
+          sourceSemanticKey: vgh:humanoid:force-crusader
+          tierLabel: 2nd-level
+          tierKind: leveled
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.qNb53Yy7UssxZHPa
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.QWBNhgCUuOLfiu5j
     system:
       description:
         value: >-
-          <p>You exude an aura out to 5 feet that boosts the morale and overall battle prowess of you and your allies
-          while simultaneously reducing the opposition's combat-effectiveness by eroding their will to fight. </p>
+          <p><em><strong>Prerequisite</strong>: Force Disarm</em></p>
 
-          <p>Whenever you or a friendly creature within your meditation makes an attack roll or a saving throw, they can
-          roll a [[/r d4]] and add the number rolled to the attack roll or saving throw. </p>
+          <p>You select a light- or vibro-weapon within this power's range that is not worn or carried by a conscious
+          creature other than you, and use the Force to cause it to levitate, acting as an extension of your will for
+          the duration or until you cast this power again. When you use this power, you can cause the weapon to move up
+          to 20 feet and make a melee force attack against a creature within 5 feet of it. On a hit, the target takes
+          [[/r 1d8]] + your forcecasting ability modifier damage. The type is of the normal damage dealt by the
+          weapon.</p>
 
-          <p>Whenever a hostile creature enters your meditation or starts its turn there, it must make a Charisma saving
-          throw. On a failed save, it must roll a [[/r d4]] and subtract the number rolled from each attack roll or
-          saving throw it makes before the end of your next turn. On a successful save, it is immune to this power for 1
-          day.</p>
+          <p>While the weapon is animated, on each of your turns you can use a bonus action to move the weapon up to 20
+          feet and repeat the attack against a creature within 5 feet of it. At any time, you can end this force power
+          to return the animated weapon to your hand.</p>
+
+          <p>An enemy can attempt to gain control of the weapon by using its action to make a Strength (Athletics) check
+          against your force save DC. On a success, the creature gains control of the weapon and the power ends.</p>
+
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 3rd level or
+          higher, the weapon's damage increases by [[/r 1d8]] for every two slot levels above 2nd.</p>
         chat: ""
       source:
         custom: PHB
       activation:
-        type: action
+        type: bonus
         cost: 1
         condition: ""
       duration:
@@ -2902,15 +2609,15 @@ items:
       cover: null
       crewed: false
       target:
-        value: "5"
+        value: ""
         width: null
-        units: ft
-        type: radius
+        units: ""
+        type: ""
         prompt: true
       range:
-        value: null
+        value: 60
         long: null
-        units: self
+        units: ft
       uses:
         value: null
         max: ""
@@ -2923,17 +2630,19 @@ items:
         amount: 3
         scale: true
       ability: null
-      actionType: save
+      actionType: mpak
       chatFlavor: ""
       critical:
         threshold: null
         damage: ""
       damage:
-        parts: []
+        parts:
+          - - 1d8 + @mod
+            - ""
         versatile: ""
-      formula: 1d4
+      formula: ""
       save:
-        ability: cha
+        ability: ""
         dc: null
         scaling: spell
       level: 2
@@ -2944,41 +2653,53 @@ items:
         cost: 0
         supply: 0
       scaling:
-        mode: none
+        mode: level
         formula: null
-      properties:
-        - concentration
       attack:
         bonus: ""
         flat: false
       enchantment: null
       summons: null
+      properties: []
       activities:
-        sw5e0save0000000:
-          _id: sw5e0save0000000
+        sw5e0attack00000:
+          _id: sw5e0attack00000
           activation:
             condition: ""
-            type: action
+            type: bonus
+          attack:
+            ability: ""
+            bonus: ""
+            flat: false
+            type:
+              classification: spell
+              value: melee
           damage:
-            parts: []
+            critical: {}
+            parts:
+              - bonus: "@mod"
+                custom:
+                  enabled: false
+                denomination: 8
+                number: 1
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - ""
           description: {}
           duration:
             units: minute
             value: "1"
           img: null
           range:
-            override: false
-            units: self
-          save:
-            ability: cha
-            dc:
-              calculation: spellcasting
-              formula: ""
+            units: ft
+            value: "60"
           target:
             template:
-              size: "5"
-              type: radius
-          type: save
+              type: ""
+              units: ""
+          type: attack
           consumption:
             spellSlot: false
             targets:
@@ -2996,13 +2717,183 @@ items:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493979322
+      createdTime: 1674493979228
       modifiedTime: 1739121089377
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.qNb53Yy7UssxZHPa
-    _key: "!actors.items!f16ffad8fe11249f.4ac9402df4caa2c6"
-  - _id: 32e14c9088a7eabc
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.QWBNhgCUuOLfiu5j
+    _key: "!actors.items!9cc34f6b82b40f76.a6edfa341a2e75dc"
+  - _id: 63b67da990d7f8ea
+    name: Drain Vitality
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/DrainVitality.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1467481+00:00"
+        importer_version: 3
+        uid: Power.name-drain_vitality.level-2
+      sw5e:
+        migratedProperties:
+          - concentration
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Drain Vitality
+          castType: force
+          sourceSemanticKey: vgh:humanoid:force-crusader
+          tierLabel: 2nd-level
+          tierKind: leveled
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.aJjP1VGBHLtj3BxD
+    system:
+      description:
+        value: >-
+          <p><em><strong>Prerequisite</strong>: Sap Vitality</em></p>
+
+          <p>You draw the willpower from a creature you can see within range. Make a ranged force attack against the
+          target. On a hit, the target takes [[/r 2d6]] necrotic damage and it deals only half damage with weapon
+          attacks that use Strength until the power ends.</p>
+
+          <p>At the end of each of the target's turns, it can make a Constitution saving throw against the power. On a
+          success, the power ends.</p>
+
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 3rd level or
+          higher, the damage increases by [[/r 1d6]] for each slot level above 2nd.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: minute
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 60
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 3
+        scale: true
+      ability: null
+      actionType: rpak
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 2d6
+            - necrotic
+        versatile: ""
+      formula: ""
+      save:
+        ability: con
+        dc: null
+        scaling: spell
+      level: 2
+      school: drk
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: 1d6
+      properties:
+        - concentration
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0attack00000:
+          _id: sw5e0attack00000
+          activation:
+            condition: ""
+            type: action
+          attack:
+            ability: ""
+            bonus: ""
+            flat: false
+            type:
+              classification: spell
+              value: ranged
+          damage:
+            critical: {}
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 6
+                number: 2
+                scaling:
+                  mode: whole
+                  number: 1
+                types:
+                  - necrotic
+          description: {}
+          duration:
+            units: minute
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "60"
+          target:
+            template:
+              type: ""
+              units: ""
+          type: attack
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "3"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979276
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.aJjP1VGBHLtj3BxD
+    _key: "!actors.items!9cc34f6b82b40f76.63b67da990d7f8ea"
+  - _id: 0a63b757e69bfded
     name: Force Throw
     type: spell
     img: modules/sw5e-module/icons/packs/Force%20Powers/ForceThrow.webp
@@ -3024,7 +2915,7 @@ items:
           family: power
           canonicalName: Force Throw
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: 2nd-level
           tierKind: leveled
       core:
@@ -3167,19 +3058,19 @@ items:
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
       compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.AX069C58jGxjJswh
-    _key: "!actors.items!f16ffad8fe11249f.32e14c9088a7eabc"
-  - _id: 5293995b2aa5383c
-    name: Rescue
+    _key: "!actors.items!9cc34f6b82b40f76.0a63b757e69bfded"
+  - _id: ee6e632225dec933
+    name: Phasewalk
     type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/Rescue.webp
+    img: modules/sw5e-module/icons/packs/Force%20Powers/Phasewalk.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1207632+00:00"
+        timestamp: "2023-03-09T01:51:59.1187641+00:00"
         importer_version: 3
-        uid: Power.name-rescue.level-2
+        uid: Power.name-phasewalk.level-2
       dnd5e:
         riders:
           activity: []
@@ -3188,18 +3079,16 @@ items:
         veshsGalacticHolodex:
           embeddedFromCanonical: true
           family: power
-          canonicalName: Rescue
+          canonicalName: Phasewalk
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: 2nd-level
           tierKind: leveled
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.p0HarWbGXiZaXnut
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.4VDiYvpED1gVmuEY
     system:
       description:
-        value: >-
-          <p>You pull one willing ally you can see within 30 feet of you to an unoccupied space within 5 feet of you.
-          The target must use their reaction to accept the pull.</p>
+        value: <p>You teleport up to 30 feet to an unoccupied space that you can see.</p>
         chat: ""
       source:
         custom: PHB
@@ -3219,9 +3108,9 @@ items:
         type: ""
         prompt: true
       range:
-        value: 30
+        value: null
         long: null
-        units: ft
+        units: self
       uses:
         value: null
         max: ""
@@ -3274,8 +3163,8 @@ items:
             units: inst
           img: null
           range:
-            units: ft
-            value: "30"
+            override: false
+            units: self
           roll:
             formula: ""
           target:
@@ -3300,172 +3189,24 @@ items:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493979316
+      createdTime: 1674493979173
       modifiedTime: 1739121089377
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.p0HarWbGXiZaXnut
-    _key: "!actors.items!f16ffad8fe11249f.5293995b2aa5383c"
-  - _id: a5051c371ad0a766
-    name: Stun
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.4VDiYvpED1gVmuEY
+    _key: "!actors.items!9cc34f6b82b40f76.ee6e632225dec933"
+  - _id: f377c03a356b659c
+    name: Convulsion
     type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/Stun.webp
+    img: modules/sw5e-module/icons/packs/Force%20Powers/Convulsion.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1267594+00:00"
+        timestamp: "2023-03-09T01:51:59.14275+00:00"
         importer_version: 3
-        uid: Power.name-stun.level-2
-      sw5e:
-        migratedProperties:
-          - concentration
-        veshsGalacticHolodex:
-          embeddedFromCanonical: true
-          family: power
-          canonicalName: Stun
-          castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-          tierLabel: 2nd-level
-          tierKind: leveled
-      dnd5e:
-        riders:
-          activity: []
-          effect: []
-      core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.bpwbnM63mcNT9pY8
-    system:
-      description:
-        value: >-
-          <p>Choose a humanoid that you can see within range. The target must succeed on a Wisdom saving throw or be
-          paralyzed for the duration. At the end of each of its turns, the target can make another Wisdom saving throw.
-          On a success, the power ends on the target.</p>
-        chat: ""
-      source:
-        custom: PHB
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: "1"
-        units: minute
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: 60
-        long: null
-        units: ft
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: attribute
-        target: powercasting.force.points.value
-        amount: 3
-        scale: true
-      ability: null
-      actionType: save
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: wis
-        dc: null
-        scaling: spell
-      level: 2
-      school: lgt
-      materials:
-        value: ""
-        consumed: false
-        cost: 0
-        supply: 0
-      scaling:
-        mode: none
-        formula: null
-      properties:
-        - concentration
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      activities:
-        sw5e0save0000000:
-          _id: sw5e0save0000000
-          activation:
-            condition: ""
-            type: action
-          damage:
-            parts: []
-          description: {}
-          duration:
-            units: minute
-            value: "1"
-          img: null
-          range:
-            units: ft
-            value: "60"
-          save:
-            ability: wis
-            dc:
-              calculation: spellcasting
-              formula: ""
-          target:
-            template:
-              type: ""
-              units: ""
-          type: save
-          consumption:
-            spellSlot: false
-            targets:
-              - scaling:
-                  formula: ""
-                  mode: amount
-                target: powercasting.force.points.value
-                type: attribute
-                value: "3"
-      method: powerCasting
-      prepared: true
-    ownership:
-      default: 0
-    _stats:
-      systemId: dnd5e
-      systemVersion: 5.2.5
-      coreVersion: "12.331"
-      createdTime: 1674493979281
-      modifiedTime: 1739121089377
-      lastModifiedBy: dnd5ebuilder0000
-      duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.bpwbnM63mcNT9pY8
-    _key: "!actors.items!f16ffad8fe11249f.a5051c371ad0a766"
-  - _id: bcca1888248cded7
-    name: Choke
-    type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/Choke.webp
-    effects: []
-    folder: null
-    sort: 0
-    flags:
-      sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1417509+00:00"
-        importer_version: 3
-        uid: Power.name-choke.level-3
+        uid: Power.name-convulsion.level-3
       dnd5e:
         riders:
           activity: []
@@ -3474,25 +3215,26 @@ items:
         veshsGalacticHolodex:
           embeddedFromCanonical: true
           family: power
-          canonicalName: Choke
+          canonicalName: Convulsion
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: 3rd-level
           tierKind: leveled
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.bCjVRaWSib1VjjdR
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.7ghDEMP0mmgsDgWP
     system:
       description:
         value: >-
-          <p>You make a constricting gesture at a creature within range. The target must make a Constitution saving
-          throw. On a failed save target takes [[/r 5d8]] force damage and is restrained until the end of your next
-          turn. On a successful save, the target takes half as much damage and is not restrained.</p>
+          <p><em><strong>Prerequisite</strong>: Tremor</em></p>
 
-          <p>You can use a bonus action while the target is restrained to move the target up to 5 feet in any
-          direction.</p>
+          <p>Choose a point you can see on the ground within range. A fountain of churned earth and stone erupts in a
+          20-foot cube centered on that point. Each creature in that area must make a Dexterity saving throw. A creature
+          takes [[/r 3d12]] kinetic damage on a failed save, or half as much damage on a successful one. Additionally,
+          the ground in that area becomes difficult terrain until cleared. Each 5-foot-square portion of the area
+          requires at least 1 minute to clear by hand.</p>
 
           <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 4th level or
-          higher, the damage increases by [[/r 1d8]] for each slot level above 3rd.</p>
+          higher, the damage increases by [[/r 1d12]] for each slot level above 3rd.</p>
         chat: ""
       source:
         custom: PHB
@@ -3506,21 +3248,15 @@ items:
       cover: null
       crewed: false
       target:
-        value: ""
+        value: "20"
         width: null
-        units: ""
-        type: ""
+        units: ft
+        type: cube
         prompt: true
-        affects:
-          count: ""
-          type: ""
-        template:
-          type: ""
       range:
-        value: 60
+        value: 120
         long: null
         units: ft
-        special: ""
       uses:
         value: null
         max: ""
@@ -3540,16 +3276,16 @@ items:
         damage: ""
       damage:
         parts:
-          - - 5d8
-            - force
+          - - 3d12
+            - kinetic
         versatile: ""
       formula: ""
       save:
-        ability: con
+        ability: dex
         dc: null
         scaling: spell
       level: 3
-      school: drk
+      school: uni
       materials:
         value: ""
         consumed: false
@@ -3557,7 +3293,7 @@ items:
         supply: 0
       scaling:
         mode: level
-        formula: 1d8
+        formula: 1d12
       attack:
         bonus: ""
         flat: false
@@ -3574,29 +3310,29 @@ items:
             parts:
               - custom:
                   enabled: false
-                denomination: 8
-                number: 5
+                denomination: 12
+                number: 3
                 scaling:
                   mode: whole
                   number: 1
                 types:
-                  - force
+                  - kinetic
           description: {}
           duration:
             units: inst
           img: null
           range:
             units: ft
-            value: "60"
+            value: "120"
           save:
-            ability: con
+            ability: dex
             dc:
               calculation: spellcasting
               formula: ""
           target:
             template:
-              type: ""
-              units: ""
+              size: "20"
+              type: cube
           type: save
           consumption:
             spellSlot: false
@@ -3615,24 +3351,24 @@ items:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493979278
+      createdTime: 1674493979181
       modifiedTime: 1739121089377
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.bCjVRaWSib1VjjdR
-    _key: "!actors.items!f16ffad8fe11249f.bcca1888248cded7"
-  - _id: 61207396b70dacc5
-    name: Force Repulse
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.7ghDEMP0mmgsDgWP
+    _key: "!actors.items!9cc34f6b82b40f76.f377c03a356b659c"
+  - _id: 185c3fc1b427ef5e
+    name: Force Lightning
     type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/ForceRepulse.webp
+    img: modules/sw5e-module/icons/packs/Force%20Powers/ForceLightning.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1537443+00:00"
+        timestamp: "2023-03-09T01:51:59.1517445+00:00"
         importer_version: 3
-        uid: Power.name-force_repulse.level-3
+        uid: Power.name-force_lightning.level-3
       dnd5e:
         riders:
           activity: []
@@ -3641,21 +3377,23 @@ items:
         veshsGalacticHolodex:
           embeddedFromCanonical: true
           family: power
-          canonicalName: Force Repulse
+          canonicalName: Force Lightning
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: 3rd-level
           tierKind: leveled
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.CVXYNvpr31s82Tyc
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.TFHnZ5LI7b1DhSDV
     system:
       description:
         value: >-
-          <p>You release an omnidirectional telekinetic burst. Each creature within 20 feet must make a Dexterity saving
-          throw. On a failed save, a creature takes [[/r 8d6]] force damage and is pushed back 5 feet. On a successful
-          save, a creature takes half damage and isn't pushed.</p>
+          <p><em><strong>Prerequisite</strong>: Shock</em></p>
 
-          <p>All small objects that are not worn or carried are also pushed 5 feet back.</p>
+          <p>A stroke of lightning forming a line 100 feet long and 5 feet wide blasts out from you in a direction you
+          choose. Each creature in the line must make a Dexterity saving throw. A creature takes [[/r 8d6]] lightning
+          damage on a failed save, or half as much damage on a successful one. </p>
+
+          <p>The lightning ignites flammable objects in the area that aren't being worn or carried.</p>
 
           <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 4th level or
           higher, the damage increases by [[/r 1d6]] for each slot level above 3rd.</p>
@@ -3672,10 +3410,10 @@ items:
       cover: null
       crewed: false
       target:
-        value: "20"
+        value: "100"
         width: null
         units: ft
-        type: radius
+        type: line
         prompt: true
       range:
         value: null
@@ -3701,7 +3439,7 @@ items:
       damage:
         parts:
           - - 8d6
-            - force
+            - lightning
         versatile: ""
       formula: ""
       save:
@@ -3709,7 +3447,7 @@ items:
         dc: null
         scaling: spell
       level: 3
-      school: uni
+      school: drk
       materials:
         value: ""
         consumed: false
@@ -3740,7 +3478,7 @@ items:
                   mode: whole
                   number: 1
                 types:
-                  - force
+                  - lightning
           description: {}
           duration:
             units: inst
@@ -3755,8 +3493,8 @@ items:
               formula: ""
           target:
             template:
-              size: "20"
-              type: radius
+              size: "100"
+              type: line
           type: save
           consumption:
             spellSlot: false
@@ -3775,180 +3513,13 @@ items:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493979190
+      createdTime: 1674493979241
       modifiedTime: 1739121089377
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.CVXYNvpr31s82Tyc
-    _key: "!actors.items!f16ffad8fe11249f.61207396b70dacc5"
-  - _id: 02513ecb5095fc15
-    name: Force Scream
-    type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/ForceScream.webp
-    effects: []
-    folder: null
-    sort: 0
-    flags:
-      sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1537443+00:00"
-        importer_version: 3
-        uid: Power.name-force_scream.level-3
-      dnd5e:
-        riders:
-          activity: []
-          effect: []
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromCanonical: true
-          family: power
-          canonicalName: Force Scream
-          castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-          tierLabel: 3rd-level
-          tierKind: leveled
-      core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.I4oQg1GZed0TDGO5
-    system:
-      description:
-        value: >-
-          <p>You emit a scream imbued with the power of the Force. Each creature you choose within 15 feet of you must
-          succeed on a Constitution saving throw. On a failed save, a creature take [[/r 4d6]] psychic damage, [[/r
-          4d6]] sonic damage, and is deafened until the end of its next turn. On a successful save, it takes half as
-          much damage and isn't deafened.</p>
-        chat: ""
-      source:
-        custom: PHB
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: inst
-      cover: null
-      crewed: false
-      target:
-        value: "15"
-        width: null
-        units: ft
-        type: radius
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: self
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: attribute
-        target: powercasting.force.points.value
-        amount: 4
-        scale: true
-      ability: null
-      actionType: save
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts:
-          - - 4d6
-            - psychic
-          - - 4d6
-            - sonic
-        versatile: ""
-      formula: ""
-      save:
-        ability: con
-        dc: null
-        scaling: spell
-      level: 3
-      school: drk
-      materials:
-        value: ""
-        consumed: false
-        cost: 0
-        supply: 0
-      scaling:
-        mode: none
-        formula: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      properties: []
-      activities:
-        sw5e0save0000000:
-          _id: sw5e0save0000000
-          activation:
-            condition: ""
-            type: action
-          damage:
-            parts:
-              - custom:
-                  enabled: false
-                denomination: 6
-                number: 4
-                scaling:
-                  mode: ""
-                  number: 1
-                types:
-                  - psychic
-              - custom:
-                  enabled: false
-                denomination: 6
-                number: 4
-                scaling:
-                  mode: ""
-                  number: 1
-                types:
-                  - sonic
-          description: {}
-          duration:
-            units: inst
-          img: null
-          range:
-            override: false
-            units: self
-          save:
-            ability: con
-            dc:
-              calculation: spellcasting
-              formula: ""
-          target:
-            template:
-              size: "15"
-              type: radius
-          type: save
-          consumption:
-            spellSlot: false
-            targets:
-              - scaling:
-                  formula: ""
-                  mode: amount
-                target: powercasting.force.points.value
-                type: attribute
-                value: "4"
-      method: powerCasting
-      prepared: true
-    ownership:
-      default: 0
-    _stats:
-      systemId: dnd5e
-      systemVersion: 5.2.5
-      coreVersion: "12.331"
-      createdTime: 1674493979203
-      modifiedTime: 1739121089377
-      lastModifiedBy: dnd5ebuilder0000
-      duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.I4oQg1GZed0TDGO5
-    _key: "!actors.items!f16ffad8fe11249f.02513ecb5095fc15"
-  - _id: c2e887907146b463
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.TFHnZ5LI7b1DhSDV
+    _key: "!actors.items!9cc34f6b82b40f76.185c3fc1b427ef5e"
+  - _id: 4100c203624fbc0a
     name: Knight Speed
     type: spell
     img: modules/sw5e-module/icons/packs/Force%20Powers/KnightSpeed.webp
@@ -3968,7 +3539,7 @@ items:
           family: power
           canonicalName: Knight Speed
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: 3rd-level
           tierKind: leveled
       dnd5e:
@@ -4096,8 +3667,8 @@ items:
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
       compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.5xMlM0Aed1WKqIi6
-    _key: "!actors.items!f16ffad8fe11249f.c2e887907146b463"
-  - _id: b7a3e36d51f0f46e
+    _key: "!actors.items!9cc34f6b82b40f76.4100c203624fbc0a"
+  - _id: c3d040f1b7f43193
     name: Sever Force
     type: spell
     img: modules/sw5e-module/icons/packs/Force%20Powers/SeverForce.webp
@@ -4119,7 +3690,7 @@ items:
           family: power
           canonicalName: Sever Force
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: 3rd-level
           tierKind: leveled
       core:
@@ -4240,56 +3811,51 @@ items:
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
       compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.Y9tOopf9pfKS2mIT
-    _key: "!actors.items!f16ffad8fe11249f.b7a3e36d51f0f46e"
-  - _id: 84083ab79c7e532d
-    name: Dominate Beast
+    _key: "!actors.items!9cc34f6b82b40f76.c3d040f1b7f43193"
+  - _id: 4df7ea16793ef170
+    name: Telekinetic Storm
     type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/DominateBeast.webp
+    img: modules/sw5e-module/icons/packs/Force%20Powers/TelekineticStorm.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1457493+00:00"
+        timestamp: "2023-03-09T01:51:59.1277594+00:00"
         importer_version: 3
-        uid: Power.name-dominate_beast.level-4
+        uid: Power.name-telekinetic_storm.level-3
       sw5e:
         migratedProperties:
           - concentration
         veshsGalacticHolodex:
           embeddedFromCanonical: true
           family: power
-          canonicalName: Dominate Beast
+          canonicalName: Telekinetic Storm
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-          tierLabel: 4th-level
+          sourceSemanticKey: vgh:humanoid:force-crusader
+          tierLabel: 3rd-level
           tierKind: leveled
       dnd5e:
         riders:
           activity: []
           effect: []
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.lq4ZxlysTXudWvNQ
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.ISNiYfJoBw7gUXx2
     system:
       description:
         value: >-
-          <p>A beast you can see must succeed on a Wisdom save or be charmed. If you or your companions are fighting it,
-          it has advantage on this saving throw.</p>
+          <p><em><strong>Prerequisite</strong>: Turbulence</em></p>
 
-          <p>While it's charmed, you have a telepathic link to it if you're on the same planet. You can use this link to
-          issue commands while you are conscious, no action required, which it does its best to obey. You can specify a
-          simple and general course of action. If it completes the order and doesn't receive further orders, it focuses
-          on defending itself.</p>
+          <p>You stir the Force around you, creating a turbulent field of telekinetic energy that buffets enemies around
+          you. The field extends out to a distance of 15 feet around you for the duration.</p>
 
-          <p>You can use your action to take total control of the target. Until the end of your next turn, the beast
-          takes only the actions you decide and nothing you don't allow it to. You can also have the beast use a
-          reaction, but this takes your reaction as well.</p>
+          <p>When you cast this power, you can designate any number of creatures you can see to be unaffected by it. An
+          affected creature gains 1 slowed level while in the area, and when the creature enters the area for the first
+          time on a turn or starts its turn there, it must make a Constitution saving throw. On a failed save, the
+          creature takes [[/r 3d8]] force damage. On a successful save, the creature takes half as much damage.</p>
 
-          <p>If the beast takes damage, it makes another Wisdom save. On a success, the power ends.</p>
-
-          <p><strong><em>Force Potency.</em></strong> When you cast this power using a 5th-level force slot, the
-          duration is up to 10 minutes. At a 6th-level slot, the duration is up to 1 hour. At a slot of 7th or higher,
-          the duration is up to 8 hours.</p>
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force power slot of 4th level or
+          higher, the damage increases by [[/r 1d8]] for each slot level above 3rd.</p>
         chat: ""
       source:
         custom: PHB
@@ -4300,6 +3866,169 @@ items:
       duration:
         value: "1"
         units: minute
+      cover: null
+      crewed: false
+      target:
+        value: "15"
+        width: null
+        units: ft
+        type: radius
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: self
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 4
+        scale: true
+      ability: null
+      actionType: save
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 3d8
+            - force
+        versatile: ""
+      formula: ""
+      save:
+        ability: con
+        dc: null
+        scaling: spell
+      level: 3
+      school: lgt
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: 1d8
+      properties:
+        - concentration
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 3
+                scaling:
+                  mode: whole
+                  number: 1
+                types:
+                  - force
+          description: {}
+          duration:
+            units: minute
+            value: "1"
+          img: null
+          range:
+            override: false
+            units: self
+          save:
+            ability: con
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              size: "15"
+              type: radius
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "4"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979203
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.ISNiYfJoBw7gUXx2
+    _key: "!actors.items!9cc34f6b82b40f76.4df7ea16793ef170"
+  - _id: f35409b858f27c95
+    name: Drain Life
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/DrainLife.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1457493+00:00"
+        importer_version: 3
+        uid: Power.name-drain_life.level-4
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Drain Life
+          castType: force
+          sourceSemanticKey: vgh:humanoid:force-crusader
+          tierLabel: 4th-level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.CSm2uKWtK2NcEsA2
+    system:
+      description:
+        value: >-
+          <p><em><strong>Prerequisite</strong>: Drain Vitality</em></p>
+
+          <p>You draw the life force from a creature you can see within range. The target must make a Constitution
+          saving throw. The target takes [[/r 8d8]] necrotic damage on a failed save, or half as much damage on a
+          successful one. If you reduce a hostile creature to 0, you gain temporary hit points equal to half the damage
+          dealt. This power has no effect on droids or constructs.</p>
+
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 5th level or
+          higher, the damage increases by [[/r 1d8]] for each slot level above 4th.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
       cover: null
       crewed: false
       target:
@@ -4324,17 +4053,19 @@ items:
         amount: 5
         scale: true
       ability: null
-      actionType: other
+      actionType: save
       chatFlavor: ""
       critical:
         threshold: null
         damage: ""
       damage:
-        parts: []
+        parts:
+          - - 8d8
+            - necrotic
         versatile: ""
       formula: ""
       save:
-        ability: ""
+        ability: con
         dc: null
         scaling: spell
       level: 4
@@ -4346,35 +4077,47 @@ items:
         supply: 0
       scaling:
         mode: level
-        formula: null
-      properties:
-        - concentration
+        formula: 1d8
       attack:
         bonus: ""
         flat: false
       enchantment: null
       summons: null
+      properties: []
       activities:
-        sw5e0utility0000:
-          _id: sw5e0utility0000
+        sw5e0save0000000:
+          _id: sw5e0save0000000
           activation:
             condition: ""
             type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 8
+                scaling:
+                  mode: whole
+                  number: 1
+                types:
+                  - necrotic
           description: {}
           duration:
-            units: minute
-            value: "1"
+            units: inst
           img: null
           range:
             units: ft
             value: "60"
-          roll:
-            formula: ""
+          save:
+            ability: con
+            dc:
+              calculation: spellcasting
+              formula: ""
           target:
             template:
               type: ""
               units: ""
-          type: utility
+          type: save
           consumption:
             spellSlot: false
             targets:
@@ -4392,13 +4135,13 @@ items:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493979305
+      createdTime: 1674493979189
       modifiedTime: 1739121089377
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.lq4ZxlysTXudWvNQ
-    _key: "!actors.items!f16ffad8fe11249f.84083ab79c7e532d"
-  - _id: 47ceaa5cf7bd4edc
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.CSm2uKWtK2NcEsA2
+    _key: "!actors.items!9cc34f6b82b40f76.f35409b858f27c95"
+  - _id: 42e170c79f1e69d9
     name: Force Immunity
     type: spell
     img: modules/sw5e-module/icons/packs/Force%20Powers/ForceImmunity.webp
@@ -4418,7 +4161,7 @@ items:
           family: power
           canonicalName: Force Immunity
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: 4th-level
           tierKind: leveled
       dnd5e:
@@ -4544,19 +4287,19 @@ items:
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
       compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.q1r3igPYEHkfAO1v
-    _key: "!actors.items!f16ffad8fe11249f.47ceaa5cf7bd4edc"
-  - _id: c4a1a09e92a304c4
-    name: Freedom of Movement
+    _key: "!actors.items!9cc34f6b82b40f76.42e170c79f1e69d9"
+  - _id: 2ec04f1ba6096a91
+    name: Shocking Shield
     type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/FreedomOfMovement.webp
+    img: modules/sw5e-module/icons/packs/Force%20Powers/ShockingShield.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1557424+00:00"
+        timestamp: "2023-03-09T01:51:59.1247609+00:00"
         importer_version: 3
-        uid: Power.name-freedom_of_movement.level-4
+        uid: Power.name-shocking_shield.level-4
       dnd5e:
         riders:
           activity: []
@@ -4565,21 +4308,23 @@ items:
         veshsGalacticHolodex:
           embeddedFromCanonical: true
           family: power
-          canonicalName: Freedom of Movement
+          canonicalName: Shocking Shield
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: 4th-level
           tierKind: leveled
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.DpZDmvTa3FJ5SvGM
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.w8MfAGaF6cERkLgP
     system:
       description:
         value: >-
-          <p>You touch a willing creature. Its movement is unaffected by difficult terrain, and powers and enhanced
-          effects can't reduce its speed or cause it to be paralyzed or restrained.</p>
+          <p><em><strong>Prerequisite</strong>: Shock</em></p>
 
-          <p>The target can spend 5 feet of movement to automatically escape from unenhanced restraints. Additionally,
-          being underwater imposes no penalties on its movement or attacks. </p>
+          <p>Lightning courses in a sphere surrounding your body, shedding bright light in a 10-foot radius and dim
+          light for an additional 10 feet. You can use your action to end the power early.</p>
+
+          <p>Whenever a creature within 5 feet of you hits you with a melee attack, it takes [[/r 2d8]] lightning
+          damage.</p>
         chat: ""
       source:
         custom: PHB
@@ -4588,8 +4333,8 @@ items:
         cost: 1
         condition: ""
       duration:
-        value: "1"
-        units: hour
+        value: "10"
+        units: minute
       cover: null
       crewed: false
       target:
@@ -4601,7 +4346,7 @@ items:
       range:
         value: null
         long: null
-        units: touch
+        units: self
       uses:
         value: null
         max: ""
@@ -4620,7 +4365,9 @@ items:
         threshold: null
         damage: ""
       damage:
-        parts: []
+        parts:
+          - - 2d8
+            - lightning
         versatile: ""
       formula: ""
       save:
@@ -4628,7 +4375,7 @@ items:
         dc: null
         scaling: spell
       level: 4
-      school: uni
+      school: drk
       materials:
         value: ""
         consumed: false
@@ -4644,26 +4391,37 @@ items:
       summons: null
       properties: []
       activities:
-        sw5e0utility0000:
-          _id: sw5e0utility0000
+        sw5e0damage00000:
+          _id: sw5e0damage00000
           activation:
             condition: ""
             type: action
+          damage:
+            critical:
+              allow: true
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 2
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - lightning
           description: {}
           duration:
-            units: hour
-            value: "1"
+            units: minute
+            value: "10"
           img: null
           range:
             override: false
-            units: touch
-          roll:
-            formula: ""
+            units: self
           target:
             template:
               type: ""
               units: ""
-          type: utility
+          type: damage
           consumption:
             spellSlot: false
             targets:
@@ -4681,33 +4439,193 @@ items:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493979195
+      createdTime: 1674493979336
       modifiedTime: 1739121089377
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.DpZDmvTa3FJ5SvGM
-    _key: "!actors.items!f16ffad8fe11249f.c4a1a09e92a304c4"
-  - _id: 837cf67adfc75d7b
-    name: Dominate Mind
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.w8MfAGaF6cERkLgP
+    _key: "!actors.items!9cc34f6b82b40f76.2ec04f1ba6096a91"
+  - _id: 6d931ee04d1ced5e
+    name: Improved Phasestrike
     type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/DominateMind.webp
+    img: modules/sw5e-module/icons/packs/Force%20Powers/ImprovedPhasestrike.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1457493+00:00"
+        timestamp: "2023-03-09T01:51:59.1117682+00:00"
         importer_version: 3
-        uid: Power.name-dominate_mind.level-5
+        uid: Power.name-improved_phasestrike.level-5
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Improved Phasestrike
+          castType: force
+          sourceSemanticKey: vgh:humanoid:force-crusader
+          tierLabel: 5th-level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.EDdJwycYKriAYbaA
+    system:
+      description:
+        value: >-
+          <p><em><strong>Prerequisite</strong>: Phasestrike</em></p>
+
+          <p>Choose up to five creatures you can see within range. Make a melee force attack against each one. On hit, a
+          target takes [[/r 6d10]] force damage. You can then teleport to an unoccupied space you can see within 5 feet
+          of one of the creatures you chose.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 30
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 6
+        scale: true
+      ability: null
+      actionType: mpak
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 6d10
+            - force
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 5
+      school: uni
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: none
+        formula: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      properties: []
+      activities:
+        sw5e0attack00000:
+          _id: sw5e0attack00000
+          activation:
+            condition: ""
+            type: action
+          attack:
+            ability: ""
+            bonus: ""
+            flat: false
+            type:
+              classification: spell
+              value: melee
+          damage:
+            critical: {}
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 10
+                number: 6
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - force
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "30"
+          target:
+            template:
+              type: ""
+              units: ""
+          type: attack
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "6"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979196
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.EDdJwycYKriAYbaA
+    _key: "!actors.items!9cc34f6b82b40f76.6d931ee04d1ced5e"
+  - _id: 4503937a0ec71783
+    name: Siphon Life
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/SiphonLife.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1247609+00:00"
+        importer_version: 3
+        uid: Power.name-siphon_life.level-5
       sw5e:
         migratedProperties:
           - concentration
         veshsGalacticHolodex:
           embeddedFromCanonical: true
           family: power
-          canonicalName: Dominate Mind
+          canonicalName: Siphon Life
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
+          sourceSemanticKey: vgh:humanoid:force-crusader
           tierLabel: 5th-level
           tierKind: leveled
       dnd5e:
@@ -4715,33 +4633,24 @@ items:
           activity: []
           effect: []
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.lZgJ4nsfjWERlumF
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.ddllNHq19xvlRvLm
     system:
       description:
         value: >-
-          <p><em><strong>Prerequisite</strong>: Dominate Beast</em></p>
+          <p><em><strong>Prerequisite</strong>: Drain Life</em></p>
 
-          <p>You attempt to beguile a humanoid that you can see within range. It must succeed on a Wisdom saving throw
-          or be charmed by you for the duration. If you or creatures that are friendly to you are fighting it, it has
-          advantage on the saving throw.</p>
+          <p>A tendril of inky darkness reaches out from you, touching a creature you can see within range to drain life
+          from it. The target must make a Dexterity saving throw. On a successful save, the target takes [[/r 2d8]]
+          necrotic damage, and the power ends. On a failed save, the target takes [[/r 4d8]] necrotic damage, and until
+          the power ends, you can use your action on each of your turns to automatically deal [[/r 4d8]] necrotic damage
+          to the target. The power ends if you use your action to do anything else, if the target is ever outside the
+          power's range, or if the target has total cover from you.</p>
 
-          <p>While the target is charmed, you have a telepathic link with it as long as you are within 1 mile of it. You
-          can use this telepathic link to issue commands to the creature while you are conscious (no action required),
-          which it does its best to obey. You can specify a simple and general course of action, such as "Attack that
-          creature," "Run over there," or "Fetch that object." If the creature completes the order and doesn't receive
-          further direction from you, it defends and preserves itself to the best of its ability.</p>
+          <p>Whenever the power deals damage to a target, you regain hit points equal to half the amount of necrotic
+          damage the target takes.</p>
 
-          <p>You can use your action to take total and precise control of the target. Until the end of your next turn,
-          the creature takes only the actions you choose, and doesn't do anything that you don't allow it to do. During
-          this time you can also cause the creature to use a reaction, but this requires you to use your own reaction as
-          well.</p>
-
-          <p>Each time the target takes damage, it makes a new Wisdom saving throw against the power. If the saving
-          throw succeeds, the power ends. </p>
-
-          <p><strong><em>Force Potency.</em></strong> When you cast this power using a 6th-level force slot, the
-          duration is 10 minutes. When you use a 7th-level force slot, the duration is 1 hour. When you use a force slot
-          of 8th level or higher, the duration is 8 hours.</p>
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 6th level or
+          higher, the damage increases by [[/r 1d8]] for each slot level above 5th.</p>
         chat: ""
       source:
         custom: PHB
@@ -4782,6 +4691,193 @@ items:
         threshold: null
         damage: ""
       damage:
+        parts:
+          - - 2d8
+            - necrotic
+          - - 4d8
+            - necrotic
+          - - 4d8
+            - necrotic
+        versatile: ""
+      formula: ""
+      save:
+        ability: dex
+        dc: null
+        scaling: spell
+      level: 5
+      school: drk
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: 1d8
+      properties:
+        - concentration
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 2
+                scaling:
+                  mode: whole
+                  number: 1
+                types:
+                  - necrotic
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 4
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - necrotic
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 4
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - necrotic
+          description: {}
+          duration:
+            units: minute
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "60"
+          save:
+            ability: dex
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "6"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979284
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.ddllNHq19xvlRvLm
+    _key: "!actors.items!9cc34f6b82b40f76.4503937a0ec71783"
+  - _id: dc1a92e3397d6c8c
+    name: Stasis
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/Stasis.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1267594+00:00"
+        importer_version: 3
+        uid: Power.name-stasis.level-5
+      sw5e:
+        migratedProperties:
+          - concentration
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Stasis
+          castType: force
+          sourceSemanticKey: vgh:humanoid:force-crusader
+          tierLabel: 5th-level
+          tierKind: leveled
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.BAAmutplpFkVWXcS
+    system:
+      description:
+        value: >-
+          <p><em><strong>Prerequisite</strong>: Stun</em></p>
+
+          <p>Choose a creature that you can see within range. The target must succeed on a Wisdom saving throw or be
+          paralyzed for the duration. At the end of each of its turns, the target can make another Wisdom saving throw.
+          On a success, the power ends on the target. This power has no effect on droids or constructs. </p>
+
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 6th level or
+          higher, you can target an additional creature for each slot level above 5th. The creatures must be within 30
+          feet of each other when you target them.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: minute
+      cover: null
+      crewed: false
+      target:
+        value: "1"
+        width: null
+        units: ""
+        type: creature
+        prompt: true
+      range:
+        value: 90
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 6
+        scale: true
+      ability: null
+      actionType: save
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
         parts: []
         versatile: ""
       formula: ""
@@ -4790,7 +4886,7 @@ items:
         dc: null
         scaling: spell
       level: 5
-      school: drk
+      school: lgt
       materials:
         value: ""
         consumed: false
@@ -4821,7 +4917,7 @@ items:
           img: null
           range:
             units: ft
-            value: "60"
+            value: "90"
           save:
             ability: wis
             dc:
@@ -4829,7 +4925,8 @@ items:
               formula: ""
           target:
             template:
-              type: ""
+              size: "1"
+              type: creature
               units: ""
           type: save
           consumption:
@@ -4849,24 +4946,24 @@ items:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493979304
+      createdTime: 1674493979186
       modifiedTime: 1739121089377
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.lZgJ4nsfjWERlumF
-    _key: "!actors.items!f16ffad8fe11249f.837cf67adfc75d7b"
-  - _id: 1dba83ca810afcf0
-    name: Improved Force Scream
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.BAAmutplpFkVWXcS
+    _key: "!actors.items!9cc34f6b82b40f76.dc1a92e3397d6c8c"
+  - _id: ea202e7c15c3db66
+    name: Force Chain Lightning
     type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/ImprovedForceScream.webp
+    img: modules/sw5e-module/icons/packs/Force%20Powers/ForceChainLightning.webp
     effects: []
     folder: null
     sort: 0
     flags:
       sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1117682+00:00"
+        timestamp: "2023-03-09T01:51:59.1497461+00:00"
         importer_version: 3
-        uid: Power.name-improved_force_scream.level-5
+        uid: Power.name-force_chain_lightning.level-6
       dnd5e:
         riders:
           activity: []
@@ -4875,24 +4972,27 @@ items:
         veshsGalacticHolodex:
           embeddedFromCanonical: true
           family: power
-          canonicalName: Improved Force Scream
+          canonicalName: Force Chain Lightning
           castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-          tierLabel: 5th-level
+          sourceSemanticKey: vgh:humanoid:force-crusader
+          tierLabel: 6th-level
           tierKind: leveled
       core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.CUZIyOOvX7FdwczO
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.FabmuefhcBVrwx4m
     system:
       description:
         value: >-
-          <p><em><strong>Prerequisite</strong>: Force Scream</em></p>
+          <p><em><strong>Prerequisite</strong>: Force Lightning</em></p>
 
-          <p>You emit a violent scream imbued with the power of the Force. Each creature you choose within 30 feet of
-          you must succeed on a Constitution saving throw. On a </p>
+          <p>You create a bolt of lightning that arcs toward a target of your choice that you can see within range.
+          Three bolts then leap from that target to as many as three other targets, each of which must be within 30 feet
+          of the first target. A target can be a creature or an object and can be targeted by only one of the bolts.</p>
 
-          <p>failed save, a creature take [[/r 5d6]] psychic damage, [[/r 5d6]] sonic damage, is deafened until the end
-          of its next turn, and is knocked prone. On a successful save, it takes half as much damage and isn't deafened
-          or knocked prone.</p>
+          <p>A target must make a Dexterity saving throw. The target takes [[/r 10d8]] lightning damage on a failed
+          save, or half as much damage on a successful one.</p>
+
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 7th level or
+          higher, one additional bolt leaps from the first target to another target for each slot level above 6th.</p>
         chat: ""
       source:
         custom: PHB
@@ -4906,15 +5006,15 @@ items:
       cover: null
       crewed: false
       target:
-        value: "30"
+        value: ""
         width: null
-        units: ft
-        type: radius
+        units: ""
+        type: ""
         prompt: true
       range:
-        value: null
+        value: 150
         long: null
-        units: self
+        units: ft
       uses:
         value: null
         max: ""
@@ -4924,7 +5024,7 @@ items:
       consume:
         type: attribute
         target: powercasting.force.points.value
-        amount: 6
+        amount: 7
         scale: true
       ability: null
       actionType: save
@@ -4934,17 +5034,15 @@ items:
         damage: ""
       damage:
         parts:
-          - - 5d6
-            - psychic
-          - - 5d6
-            - sonic
+          - - 10d8
+            - lightning
         versatile: ""
       formula: ""
       save:
-        ability: con
+        ability: dex
         dc: null
         scaling: spell
-      level: 5
+      level: 6
       school: drk
       materials:
         value: ""
@@ -4952,7 +5050,7 @@ items:
         cost: 0
         supply: 0
       scaling:
-        mode: none
+        mode: level
         formula: null
       attack:
         bonus: ""
@@ -4970,200 +5068,22 @@ items:
             parts:
               - custom:
                   enabled: false
-                denomination: 6
-                number: 5
+                denomination: 8
+                number: 10
                 scaling:
                   mode: ""
                   number: 1
                 types:
-                  - psychic
-              - custom:
-                  enabled: false
-                denomination: 6
-                number: 5
-                scaling:
-                  mode: ""
-                  number: 1
-                types:
-                  - sonic
+                  - lightning
           description: {}
           duration:
             units: inst
           img: null
           range:
-            override: false
-            units: self
-          save:
-            ability: con
-            dc:
-              calculation: spellcasting
-              formula: ""
-          target:
-            template:
-              size: "30"
-              type: radius
-          type: save
-          consumption:
-            spellSlot: false
-            targets:
-              - scaling:
-                  formula: ""
-                  mode: amount
-                target: powercasting.force.points.value
-                type: attribute
-                value: "6"
-      method: powerCasting
-      prepared: true
-    ownership:
-      default: 0
-    _stats:
-      systemId: dnd5e
-      systemVersion: 5.2.5
-      coreVersion: "12.331"
-      createdTime: 1674493979190
-      modifiedTime: 1739121089377
-      lastModifiedBy: dnd5ebuilder0000
-      duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.CUZIyOOvX7FdwczO
-    _key: "!actors.items!f16ffad8fe11249f.1dba83ca810afcf0"
-  - _id: 602dfd4ed919ca85
-    name: Telekinesis
-    type: spell
-    img: modules/sw5e-module/icons/packs/Force%20Powers/Telekinesis.webp
-    effects: []
-    folder: null
-    sort: 0
-    flags:
-      sw5e-importer:
-        timestamp: "2023-03-09T01:51:59.1267594+00:00"
-        importer_version: 3
-        uid: Power.name-telekinesis.level-5
-      sw5e:
-        migratedProperties:
-          - concentration
-        veshsGalacticHolodex:
-          embeddedFromCanonical: true
-          family: power
-          canonicalName: Telekinesis
-          castType: force
-          sourceSemanticKey: vgh:humanoid:emperors-wrath
-          tierLabel: 5th-level
-          tierKind: leveled
-      dnd5e:
-        riders:
-          activity: []
-          effect: []
-      core:
-        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.XQw0Axx4Lui3CYwH
-    system:
-      description:
-        value: >-
-          <p><em><strong>Prerequisite</strong>: Force Throw</em></p>
-
-          <p>You gain the ability to move or manipulate creatures and objects with the Force. When you cast this power,
-          and as your action each round for the duration, you can exert your will on one creature or object that you can
-          see within range, causing the appropriate effect below. You can affect the same target round after round, or
-          choose a new one at any time. If you switch targets, the prior target is no longer affected by the power.</p>
-
-          <p><strong><em>Creature.</em></strong> You can try to move a Huge or smaller creature. The target must make a
-          Strength saving throw. On a failed save, you move the creature up to 30 feet in any direction, including
-          upward but not beyond the range of this power. Until the end of your next turn, the creature is restrained in
-          your telekinetic grip. A creature lifted upward is suspended in mid-air.</p>
-
-          <p>On subsequent rounds, you can use your action to attempt to maintain your telekinetic grip on the creature
-          by repeating the contest.</p>
-
-          <p><strong><em>Object.</em></strong> You move an object that isn't being worn or carried and weighs up to
-          2,500 lbs up to 30 feet in any direction, but not beyond the range of this power.</p>
-
-          <p>You can exert fine control on objects with your telekinetic grip, such as manipulating a simple tool,
-          opening a door or a container, stowing or retrieving an item from an open container, or pouring the contents
-          from a vial.</p>
-
-          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 6th level or
-          higher, the maximum object weight increases by 2,500 lbs for every slot level above 5th.</p>
-        chat: ""
-      source:
-        custom: PHB
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: "10"
-        units: minute
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: 90
-        long: null
-        units: ft
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: attribute
-        target: powercasting.force.points.value
-        amount: 6
-        scale: true
-      ability: null
-      actionType: save
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: str
-        dc: null
-        scaling: spell
-      level: 5
-      school: uni
-      materials:
-        value: ""
-        consumed: false
-        cost: 0
-        supply: 0
-      scaling:
-        mode: level
-        formula: null
-      properties:
-        - concentration
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      activities:
-        sw5e0save0000000:
-          _id: sw5e0save0000000
-          activation:
-            condition: ""
-            type: action
-          damage:
-            parts: []
-          description: {}
-          duration:
-            units: minute
-            value: "10"
-          img: null
-          range:
             units: ft
-            value: "90"
+            value: "150"
           save:
-            ability: str
+            ability: dex
             dc:
               calculation: spellcasting
               formula: ""
@@ -5180,7 +5100,7 @@ items:
                   mode: amount
                 target: powercasting.force.points.value
                 type: attribute
-                value: "6"
+                value: "7"
       method: powerCasting
       prepared: true
     ownership:
@@ -5189,16 +5109,515 @@ items:
       systemId: dnd5e
       systemVersion: 5.2.5
       coreVersion: "12.331"
-      createdTime: 1674493979267
+      createdTime: 1674493979199
       modifiedTime: 1739121089377
       lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.XQw0Axx4Lui3CYwH
-    _key: "!actors.items!f16ffad8fe11249f.602dfd4ed919ca85"
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.FabmuefhcBVrwx4m
+    _key: "!actors.items!9cc34f6b82b40f76.ea202e7c15c3db66"
+  - _id: d4c1f72c46c0a135
+    name: Telekinetic Burst
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/TelekineticBurst.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1277594+00:00"
+        importer_version: 3
+        uid: Power.name-telekinetic_burst.level-6
+      sw5e:
+        migratedProperties:
+          - concentration
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Telekinetic Burst
+          castType: force
+          sourceSemanticKey: vgh:humanoid:force-crusader
+          tierLabel: 6th-level
+          tierKind: leveled
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.1aJy6g85jQB3lTva
+    system:
+      description:
+        value: >-
+          <p><em><strong>Prerequisite</strong>: Telekinetic Storm</em></p>
+
+          <p>A beam of Force energy flashes out from your hand in a 5-foot-wide, 60-foot-long line. Each creature in the
+          line must make a Constitution saving throw. On a failed save, a creature takes [[/r 8d6]] force damage and is
+          knocked prone. On a successful save, it takes half as much damage and isn't knocked prone. </p>
+
+          <p>You can create a new telekinetic gust as your action on your turn until the power ends.</p>
+
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 7th level or
+          higher, the damage increases by [[/r 2d6]] for each slot level above 6th.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: minute
+      cover: null
+      crewed: false
+      target:
+        value: "60"
+        width: null
+        units: ft
+        type: line
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: self
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 7
+        scale: true
+      ability: null
+      actionType: save
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 8d6
+            - force
+        versatile: ""
+      formula: ""
+      save:
+        ability: con
+        dc: null
+        scaling: spell
+      level: 6
+      school: lgt
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: 2d6
+      properties:
+        - concentration
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 6
+                number: 8
+                scaling:
+                  mode: whole
+                  number: 2
+                types:
+                  - force
+          description: {}
+          duration:
+            units: minute
+            value: "1"
+          img: null
+          range:
+            override: false
+            units: self
+          save:
+            ability: con
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              size: "60"
+              type: line
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "7"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979168
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.1aJy6g85jQB3lTva
+    _key: "!actors.items!9cc34f6b82b40f76.d4c1f72c46c0a135"
+  - _id: 753caf81033a57dc
+    name: Force Lightning Cone
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/ForceLightningCone.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1517445+00:00"
+        importer_version: 3
+        uid: Power.name-force_lightning_cone.level-7
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Force Lightning Cone
+          castType: force
+          sourceSemanticKey: vgh:humanoid:force-crusader
+          tierLabel: 7th-level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.D10gdFbjJVO0H5WH
+    system:
+      description:
+        value: >-
+          <p><em><strong>Prerequisite</strong>: Force Chain Lightning</em></p>
+
+          <p>Lightning arcs from your hands. Each creature in a 60-foot cone must make a Dexterity saving throw. A
+          creature takes [[/r 12d6]] lightning damage on a failed save, or half as much on a successful one.</p>
+
+          <p><strong><em>Force Potency.</em></strong> When you cast this power using a force slot of 8th level or
+          higher, the damage increases by [[/r 2d6]] for each slot level above 7th.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      cover: null
+      crewed: false
+      target:
+        value: "60"
+        width: null
+        units: ft
+        type: cone
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: self
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 8
+        scale: true
+      ability: null
+      actionType: save
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 12d6
+            - lightning
+        versatile: ""
+      formula: ""
+      save:
+        ability: dex
+        dc: null
+        scaling: spell
+      level: 7
+      school: drk
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: 2d6
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      properties: []
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 6
+                number: 12
+                scaling:
+                  mode: whole
+                  number: 2
+                types:
+                  - lightning
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            override: false
+            units: self
+          save:
+            ability: dex
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              size: "60"
+              type: cone
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "8"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979192
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.D10gdFbjJVO0H5WH
+    _key: "!actors.items!9cc34f6b82b40f76.753caf81033a57dc"
+  - _id: cf993247daf65b8b
+    name: Whirlwind
+    type: spell
+    img: modules/sw5e-module/icons/packs/Force%20Powers/Whirlwind.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1287582+00:00"
+        importer_version: 3
+        uid: Power.name-whirlwind.level-7
+      sw5e:
+        migratedProperties:
+          - concentration
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Whirlwind
+          castType: force
+          sourceSemanticKey: vgh:humanoid:force-crusader
+          tierLabel: 7th-level
+          tierKind: leveled
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.yX5OjIL2bu8uNb58
+    system:
+      description:
+        value: >-
+          <p>A whirlwind howls down to a point that you can see on the ground within range. The whirlwind is a
+          10-foot-radius, 30-foot-high cylinder centered on that point. Until the power ends, you can use your action to
+          move </p>
+
+          <p>the whirlwind up to 30 feet in any direction along the ground. The whirlwind sucks up any Medium or smaller
+          objects that aren't secured to anything and that aren't worn or carried by anyone.</p>
+
+          <p>A creature must make a Dexterity saving throw the first time on a turn that it enters the whirlwind or that
+          the whirlwind enters its space, including when the whirlwind first appears. A creature takes [[/r 10d6]]
+          kinetic damage on a failed save, or half as much damage on a successful one. Additionally, a Large or smaller
+          creature that fails the save must succeed on a Strength saving throw or become restrained in the whirlwind
+          until the power ends. When a creature starts its turn restrained by the whirlwind, the creature is pulled 5
+          feet higher inside it, unless the creature is at the top. A restrained creature moves with the whirlwind and
+          falls when the power ends, unless the creature has some means to stay aloft.</p>
+
+          <p>A restrained creature can use an action to make a Strength or Dexterity check against your force save DC.
+          If successful, the creature is no longer restrained by the whirlwind and is hurled [[/r 3d6*10]] feet away
+          from it in a random direction.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: minute
+      cover: null
+      crewed: false
+      target:
+        value: "10"
+        width: null
+        units: ft
+        type: radius
+        prompt: true
+      range:
+        value: 300
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: attribute
+        target: powercasting.force.points.value
+        amount: 8
+        scale: true
+      ability: null
+      actionType: save
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 10d6
+            - kinetic
+        versatile: ""
+      formula: 3d6
+      save:
+        ability: dex
+        dc: null
+        scaling: spell
+      level: 7
+      school: uni
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: none
+        formula: null
+      properties:
+        - concentration
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 6
+                number: 10
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - kinetic
+          description: {}
+          duration:
+            units: minute
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "300"
+          save:
+            ability: dex
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              size: "10"
+              type: radius
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.force.points.value
+                type: attribute
+                value: "8"
+      method: powerCasting
+      prepared: true
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493979344
+      modifiedTime: 1739121089377
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.yX5OjIL2bu8uNb58
+    _key: "!actors.items!9cc34f6b82b40f76.cf993247daf65b8b"
 effects: []
 prototypeToken:
   flags: {}
-  name: Emperor's Wrath
+  name: Force Crusader
   displayName: 40
   width: 1
   height: 1
@@ -5275,42 +5694,42 @@ prototypeToken:
 system:
   abilities:
     str:
-      value: 22
-      proficient: 0
-      max: null
-      bonuses:
-        check: ""
-        save: ""
-    dex:
-      value: 14
-      proficient: 0
-      max: null
-      bonuses:
-        check: ""
-        save: ""
-    con:
       value: 17
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
+    dex:
+      value: 22
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    con:
+      value: 19
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
     int:
-      value: 12
+      value: 18
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     wis:
-      value: 15
+      value: 22
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     cha:
-      value: 18
+      value: 22
       proficient: 0
       max: null
       bonuses:
@@ -5332,15 +5751,15 @@ system:
       max: null
   attributes:
     ac:
-      flat: 18
+      flat: 19
       calc: flat
       formula: ""
     hp:
-      value: 150
-      max: 150
+      value: 281
+      max: 281
       temp: 0
       tempmax: 0
-      formula: 20d8+60
+      formula: 33d8+132
     init:
       ability: ""
       bonus: "0"
@@ -5359,19 +5778,19 @@ system:
     attunement:
       max: 3
     senses:
-      darkvision: 60
+      darkvision: 0
       blindsight: 0
       tremorsense: 0
-      truesight: 0
+      truesight: 30
       units: ft
       special: ""
     force:
       points:
-        value: 44
+        value: 57
         bonuses:
           level: ""
           overall: ""
-        max: 44
+        max: 57
         temp: 0
     tech:
       points:
@@ -5401,7 +5820,7 @@ system:
         max: null
         mode: 0
     exhaustion: 0
-    forcecasting: cha
+    forcecasting: wis
     techcasting: int
     concentration:
       ability: ""
@@ -5419,16 +5838,16 @@ system:
     biography:
       value: ""
       public: ""
-    alignment: Neutral Dark
+    alignment: Neutral Balanced
     species: null
     type:
       value: humanoid
-      subtype: any
+      subtype: ""
       swarm: ""
       custom: ""
     environment: ""
-    cr: 13
-    powerForceLevel: 10
+    cr: 24
+    powerForceLevel: 17
     powerTechLevel: 0
     superiorityLevel: 0
     source:
@@ -5461,7 +5880,7 @@ system:
     gc: 0
   skills:
     acr:
-      value: 0
+      value: 1
       ability: dex
       bonuses:
         check: ""
@@ -5481,7 +5900,7 @@ system:
         max: null
         mode: 0
     ath:
-      value: 1
+      value: 0
       ability: str
       bonuses:
         check: ""
@@ -5531,7 +5950,7 @@ system:
         max: null
         mode: 0
     lor:
-      value: 0
+      value: 1
       ability: int
       bonuses:
         check: ""
@@ -5571,7 +5990,7 @@ system:
         max: null
         mode: 0
     prc:
-      value: 1
+      value: 0
       ability: wis
       bonuses:
         check: ""
@@ -5591,7 +6010,7 @@ system:
         max: null
         mode: 0
     per:
-      value: 0
+      value: 1
       ability: cha
       bonuses:
         check: ""
@@ -5621,7 +6040,7 @@ system:
         max: null
         mode: 0
     sur:
-      value: 1
+      value: 0
       ability: wis
       bonuses:
         check: ""
@@ -5733,8 +6152,8 @@ system:
   powercasting:
     force:
       points:
-        value: 44
-        max: 44
+        value: 57
+        max: 57
         temp: null
         tempmax: null
         bonuses:
@@ -5742,10 +6161,10 @@ system:
           overall: ""
       schools:
         lgt:
-          attr: cha
+          attr: wis
           dc: null
         uni:
-          attr: cha
+          attr: ""
           dc: null
         drk:
           attr: cha
@@ -5772,10 +6191,10 @@ flags:
       sourceIdentity: veshs-galactic-holodex
       sourceFile: ai/Veshs_Galactic_Holodex.md
       sourceSection: Galaxy's Most Wanted
-      sourceHash: 67F43A888F16C4CE7E4668C6CA5B23D3C05E2FF316B4BEBC1716DCD755F63684
-      semanticKey: vgh:humanoid:emperors-wrath
+      sourceHash: C1D804167A9194DBE2B09E53A210A7ACD13BF20E7869813A5A42A8291BD878E1
+      semanticKey: vgh:humanoid:force-crusader
       generatorVersion: vgh-phase2-2026-08-07
-      sourceEntry: Emperor's Wrath
+      sourceEntry: Force Crusader
       trackedPack: veshs-galactic-holodex
       collectionId: sw5e-module.veshs-galactic-holodex
       parseStatus: parsed-valid
@@ -5783,6 +6202,7 @@ flags:
       outputSelection: selected-population
       productionReadiness: requires-runtime-validation
       unsupportedMechanics:
+        - legendary-actions
         - force-power-embedding-incomplete
         - qualified-defense-parsing
         - recharge-activity
@@ -5793,143 +6213,148 @@ flags:
         forcePowers:
           - kind: casting-feat
             name: Forcecasting
-            id: a863b95c721ca1c9
+            id: 420f992c282e2fc2
             castType: force
           - kind: power
-            name: Affect Mind
-            id: 20416ba574bfe396
+            name: Burst
+            id: 4659f4e569c04378
             castType: force
-            canonicalId: oMQr9mzRJTjD71Xc
-          - kind: power
-            name: Force Disarm
-            id: f403e71cd2882f64
-            castType: force
-            canonicalId: UGOvTjxVyAHq5n23
+            canonicalId: CJiHSga5F10ZTKMg
           - kind: power
             name: Force Push/Pull
-            id: 382b4ccaf5c80d0e
+            id: 7308afba079e83d4
             castType: force
             canonicalId: SGD86ViLobKDYUJl
           - kind: power
-            name: Mind Trick
-            id: f98a4fec2cdb0241
-            castType: force
-            canonicalId: sU7NH8OPJTyosMM7
-          - kind: power
             name: Saber Reflect
-            id: e21e2c5e1ca415c0
+            id: ad0f859866589a5f
             castType: force
             canonicalId: Tan8Tf3aHUBWfJxa
           - kind: power
-            name: Saber Throw
-            id: faf3f963aa72bd96
+            name: Shock
+            id: 63f29927889cc4bb
             castType: force
-            canonicalId: Iz5rbsgDhG8ttxtD
+            canonicalId: HNZGubklAqLXpp0N
           - kind: power
-            name: Saber Ward
-            id: 482728ccc84bf396
+            name: Turbulence
+            id: f4e32c14e559abc1
             castType: force
-            canonicalId: bZDYZR9owRmB6Vjd
+            canonicalId: MWvP01mz7uIDxgTo
           - kind: power
             name: Burst of Speed
-            id: a6fda54bbd4e23f4
+            id: 9350a7c3bfd81b08
             castType: force
             canonicalId: ptGikKdrqC2Wyjlo
           - kind: power
-            name: Disperse Force
-            id: cea140defb3872d7
+            name: Phasestrike
+            id: 61aa1699b1151883
             castType: force
-            canonicalId: floXp4sveE2n4Vtc
+            canonicalId: K12Chef5elrSirFL
           - kind: power
-            name: Fear
-            id: 01529b72bbde0f34
+            name: Sap Vitality
+            id: 7e4e7573f3a629c7
             castType: force
-            canonicalId: fDzm8b06fCuenc9g
+            canonicalId: jVU9F4W0jwQNvP9R
           - kind: power
-            name: Force Jump
-            id: af1739b1c8d8a90b
+            name: Tremor
+            id: 83014782eb832358
             castType: force
-            canonicalId: rEG7wo8eGnk3h2DA
+            canonicalId: bct8YCHrR4OKN6v2
           - kind: power
-            name: Force Propel
-            id: 4ad96790dafc512d
+            name: Animate Weapon
+            id: a6edfa341a2e75dc
             castType: force
-            canonicalId: NcoLNmky58vBd4lJ
+            canonicalId: QWBNhgCUuOLfiu5j
           - kind: power
-            name: Battle Meditation
-            id: 4ac9402df4caa2c6
+            name: Drain Vitality
+            id: 63b67da990d7f8ea
             castType: force
-            canonicalId: qNb53Yy7UssxZHPa
+            canonicalId: aJjP1VGBHLtj3BxD
           - kind: power
             name: Force Throw
-            id: 32e14c9088a7eabc
+            id: 0a63b757e69bfded
             castType: force
             canonicalId: AX069C58jGxjJswh
           - kind: power
-            name: Rescue
-            id: 5293995b2aa5383c
+            name: Phasewalk
+            id: ee6e632225dec933
             castType: force
-            canonicalId: p0HarWbGXiZaXnut
+            canonicalId: 4VDiYvpED1gVmuEY
           - kind: power
-            name: Stun
-            id: a5051c371ad0a766
+            name: Convulsion
+            id: f377c03a356b659c
             castType: force
-            canonicalId: bpwbnM63mcNT9pY8
+            canonicalId: 7ghDEMP0mmgsDgWP
           - kind: power
-            name: Choke
-            id: bcca1888248cded7
+            name: Force Lightning
+            id: 185c3fc1b427ef5e
             castType: force
-            canonicalId: bCjVRaWSib1VjjdR
-          - kind: power
-            name: Force Repulse
-            id: 61207396b70dacc5
-            castType: force
-            canonicalId: CVXYNvpr31s82Tyc
-          - kind: power
-            name: Force Scream
-            id: 02513ecb5095fc15
-            castType: force
-            canonicalId: I4oQg1GZed0TDGO5
+            canonicalId: TFHnZ5LI7b1DhSDV
           - kind: power
             name: Knight Speed
-            id: c2e887907146b463
+            id: 4100c203624fbc0a
             castType: force
             canonicalId: 5xMlM0Aed1WKqIi6
           - kind: power
             name: Sever Force
-            id: b7a3e36d51f0f46e
+            id: c3d040f1b7f43193
             castType: force
             canonicalId: Y9tOopf9pfKS2mIT
           - kind: power
-            name: Dominate Beast
-            id: 84083ab79c7e532d
+            name: Telekinetic Storm
+            id: 4df7ea16793ef170
             castType: force
-            canonicalId: lq4ZxlysTXudWvNQ
+            canonicalId: ISNiYfJoBw7gUXx2
+          - kind: power
+            name: Drain Life
+            id: f35409b858f27c95
+            castType: force
+            canonicalId: CSm2uKWtK2NcEsA2
           - kind: power
             name: Force Immunity
-            id: 47ceaa5cf7bd4edc
+            id: 42e170c79f1e69d9
             castType: force
             canonicalId: q1r3igPYEHkfAO1v
           - kind: power
-            name: Freedom of Movement
-            id: c4a1a09e92a304c4
+            name: Shocking Shield
+            id: 2ec04f1ba6096a91
             castType: force
-            canonicalId: DpZDmvTa3FJ5SvGM
+            canonicalId: w8MfAGaF6cERkLgP
           - kind: power
-            name: Dominate Mind
-            id: 837cf67adfc75d7b
+            name: Improved Phasestrike
+            id: 6d931ee04d1ced5e
             castType: force
-            canonicalId: lZgJ4nsfjWERlumF
+            canonicalId: EDdJwycYKriAYbaA
           - kind: power
-            name: Improved Force Scream
-            id: 1dba83ca810afcf0
+            name: Siphon Life
+            id: 4503937a0ec71783
             castType: force
-            canonicalId: CUZIyOOvX7FdwczO
+            canonicalId: ddllNHq19xvlRvLm
           - kind: power
-            name: Telekinesis
-            id: 602dfd4ed919ca85
+            name: Stasis
+            id: dc1a92e3397d6c8c
             castType: force
-            canonicalId: XQw0Axx4Lui3CYwH
+            canonicalId: BAAmutplpFkVWXcS
+          - kind: power
+            name: Force Chain Lightning
+            id: ea202e7c15c3db66
+            castType: force
+            canonicalId: FabmuefhcBVrwx4m
+          - kind: power
+            name: Telekinetic Burst
+            id: d4c1f72c46c0a135
+            castType: force
+            canonicalId: 1aJy6g85jQB3lTva
+          - kind: power
+            name: Force Lightning Cone
+            id: 753caf81033a57dc
+            castType: force
+            canonicalId: D10gdFbjJVO0H5WH
+          - kind: power
+            name: Whirlwind
+            id: cf993247daf65b8b
+            castType: force
+            canonicalId: yX5OjIL2bu8uNb58
         techPowers: []
         missingCanonical: []
       superiorityEmbedding:
@@ -5946,5 +6371,5 @@ _stats:
   lastModifiedBy: null
   compendiumSource: null
   duplicateSource: null
-_key: "!actors!f16ffad8fe11249f"
+_key: "!actors!9cc34f6b82b40f76"
 

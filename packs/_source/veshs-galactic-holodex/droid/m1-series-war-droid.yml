@@ -1,11 +1,11 @@
-_id: 9edc886797b5c129
-name: Ng'ok
+_id: 6ee4cd27ab46ebc3
+name: M1 Series War Droid
 type: npc
 img: systems/dnd5e/icons/svg/actors/npc.svg
-folder: 97379aa171754463
+folder: c724c0c5daa02cd9
 items:
-  - _id: b4b0164816fcd3a1
-    name: Limited Telepathy
+  - _id: 2d03e8bed0fa3c42
+    name: Circuitry
     type: feat
     sort: 0
     flags:
@@ -15,16 +15,13 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          sourceSemanticKey: vgh:droid:m1-series-war-droid
+    img: modules/sw5e-module/icons/packs/Monster Traits/Circuitry.webp
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>The ng'ok can transmit simple messages and images to any creature within 120 ft. of it that can understand
-          a language through the force. This form of telepathy doesn't allow the receiving creature to telepathically
-          respond.</p>
+        value: <p>The droid has disadvantage on saving throws against effects that would deal ion or lightning damage.</p>
         chat: ""
       requirements: ""
       source:
@@ -102,9 +99,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.b4b0164816fcd3a1"
-  - _id: c5603f775acfa118
-    name: Stench
+    _key: "!actors.items!6ee4cd27ab46ebc3.2d03e8bed0fa3c42"
+  - _id: f181be7bb1d2fc49
+    name: Tech Resistance
     type: feat
     sort: 0
     flags:
@@ -114,16 +111,13 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Monster Traits/Stench.webp
+          sourceSemanticKey: vgh:droid:m1-series-war-droid
+    img: modules/sw5e-module/icons/packs/Monster Traits/Tech Resistance.webp
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>Any creature other than a ng'ok that starts its turn within 5 feet of the ng'ok must succeed on a DC 15
-          Constitution saving throw or be poisoned until the start of the creature's next turn. On a successful saving
-          throw, the creature is immune to the stench of all ng'oks for 1 hour.</p>
+        value: <p>The M1 Droid has advantage on saving throws against tech powers and other tech effects.</p>
         chat: ""
       requirements: ""
       source:
@@ -201,8 +195,8 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c5603f775acfa118"
-  - _id: 49d0e12911ee535f
+    _key: "!actors.items!6ee4cd27ab46ebc3.f181be7bb1d2fc49"
+  - _id: 3e809601e3217dc8
     name: Multiattack
     type: feat
     sort: 0
@@ -213,13 +207,15 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:droid:m1-series-war-droid
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
     system:
       description:
-        value: "<p>The ng'ok makes three attacks: one with its bite and two with its claws.</p>"
+        value: >-
+          <p>The M1 Droid uses either its Flamethrower, Fragmentation Grenade, Grappling Hook, or Shoulder-Mounted
+          Rockets; it then makes one blaster attack.</p>
         chat: ""
       requirements: ""
       source:
@@ -297,9 +293,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.49d0e12911ee535f"
-  - _id: c2cd0ed011a42306
-    name: Grapple Slam
+    _key: "!actors.items!6ee4cd27ab46ebc3.3e809601e3217dc8"
+  - _id: 1dbf58bea44e766c
+    name: Flamethrower (3/day)
     type: feat
     sort: 0
     flags:
@@ -309,16 +305,213 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:droid:m1-series-war-droid
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>The ng'ok slams creatures grappled by it into each other or a solid surface. Each creature must succeed on
-          a DC 14 Constitution saving throw or take 10 (2d6+3) kinetic damage and be stunned until the end of the
-          ng'ok's next turn. On a successful save, the target takes half the kinetic damage and isn't stunned.</p>
+          <p>The M1 Droid sprays fire in a 10-foot cone. Each creature in the area must succeed on a DC 16 Dexterity
+          saving throw or take 21 (6d6) fire damage, or half as much damage on a success.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: 3
+        max: "3"
+        per: day
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6ee4cd27ab46ebc3.1dbf58bea44e766c"
+  - _id: 2798c74fa808a438
+    name: Fragmentation Grenade (3/day)
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featAction
+          sourceSection: actions
+          sourceSemanticKey: vgh:droid:m1-series-war-droid
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The M1 Droid throws a grenade at point it can see within 150 feet. Each creature within 10 feet of that
+          point must succeed on a DC 16 Dexterity saving throw or take 17 (5d6) kinetic damage. On a success, a creature
+          takes half damage.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: 3
+        max: "3"
+        per: day
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6ee4cd27ab46ebc3.2798c74fa808a438"
+  - _id: 324b586577704749
+    name: Grappling Hook
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featAction
+          sourceSection: actions
+          sourceSemanticKey: vgh:droid:m1-series-war-droid
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The M1 Droid shoots a tethered rope from its arm up to 60 ft. towards a creature of its choice. The
+          creature must succeed on a Strength saving throw or be pulled 30 ft. towards the droid. If the creature lands
+          within 5 ft. of the droid, it can immediately make one Bash attack as a bonus action.</p>
         chat: ""
       requirements: ""
       source:
@@ -396,32 +589,334 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c2cd0ed011a42306"
-  - _id: 9e1c5ae2e4fd3f6e
-    name: Bite
+    _key: "!actors.items!6ee4cd27ab46ebc3.324b586577704749"
+  - _id: fd759fdb0830e4ab
+    name: Shoulder-Mounted Rockets (1/day)
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featAction
+          sourceSection: actions
+          sourceSemanticKey: vgh:droid:m1-series-war-droid
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The M1 Droid fires missiles as two points it can see within 90 feet. Each creature within 5 feet of the
+          points must succeed on a DC 16 Dexterity saving throw or take 14 (4d6) kinetic damage and 14 (4d6) fire damage
+          and be pushed back 5 feet. On a success, a creature takes half damage. A creature in the area of more than one
+          rocket is affected only once.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: 1
+        max: "1"
+        per: day
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6ee4cd27ab46ebc3.fd759fdb0830e4ab"
+  - _id: 732496df400d7917
+    name: Blaster Rifle
+    type: weapon
+    img: modules/sw5e-module/icons/packs/Martial%20Blasters/BlasterRifle.webp
+    effects: []
+    folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:54.3925051+00:00"
+        importer_version: 3
+        uid: Weapon.name-blaster_rifle.equipmentCategory-weapon
+      sw5e:
+        properties:
+          powerCell: range 105/420
+          rel: 12
+          reload: 12
+          two: true
+        reload:
+          types:
+            - powerCell
+        veshsGalacticHolodex:
+          classification: canonical-manufactured-weapon
+          embeddedFromCanonical: true
+          sourceActionNames:
+            - Blaster Rifle
+          sourceSemanticKey: vgh:droid:m1-series-war-droid
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.equipment.Item.Nww9kzfPy9D246fg
+    system:
+      description:
+        value: <p>*Ranged Weapon Attack:* +8 to hit, range 100/400, one target. *Hit:* 13 (2d8+4) energy damage.</p>
+        chat: ""
+      source:
+        custom: PHB
+      quantity: 1
+      weight:
+        value: 0
+        units: lb
+      price:
+        value: 525
+        denomination: gc
+      attunement: ""
+      equipped: false
+      rarity: ""
+      identified: true
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      cover: null
+      crewed: false
+      target:
+        value: "1"
+        width: null
+        units: ""
+        type: enemy
+        prompt: false
+      range:
+        value: 105
+        long: 420
+        units: ft
+      uses:
+        value: null
+        max: "12"
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: ""
+        amount: null
+        scale: false
+      ability: ""
+      actionType: rwak
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 2d8+4
+            - energy
+        versatile: ""
+        base:
+          custom: {}
+          scaling:
+            number: 1
+            mode: ""
+          denomination: 8
+          number: 1
+          types:
+            - energy
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      armor:
+        value: 10
+      hp:
+        value: 0
+        max: 0
+        dt: null
+        conditions: ""
+      modify:
+        chassis: none
+        augmentSlots: 0
+        modSlots: 4
+        items: []
+        changes: {}
+      weaponClass: rifle
+      ammo:
+        target: null
+        value: null
+        use: null
+        types:
+          - powerCell
+      properties:
+        - powerCell
+        - rel
+        - two
+      proficient: null
+      type:
+        value: martialBL
+        subtype: ""
+        baseItem: blasterrifle
+      unidentified:
+        description: ""
+      attack:
+        bonus: "8"
+        flat: true
+      container: null
+      attuned: false
+      enchantment: null
+      summons: null
+      magicalBonus: null
+      firingArc: ""
+      activities:
+        d1af640aba527e16:
+          _id: d1af640aba527e16
+          activation:
+            type: action
+          attack:
+            ability: ""
+            bonus: "8"
+            flat: true
+            type:
+              classification: weapon
+              value: ranged
+          damage:
+            critical: {}
+            parts:
+              - number: 2
+                denomination: 8
+                bonus: "+4"
+                types:
+                  - energy
+                custom:
+                  enabled: false
+                  formula: ""
+                scaling:
+                  mode: ""
+                  number: null
+                  formula: ""
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            override: false
+            units: ft
+            value: "105"
+          target:
+            template:
+              contiguous: false
+              units: ft
+              type: ""
+            affects:
+              choice: false
+              type: ""
+            override: false
+            prompt: false
+          type: attack
+          consumption:
+            targets:
+              - type: itemUses
+                target: ""
+                value: "1"
+      attackBonus: "8"
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493961265
+      modifiedTime: 1739121083882
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+    _key: "!actors.items!6ee4cd27ab46ebc3.732496df400d7917"
+  - _id: 8f38819bc402d822
+    name: Bash
     type: weapon
     sort: 0
     flags:
       sw5e:
         veshsGalacticHolodex:
           embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
+          classification: source-specific-manufactured-weapon
+          kind: weaponSourceSpecific
           sourceActionNames:
-            - Bite
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Naturals/Teeth.webp
+            - Bash
+          sourceSemanticKey: vgh:droid:m1-series-war-droid
+    img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is a creature, it must succeed on a DC 15 Constitution saving throw against disease or become poisoned until
-          the disease is cured. Every 24 hours that elapse, the target must repeat the saving throw, reducing its hit
-          point maximum by 5 (1d10) on a failure. The disease is cured on a success. The target dies if the disease
-          reduces its hit point maximum to 0. This reduction to the target's hit point maximum lasts until the disease
-          is cured.</p>
+        value: <p>*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target. *Hit:* 8 (2d6+1) kinetic damage.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -474,7 +969,7 @@ items:
         damage: ""
       damage:
         parts:
-          - - 2d8+3
+          - - 2d6+1
             - kinetic
         versatile: ""
       formula: ""
@@ -504,7 +999,7 @@ items:
       properties: []
       proficient: 1
       type:
-        value: natural
+        value: simpleM
         subtype: ""
         baseItem: ""
       unidentified:
@@ -519,8 +1014,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        fa04c0c0c5498243:
-          _id: fa04c0c0c5498243
+        e7c86d66f2c910d7:
+          _id: e7c86d66f2c910d7
           type: attack
           activation:
             type: action
@@ -529,7 +1024,7 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "5"
             flat: true
             type:
               classification: weapon
@@ -540,8 +1035,8 @@ items:
             includeBase: false
             parts:
               - number: 2
-                denomination: 8
-                bonus: "+3"
+                denomination: 6
+                bonus: "+1"
                 types:
                   - kinetic
                 custom:
@@ -582,7 +1077,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "6"
+      attackBonus: "5"
     ownership:
       default: 0
     _stats:
@@ -594,209 +1089,14 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.9e1c5ae2e4fd3f6e"
-  - _id: 93854eb0d910db2b
-    name: Claws
-    type: weapon
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
-          sourceActionNames:
-            - Claws
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 10 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is Medium or smaller, it is grappled (escape DC 13) and restrained until the grapple ends. The ng'ok has two
-          claws, each of which can grapple one target.</p>
-        chat: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      quantity: 1
-      weight:
-        value: 1
-        units: lb
-      price:
-        value: 0
-        denomination: gc
-      attunement: ""
-      equipped: false
-      rarity: ""
-      identified: true
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: 10
-        long: null
-        units: ft
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: str
-      actionType: mwak
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts:
-          - - 2d8+3
-            - kinetic
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      armor:
-        value: 10
-      hp:
-        value: 0
-        max: 0
-        dt: null
-        conditions: ""
-      modify:
-        chassis: none
-        augmentSlots: 0
-        modSlots: 4
-        items: []
-        changes: {}
-      weaponClass: ""
-      ammo:
-        target: null
-        value: null
-        use: null
-        types: []
-      properties: []
-      proficient: 1
-      type:
-        value: natural
-        subtype: ""
-        baseItem: ""
-      unidentified:
-        description: ""
-      attack:
-        bonus: ""
-        flat: false
-      container: null
-      attuned: false
-      enchantment: null
-      summons: null
-      magicalBonus: null
-      firingArc: ""
-      activities:
-        064a719e0a048c49:
-          _id: 064a719e0a048c49
-          type: attack
-          activation:
-            type: action
-            value: 1
-            condition: ""
-            override: false
-          attack:
-            ability: ""
-            bonus: "6"
-            flat: true
-            type:
-              classification: weapon
-              value: melee
-            critical: {}
-          damage:
-            critical: {}
-            includeBase: false
-            parts:
-              - number: 2
-                denomination: 8
-                bonus: "+3"
-                types:
-                  - kinetic
-                custom:
-                  enabled: false
-                  formula: ""
-                scaling:
-                  mode: ""
-                  number: null
-                  formula: ""
-          description: {}
-          duration:
-            units: inst
-            concentration: false
-            override: false
-          effects: []
-          range:
-            override: false
-            units: ft
-            value: "10"
-          target:
-            template:
-              contiguous: false
-              units: ft
-              type: ""
-            affects:
-              choice: false
-              type: creature
-              count: "1"
-            override: false
-            prompt: true
-          consumption:
-            targets: []
-            scaling:
-              allowed: false
-            spellSlot: true
-          uses:
-            spent: 0
-            max: ""
-            recovery: []
-          sort: 0
-      attackBonus: "6"
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.93854eb0d910db2b"
+    _key: "!actors.items!6ee4cd27ab46ebc3.8f38819bc402d822"
 effects: []
 prototypeToken:
   flags: {}
-  name: Ng'ok
+  name: M1 Series War Droid
   displayName: 40
-  width: 2
-  height: 2
+  width: 1
+  height: 1
   lockRotation: false
   rotation: 0
   actorLink: false
@@ -870,42 +1170,42 @@ prototypeToken:
 system:
   abilities:
     str:
-      value: 16
-      proficient: 0
-      max: null
-      bonuses:
-        check: ""
-        save: ""
-    dex:
-      value: 11
-      proficient: 0
-      max: null
-      bonuses:
-        check: ""
-        save: ""
-    con:
-      value: 19
-      proficient: 0
-      max: null
-      bonuses:
-        check: ""
-        save: ""
-    int:
-      value: 6
-      proficient: 0
-      max: null
-      bonuses:
-        check: ""
-        save: ""
-    wis:
       value: 13
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
+    dex:
+      value: 19
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    con:
+      value: 17
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    int:
+      value: 16
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    wis:
+      value: 12
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
     cha:
-      value: 6
+      value: 14
       proficient: 0
       max: null
       bonuses:
@@ -927,15 +1227,15 @@ system:
       max: null
   attributes:
     ac:
-      flat: 14
-      calc: natural
+      flat: 16
+      calc: flat
       formula: ""
     hp:
-      value: 114
-      max: 114
+      value: 128
+      max: 128
       temp: 0
       tempmax: 0
-      formula: 12d10+48
+      formula: 17d8+51
     init:
       ability: ""
       bonus: "0"
@@ -954,7 +1254,7 @@ system:
     attunement:
       max: 3
     senses:
-      darkvision: 120
+      darkvision: 0
       blindsight: 0
       tremorsense: 0
       truesight: 0
@@ -1014,15 +1314,15 @@ system:
     biography:
       value: ""
       public: ""
-    alignment: Unaligned
+    alignment: Lawful Light
     species: null
     type:
-      value: aberration
+      value: droid
       subtype: ""
       swarm: ""
       custom: ""
     environment: ""
-    cr: 5
+    cr: 11
     powerForceLevel: 0
     powerTechLevel: 0
     superiorityLevel: 0
@@ -1030,7 +1330,7 @@ system:
       custom: Vesh's Galactic Holodex
       label: Vesh's Galactic Holodex
   traits:
-    size: lg
+    size: med
     di:
       value: []
       bypasses: []
@@ -1166,7 +1466,7 @@ system:
         max: null
         mode: 0
     prc:
-      value: 0
+      value: 1
       ability: wis
       bonuses:
         check: ""
@@ -1186,7 +1486,7 @@ system:
         max: null
         mode: 0
     per:
-      value: 0
+      value: 1
       ability: cha
       bonuses:
         check: ""
@@ -1226,7 +1526,7 @@ system:
         max: null
         mode: 0
     tec:
-      value: 0
+      value: 1
       ability: int
       bonuses:
         check: ""
@@ -1366,20 +1666,23 @@ flags:
     veshsGalacticHolodex:
       sourceIdentity: veshs-galactic-holodex
       sourceFile: ai/Veshs_Galactic_Holodex.md
-      sourceSection: Beastiary
-      sourceHash: 32DE97952BE959711CEC3D7A8675CB29A3CEE5E85C09B1661BD0BE0C92D8B452
-      semanticKey: vgh:aberration:ngok
+      sourceSection: Droid Shop
+      sourceHash: 33EF8DB8DB5FAE8BAF3DC02239D3A06485B43D723C06FC650897696306A65BE8
+      semanticKey: vgh:droid:m1-series-war-droid
       generatorVersion: vgh-phase2-2026-08-07
-      sourceEntry: Ng'ok
+      sourceEntry: M1 Series War Droid
       trackedPack: veshs-galactic-holodex
       collectionId: sw5e-module.veshs-galactic-holodex
       parseStatus: parsed-valid
-      capabilityStatus: fully-supported
+      capabilityStatus: partially-supported
       outputSelection: selected-population
-      productionReadiness: prototype-validated
-      unsupportedMechanics: []
+      productionReadiness: requires-runtime-validation
+      unsupportedMechanics:
+        - qualified-defense-parsing
+        - limited-uses-activity
+        - reaction-activity
       generatedStatus: production
-      creatureTypeFolder: Aberration
+      creatureTypeFolder: Droid
       forceTechEmbedding:
         forcePowers: []
         techPowers: []
@@ -1398,5 +1701,5 @@ _stats:
   lastModifiedBy: null
   compendiumSource: null
   duplicateSource: null
-_key: "!actors!9edc886797b5c129"
+_key: "!actors!6ee4cd27ab46ebc3"
 

@@ -1,11 +1,11 @@
-_id: 9edc886797b5c129
-name: Ng'ok
+_id: 2c2ff16b75172237
+name: S-R6 Assassin Droid
 type: npc
 img: systems/dnd5e/icons/svg/actors/npc.svg
-folder: 97379aa171754463
+folder: c724c0c5daa02cd9
 items:
-  - _id: b4b0164816fcd3a1
-    name: Limited Telepathy
+  - _id: b4c3dfe1b7b44756
+    name: Circuitry
     type: feat
     sort: 0
     flags:
@@ -15,16 +15,307 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:droid:s-r6-assassin-droid
+    img: modules/sw5e-module/icons/packs/Monster Traits/Circuitry.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The droid has disadvantage on saving throws against effects that would deal ion or lightning damage.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!2c2ff16b75172237.b4c3dfe1b7b44756"
+  - _id: bfc3c6e78dc8a1f3
+    name: Ambusher
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:droid:s-r6-assassin-droid
+    img: modules/sw5e-module/icons/packs/Monster Traits/Ambusher.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>In the first round of a combat, the assassin droid has advantage on attack rolls against any creature it
+          has surprised.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!2c2ff16b75172237.bfc3c6e78dc8a1f3"
+  - _id: 2be390abc5553795
+    name: Assassinate
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:droid:s-r6-assassin-droid
+    img: modules/sw5e-module/icons/packs/Monster Traits/Assassinate.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>During its first turn, the assassin has advantage on attack rolls against any creature that hasn't taken a
+          turn. Any hit the assassin scores against a surprised creature is a critical hit.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!2c2ff16b75172237.2be390abc5553795"
+  - _id: e58ef7b1dfa79cbc
+    name: Droid Synergy (1/turn)
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:droid:s-r6-assassin-droid
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>The ng'ok can transmit simple messages and images to any creature within 120 ft. of it that can understand
-          a language through the force. This form of telepathy doesn't allow the receiving creature to telepathically
-          respond.</p>
+          <p>S-R6 deals an extra 14 (4d6) damage to a creature it hits with a weapon attack if that creature is within 5
+          feet of an ally of S-R6 that isn't incapacitated.</p>
         chat: ""
       requirements: ""
       source:
@@ -102,9 +393,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.b4b0164816fcd3a1"
-  - _id: c5603f775acfa118
-    name: Stench
+    _key: "!actors.items!2c2ff16b75172237.e58ef7b1dfa79cbc"
+  - _id: fa0851436339a16d
+    name: Legendary Resistance
     type: feat
     sort: 0
     flags:
@@ -114,16 +405,13 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Monster Traits/Stench.webp
+          sourceSemanticKey: vgh:droid:s-r6-assassin-droid
+    img: modules/sw5e-module/icons/packs/Monster Traits/Legendary Resistance.webp
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>Any creature other than a ng'ok that starts its turn within 5 feet of the ng'ok must succeed on a DC 15
-          Constitution saving throw or be poisoned until the start of the creature's next turn. On a successful saving
-          throw, the creature is immune to the stench of all ng'oks for 1 hour.</p>
+        value: <p>*(3/day)* If S-R6 fails a saving throw, it can choose to succeed instead.</p>
         chat: ""
       requirements: ""
       source:
@@ -201,8 +489,8 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c5603f775acfa118"
-  - _id: 49d0e12911ee535f
+    _key: "!actors.items!2c2ff16b75172237.fa0851436339a16d"
+  - _id: 4ed8d567cc4c5165
     name: Multiattack
     type: feat
     sort: 0
@@ -213,13 +501,13 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:droid:s-r6-assassin-droid
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
     system:
       description:
-        value: "<p>The ng'ok makes three attacks: one with its bite and two with its claws.</p>"
+        value: <p>The S-R6 Droid makes one attack with its Nightsinger Rifle or two melee weapon attacks.</p>
         chat: ""
       requirements: ""
       source:
@@ -297,131 +585,242 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.49d0e12911ee535f"
-  - _id: c2cd0ed011a42306
-    name: Grapple Slam
-    type: feat
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: non-weapon
-          kind: featAction
-          sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+    _key: "!actors.items!2c2ff16b75172237.4ed8d567cc4c5165"
+  - _id: 8dc428c3d2eba416
+    name: Nightstinger Rifle
+    type: weapon
+    img: modules/sw5e-module/icons/packs/Martial%20Blasters/NightstingerRifle.webp
     effects: []
     folder: null
+    sort: 0
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:52:13.4524542+00:00"
+        importer_version: 3
+        uid: Weapon.name-nightstinger_rifle.equipmentCategory-weapon
+      sw5e:
+        properties:
+          powerCell: range 125/500
+          rel: 2
+          strRq: 11
+          reload: 2
+          silentWeapon: true
+          two: true
+        reload:
+          types:
+            - powerCell
+        veshsGalacticHolodex:
+          classification: canonical-manufactured-weapon
+          embeddedFromCanonical: true
+          sourceActionNames:
+            - Nightstinger Rifle
+          sourceSemanticKey: vgh:droid:s-r6-assassin-droid
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.equipment.Item.9h8aYCXd9O2aJThy
     system:
       description:
         value: >-
-          <p>The ng'ok slams creatures grappled by it into each other or a solid surface. Each creature must succeed on
-          a DC 14 Constitution saving throw or take 10 (2d6+3) kinetic damage and be stunned until the end of the
-          ng'ok's next turn. On a successful save, the target takes half the kinetic damage and isn't stunned.</p>
+          <p>*Ranged Weapon Attack:* +10 to hit, range 100/400, one target. *Hit:* 11 (1d12 + 5) energy damage. When the
+          droid makes a ranged attack with its Nightstinger rifle while hidden, it does not automatically reveal its
+          presence. Make a Dexterity (Stealth) check contested by the targets’ Wisdom (Perception) check. On a success,
+          the SR-6 droid remains hidden.</p>
         chat: ""
-      requirements: ""
       source:
-        custom: Vesh's Galactic Holodex
+        custom: EC
+      quantity: 1
+      weight:
+        value: 11
+        units: lb
+      price:
+        value: 1075
+        denomination: gc
+      attunement: ""
+      equipped: false
+      rarity: ""
+      identified: true
       activation:
         type: action
         cost: 1
         condition: ""
       duration:
         value: ""
-        units: ""
+        units: inst
       cover: null
       crewed: false
       target:
-        value: ""
+        value: "1"
         width: null
         units: ""
-        type: ""
-        prompt: true
+        type: enemy
+        prompt: false
       range:
-        value: null
-        long: null
-        units: ""
+        value: 125
+        long: 500
+        units: ft
       uses:
         value: null
-        max: ""
+        max: "2"
         per: null
         recovery: ""
         prompt: true
       consume:
         type: ""
-        target: null
+        target: ""
         amount: null
         scale: false
       ability: ""
-      actionType: ""
+      actionType: rwak
       chatFlavor: ""
       critical:
         threshold: null
         damage: ""
       damage:
-        parts: []
+        parts:
+          - - 1d12+5
+            - energy
         versatile: ""
+        base:
+          custom: {}
+          scaling:
+            number: 1
+            mode: ""
+          denomination: 10
+          number: 1
+          types:
+            - energy
       formula: ""
       save:
         ability: ""
         dc: null
         scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
+      armor:
+        value: 10
+      hp:
+        value: 0
+        max: 0
+        dt: null
+        conditions: ""
+      modify:
+        chassis: none
+        augmentSlots: 0
+        modSlots: 4
+        items: []
+        changes: {}
+      weaponClass: rifle
+      ammo:
+        target: null
         value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
+        use: null
+        types:
+          - powerCell
+      properties:
+        - powerCell
+        - rel
+        - silentWeapon
+        - strRq
+        - two
+      proficient: null
+      type:
+        value: martialBL
+        subtype: ""
+        baseItem: nightstingerrifle
+      unidentified:
+        description: ""
       attack:
-        bonus: ""
-        flat: false
+        bonus: "10"
+        flat: true
+      container: null
+      attuned: false
       enchantment: null
       summons: null
-      prerequisites:
-        level: null
-      properties: []
+      magicalBonus: null
+      firingArc: ""
+      activities:
+        d530f83724cb80b5:
+          _id: d530f83724cb80b5
+          activation:
+            type: action
+          attack:
+            ability: ""
+            bonus: "10"
+            flat: true
+            type:
+              classification: weapon
+              value: ranged
+          damage:
+            critical: {}
+            parts:
+              - number: 1
+                denomination: 12
+                bonus: "+5"
+                types:
+                  - energy
+                custom:
+                  enabled: false
+                  formula: ""
+                scaling:
+                  mode: ""
+                  number: null
+                  formula: ""
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            override: false
+            units: ft
+            value: "125"
+          target:
+            template:
+              contiguous: false
+              units: ft
+              type: ""
+            affects:
+              choice: false
+              type: ""
+            override: false
+            prompt: false
+          type: attack
+          consumption:
+            targets:
+              - type: itemUses
+                target: ""
+                value: "1"
+      attackBonus: "10"
     ownership:
       default: 0
     _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1674493961240
+      modifiedTime: 1739121083882
+      lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c2cd0ed011a42306"
-  - _id: 9e1c5ae2e4fd3f6e
-    name: Bite
+    _key: "!actors.items!2c2ff16b75172237.8dc428c3d2eba416"
+  - _id: 2e2262b33e7c0e32
+    name: Stock Strike
     type: weapon
     sort: 0
     flags:
       sw5e:
         veshsGalacticHolodex:
           embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
+          classification: source-specific-manufactured-weapon
+          kind: weaponSourceSpecific
           sourceActionNames:
-            - Bite
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Naturals/Teeth.webp
+            - Stock Strike
+          sourceSemanticKey: vgh:droid:s-r6-assassin-droid
+    img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is a creature, it must succeed on a DC 15 Constitution saving throw against disease or become poisoned until
-          the disease is cured. Every 24 hours that elapse, the target must repeat the saving throw, reducing its hit
-          point maximum by 5 (1d10) on a failure. The disease is cured on a success. The target dies if the disease
-          reduces its hit point maximum to 0. This reduction to the target's hit point maximum lasts until the disease
-          is cured.</p>
+        value: <p>*Ranged Weapon Attack:* +7 to hit, reach 5 ft., one target. *Hit:* 4 (1d4 + 2) kinetic damage.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -466,15 +865,15 @@ items:
         target: null
         amount: null
         scale: false
-      ability: str
-      actionType: mwak
+      ability: dex
+      actionType: rwak
       chatFlavor: ""
       critical:
         threshold: null
         damage: ""
       damage:
         parts:
-          - - 2d8+3
+          - - 1d4+2
             - kinetic
         versatile: ""
       formula: ""
@@ -504,7 +903,7 @@ items:
       properties: []
       proficient: 1
       type:
-        value: natural
+        value: simpleM
         subtype: ""
         baseItem: ""
       unidentified:
@@ -519,8 +918,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        fa04c0c0c5498243:
-          _id: fa04c0c0c5498243
+        de2057e3c53d52c6:
+          _id: de2057e3c53d52c6
           type: attack
           activation:
             type: action
@@ -529,19 +928,19 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "7"
             flat: true
             type:
               classification: weapon
-              value: melee
+              value: ranged
             critical: {}
           damage:
             critical: {}
             includeBase: false
             parts:
-              - number: 2
-                denomination: 8
-                bonus: "+3"
+              - number: 1
+                denomination: 4
+                bonus: "+2"
                 types:
                   - kinetic
                 custom:
@@ -582,7 +981,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "6"
+      attackBonus: "7"
     ownership:
       default: 0
     _stats:
@@ -594,209 +993,14 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.9e1c5ae2e4fd3f6e"
-  - _id: 93854eb0d910db2b
-    name: Claws
-    type: weapon
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
-          sourceActionNames:
-            - Claws
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 10 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is Medium or smaller, it is grappled (escape DC 13) and restrained until the grapple ends. The ng'ok has two
-          claws, each of which can grapple one target.</p>
-        chat: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      quantity: 1
-      weight:
-        value: 1
-        units: lb
-      price:
-        value: 0
-        denomination: gc
-      attunement: ""
-      equipped: false
-      rarity: ""
-      identified: true
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: 10
-        long: null
-        units: ft
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: str
-      actionType: mwak
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts:
-          - - 2d8+3
-            - kinetic
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      armor:
-        value: 10
-      hp:
-        value: 0
-        max: 0
-        dt: null
-        conditions: ""
-      modify:
-        chassis: none
-        augmentSlots: 0
-        modSlots: 4
-        items: []
-        changes: {}
-      weaponClass: ""
-      ammo:
-        target: null
-        value: null
-        use: null
-        types: []
-      properties: []
-      proficient: 1
-      type:
-        value: natural
-        subtype: ""
-        baseItem: ""
-      unidentified:
-        description: ""
-      attack:
-        bonus: ""
-        flat: false
-      container: null
-      attuned: false
-      enchantment: null
-      summons: null
-      magicalBonus: null
-      firingArc: ""
-      activities:
-        064a719e0a048c49:
-          _id: 064a719e0a048c49
-          type: attack
-          activation:
-            type: action
-            value: 1
-            condition: ""
-            override: false
-          attack:
-            ability: ""
-            bonus: "6"
-            flat: true
-            type:
-              classification: weapon
-              value: melee
-            critical: {}
-          damage:
-            critical: {}
-            includeBase: false
-            parts:
-              - number: 2
-                denomination: 8
-                bonus: "+3"
-                types:
-                  - kinetic
-                custom:
-                  enabled: false
-                  formula: ""
-                scaling:
-                  mode: ""
-                  number: null
-                  formula: ""
-          description: {}
-          duration:
-            units: inst
-            concentration: false
-            override: false
-          effects: []
-          range:
-            override: false
-            units: ft
-            value: "10"
-          target:
-            template:
-              contiguous: false
-              units: ft
-              type: ""
-            affects:
-              choice: false
-              type: creature
-              count: "1"
-            override: false
-            prompt: true
-          consumption:
-            targets: []
-            scaling:
-              allowed: false
-            spellSlot: true
-          uses:
-            spent: 0
-            max: ""
-            recovery: []
-          sort: 0
-      attackBonus: "6"
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.93854eb0d910db2b"
+    _key: "!actors.items!2c2ff16b75172237.2e2262b33e7c0e32"
 effects: []
 prototypeToken:
   flags: {}
-  name: Ng'ok
+  name: S-R6 Assassin Droid
   displayName: 40
-  width: 2
-  height: 2
+  width: 1
+  height: 1
   lockRotation: false
   rotation: 0
   actorLink: false
@@ -870,42 +1074,42 @@ prototypeToken:
 system:
   abilities:
     str:
-      value: 16
+      value: 14
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     dex:
-      value: 11
+      value: 20
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     con:
-      value: 19
+      value: 17
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     int:
-      value: 6
+      value: 15
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     wis:
-      value: 13
+      value: 16
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     cha:
-      value: 6
+      value: 15
       proficient: 0
       max: null
       bonuses:
@@ -927,15 +1131,15 @@ system:
       max: null
   attributes:
     ac:
-      flat: 14
-      calc: natural
+      flat: 18
+      calc: flat
       formula: ""
     hp:
-      value: 114
-      max: 114
+      value: 112
+      max: 112
       temp: 0
       tempmax: 0
-      formula: 12d10+48
+      formula: 15d8+45
     init:
       ability: ""
       bonus: "0"
@@ -954,7 +1158,7 @@ system:
     attunement:
       max: 3
     senses:
-      darkvision: 120
+      darkvision: 60
       blindsight: 0
       tremorsense: 0
       truesight: 0
@@ -1014,15 +1218,15 @@ system:
     biography:
       value: ""
       public: ""
-    alignment: Unaligned
+    alignment: Chaotic Balanced
     species: null
     type:
-      value: aberration
+      value: droid
       subtype: ""
       swarm: ""
       custom: ""
     environment: ""
-    cr: 5
+    cr: 14
     powerForceLevel: 0
     powerTechLevel: 0
     superiorityLevel: 0
@@ -1030,7 +1234,7 @@ system:
       custom: Vesh's Galactic Holodex
       label: Vesh's Galactic Holodex
   traits:
-    size: lg
+    size: med
     di:
       value: []
       bypasses: []
@@ -1056,7 +1260,7 @@ system:
     gc: 0
   skills:
     acr:
-      value: 0
+      value: 1
       ability: dex
       bonuses:
         check: ""
@@ -1076,7 +1280,7 @@ system:
         max: null
         mode: 0
     ath:
-      value: 0
+      value: 1
       ability: str
       bonuses:
         check: ""
@@ -1096,7 +1300,7 @@ system:
         max: null
         mode: 0
     ins:
-      value: 0
+      value: 1
       ability: wis
       bonuses:
         check: ""
@@ -1166,7 +1370,7 @@ system:
         max: null
         mode: 0
     prc:
-      value: 0
+      value: 1
       ability: wis
       bonuses:
         check: ""
@@ -1206,7 +1410,7 @@ system:
         max: null
         mode: 0
     ste:
-      value: 0
+      value: 1
       ability: dex
       bonuses:
         check: ""
@@ -1216,7 +1420,7 @@ system:
         max: null
         mode: 0
     sur:
-      value: 0
+      value: 1
       ability: wis
       bonuses:
         check: ""
@@ -1366,20 +1570,24 @@ flags:
     veshsGalacticHolodex:
       sourceIdentity: veshs-galactic-holodex
       sourceFile: ai/Veshs_Galactic_Holodex.md
-      sourceSection: Beastiary
-      sourceHash: 32DE97952BE959711CEC3D7A8675CB29A3CEE5E85C09B1661BD0BE0C92D8B452
-      semanticKey: vgh:aberration:ngok
+      sourceSection: Droid Shop
+      sourceHash: 622B416D2BB87B4C6452C7ABEA841B9B1F0668B743085DAC1DF984A7C8B8AA30
+      semanticKey: vgh:droid:s-r6-assassin-droid
       generatorVersion: vgh-phase2-2026-08-07
-      sourceEntry: Ng'ok
+      sourceEntry: S-R6 Assassin Droid
       trackedPack: veshs-galactic-holodex
       collectionId: sw5e-module.veshs-galactic-holodex
       parseStatus: parsed-valid
-      capabilityStatus: fully-supported
+      capabilityStatus: partially-supported
       outputSelection: selected-population
-      productionReadiness: prototype-validated
-      unsupportedMechanics: []
+      productionReadiness: requires-runtime-validation
+      unsupportedMechanics:
+        - legendary-actions
+        - qualified-defense-parsing
+        - limited-uses-activity
+        - reaction-activity
       generatedStatus: production
-      creatureTypeFolder: Aberration
+      creatureTypeFolder: Droid
       forceTechEmbedding:
         forcePowers: []
         techPowers: []
@@ -1398,5 +1606,5 @@ _stats:
   lastModifiedBy: null
   compendiumSource: null
   duplicateSource: null
-_key: "!actors!9edc886797b5c129"
+_key: "!actors!2c2ff16b75172237"
 

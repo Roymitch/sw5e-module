@@ -1,11 +1,11 @@
-_id: 9edc886797b5c129
-name: Ng'ok
+_id: efc84c92d9fac1d4
+name: Morgukai Warrior
 type: npc
 img: systems/dnd5e/icons/svg/actors/npc.svg
-folder: 97379aa171754463
+folder: 569b095af4903164
 items:
-  - _id: b4b0164816fcd3a1
-    name: Limited Telepathy
+  - _id: 53b725b00345ab0d
+    name: Aggressive
     type: feat
     sort: 0
     flags:
@@ -15,16 +15,109 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          sourceSemanticKey: vgh:humanoid:morgukai-warrior
+    img: modules/sw5e-module/icons/packs/Monster Traits/Aggressive.webp
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>The ng'ok can transmit simple messages and images to any creature within 120 ft. of it that can understand
-          a language through the force. This form of telepathy doesn't allow the receiving creature to telepathically
-          respond.</p>
+        value: <p>As a bonus action, the morgukai can move up to its speed toward a hostile creature it can see.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!efc84c92d9fac1d4.53b725b00345ab0d"
+  - _id: f34f08c96b004120
+    name: Force Resistance
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:morgukai-warrior
+    img: modules/sw5e-module/icons/packs/Monster Traits/Force Resistance.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The morgukai has advantage on saving throws against force powers and other force effects.</p>
         chat: ""
       requirements: ""
       source:
@@ -102,9 +195,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.b4b0164816fcd3a1"
-  - _id: c5603f775acfa118
-    name: Stench
+    _key: "!actors.items!efc84c92d9fac1d4.f34f08c96b004120"
+  - _id: 06e12ae30ceeacba
+    name: Morgukai Combat Mastery
     type: feat
     sort: 0
     flags:
@@ -114,16 +207,111 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Monster Traits/Stench.webp
+          sourceSemanticKey: vgh:humanoid:morgukai-warrior
+    img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>Any creature other than a ng'ok that starts its turn within 5 feet of the ng'ok must succeed on a DC 15
-          Constitution saving throw or be poisoned until the start of the creature's next turn. On a successful saving
-          throw, the creature is immune to the stench of all ng'oks for 1 hour.</p>
+          <p>When the warrior lands an attack with its cortosis staff, it can use a bonus action to make two additional
+          attacks against the same target. Additionally, its melee attacks deal an additional damage die (included).</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!efc84c92d9fac1d4.06e12ae30ceeacba"
+  - _id: 350dcd1fda7b95a1
+    name: Protective Membrane
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:morgukai-warrior
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The morgukai has advantage on saving throws against being blinded.</p>
         chat: ""
       requirements: ""
       source:
@@ -201,227 +389,29 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c5603f775acfa118"
-  - _id: 49d0e12911ee535f
-    name: Multiattack
-    type: feat
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: non-weapon
-          kind: featAction
-          sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
-    effects: []
-    folder: null
-    system:
-      description:
-        value: "<p>The ng'ok makes three attacks: one with its bite and two with its claws.</p>"
-        chat: ""
-      requirements: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: ""
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: ""
-      actionType: ""
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
-        value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      prerequisites:
-        level: null
-      properties: []
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.49d0e12911ee535f"
-  - _id: c2cd0ed011a42306
-    name: Grapple Slam
-    type: feat
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: non-weapon
-          kind: featAction
-          sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
-    img: systems/dnd5e/icons/svg/actors/npc.svg
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>The ng'ok slams creatures grappled by it into each other or a solid surface. Each creature must succeed on
-          a DC 14 Constitution saving throw or take 10 (2d6+3) kinetic damage and be stunned until the end of the
-          ng'ok's next turn. On a successful save, the target takes half the kinetic damage and isn't stunned.</p>
-        chat: ""
-      requirements: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: ""
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: ""
-      actionType: ""
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
-        value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      prerequisites:
-        level: null
-      properties: []
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c2cd0ed011a42306"
-  - _id: 9e1c5ae2e4fd3f6e
-    name: Bite
+    _key: "!actors.items!efc84c92d9fac1d4.350dcd1fda7b95a1"
+  - _id: 510a089ae0283984
+    name: Cortosis Staff
     type: weapon
     sort: 0
     flags:
       sw5e:
         veshsGalacticHolodex:
           embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
+          classification: source-specific-manufactured-weapon
+          kind: weaponSourceSpecific
           sourceActionNames:
-            - Bite
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Naturals/Teeth.webp
+            - Cortosis Staff
+          sourceSemanticKey: vgh:humanoid:morgukai-warrior
+    img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is a creature, it must succeed on a DC 15 Constitution saving throw against disease or become poisoned until
-          the disease is cured. Every 24 hours that elapse, the target must repeat the saving throw, reducing its hit
-          point maximum by 5 (1d10) on a failure. The disease is cured on a success. The target dies if the disease
-          reduces its hit point maximum to 0. This reduction to the target's hit point maximum lasts until the disease
-          is cured.</p>
+          <p>*Melee Weapon Attack:* +7 to hit, reach 5 ft., one target. *Hit:* 11 (2d6+4) kinetic damage and the target
+          must succeed on a DC 14 Constitution saving throw or take 1d4 lightning damage and be shocked until the end of
+          its next turn.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -474,7 +464,7 @@ items:
         damage: ""
       damage:
         parts:
-          - - 2d8+3
+          - - 2d6+4
             - kinetic
         versatile: ""
       formula: ""
@@ -504,7 +494,7 @@ items:
       properties: []
       proficient: 1
       type:
-        value: natural
+        value: simpleM
         subtype: ""
         baseItem: ""
       unidentified:
@@ -519,8 +509,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        fa04c0c0c5498243:
-          _id: fa04c0c0c5498243
+        ced9e2088ec0d673:
+          _id: ced9e2088ec0d673
           type: attack
           activation:
             type: action
@@ -529,7 +519,7 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "7"
             flat: true
             type:
               classification: weapon
@@ -540,8 +530,8 @@ items:
             includeBase: false
             parts:
               - number: 2
-                denomination: 8
-                bonus: "+3"
+                denomination: 6
+                bonus: "+4"
                 types:
                   - kinetic
                 custom:
@@ -582,7 +572,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "6"
+      attackBonus: "7"
     ownership:
       default: 0
     _stats:
@@ -594,209 +584,14 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.9e1c5ae2e4fd3f6e"
-  - _id: 93854eb0d910db2b
-    name: Claws
-    type: weapon
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
-          sourceActionNames:
-            - Claws
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 10 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is Medium or smaller, it is grappled (escape DC 13) and restrained until the grapple ends. The ng'ok has two
-          claws, each of which can grapple one target.</p>
-        chat: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      quantity: 1
-      weight:
-        value: 1
-        units: lb
-      price:
-        value: 0
-        denomination: gc
-      attunement: ""
-      equipped: false
-      rarity: ""
-      identified: true
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: 10
-        long: null
-        units: ft
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: str
-      actionType: mwak
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts:
-          - - 2d8+3
-            - kinetic
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      armor:
-        value: 10
-      hp:
-        value: 0
-        max: 0
-        dt: null
-        conditions: ""
-      modify:
-        chassis: none
-        augmentSlots: 0
-        modSlots: 4
-        items: []
-        changes: {}
-      weaponClass: ""
-      ammo:
-        target: null
-        value: null
-        use: null
-        types: []
-      properties: []
-      proficient: 1
-      type:
-        value: natural
-        subtype: ""
-        baseItem: ""
-      unidentified:
-        description: ""
-      attack:
-        bonus: ""
-        flat: false
-      container: null
-      attuned: false
-      enchantment: null
-      summons: null
-      magicalBonus: null
-      firingArc: ""
-      activities:
-        064a719e0a048c49:
-          _id: 064a719e0a048c49
-          type: attack
-          activation:
-            type: action
-            value: 1
-            condition: ""
-            override: false
-          attack:
-            ability: ""
-            bonus: "6"
-            flat: true
-            type:
-              classification: weapon
-              value: melee
-            critical: {}
-          damage:
-            critical: {}
-            includeBase: false
-            parts:
-              - number: 2
-                denomination: 8
-                bonus: "+3"
-                types:
-                  - kinetic
-                custom:
-                  enabled: false
-                  formula: ""
-                scaling:
-                  mode: ""
-                  number: null
-                  formula: ""
-          description: {}
-          duration:
-            units: inst
-            concentration: false
-            override: false
-          effects: []
-          range:
-            override: false
-            units: ft
-            value: "10"
-          target:
-            template:
-              contiguous: false
-              units: ft
-              type: ""
-            affects:
-              choice: false
-              type: creature
-              count: "1"
-            override: false
-            prompt: true
-          consumption:
-            targets: []
-            scaling:
-              allowed: false
-            spellSlot: true
-          uses:
-            spent: 0
-            max: ""
-            recovery: []
-          sort: 0
-      attackBonus: "6"
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.93854eb0d910db2b"
+    _key: "!actors.items!efc84c92d9fac1d4.510a089ae0283984"
 effects: []
 prototypeToken:
   flags: {}
-  name: Ng'ok
+  name: Morgukai Warrior
   displayName: 40
-  width: 2
-  height: 2
+  width: 1
+  height: 1
   lockRotation: false
   rotation: 0
   actorLink: false
@@ -870,42 +665,42 @@ prototypeToken:
 system:
   abilities:
     str:
-      value: 16
+      value: 18
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     dex:
-      value: 11
+      value: 14
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     con:
-      value: 19
+      value: 15
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     int:
-      value: 6
-      proficient: 0
-      max: null
-      bonuses:
-        check: ""
-        save: ""
-    wis:
       value: 13
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
+    wis:
+      value: 16
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
     cha:
-      value: 6
+      value: 13
       proficient: 0
       max: null
       bonuses:
@@ -927,15 +722,15 @@ system:
       max: null
   attributes:
     ac:
-      flat: 14
-      calc: natural
+      flat: 16
+      calc: flat
       formula: ""
     hp:
-      value: 114
-      max: 114
+      value: 65
+      max: 65
       temp: 0
       tempmax: 0
-      formula: 12d10+48
+      formula: 10d8+20
     init:
       ability: ""
       bonus: "0"
@@ -954,7 +749,7 @@ system:
     attunement:
       max: 3
     senses:
-      darkvision: 120
+      darkvision: 0
       blindsight: 0
       tremorsense: 0
       truesight: 0
@@ -1014,11 +809,11 @@ system:
     biography:
       value: ""
       public: ""
-    alignment: Unaligned
+    alignment: Lawful Balanced
     species: null
     type:
-      value: aberration
-      subtype: ""
+      value: humanoid
+      subtype: nikto
       swarm: ""
       custom: ""
     environment: ""
@@ -1030,7 +825,7 @@ system:
       custom: Vesh's Galactic Holodex
       label: Vesh's Galactic Holodex
   traits:
-    size: lg
+    size: med
     di:
       value: []
       bypasses: []
@@ -1076,7 +871,7 @@ system:
         max: null
         mode: 0
     ath:
-      value: 0
+      value: 1
       ability: str
       bonuses:
         check: ""
@@ -1166,7 +961,7 @@ system:
         max: null
         mode: 0
     prc:
-      value: 0
+      value: 1
       ability: wis
       bonuses:
         check: ""
@@ -1216,7 +1011,7 @@ system:
         max: null
         mode: 0
     sur:
-      value: 0
+      value: 1
       ability: wis
       bonuses:
         check: ""
@@ -1366,20 +1161,22 @@ flags:
     veshsGalacticHolodex:
       sourceIdentity: veshs-galactic-holodex
       sourceFile: ai/Veshs_Galactic_Holodex.md
-      sourceSection: Beastiary
-      sourceHash: 32DE97952BE959711CEC3D7A8675CB29A3CEE5E85C09B1661BD0BE0C92D8B452
-      semanticKey: vgh:aberration:ngok
+      sourceSection: Galaxy's Most Wanted
+      sourceHash: 169566A581AACA33E50F1A4834EBAC282CF407B78AEF8402483D451CEC63B280
+      semanticKey: vgh:humanoid:morgukai-warrior
       generatorVersion: vgh-phase2-2026-08-07
-      sourceEntry: Ng'ok
+      sourceEntry: Morgukai Warrior
       trackedPack: veshs-galactic-holodex
       collectionId: sw5e-module.veshs-galactic-holodex
       parseStatus: parsed-valid
-      capabilityStatus: fully-supported
+      capabilityStatus: partially-supported
       outputSelection: selected-population
-      productionReadiness: prototype-validated
-      unsupportedMechanics: []
+      productionReadiness: requires-runtime-validation
+      unsupportedMechanics:
+        - qualified-defense-parsing
+        - reaction-activity
       generatedStatus: production
-      creatureTypeFolder: Aberration
+      creatureTypeFolder: Humanoid
       forceTechEmbedding:
         forcePowers: []
         techPowers: []
@@ -1398,5 +1195,5 @@ _stats:
   lastModifiedBy: null
   compendiumSource: null
   duplicateSource: null
-_key: "!actors!9edc886797b5c129"
+_key: "!actors!efc84c92d9fac1d4"
 

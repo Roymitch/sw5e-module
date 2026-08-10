@@ -1,11 +1,11 @@
-_id: c2304b0740cc4e93
-name: Oggdo, Legendary
+_id: e02e9309c2539a29
+name: Roggwart
 type: npc
 img: systems/dnd5e/icons/svg/actors/npc.svg
 folder: 6f8e5fbcb21cb696
 items:
-  - _id: 65da1243a7b68761
-    name: Amphibious
+  - _id: edbe3262b029e243
+    name: Cybernetic Enhancements
     type: feat
     sort: 0
     flags:
@@ -15,13 +15,16 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:beast:oggdo-legendary
-    img: modules/sw5e-module/icons/packs/Monster Traits/Amphibious.webp
+          sourceSemanticKey: vgh:beast:roggwart
+    img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
-        value: <p>The oggdo can breathe air and water.</p>
+        value: >-
+          <p>Roggwarts are often modified with cybernetic augmentations. Roll a d6 or choose from the following options
+          to determine what enhancements the roggwart has. It can have a maximum of two enhancements at a time and
+          cannot change enhancements once chosen.</p>
         chat: ""
       requirements: ""
       source:
@@ -99,9 +102,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!c2304b0740cc4e93.65da1243a7b68761"
-  - _id: 4c3f42d7925c0318
-    name: Legendary Resistance (3/day)
+    _key: "!actors.items!e02e9309c2539a29.edbe3262b029e243"
+  - _id: b52c4ef62c5263a3
+    name: (1) Cranial Implants
     type: feat
     sort: 0
     flags:
@@ -111,13 +114,15 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:beast:oggdo-legendary
+          sourceSemanticKey: vgh:beast:roggwart
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
-        value: <p>If the oggdo fails a saving throw, it can choose to succeed instead.</p>
+        value: >-
+          <p>The Roggwart's Intelligence score increases by 2, and it has advantage on Intelligence and Wisdom saving
+          throws made against Tech or Force powers.</p>
         chat: ""
       requirements: ""
       source:
@@ -142,9 +147,9 @@ items:
         long: null
         units: ""
       uses:
-        value: 3
-        max: "3"
-        per: day
+        value: null
+        max: ""
+        per: null
         recovery: ""
         prompt: true
       consume:
@@ -195,8 +200,503 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!c2304b0740cc4e93.4c3f42d7925c0318"
-  - _id: 40219e933e283ad5
+    _key: "!actors.items!e02e9309c2539a29.b52c4ef62c5263a3"
+  - _id: 88089f878c082721
+    name: (2) Cybernetic Arm
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:beast:roggwart
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The Roggwart's Strength score increases by 2, and it can innately cast the *pressure crush* tech power as a
+          bonus action on its turn if it is grappling a Large or smaller creature. It's techcasting ability is Strength
+          (save DC 17) and it's a 5th-level caster.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!e02e9309c2539a29.88089f878c082721"
+  - _id: 77015a76e41d0cf7
+    name: (3) Hydraulic Leg
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:beast:roggwart
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The Roggwart's Dexterity score increases by 2, and it can leap up to 30 feet as a bonus action on its turn.
+          When it lands it deals 5 kinetic damage to each creatures within 5 feet of where it lands.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!e02e9309c2539a29.77015a76e41d0cf7"
+  - _id: 5bd71f3b855824ba
+    name: (4) Exo-Skeleton
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:beast:roggwart
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The Roggwart's Constitution score increases by 2, and it gains resistance to Kinetic and Energy damage from
+          unenhanced weapons.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!e02e9309c2539a29.5bd71f3b855824ba"
+  - _id: 3b2913998b82e615
+    name: (5) Mechanized Tentacles
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:beast:roggwart
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The Roggwart has four tentacles on its back. Each tentacle has an AC 10 and 5 hit points. The Roggwart
+          gains a number of special reactions each round equal to the number of tentacles it still has. Once per turn
+          when a creature enters the Roggwart's reach or moves 5 feet or greater while within its reach, it can make an
+          opportunity attack against that creature using its tentacles.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!e02e9309c2539a29.3b2913998b82e615"
+  - _id: 2ef53111aef720cb
+    name: (6) Tail Plating
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:beast:roggwart
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The Roggwart can grapple creatures with its tail, and when it is grappling a creature with its tail, it can
+          use a bonus action to slam the target into the ground. The target must succeed on a Strength saving throw (DC
+          17) or take 21(6d6) kinetic damage and be knocked prone. On a successful save, the target takes half damage.
+          Once it has been slammed in this way, the target is no longer grappled.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!e02e9309c2539a29.2ef53111aef720cb"
+  - _id: f4d7877ccb8f971d
     name: Multiattack
     type: feat
     sort: 0
@@ -207,13 +707,15 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:beast:oggdo-legendary
+          sourceSemanticKey: vgh:beast:roggwart
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
     system:
       description:
-        value: <p>The oggdo makes a tongue attack if available, then attacks using its bite or slam.</p>
+        value: >-
+          <p>The roggwart uses its Frightening Presence, then makes one bite attack and two claw attacks. If it has the
+          Tail Plating enhancement, it can replace one of its claw attacks with a tail attack.</p>
         chat: ""
       requirements: ""
       source:
@@ -291,8 +793,109 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!c2304b0740cc4e93.40219e933e283ad5"
-  - _id: ef6c6a51633ca309
+    _key: "!actors.items!e02e9309c2539a29.f4d7877ccb8f971d"
+  - _id: 8880721c4f858ce8
+    name: Frightening Presence
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featAction
+          sourceSection: actions
+          sourceSemanticKey: vgh:beast:roggwart
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>Each creature of the roggwart's choice that is within 120 feet of the roggwart and aware of it must succeed
+          on a DC 17 Wisdom saving throw or become frightened for 1 minute. A creature can repeat the saving throw at
+          the end of each of its turns, ending the effect on itself on a success. If a creature's saving throw is
+          successful or the effect ends for it, the creature is immune to the roggwart's Frightful Presence for the next
+          24 hours.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!e02e9309c2539a29.8880721c4f858ce8"
+  - _id: 58eb62c56e3557df
     name: Bite
     type: weapon
     sort: 0
@@ -304,16 +907,13 @@ items:
           kind: weaponNatural
           sourceActionNames:
             - Bite
-          sourceSemanticKey: vgh:beast:oggdo-legendary
+          sourceSemanticKey: vgh:beast:roggwart
     img: modules/sw5e-module/icons/packs/Naturals/Teeth.webp
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>*Melee Weapon Attack:* +10 to hit, reach 5 ft., one target. *Hit:* 28 (5d8+6) kinetic damage, and the
-          target is grappled (escape DC 15) if it is a Large or smaller creature. Until this grapple ends, the target is
-          restrained, and the Oggdo can't use its bite or tongue attack on another target.</p>
+        value: <p>*Melee Weapon Attack:* +9 to hit, reach 5 ft., one target. *Hit:* 12 (2d6+5) kinetic damage.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -366,7 +966,7 @@ items:
         damage: ""
       damage:
         parts:
-          - - 5d8+6
+          - - 2d6+5
             - kinetic
         versatile: ""
       formula: ""
@@ -411,8 +1011,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        51b9c9e122c6b4f9:
-          _id: 51b9c9e122c6b4f9
+        44d64d82d50fef5a:
+          _id: 44d64d82d50fef5a
           type: attack
           activation:
             type: action
@@ -421,7 +1021,7 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "10"
+            bonus: "9"
             flat: true
             type:
               classification: weapon
@@ -431,9 +1031,9 @@ items:
             critical: {}
             includeBase: false
             parts:
-              - number: 5
-                denomination: 8
-                bonus: "+6"
+              - number: 2
+                denomination: 6
+                bonus: "+5"
                 types:
                   - kinetic
                 custom:
@@ -474,7 +1074,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "10"
+      attackBonus: "9"
     ownership:
       default: 0
     _stats:
@@ -486,9 +1086,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!c2304b0740cc4e93.ef6c6a51633ca309"
-  - _id: d631f414af0219aa
-    name: Tongue
+    _key: "!actors.items!e02e9309c2539a29.58eb62c56e3557df"
+  - _id: da9e0a5943fb1673
+    name: Claw
     type: weapon
     sort: 0
     flags:
@@ -498,17 +1098,16 @@ items:
           classification: validated-natural-weapon
           kind: weaponNatural
           sourceActionNames:
-            - Tongue
-          sourceSemanticKey: vgh:beast:oggdo-legendary
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+            - Claw
+          sourceSemanticKey: vgh:beast:roggwart
+    img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>*Melee Weapon Attack:* +10 to hit, reach 30 ft., one target. *Hit:* 13 (3d8) acid damage, and the target
-          must make a DC 15 Strength saving throw. On a failed save, the target is pulled to a space within 5 feet of
-          the oggdo, which can use a bonus action to make one bite attack against the target.</p>
+          <p>*Melee Weapon Attack:* +9 to hit, reach 5 ft., one target. *Hit:* 14 (2d8+5) kinetic damage, and the target
+          is grappled (escape DC 17). While grappled in this way, the target is restrained.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -539,7 +1138,7 @@ items:
         type: ""
         prompt: true
       range:
-        value: 30
+        value: 5
         long: null
         units: ft
       uses:
@@ -561,201 +1160,7 @@ items:
         damage: ""
       damage:
         parts:
-          - - 3d8
-            - acid
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      armor:
-        value: 10
-      hp:
-        value: 0
-        max: 0
-        dt: null
-        conditions: ""
-      modify:
-        chassis: none
-        augmentSlots: 0
-        modSlots: 4
-        items: []
-        changes: {}
-      weaponClass: ""
-      ammo:
-        target: null
-        value: null
-        use: null
-        types: []
-      properties: []
-      proficient: 1
-      type:
-        value: natural
-        subtype: ""
-        baseItem: ""
-      unidentified:
-        description: ""
-      attack:
-        bonus: ""
-        flat: false
-      container: null
-      attuned: false
-      enchantment: null
-      summons: null
-      magicalBonus: null
-      firingArc: ""
-      activities:
-        90702ef7f28eae6a:
-          _id: 90702ef7f28eae6a
-          type: attack
-          activation:
-            type: action
-            value: 1
-            condition: ""
-            override: false
-          attack:
-            ability: ""
-            bonus: "10"
-            flat: true
-            type:
-              classification: weapon
-              value: melee
-            critical: {}
-          damage:
-            critical: {}
-            includeBase: false
-            parts:
-              - number: 3
-                denomination: 8
-                bonus: ""
-                types:
-                  - acid
-                custom:
-                  enabled: false
-                  formula: ""
-                scaling:
-                  mode: ""
-                  number: null
-                  formula: ""
-          description: {}
-          duration:
-            units: inst
-            concentration: false
-            override: false
-          effects: []
-          range:
-            override: false
-            units: ft
-            value: "30"
-          target:
-            template:
-              contiguous: false
-              units: ft
-              type: ""
-            affects:
-              choice: false
-              type: creature
-              count: "1"
-            override: false
-            prompt: true
-          consumption:
-            targets: []
-            scaling:
-              allowed: false
-            spellSlot: true
-          uses:
-            spent: 0
-            max: ""
-            recovery: []
-          sort: 0
-      attackBonus: "10"
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!c2304b0740cc4e93.d631f414af0219aa"
-  - _id: 6ed76a0bde5acbb0
-    name: Slam
-    type: weapon
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
-          sourceActionNames:
-            - Slam
-          sourceSemanticKey: vgh:beast:oggdo-legendary
-    img: systems/dnd5e/icons/svg/actors/npc.svg
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>*Melee Weapon Attack:* +10 to hit, reach 10 ft., one target. *Hit:* 17 (2d10+6) kinetic damage, and the
-          target must make a DC 15 Strength saving throw or be knocked prone.</p>
-        chat: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      quantity: 1
-      weight:
-        value: 1
-        units: lb
-      price:
-        value: 0
-        denomination: gc
-      attunement: ""
-      equipped: false
-      rarity: ""
-      identified: true
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: 10
-        long: null
-        units: ft
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: str
-      actionType: mwak
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts:
-          - - 2d10+6
+          - - 2d8+5
             - kinetic
         versatile: ""
       formula: ""
@@ -800,8 +1205,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        787e69b31548e59c:
-          _id: 787e69b31548e59c
+        75485de7fa3a9e1b:
+          _id: 75485de7fa3a9e1b
           type: attack
           activation:
             type: action
@@ -810,7 +1215,199 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "10"
+            bonus: "9"
+            flat: true
+            type:
+              classification: weapon
+              value: melee
+            critical: {}
+          damage:
+            critical: {}
+            includeBase: false
+            parts:
+              - number: 2
+                denomination: 8
+                bonus: "+5"
+                types:
+                  - kinetic
+                custom:
+                  enabled: false
+                  formula: ""
+                scaling:
+                  mode: ""
+                  number: null
+                  formula: ""
+          description: {}
+          duration:
+            units: inst
+            concentration: false
+            override: false
+          effects: []
+          range:
+            override: false
+            units: ft
+            value: "5"
+          target:
+            template:
+              contiguous: false
+              units: ft
+              type: ""
+            affects:
+              choice: false
+              type: creature
+              count: "1"
+            override: false
+            prompt: true
+          consumption:
+            targets: []
+            scaling:
+              allowed: false
+            spellSlot: true
+          uses:
+            spent: 0
+            max: ""
+            recovery: []
+          sort: 0
+      attackBonus: "9"
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!e02e9309c2539a29.da9e0a5943fb1673"
+  - _id: f7ce0924ace100ef
+    name: Tail
+    type: weapon
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: validated-natural-weapon
+          kind: weaponNatural
+          sourceActionNames:
+            - Tail
+          sourceSemanticKey: vgh:beast:roggwart
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>*Melee Weapon Attack:* +9 to hit, reach 10 ft., one target. *Hit:* 16 (2d10+5) kinetic damage.</p>
+        chat: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      quantity: 1
+      weight:
+        value: 1
+        units: lb
+      price:
+        value: 0
+        denomination: gc
+      attunement: ""
+      equipped: false
+      rarity: ""
+      identified: true
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 10
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: str
+      actionType: mwak
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 2d10+5
+            - kinetic
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      armor:
+        value: 10
+      hp:
+        value: 0
+        max: 0
+        dt: null
+        conditions: ""
+      modify:
+        chassis: none
+        augmentSlots: 0
+        modSlots: 4
+        items: []
+        changes: {}
+      weaponClass: ""
+      ammo:
+        target: null
+        value: null
+        use: null
+        types: []
+      properties: []
+      proficient: 1
+      type:
+        value: natural
+        subtype: ""
+        baseItem: ""
+      unidentified:
+        description: ""
+      attack:
+        bonus: ""
+        flat: false
+      container: null
+      attuned: false
+      enchantment: null
+      summons: null
+      magicalBonus: null
+      firingArc: ""
+      activities:
+        43d09f3a76775df2:
+          _id: 43d09f3a76775df2
+          type: attack
+          activation:
+            type: action
+            value: 1
+            condition: ""
+            override: false
+          attack:
+            ability: ""
+            bonus: "9"
             flat: true
             type:
               classification: weapon
@@ -822,7 +1419,7 @@ items:
             parts:
               - number: 2
                 denomination: 10
-                bonus: "+6"
+                bonus: "+5"
                 types:
                   - kinetic
                 custom:
@@ -863,7 +1460,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "10"
+      attackBonus: "9"
     ownership:
       default: 0
     _stats:
@@ -875,14 +1472,240 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!c2304b0740cc4e93.6ed76a0bde5acbb0"
+    _key: "!actors.items!e02e9309c2539a29.f7ce0924ace100ef"
+  - _id: 9799b5f1d4bfb770
+    _key: "!actors.items!e02e9309c2539a29.9799b5f1d4bfb770"
+    name: Innate Techcasting
+    type: feat
+    img: systems/dnd5e/icons/svg/items/feature.svg
+    system:
+      description:
+        value: >-
+          <p>innately cast the *pressure crush* tech power as a bonus action on its turn if it is grappling a Large or
+          smaller creature.</p>
+        chat: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: ""
+        amount: null
+        scale: false
+      ability: null
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      requirements: ""
+      recharge:
+        value: null
+        charged: false
+    effects: []
+    folder: null
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          castingTrait: true
+          castType: tech
+          parsedLevel: 5
+          parsedPoints: null
+          parsedAbility: str
+          parsedSaveDc: 17
+          parsedAttackBonus: null
+          sourceSemanticKey: vgh:beast:roggwart
+  - name: Pressure Crush
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1777301+00:00"
+        importer_version: 3
+        uid: Power.name-pressure_crush.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Pressure Crush
+          castType: tech
+          sourceSemanticKey: vgh:beast:roggwart
+          tierLabel: innate
+          tierKind: innate
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.wo7gVqqFmaEwGyCX
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/PressureCrush.webp
+    system:
+      description:
+        value: >-
+          <p>You attempt to crush the body of a creature you touch. The target must make a Strength saving throw. If the
+          creature is grappled or restrained by you or an effect you control, it makes the saving throw with
+          disadvantage. On a failed save, the creature takes [[/r 1d12]] kinetic damage.</p>
+
+          <p>This power's damage increases by [[/r 1d12]] when you reach 5th level ([[/r 2d12]]), 11th level ([[/r
+          3d12]]), and 17th level ([[/r 4d12]]).</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: touch
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: save
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 1d12
+            - kinetic
+        versatile: ""
+      formula: ""
+      save:
+        ability: str
+        dc: null
+        scaling: spell
+      level: 0
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: atwill
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 12
+                number: 1
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - kinetic
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            override: false
+            units: touch
+          save:
+            ability: str
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: save
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 6c0c2bebc50fc582
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.wo7gVqqFmaEwGyCX
+    _key: "!actors.items!e02e9309c2539a29.6c0c2bebc50fc582"
 effects: []
 prototypeToken:
   flags: {}
-  name: Oggdo, Legendary
+  name: Roggwart
   displayName: 40
-  width: 3
-  height: 3
+  width: 2
+  height: 2
   lockRotation: false
   rotation: 0
   actorLink: false
@@ -956,28 +1779,28 @@ prototypeToken:
 system:
   abilities:
     str:
-      value: 22
+      value: 20
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     dex:
-      value: 12
+      value: 13
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     con:
-      value: 22
+      value: 17
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     int:
-      value: 11
+      value: 6
       proficient: 0
       max: null
       bonuses:
@@ -991,7 +1814,7 @@ system:
         check: ""
         save: ""
     cha:
-      value: 8
+      value: 15
       proficient: 0
       max: null
       bonuses:
@@ -1013,15 +1836,15 @@ system:
       max: null
   attributes:
     ac:
-      flat: 18
+      flat: 17
       calc: natural
       formula: ""
     hp:
-      value: 150
-      max: 150
+      value: 85
+      max: 85
       temp: 0
       tempmax: 0
-      formula: 12d12+72
+      formula: 10d10+30
     init:
       ability: ""
       bonus: "0"
@@ -1040,7 +1863,7 @@ system:
     attunement:
       max: 3
     senses:
-      darkvision: 120
+      darkvision: 60
       blindsight: 0
       tremorsense: 0
       truesight: 0
@@ -1108,15 +1931,15 @@ system:
       swarm: ""
       custom: ""
     environment: ""
-    cr: 12
+    cr: 9
     powerForceLevel: 0
-    powerTechLevel: 0
+    powerTechLevel: 5
     superiorityLevel: 0
     source:
       custom: Vesh's Galactic Holodex
       label: Vesh's Galactic Holodex
   traits:
-    size: huge
+    size: lg
     di:
       value: []
       bypasses: []
@@ -1192,7 +2015,7 @@ system:
         max: null
         mode: 0
     itm:
-      value: 0
+      value: 1
       ability: cha
       bonuses:
         check: ""
@@ -1442,7 +2265,7 @@ system:
           overall: ""
       schools:
         tec:
-          attr: int
+          attr: str
           dc: null
   source:
     custom: Vesh's Galactic Holodex
@@ -1453,10 +2276,10 @@ flags:
       sourceIdentity: veshs-galactic-holodex
       sourceFile: ai/Veshs_Galactic_Holodex.md
       sourceSection: Beastiary
-      sourceHash: 945D80F9D86856B37640AB7FE5224C561EBCFA5F7C68B41FA4FA2621B5E275F0
-      semanticKey: vgh:beast:oggdo-legendary
+      sourceHash: 7F1A8F12440219C4813FC2C1A74F0145CD26D801DF96934CC2B140989DABF922
+      semanticKey: vgh:beast:roggwart
       generatorVersion: vgh-phase2-2026-08-07
-      sourceEntry: Oggdo, Legendary
+      sourceEntry: Roggwart
       trackedPack: veshs-galactic-holodex
       collectionId: sw5e-module.veshs-galactic-holodex
       parseStatus: parsed-valid
@@ -1464,13 +2287,21 @@ flags:
       outputSelection: selected-population
       productionReadiness: requires-runtime-validation
       unsupportedMechanics:
-        - qualified-defense-parsing
-        - limited-uses-activity
+        - tech-power-embedding-incomplete
       generatedStatus: production
       creatureTypeFolder: Beast
       forceTechEmbedding:
         forcePowers: []
-        techPowers: []
+        techPowers:
+          - kind: casting-feat
+            name: Innate Techcasting
+            id: 9799b5f1d4bfb770
+            castType: tech
+          - kind: power
+            name: Pressure Crush
+            id: 6c0c2bebc50fc582
+            castType: tech
+            canonicalId: wo7gVqqFmaEwGyCX
         missingCanonical: []
       superiorityEmbedding:
         maneuvers: []
@@ -1486,5 +2317,5 @@ _stats:
   lastModifiedBy: null
   compendiumSource: null
   duplicateSource: null
-_key: "!actors!c2304b0740cc4e93"
+_key: "!actors!e02e9309c2539a29"
 

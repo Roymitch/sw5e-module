@@ -1,11 +1,11 @@
-_id: 9edc886797b5c129
-name: Ng'ok
+_id: 62db71e123970a3d
+name: Guardian NS-55 Enforcer
 type: npc
 img: systems/dnd5e/icons/svg/actors/npc.svg
-folder: 97379aa171754463
+folder: c724c0c5daa02cd9
 items:
-  - _id: b4b0164816fcd3a1
-    name: Limited Telepathy
+  - _id: ec13b24e1ebcdae1
+    name: Circuitry
     type: feat
     sort: 0
     flags:
@@ -15,16 +15,13 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          sourceSemanticKey: vgh:droid:guardian-ns-55-enforcer
+    img: modules/sw5e-module/icons/packs/Monster Traits/Circuitry.webp
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>The ng'ok can transmit simple messages and images to any creature within 120 ft. of it that can understand
-          a language through the force. This form of telepathy doesn't allow the receiving creature to telepathically
-          respond.</p>
+        value: <p>The droid has disadvantage on saving throws against effects that would deal ion or lightning damage.</p>
         chat: ""
       requirements: ""
       source:
@@ -102,9 +99,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.b4b0164816fcd3a1"
-  - _id: c5603f775acfa118
-    name: Stench
+    _key: "!actors.items!62db71e123970a3d.ec13b24e1ebcdae1"
+  - _id: 139c7b7f7c3c72a3
+    name: Tech Resistance
     type: feat
     sort: 0
     flags:
@@ -114,16 +111,13 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Monster Traits/Stench.webp
+          sourceSemanticKey: vgh:droid:guardian-ns-55-enforcer
+    img: modules/sw5e-module/icons/packs/Monster Traits/Tech Resistance.webp
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>Any creature other than a ng'ok that starts its turn within 5 feet of the ng'ok must succeed on a DC 15
-          Constitution saving throw or be poisoned until the start of the creature's next turn. On a successful saving
-          throw, the creature is immune to the stench of all ng'oks for 1 hour.</p>
+        value: <p>The droid has advantage on saving throws against tech powers and other tech effects.</p>
         chat: ""
       requirements: ""
       source:
@@ -201,8 +195,8 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c5603f775acfa118"
-  - _id: 49d0e12911ee535f
+    _key: "!actors.items!62db71e123970a3d.139c7b7f7c3c72a3"
+  - _id: 6165fa632c0423f4
     name: Multiattack
     type: feat
     sort: 0
@@ -213,13 +207,13 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:droid:guardian-ns-55-enforcer
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
     system:
       description:
-        value: "<p>The ng'ok makes three attacks: one with its bite and two with its claws.</p>"
+        value: <p>The droid makes two weapon attacks.</p>
         chat: ""
       requirements: ""
       source:
@@ -297,9 +291,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.49d0e12911ee535f"
-  - _id: c2cd0ed011a42306
-    name: Grapple Slam
+    _key: "!actors.items!62db71e123970a3d.6165fa632c0423f4"
+  - _id: 0ffc5d853aeb26cd
+    name: Blaster Cannon Volley
     type: feat
     sort: 0
     flags:
@@ -309,16 +303,15 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:droid:guardian-ns-55-enforcer
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>The ng'ok slams creatures grappled by it into each other or a solid surface. Each creature must succeed on
-          a DC 14 Constitution saving throw or take 10 (2d6+3) kinetic damage and be stunned until the end of the
-          ng'ok's next turn. On a successful save, the target takes half the kinetic damage and isn't stunned.</p>
+          <p>The guardian droid sprays a 15-foot-cube area within normal range with shots. Each creature in the area
+          must make a DC 15 Dexterity saving throw, taking normal weapon damage on a failed save.</p>
         chat: ""
       requirements: ""
       source:
@@ -396,32 +389,125 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c2cd0ed011a42306"
-  - _id: 9e1c5ae2e4fd3f6e
-    name: Bite
+    _key: "!actors.items!62db71e123970a3d.0ffc5d853aeb26cd"
+  - _id: 9ece4caa66b7758a
+    name: Retrieval Hook
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featAction
+          sourceSection: actions
+          sourceSemanticKey: vgh:droid:guardian-ns-55-enforcer
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The Enforcer Droid shoots a tethered rope from its arm up to 60 ft. towards a creature of its choice. The
+          creature must succeed on a Strength saving throw or be pulled 30 ft. towards the droid. If the creature lands
+          within 5 ft. of the droid, it can immediately make one Bash attack as a bonus action.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!62db71e123970a3d.9ece4caa66b7758a"
+  - _id: e00f139ed0d5f506
+    name: Bash
     type: weapon
     sort: 0
     flags:
       sw5e:
         veshsGalacticHolodex:
           embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
+          classification: source-specific-manufactured-weapon
+          kind: weaponSourceSpecific
           sourceActionNames:
-            - Bite
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Naturals/Teeth.webp
+            - Bash
+          sourceSemanticKey: vgh:droid:guardian-ns-55-enforcer
+    img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is a creature, it must succeed on a DC 15 Constitution saving throw against disease or become poisoned until
-          the disease is cured. Every 24 hours that elapse, the target must repeat the saving throw, reducing its hit
-          point maximum by 5 (1d10) on a failure. The disease is cured on a success. The target dies if the disease
-          reduces its hit point maximum to 0. This reduction to the target's hit point maximum lasts until the disease
-          is cured.</p>
+        value: <p>*Melee Weapon Attack:* +5 to hit, reach 5, one target. *Hit:* 9 (2d6 + 2) kinetic damage.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -452,9 +538,9 @@ items:
         type: ""
         prompt: true
       range:
-        value: 5
+        value: null
         long: null
-        units: ft
+        units: ""
       uses:
         value: null
         max: ""
@@ -474,7 +560,7 @@ items:
         damage: ""
       damage:
         parts:
-          - - 2d8+3
+          - - 2d6+2
             - kinetic
         versatile: ""
       formula: ""
@@ -504,7 +590,7 @@ items:
       properties: []
       proficient: 1
       type:
-        value: natural
+        value: simpleM
         subtype: ""
         baseItem: ""
       unidentified:
@@ -519,8 +605,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        fa04c0c0c5498243:
-          _id: fa04c0c0c5498243
+        52d3d806f3b8985e:
+          _id: 52d3d806f3b8985e
           type: attack
           activation:
             type: action
@@ -529,7 +615,7 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "5"
             flat: true
             type:
               classification: weapon
@@ -540,8 +626,8 @@ items:
             includeBase: false
             parts:
               - number: 2
-                denomination: 8
-                bonus: "+3"
+                denomination: 6
+                bonus: "+2"
                 types:
                   - kinetic
                 custom:
@@ -559,8 +645,8 @@ items:
           effects: []
           range:
             override: false
-            units: ft
-            value: "5"
+            units: ""
+            value: ""
           target:
             template:
               contiguous: false
@@ -582,7 +668,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "6"
+      attackBonus: "5"
     ownership:
       default: 0
     _stats:
@@ -594,29 +680,26 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.9e1c5ae2e4fd3f6e"
-  - _id: 93854eb0d910db2b
-    name: Claws
+    _key: "!actors.items!62db71e123970a3d.e00f139ed0d5f506"
+  - _id: d32ff6a2e2f7fe71
+    name: Blaster Cannons
     type: weapon
     sort: 0
     flags:
       sw5e:
         veshsGalacticHolodex:
           embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
+          classification: source-specific-manufactured-weapon
+          kind: weaponSourceSpecific
           sourceActionNames:
-            - Claws
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
+            - Blaster Cannons
+          sourceSemanticKey: vgh:droid:guardian-ns-55-enforcer
+    img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 10 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is Medium or smaller, it is grappled (escape DC 13) and restrained until the grapple ends. The ng'ok has two
-          claws, each of which can grapple one target.</p>
+        value: <p>*Ranged Weapon Attack:* +7 to hit, range 100/400, one target. *Hit:* 11 (2d6 + 4) energy damage.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -647,9 +730,9 @@ items:
         type: ""
         prompt: true
       range:
-        value: 10
+        value: null
         long: null
-        units: ft
+        units: ""
       uses:
         value: null
         max: ""
@@ -661,16 +744,16 @@ items:
         target: null
         amount: null
         scale: false
-      ability: str
-      actionType: mwak
+      ability: dex
+      actionType: rwak
       chatFlavor: ""
       critical:
         threshold: null
         damage: ""
       damage:
         parts:
-          - - 2d8+3
-            - kinetic
+          - - 2d6+4
+            - energy
         versatile: ""
       formula: ""
       save:
@@ -699,7 +782,7 @@ items:
       properties: []
       proficient: 1
       type:
-        value: natural
+        value: simpleM
         subtype: ""
         baseItem: ""
       unidentified:
@@ -714,8 +797,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        064a719e0a048c49:
-          _id: 064a719e0a048c49
+        791012d79b102a80:
+          _id: 791012d79b102a80
           type: attack
           activation:
             type: action
@@ -724,21 +807,21 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "7"
             flat: true
             type:
               classification: weapon
-              value: melee
+              value: ranged
             critical: {}
           damage:
             critical: {}
             includeBase: false
             parts:
               - number: 2
-                denomination: 8
-                bonus: "+3"
+                denomination: 6
+                bonus: "+4"
                 types:
-                  - kinetic
+                  - energy
                 custom:
                   enabled: false
                   formula: ""
@@ -754,8 +837,8 @@ items:
           effects: []
           range:
             override: false
-            units: ft
-            value: "10"
+            units: ""
+            value: ""
           target:
             template:
               contiguous: false
@@ -777,7 +860,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "6"
+      attackBonus: "7"
     ownership:
       default: 0
     _stats:
@@ -789,11 +872,11 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.93854eb0d910db2b"
+    _key: "!actors.items!62db71e123970a3d.d32ff6a2e2f7fe71"
 effects: []
 prototypeToken:
   flags: {}
-  name: Ng'ok
+  name: Guardian NS-55 Enforcer
   displayName: 40
   width: 2
   height: 2
@@ -870,42 +953,42 @@ prototypeToken:
 system:
   abilities:
     str:
-      value: 16
+      value: 14
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     dex:
-      value: 11
+      value: 18
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     con:
-      value: 19
+      value: 16
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     int:
-      value: 6
-      proficient: 0
-      max: null
-      bonuses:
-        check: ""
-        save: ""
-    wis:
       value: 13
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
+    wis:
+      value: 15
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
     cha:
-      value: 6
+      value: 7
       proficient: 0
       max: null
       bonuses:
@@ -927,15 +1010,15 @@ system:
       max: null
   attributes:
     ac:
-      flat: 14
-      calc: natural
+      flat: 17
+      calc: flat
       formula: ""
     hp:
-      value: 114
-      max: 114
+      value: 94
+      max: 94
       temp: 0
       tempmax: 0
-      formula: 12d10+48
+      formula: 11d10+33
     init:
       ability: ""
       bonus: "0"
@@ -948,13 +1031,13 @@ system:
       climb: 0
       fly: 0
       swim: 0
-      walk: 30
+      walk: 20
       units: ft
       hover: false
     attunement:
       max: 3
     senses:
-      darkvision: 120
+      darkvision: 60
       blindsight: 0
       tremorsense: 0
       truesight: 0
@@ -1017,7 +1100,7 @@ system:
     alignment: Unaligned
     species: null
     type:
-      value: aberration
+      value: droid
       subtype: ""
       swarm: ""
       custom: ""
@@ -1076,7 +1159,7 @@ system:
         max: null
         mode: 0
     ath:
-      value: 0
+      value: 1
       ability: str
       bonuses:
         check: ""
@@ -1366,20 +1449,23 @@ flags:
     veshsGalacticHolodex:
       sourceIdentity: veshs-galactic-holodex
       sourceFile: ai/Veshs_Galactic_Holodex.md
-      sourceSection: Beastiary
-      sourceHash: 32DE97952BE959711CEC3D7A8675CB29A3CEE5E85C09B1661BD0BE0C92D8B452
-      semanticKey: vgh:aberration:ngok
+      sourceSection: Droid Shop
+      sourceHash: 3A6F571C4F0410C415F7597F1B0BC0AB743E967EBFA45169B9EF285E28DDF460
+      semanticKey: vgh:droid:guardian-ns-55-enforcer
       generatorVersion: vgh-phase2-2026-08-07
-      sourceEntry: Ng'ok
+      sourceEntry: Guardian NS-55 Enforcer
       trackedPack: veshs-galactic-holodex
       collectionId: sw5e-module.veshs-galactic-holodex
       parseStatus: parsed-valid
-      capabilityStatus: fully-supported
+      capabilityStatus: partially-supported
       outputSelection: selected-population
-      productionReadiness: prototype-validated
-      unsupportedMechanics: []
+      productionReadiness: requires-runtime-validation
+      unsupportedMechanics:
+        - qualified-defense-parsing
+        - recharge-activity
+        - reaction-activity
       generatedStatus: production
-      creatureTypeFolder: Aberration
+      creatureTypeFolder: Droid
       forceTechEmbedding:
         forcePowers: []
         techPowers: []
@@ -1398,5 +1484,5 @@ _stats:
   lastModifiedBy: null
   compendiumSource: null
   duplicateSource: null
-_key: "!actors!9edc886797b5c129"
+_key: "!actors!62db71e123970a3d"
 

@@ -1,11 +1,11 @@
-_id: 9edc886797b5c129
-name: Ng'ok
+_id: 0eb41331c31e5d9b
+name: Morgukai Berserker
 type: npc
 img: systems/dnd5e/icons/svg/actors/npc.svg
-folder: 97379aa171754463
+folder: 569b095af4903164
 items:
-  - _id: b4b0164816fcd3a1
-    name: Limited Telepathy
+  - _id: 63214cfcef22dfcb
+    name: Blood Frenzy
     type: feat
     sort: 0
     flags:
@@ -15,16 +15,209 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:humanoid:morgukai-berserker
+    img: modules/sw5e-module/icons/packs/Monster Traits/Blood Frenzy.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The berserker has advantage on melee attack rolls against any creature that doesn't have all its hit
+          points.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!0eb41331c31e5d9b.63214cfcef22dfcb"
+  - _id: 50a0c4d5797de655
+    name: Force Resistance
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:morgukai-berserker
+    img: modules/sw5e-module/icons/packs/Monster Traits/Force Resistance.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The morgukai has advantage on saving throws against force powers and other force effects.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!0eb41331c31e5d9b.50a0c4d5797de655"
+  - _id: 68c7b0277e40e0a6
+    name: Morgukai Combat Brutality
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:morgukai-berserker
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>The ng'ok can transmit simple messages and images to any creature within 120 ft. of it that can understand
-          a language through the force. This form of telepathy doesn't allow the receiving creature to telepathically
-          respond.</p>
+          <p>The berserker lands on a critical hit on a roll of a 19 or 20. Additionally, it deals an additional damage
+          die with its melee attacks (included).</p>
         chat: ""
       requirements: ""
       source:
@@ -102,9 +295,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.b4b0164816fcd3a1"
-  - _id: c5603f775acfa118
-    name: Stench
+    _key: "!actors.items!0eb41331c31e5d9b.68c7b0277e40e0a6"
+  - _id: fb3f28985373a369
+    name: Protective Membrane
     type: feat
     sort: 0
     flags:
@@ -114,16 +307,13 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Monster Traits/Stench.webp
+          sourceSemanticKey: vgh:humanoid:morgukai-berserker
+    img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>Any creature other than a ng'ok that starts its turn within 5 feet of the ng'ok must succeed on a DC 15
-          Constitution saving throw or be poisoned until the start of the creature's next turn. On a successful saving
-          throw, the creature is immune to the stench of all ng'oks for 1 hour.</p>
+        value: <p>The morgukai has advantage on saving throws against being blinded.</p>
         chat: ""
       requirements: ""
       source:
@@ -201,8 +391,106 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c5603f775acfa118"
-  - _id: 49d0e12911ee535f
+    _key: "!actors.items!0eb41331c31e5d9b.fb3f28985373a369"
+  - _id: d320713030b95b08
+    name: Relentless
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:morgukai-berserker
+    img: modules/sw5e-module/icons/packs/Monster Traits/Relentless.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>If the berserker takes 15 points of damage or less that would reduce it to 0 hit points, it is reduced to 1
+          hit point instead.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!0eb41331c31e5d9b.d320713030b95b08"
+  - _id: 39e26634baeaa225
     name: Multiattack
     type: feat
     sort: 0
@@ -213,13 +501,13 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:humanoid:morgukai-berserker
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
     system:
       description:
-        value: "<p>The ng'ok makes three attacks: one with its bite and two with its claws.</p>"
+        value: <p>The berserker makes two attacks with its cortosis axe and one with its techblade.</p>
         chat: ""
       requirements: ""
       source:
@@ -297,9 +585,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.49d0e12911ee535f"
-  - _id: c2cd0ed011a42306
-    name: Grapple Slam
+    _key: "!actors.items!0eb41331c31e5d9b.39e26634baeaa225"
+  - _id: 08f9393b8ce53257
+    name: Howl of Battle
     type: feat
     sort: 0
     flags:
@@ -309,16 +597,15 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:humanoid:morgukai-berserker
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>The ng'ok slams creatures grappled by it into each other or a solid surface. Each creature must succeed on
-          a DC 14 Constitution saving throw or take 10 (2d6+3) kinetic damage and be stunned until the end of the
-          ng'ok's next turn. On a successful save, the target takes half the kinetic damage and isn't stunned.</p>
+          <p>Up to three allies who can hear the morgukai berserker and are within 30 feet of it can each make one melee
+          attack as a reaction.</p>
         chat: ""
       requirements: ""
       source:
@@ -396,32 +683,29 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c2cd0ed011a42306"
-  - _id: 9e1c5ae2e4fd3f6e
-    name: Bite
+    _key: "!actors.items!0eb41331c31e5d9b.08f9393b8ce53257"
+  - _id: 123f6cd8027750be
+    name: Cortosis Axe
     type: weapon
     sort: 0
     flags:
       sw5e:
         veshsGalacticHolodex:
           embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
+          classification: source-specific-manufactured-weapon
+          kind: weaponSourceSpecific
           sourceActionNames:
-            - Bite
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Naturals/Teeth.webp
+            - Cortosis Axe
+          sourceSemanticKey: vgh:humanoid:morgukai-berserker
+    img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is a creature, it must succeed on a DC 15 Constitution saving throw against disease or become poisoned until
-          the disease is cured. Every 24 hours that elapse, the target must repeat the saving throw, reducing its hit
-          point maximum by 5 (1d10) on a failure. The disease is cured on a success. The target dies if the disease
-          reduces its hit point maximum to 0. This reduction to the target's hit point maximum lasts until the disease
-          is cured.</p>
+          <p>*Melee Weapon Attack:* +8 to hit, reach 5 ft., one target. *Hit:* 15 (2d10+4) kinetic damage and the target
+          must succeed on a DC 15 Constitution saving throw or take 2 (1d4) lightning damage and be shocked until the
+          end of its next turn.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -474,7 +758,7 @@ items:
         damage: ""
       damage:
         parts:
-          - - 2d8+3
+          - - 2d10+4
             - kinetic
         versatile: ""
       formula: ""
@@ -504,7 +788,7 @@ items:
       properties: []
       proficient: 1
       type:
-        value: natural
+        value: simpleM
         subtype: ""
         baseItem: ""
       unidentified:
@@ -519,8 +803,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        fa04c0c0c5498243:
-          _id: fa04c0c0c5498243
+        7f06f0f6026d01d1:
+          _id: 7f06f0f6026d01d1
           type: attack
           activation:
             type: action
@@ -529,7 +813,7 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "8"
             flat: true
             type:
               classification: weapon
@@ -540,8 +824,8 @@ items:
             includeBase: false
             parts:
               - number: 2
-                denomination: 8
-                bonus: "+3"
+                denomination: 10
+                bonus: "+4"
                 types:
                   - kinetic
                 custom:
@@ -582,7 +866,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "6"
+      attackBonus: "8"
     ownership:
       default: 0
     _stats:
@@ -594,62 +878,101 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.9e1c5ae2e4fd3f6e"
-  - _id: 93854eb0d910db2b
-    name: Claws
-    type: weapon
-    sort: 0
+    _key: "!actors.items!0eb41331c31e5d9b.123f6cd8027750be"
+  - name: Techblade
     flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:54.3975015+00:00"
+        importer_version: 3
+        uid: Weapon.name-techblade.equipmentCategory-weapon
       sw5e:
+        properties:
+          fin: true
+          lgt: true
+        reload:
+          types: []
         veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
+          classification: canonical-manufactured-weapon
+          embeddedFromCanonical: true
           sourceActionNames:
-            - Claws
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
-    effects: []
-    folder: null
+            - Techblade
+          sourceSemanticKey: vgh:humanoid:morgukai-berserker
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      core:
+        sourceId: Compendium.sw5e-module.equipment.Item.Ds6DLXoNyRIHPGV4
+    type: weapon
+    img: modules/sw5e-module/icons/packs/Martial%20Vibroweapons/Techblade.webp
     system:
       description:
-        value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 10 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is Medium or smaller, it is grappled (escape DC 13) and restrained until the grapple ends. The ng'ok has two
-          claws, each of which can grapple one target.</p>
+        value: <p>*Melee Weapon Attack:* +8 to hit, reach 5 ft., one target. *Hit:* 11 (2d6+4) kinetic damage</p>
         chat: ""
       source:
-        custom: Vesh's Galactic Holodex
+        custom: PHB
       quantity: 1
       weight:
-        value: 1
+        value: 0
         units: lb
       price:
-        value: 0
+        value: 100
         denomination: gc
       attunement: ""
       equipped: false
       rarity: ""
       identified: true
+      type:
+        value: martialVW
+        subtype: ""
+        baseItem: techblade
       activation:
         type: action
         cost: 1
         condition: ""
+      target:
+        value: "1"
+        width: null
+        units: ""
+        type: enemy
+        prompt: false
+      range:
+        value: null
+        long: null
+        units: ft
+      actionType: mwak
+      damage:
+        parts:
+          - - 2d6+4
+            - kinetic
+        versatile: ""
+        base:
+          custom: {}
+          scaling:
+            number: 1
+            mode: ""
+          denomination: 6
+          number: 1
+          types:
+            - kinetic
+      properties:
+        - fin
+        - lgt
+      weaponClass: blade
+      ammo:
+        types: []
+        target: ""
+        value: null
+        use: null
+      unidentified:
+        description: ""
+      container: null
+      attuned: false
       duration:
         value: ""
         units: ""
       cover: null
       crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: 10
-        long: null
-        units: ft
       uses:
         value: null
         max: ""
@@ -661,27 +984,26 @@ items:
         target: null
         amount: null
         scale: false
-      ability: str
-      actionType: mwak
+      ability: null
+      attack:
+        bonus: "8"
+        flat: true
       chatFlavor: ""
       critical:
         threshold: null
         damage: ""
-      damage:
-        parts:
-          - - 2d8+3
-            - kinetic
-        versatile: ""
+      enchantment: null
       formula: ""
       save:
         ability: ""
         dc: null
         scaling: spell
+      summons: null
       armor:
-        value: 10
+        value: null
       hp:
-        value: 0
-        max: 0
+        value: null
+        max: null
         dt: null
         conditions: ""
       modify:
@@ -690,53 +1012,27 @@ items:
         modSlots: 4
         items: []
         changes: {}
-      weaponClass: ""
-      ammo:
-        target: null
-        value: null
-        use: null
-        types: []
-      properties: []
-      proficient: 1
-      type:
-        value: natural
-        subtype: ""
-        baseItem: ""
-      unidentified:
-        description: ""
-      attack:
-        bonus: ""
-        flat: false
-      container: null
-      attuned: false
-      enchantment: null
-      summons: null
       magicalBonus: null
+      proficient: null
       firingArc: ""
       activities:
-        064a719e0a048c49:
-          _id: 064a719e0a048c49
-          type: attack
+        cf6603d659d6d762:
+          _id: cf6603d659d6d762
           activation:
             type: action
-            value: 1
-            condition: ""
-            override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "8"
             flat: true
             type:
               classification: weapon
               value: melee
-            critical: {}
           damage:
             critical: {}
-            includeBase: false
             parts:
               - number: 2
-                denomination: 8
-                bonus: "+3"
+                denomination: 6
+                bonus: "+4"
                 types:
                   - kinetic
                 custom:
@@ -749,13 +1045,10 @@ items:
           description: {}
           duration:
             units: inst
-            concentration: false
-            override: false
-          effects: []
+          img: null
           range:
             override: false
             units: ft
-            value: "10"
           target:
             template:
               contiguous: false
@@ -763,40 +1056,33 @@ items:
               type: ""
             affects:
               choice: false
-              type: creature
-              count: "1"
+              type: ""
             override: false
-            prompt: true
-          consumption:
-            targets: []
-            scaling:
-              allowed: false
-            spellSlot: true
-          uses:
-            spent: 0
-            max: ""
-            recovery: []
-          sort: 0
-      attackBonus: "6"
+            prompt: false
+          type: attack
+      attackBonus: "8"
+    effects: []
+    _id: d15ca161a6308256
+    folder: null
+    sort: 0
     ownership:
       default: 0
     _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296019804
+      modifiedTime: 1739121084621
+      lastModifiedBy: dnd5ebuilder0000
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.93854eb0d910db2b"
+    _key: "!actors.items!0eb41331c31e5d9b.d15ca161a6308256"
 effects: []
 prototypeToken:
   flags: {}
-  name: Ng'ok
+  name: Morgukai Berserker
   displayName: 40
-  width: 2
-  height: 2
+  width: 1
+  height: 1
   lockRotation: false
   rotation: 0
   actorLink: false
@@ -870,42 +1156,42 @@ prototypeToken:
 system:
   abilities:
     str:
-      value: 16
-      proficient: 0
-      max: null
-      bonuses:
-        check: ""
-        save: ""
-    dex:
-      value: 11
-      proficient: 0
-      max: null
-      bonuses:
-        check: ""
-        save: ""
-    con:
       value: 19
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
-    int:
-      value: 6
-      proficient: 0
-      max: null
-      bonuses:
-        check: ""
-        save: ""
-    wis:
+    dex:
       value: 13
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
+    con:
+      value: 18
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    int:
+      value: 13
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    wis:
+      value: 15
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
     cha:
-      value: 6
+      value: 13
       proficient: 0
       max: null
       bonuses:
@@ -931,11 +1217,11 @@ system:
       calc: natural
       formula: ""
     hp:
-      value: 114
-      max: 114
+      value: 94
+      max: 94
       temp: 0
       tempmax: 0
-      formula: 12d10+48
+      formula: 11d4+44
     init:
       ability: ""
       bonus: "0"
@@ -954,7 +1240,7 @@ system:
     attunement:
       max: 3
     senses:
-      darkvision: 120
+      darkvision: 0
       blindsight: 0
       tremorsense: 0
       truesight: 0
@@ -1014,15 +1300,15 @@ system:
     biography:
       value: ""
       public: ""
-    alignment: Unaligned
+    alignment: Lawful Balanced
     species: null
     type:
-      value: aberration
-      subtype: ""
+      value: humanoid
+      subtype: nikto
       swarm: ""
       custom: ""
     environment: ""
-    cr: 5
+    cr: 9
     powerForceLevel: 0
     powerTechLevel: 0
     superiorityLevel: 0
@@ -1030,7 +1316,7 @@ system:
       custom: Vesh's Galactic Holodex
       label: Vesh's Galactic Holodex
   traits:
-    size: lg
+    size: med
     di:
       value: []
       bypasses: []
@@ -1076,7 +1362,7 @@ system:
         max: null
         mode: 0
     ath:
-      value: 0
+      value: 1
       ability: str
       bonuses:
         check: ""
@@ -1166,7 +1452,7 @@ system:
         max: null
         mode: 0
     prc:
-      value: 0
+      value: 1
       ability: wis
       bonuses:
         check: ""
@@ -1216,7 +1502,7 @@ system:
         max: null
         mode: 0
     sur:
-      value: 0
+      value: 1
       ability: wis
       bonuses:
         check: ""
@@ -1366,20 +1652,23 @@ flags:
     veshsGalacticHolodex:
       sourceIdentity: veshs-galactic-holodex
       sourceFile: ai/Veshs_Galactic_Holodex.md
-      sourceSection: Beastiary
-      sourceHash: 32DE97952BE959711CEC3D7A8675CB29A3CEE5E85C09B1661BD0BE0C92D8B452
-      semanticKey: vgh:aberration:ngok
+      sourceSection: Galaxy's Most Wanted
+      sourceHash: 80A4575E08651B8D58459F0120EDEB81C20D8C82AF46BFF1CC61D639D02CCD7A
+      semanticKey: vgh:humanoid:morgukai-berserker
       generatorVersion: vgh-phase2-2026-08-07
-      sourceEntry: Ng'ok
+      sourceEntry: Morgukai Berserker
       trackedPack: veshs-galactic-holodex
       collectionId: sw5e-module.veshs-galactic-holodex
       parseStatus: parsed-valid
-      capabilityStatus: fully-supported
+      capabilityStatus: partially-supported
       outputSelection: selected-population
-      productionReadiness: prototype-validated
-      unsupportedMechanics: []
+      productionReadiness: requires-runtime-validation
+      unsupportedMechanics:
+        - qualified-defense-parsing
+        - limited-uses-activity
+        - reaction-activity
       generatedStatus: production
-      creatureTypeFolder: Aberration
+      creatureTypeFolder: Humanoid
       forceTechEmbedding:
         forcePowers: []
         techPowers: []
@@ -1398,5 +1687,5 @@ _stats:
   lastModifiedBy: null
   compendiumSource: null
   duplicateSource: null
-_key: "!actors!9edc886797b5c129"
+_key: "!actors!0eb41331c31e5d9b"
 

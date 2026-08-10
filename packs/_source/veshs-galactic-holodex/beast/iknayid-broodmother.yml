@@ -1,11 +1,11 @@
-_id: 9edc886797b5c129
-name: Ng'ok
+_id: 2887ccac8a2b5786
+name: Iknayid, Broodmother
 type: npc
 img: systems/dnd5e/icons/svg/actors/npc.svg
-folder: 97379aa171754463
+folder: 6f8e5fbcb21cb696
 items:
-  - _id: b4b0164816fcd3a1
-    name: Limited Telepathy
+  - _id: ad20e5ddc1d84b0f
+    name: Lay Egg
     type: feat
     sort: 0
     flags:
@@ -15,23 +15,24 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:beast:iknayid-broodmother
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>The ng'ok can transmit simple messages and images to any creature within 120 ft. of it that can understand
-          a language through the force. This form of telepathy doesn't allow the receiving creature to telepathically
-          respond.</p>
+          <p>As a bonus action, the broodmother can lay an egg that contains an iknayid broodling. The egg appears in
+          the nearest space within 5 feet of the broodmother. The egg has an of AC 5 and has 5 hit points. At the end of
+          the broodmother's next turn, the iknayid broodling can use a bonus action to break out of its egg and
+          immediately move and attack the nearest creature that isn't an iknayid.</p>
         chat: ""
       requirements: ""
       source:
         custom: Vesh's Galactic Holodex
       activation:
-        type: ""
-        cost: null
+        type: bonus
+        cost: 1
         condition: ""
       duration:
         value: ""
@@ -102,9 +103,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.b4b0164816fcd3a1"
-  - _id: c5603f775acfa118
-    name: Stench
+    _key: "!actors.items!2887ccac8a2b5786.ad20e5ddc1d84b0f"
+  - _id: 624bc58a6af898a9
+    name: Burst Forth (1/rest)
     type: feat
     sort: 0
     flags:
@@ -114,16 +115,115 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Monster Traits/Stench.webp
+          sourceSemanticKey: vgh:beast:iknayid-broodmother
+    img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>Any creature other than a ng'ok that starts its turn within 5 feet of the ng'ok must succeed on a DC 15
-          Constitution saving throw or be poisoned until the start of the creature's next turn. On a successful saving
-          throw, the creature is immune to the stench of all ng'oks for 1 hour.</p>
+          <p>The broodmother breaks through solid ground or wall as a bonus action, showering the area with debris. Each
+          creature within 15 feet of the broodmother that is surprised must succeed on a DC 17 Strength saving throw,
+          taking 20 (4d6 + 6) kinetic damage and is knocked prone on a failed save, or half as much damage and isn't
+          knocked prone on a successful one.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!2887ccac8a2b5786.624bc58a6af898a9"
+  - _id: 9de2c37c3c9171f0
+    name: Spider Climb
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:beast:iknayid-broodmother
+    img: modules/sw5e-module/icons/packs/Monster Traits/Spider Climb.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The iknayid can climb difficult surfaces, including upside down and on ceilings, without needing to make an
+          ability check.</p>
         chat: ""
       requirements: ""
       source:
@@ -201,8 +301,8 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c5603f775acfa118"
-  - _id: 49d0e12911ee535f
+    _key: "!actors.items!2887ccac8a2b5786.9de2c37c3c9171f0"
+  - _id: d7d08e6b0e4fa244
     name: Multiattack
     type: feat
     sort: 0
@@ -213,13 +313,13 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:beast:iknayid-broodmother
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
     system:
       description:
-        value: "<p>The ng'ok makes three attacks: one with its bite and two with its claws.</p>"
+        value: <p>The broodmother makes three melee attacks; one with its bite and two with its claws.</p>
         chat: ""
       requirements: ""
       source:
@@ -297,9 +397,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.49d0e12911ee535f"
-  - _id: c2cd0ed011a42306
-    name: Grapple Slam
+    _key: "!actors.items!2887ccac8a2b5786.d7d08e6b0e4fa244"
+  - _id: 0746b83ab2e0e316
+    name: Command Iknayids
     type: feat
     sort: 0
     flags:
@@ -309,16 +409,15 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:beast:iknayid-broodmother
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>The ng'ok slams creatures grappled by it into each other or a solid surface. Each creature must succeed on
-          a DC 14 Constitution saving throw or take 10 (2d6+3) kinetic damage and be stunned until the end of the
-          ng'ok's next turn. On a successful save, the target takes half the kinetic damage and isn't stunned.</p>
+          <p>The broodmother targets 1d4 iknayids within 30 feet that can see and hear the broodmother. The target uses
+          its reaction to make one melee attack.</p>
         chat: ""
       requirements: ""
       source:
@@ -396,8 +495,107 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c2cd0ed011a42306"
-  - _id: 9e1c5ae2e4fd3f6e
+    _key: "!actors.items!2887ccac8a2b5786.0746b83ab2e0e316"
+  - _id: ad3694612163fa7a
+    name: Acid Spray (Recharge 5 or 6)
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featAction
+          sourceSection: actions
+          sourceSemanticKey: vgh:beast:iknayid-broodmother
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The broodmother spits acid in a line that is 60 feet long and 5 feet wide. Each creature in that line must
+          succeed on a DC 14 Dexterity saving throw, taking 28 (8d6) acid damage on a failed save, or half as much
+          damage on a successful one.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!2887ccac8a2b5786.ad3694612163fa7a"
+  - _id: e447b5bf70c1513a
     name: Bite
     type: weapon
     sort: 0
@@ -409,19 +607,16 @@ items:
           kind: weaponNatural
           sourceActionNames:
             - Bite
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:beast:iknayid-broodmother
     img: modules/sw5e-module/icons/packs/Naturals/Teeth.webp
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is a creature, it must succeed on a DC 15 Constitution saving throw against disease or become poisoned until
-          the disease is cured. Every 24 hours that elapse, the target must repeat the saving throw, reducing its hit
-          point maximum by 5 (1d10) on a failure. The disease is cured on a success. The target dies if the disease
-          reduces its hit point maximum to 0. This reduction to the target's hit point maximum lasts until the disease
-          is cured.</p>
+          <p>*Melee Weapon Attack:* +10 to hit, reach 5 ft., one target. *Hit:* 20 (4d6+6) kinetic damage plus 7 (2d6)
+          acid damage. If the target is a Huge or smaller creature, it is grappled (escape DC 17). Until this grapple
+          ends, the broodmother can bite only the grappled creature and has advantage on attack rolls to do so.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -474,7 +669,7 @@ items:
         damage: ""
       damage:
         parts:
-          - - 2d8+3
+          - - 4d6+6
             - kinetic
         versatile: ""
       formula: ""
@@ -519,8 +714,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        fa04c0c0c5498243:
-          _id: fa04c0c0c5498243
+        8279518df696008f:
+          _id: 8279518df696008f
           type: attack
           activation:
             type: action
@@ -529,7 +724,7 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "10"
             flat: true
             type:
               classification: weapon
@@ -539,9 +734,9 @@ items:
             critical: {}
             includeBase: false
             parts:
-              - number: 2
-                denomination: 8
-                bonus: "+3"
+              - number: 4
+                denomination: 6
+                bonus: "+6"
                 types:
                   - kinetic
                 custom:
@@ -582,7 +777,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "6"
+      attackBonus: "10"
     ownership:
       default: 0
     _stats:
@@ -594,8 +789,8 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.9e1c5ae2e4fd3f6e"
-  - _id: 93854eb0d910db2b
+    _key: "!actors.items!2887ccac8a2b5786.e447b5bf70c1513a"
+  - _id: bdbef58895adc7b9
     name: Claws
     type: weapon
     sort: 0
@@ -607,16 +802,13 @@ items:
           kind: weaponNatural
           sourceActionNames:
             - Claws
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:beast:iknayid-broodmother
     img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 10 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is Medium or smaller, it is grappled (escape DC 13) and restrained until the grapple ends. The ng'ok has two
-          claws, each of which can grapple one target.</p>
+        value: <p>*Melee Weapon Attack:* +10 to hit, reach 5 ft., one target. *Hit:* 15 (2d8+6) kinetic damage.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -647,7 +839,7 @@ items:
         type: ""
         prompt: true
       range:
-        value: 10
+        value: 5
         long: null
         units: ft
       uses:
@@ -669,7 +861,7 @@ items:
         damage: ""
       damage:
         parts:
-          - - 2d8+3
+          - - 2d8+6
             - kinetic
         versatile: ""
       formula: ""
@@ -714,8 +906,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        064a719e0a048c49:
-          _id: 064a719e0a048c49
+        a17487cb2290917e:
+          _id: a17487cb2290917e
           type: attack
           activation:
             type: action
@@ -724,7 +916,7 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "10"
             flat: true
             type:
               classification: weapon
@@ -736,7 +928,7 @@ items:
             parts:
               - number: 2
                 denomination: 8
-                bonus: "+3"
+                bonus: "+6"
                 types:
                   - kinetic
                 custom:
@@ -755,7 +947,7 @@ items:
           range:
             override: false
             units: ft
-            value: "10"
+            value: "5"
           target:
             template:
               contiguous: false
@@ -777,7 +969,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "6"
+      attackBonus: "10"
     ownership:
       default: 0
     _stats:
@@ -789,14 +981,14 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.93854eb0d910db2b"
+    _key: "!actors.items!2887ccac8a2b5786.bdbef58895adc7b9"
 effects: []
 prototypeToken:
   flags: {}
-  name: Ng'ok
+  name: Iknayid, Broodmother
   displayName: 40
-  width: 2
-  height: 2
+  width: 3
+  height: 3
   lockRotation: false
   rotation: 0
   actorLink: false
@@ -870,7 +1062,7 @@ prototypeToken:
 system:
   abilities:
     str:
-      value: 16
+      value: 23
       proficient: 0
       max: null
       bonuses:
@@ -884,28 +1076,28 @@ system:
         check: ""
         save: ""
     con:
-      value: 19
+      value: 17
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     int:
-      value: 6
+      value: 1
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     wis:
-      value: 13
+      value: 15
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     cha:
-      value: 6
+      value: 8
       proficient: 0
       max: null
       bonuses:
@@ -927,7 +1119,7 @@ system:
       max: null
   attributes:
     ac:
-      flat: 14
+      flat: 17
       calc: natural
       formula: ""
     hp:
@@ -935,7 +1127,7 @@ system:
       max: 114
       temp: 0
       tempmax: 0
-      formula: 12d10+48
+      formula: 12d12+36
     init:
       ability: ""
       bonus: "0"
@@ -944,19 +1136,19 @@ system:
         max: null
         mode: 0
     movement:
-      burrow: 0
+      burrow: 20
       climb: 0
       fly: 0
       swim: 0
-      walk: 30
+      walk: 40
       units: ft
       hover: false
     attunement:
       max: 3
     senses:
-      darkvision: 120
-      blindsight: 0
-      tremorsense: 0
+      darkvision: 0
+      blindsight: 60
+      tremorsense: 120
       truesight: 0
       units: ft
       special: ""
@@ -1017,12 +1209,12 @@ system:
     alignment: Unaligned
     species: null
     type:
-      value: aberration
+      value: beast
       subtype: ""
       swarm: ""
       custom: ""
     environment: ""
-    cr: 5
+    cr: 12
     powerForceLevel: 0
     powerTechLevel: 0
     superiorityLevel: 0
@@ -1030,7 +1222,7 @@ system:
       custom: Vesh's Galactic Holodex
       label: Vesh's Galactic Holodex
   traits:
-    size: lg
+    size: huge
     di:
       value: []
       bypasses: []
@@ -1367,19 +1559,21 @@ flags:
       sourceIdentity: veshs-galactic-holodex
       sourceFile: ai/Veshs_Galactic_Holodex.md
       sourceSection: Beastiary
-      sourceHash: 32DE97952BE959711CEC3D7A8675CB29A3CEE5E85C09B1661BD0BE0C92D8B452
-      semanticKey: vgh:aberration:ngok
+      sourceHash: 59CD2650BA90FCCB087DBF0A16AF4267A13B29AF4EDB677F56888C887DB95784
+      semanticKey: vgh:beast:iknayid-broodmother
       generatorVersion: vgh-phase2-2026-08-07
-      sourceEntry: Ng'ok
+      sourceEntry: Iknayid, Broodmother
       trackedPack: veshs-galactic-holodex
       collectionId: sw5e-module.veshs-galactic-holodex
       parseStatus: parsed-valid
-      capabilityStatus: fully-supported
+      capabilityStatus: partially-supported
       outputSelection: selected-population
-      productionReadiness: prototype-validated
-      unsupportedMechanics: []
+      productionReadiness: requires-runtime-validation
+      unsupportedMechanics:
+        - qualified-defense-parsing
+        - recharge-activity
       generatedStatus: production
-      creatureTypeFolder: Aberration
+      creatureTypeFolder: Beast
       forceTechEmbedding:
         forcePowers: []
         techPowers: []
@@ -1398,5 +1592,5 @@ _stats:
   lastModifiedBy: null
   compendiumSource: null
   duplicateSource: null
-_key: "!actors!9edc886797b5c129"
+_key: "!actors!2887ccac8a2b5786"
 

@@ -1,11 +1,11 @@
-_id: 9edc886797b5c129
-name: Ng'ok
+_id: 96cf94af47a9af01
+name: Sleen
 type: npc
 img: systems/dnd5e/icons/svg/actors/npc.svg
-folder: 97379aa171754463
+folder: 6f8e5fbcb21cb696
 items:
-  - _id: b4b0164816fcd3a1
-    name: Limited Telepathy
+  - _id: d6afc98bfe351080
+    name: Trampling Charge
     type: feat
     sort: 0
     flags:
@@ -15,217 +15,22 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          sourceSemanticKey: vgh:beast:sleen
+    img: modules/sw5e-module/icons/packs/Monster Traits/Trampling Charge.webp
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>The ng'ok can transmit simple messages and images to any creature within 120 ft. of it that can understand
-          a language through the force. This form of telepathy doesn't allow the receiving creature to telepathically
-          respond.</p>
+          <p>If the sleen moves at least 20 feet straight toward a creature and then hits it with a claw attack on the
+          same turn, that target must succeed on a DC 13 Strength saving throw or be knocked prone. If the target is
+          prone, the sleen can immediately make another attack with its bite against it as a bonus action.</p>
         chat: ""
       requirements: ""
       source:
         custom: Vesh's Galactic Holodex
       activation:
-        type: ""
-        cost: null
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: ""
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: ""
-      actionType: ""
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
-        value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      prerequisites:
-        level: null
-      properties: []
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.b4b0164816fcd3a1"
-  - _id: c5603f775acfa118
-    name: Stench
-    type: feat
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: non-weapon
-          kind: featPassiveOrRider
-          sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Monster Traits/Stench.webp
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>Any creature other than a ng'ok that starts its turn within 5 feet of the ng'ok must succeed on a DC 15
-          Constitution saving throw or be poisoned until the start of the creature's next turn. On a successful saving
-          throw, the creature is immune to the stench of all ng'oks for 1 hour.</p>
-        chat: ""
-      requirements: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      activation:
-        type: ""
-        cost: null
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: ""
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: ""
-      actionType: ""
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
-        value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      prerequisites:
-        level: null
-      properties: []
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c5603f775acfa118"
-  - _id: 49d0e12911ee535f
-    name: Multiattack
-    type: feat
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: non-weapon
-          kind: featAction
-          sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
-    effects: []
-    folder: null
-    system:
-      description:
-        value: "<p>The ng'ok makes three attacks: one with its bite and two with its claws.</p>"
-        chat: ""
-      requirements: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      activation:
-        type: action
+        type: bonus
         cost: 1
         condition: ""
       duration:
@@ -297,107 +102,8 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.49d0e12911ee535f"
-  - _id: c2cd0ed011a42306
-    name: Grapple Slam
-    type: feat
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: non-weapon
-          kind: featAction
-          sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
-    img: systems/dnd5e/icons/svg/actors/npc.svg
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>The ng'ok slams creatures grappled by it into each other or a solid surface. Each creature must succeed on
-          a DC 14 Constitution saving throw or take 10 (2d6+3) kinetic damage and be stunned until the end of the
-          ng'ok's next turn. On a successful save, the target takes half the kinetic damage and isn't stunned.</p>
-        chat: ""
-      requirements: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: ""
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: ""
-      actionType: ""
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
-        value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      prerequisites:
-        level: null
-      properties: []
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c2cd0ed011a42306"
-  - _id: 9e1c5ae2e4fd3f6e
+    _key: "!actors.items!96cf94af47a9af01.d6afc98bfe351080"
+  - _id: 00a0cd09249e5d2a
     name: Bite
     type: weapon
     sort: 0
@@ -409,19 +115,13 @@ items:
           kind: weaponNatural
           sourceActionNames:
             - Bite
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:beast:sleen
     img: modules/sw5e-module/icons/packs/Naturals/Teeth.webp
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is a creature, it must succeed on a DC 15 Constitution saving throw against disease or become poisoned until
-          the disease is cured. Every 24 hours that elapse, the target must repeat the saving throw, reducing its hit
-          point maximum by 5 (1d10) on a failure. The disease is cured on a success. The target dies if the disease
-          reduces its hit point maximum to 0. This reduction to the target's hit point maximum lasts until the disease
-          is cured.</p>
+        value: <p>*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target. *Hit:* 7 (1d8+3) kinetic damage.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -474,7 +174,7 @@ items:
         damage: ""
       damage:
         parts:
-          - - 2d8+3
+          - - 1d8+3
             - kinetic
         versatile: ""
       formula: ""
@@ -519,8 +219,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        fa04c0c0c5498243:
-          _id: fa04c0c0c5498243
+        5df801e2239271a4:
+          _id: 5df801e2239271a4
           type: attack
           activation:
             type: action
@@ -529,7 +229,7 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "5"
             flat: true
             type:
               classification: weapon
@@ -539,7 +239,7 @@ items:
             critical: {}
             includeBase: false
             parts:
-              - number: 2
+              - number: 1
                 denomination: 8
                 bonus: "+3"
                 types:
@@ -582,7 +282,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "6"
+      attackBonus: "5"
     ownership:
       default: 0
     _stats:
@@ -594,9 +294,9 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.9e1c5ae2e4fd3f6e"
-  - _id: 93854eb0d910db2b
-    name: Claws
+    _key: "!actors.items!96cf94af47a9af01.00a0cd09249e5d2a"
+  - _id: 35edb55abaf61286
+    name: Claw
     type: weapon
     sort: 0
     flags:
@@ -606,17 +306,14 @@ items:
           classification: validated-natural-weapon
           kind: weaponNatural
           sourceActionNames:
-            - Claws
-          sourceSemanticKey: vgh:aberration:ngok
+            - Claw
+          sourceSemanticKey: vgh:beast:sleen
     img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 10 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is Medium or smaller, it is grappled (escape DC 13) and restrained until the grapple ends. The ng'ok has two
-          claws, each of which can grapple one target.</p>
+        value: <p>*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target. *Hit:* 5 (1d6+3) kinetic damage.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -647,7 +344,7 @@ items:
         type: ""
         prompt: true
       range:
-        value: 10
+        value: 5
         long: null
         units: ft
       uses:
@@ -669,7 +366,7 @@ items:
         damage: ""
       damage:
         parts:
-          - - 2d8+3
+          - - 1d6+3
             - kinetic
         versatile: ""
       formula: ""
@@ -714,8 +411,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        064a719e0a048c49:
-          _id: 064a719e0a048c49
+        aeb6ffdb852e5d9b:
+          _id: aeb6ffdb852e5d9b
           type: attack
           activation:
             type: action
@@ -724,7 +421,7 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "5"
             flat: true
             type:
               classification: weapon
@@ -734,8 +431,8 @@ items:
             critical: {}
             includeBase: false
             parts:
-              - number: 2
-                denomination: 8
+              - number: 1
+                denomination: 6
                 bonus: "+3"
                 types:
                   - kinetic
@@ -755,7 +452,7 @@ items:
           range:
             override: false
             units: ft
-            value: "10"
+            value: "5"
           target:
             template:
               contiguous: false
@@ -777,7 +474,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "6"
+      attackBonus: "5"
     ownership:
       default: 0
     _stats:
@@ -789,11 +486,11 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.93854eb0d910db2b"
+    _key: "!actors.items!96cf94af47a9af01.35edb55abaf61286"
 effects: []
 prototypeToken:
   flags: {}
-  name: Ng'ok
+  name: Sleen
   displayName: 40
   width: 2
   height: 2
@@ -870,42 +567,42 @@ prototypeToken:
 system:
   abilities:
     str:
-      value: 16
+      value: 17
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     dex:
-      value: 11
+      value: 15
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     con:
-      value: 19
+      value: 14
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     int:
-      value: 6
+      value: 2
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     wis:
-      value: 13
+      value: 12
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     cha:
-      value: 6
+      value: 8
       proficient: 0
       max: null
       bonuses:
@@ -927,15 +624,15 @@ system:
       max: null
   attributes:
     ac:
-      flat: 14
+      flat: 13
       calc: natural
       formula: ""
     hp:
-      value: 114
-      max: 114
+      value: 22
+      max: 22
       temp: 0
       tempmax: 0
-      formula: 12d10+48
+      formula: 3d10+6
     init:
       ability: ""
       bonus: "0"
@@ -948,13 +645,13 @@ system:
       climb: 0
       fly: 0
       swim: 0
-      walk: 30
+      walk: 40
       units: ft
       hover: false
     attunement:
       max: 3
     senses:
-      darkvision: 120
+      darkvision: 0
       blindsight: 0
       tremorsense: 0
       truesight: 0
@@ -1017,12 +714,12 @@ system:
     alignment: Unaligned
     species: null
     type:
-      value: aberration
+      value: beast
       subtype: ""
       swarm: ""
       custom: ""
     environment: ""
-    cr: 5
+    cr: 1
     powerForceLevel: 0
     powerTechLevel: 0
     superiorityLevel: 0
@@ -1166,7 +863,7 @@ system:
         max: null
         mode: 0
     prc:
-      value: 0
+      value: 1
       ability: wis
       bonuses:
         check: ""
@@ -1367,10 +1064,10 @@ flags:
       sourceIdentity: veshs-galactic-holodex
       sourceFile: ai/Veshs_Galactic_Holodex.md
       sourceSection: Beastiary
-      sourceHash: 32DE97952BE959711CEC3D7A8675CB29A3CEE5E85C09B1661BD0BE0C92D8B452
-      semanticKey: vgh:aberration:ngok
+      sourceHash: 060B54C197916197BF5AF48A4F50A7D53B8FCC20BD25E819A868E20BCFF8DD18
+      semanticKey: vgh:beast:sleen
       generatorVersion: vgh-phase2-2026-08-07
-      sourceEntry: Ng'ok
+      sourceEntry: Sleen
       trackedPack: veshs-galactic-holodex
       collectionId: sw5e-module.veshs-galactic-holodex
       parseStatus: parsed-valid
@@ -1379,7 +1076,7 @@ flags:
       productionReadiness: prototype-validated
       unsupportedMechanics: []
       generatedStatus: production
-      creatureTypeFolder: Aberration
+      creatureTypeFolder: Beast
       forceTechEmbedding:
         forcePowers: []
         techPowers: []
@@ -1398,5 +1095,5 @@ _stats:
   lastModifiedBy: null
   compendiumSource: null
   duplicateSource: null
-_key: "!actors!9edc886797b5c129"
+_key: "!actors!96cf94af47a9af01"
 

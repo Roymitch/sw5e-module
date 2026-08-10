@@ -1,11 +1,11 @@
-_id: 9edc886797b5c129
-name: Ng'ok
+_id: 65cc1eb5e9b984bc
+name: Mantellian Savrip
 type: npc
 img: systems/dnd5e/icons/svg/actors/npc.svg
-folder: 97379aa171754463
+folder: 6f8e5fbcb21cb696
 items:
-  - _id: b4b0164816fcd3a1
-    name: Limited Telepathy
+  - _id: b026d1e7dfcd878f
+    name: Aggressive
     type: feat
     sort: 0
     flags:
@@ -15,23 +15,20 @@ items:
           classification: non-weapon
           kind: featPassiveOrRider
           sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: systems/dnd5e/icons/svg/actors/npc.svg
+          sourceSemanticKey: vgh:beast:mantellian-savrip
+    img: modules/sw5e-module/icons/packs/Monster Traits/Aggressive.webp
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>The ng'ok can transmit simple messages and images to any creature within 120 ft. of it that can understand
-          a language through the force. This form of telepathy doesn't allow the receiving creature to telepathically
-          respond.</p>
+        value: <p>As a bonus action, the savrip can move up to its speed toward a hostile creature it can see.</p>
         chat: ""
       requirements: ""
       source:
         custom: Vesh's Galactic Holodex
       activation:
-        type: ""
-        cost: null
+        type: bonus
+        cost: 1
         condition: ""
       duration:
         value: ""
@@ -102,107 +99,8 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.b4b0164816fcd3a1"
-  - _id: c5603f775acfa118
-    name: Stench
-    type: feat
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: non-weapon
-          kind: featPassiveOrRider
-          sourceSection: traits
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Monster Traits/Stench.webp
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>Any creature other than a ng'ok that starts its turn within 5 feet of the ng'ok must succeed on a DC 15
-          Constitution saving throw or be poisoned until the start of the creature's next turn. On a successful saving
-          throw, the creature is immune to the stench of all ng'oks for 1 hour.</p>
-        chat: ""
-      requirements: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      activation:
-        type: ""
-        cost: null
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: null
-        long: null
-        units: ""
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: ""
-      actionType: ""
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts: []
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
-        value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
-      attack:
-        bonus: ""
-        flat: false
-      enchantment: null
-      summons: null
-      prerequisites:
-        level: null
-      properties: []
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c5603f775acfa118"
-  - _id: 49d0e12911ee535f
+    _key: "!actors.items!65cc1eb5e9b984bc.b026d1e7dfcd878f"
+  - _id: 4bea8c23afba757b
     name: Multiattack
     type: feat
     sort: 0
@@ -213,13 +111,13 @@ items:
           classification: non-weapon
           kind: featAction
           sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:beast:mantellian-savrip
     img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
     effects: []
     folder: null
     system:
       description:
-        value: "<p>The ng'ok makes three attacks: one with its bite and two with its claws.</p>"
+        value: <p>The savrip makes two slam attacks and one bite attack.</p>
         chat: ""
       requirements: ""
       source:
@@ -297,32 +195,40 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.49d0e12911ee535f"
-  - _id: c2cd0ed011a42306
-    name: Grapple Slam
-    type: feat
+    _key: "!actors.items!65cc1eb5e9b984bc.4bea8c23afba757b"
+  - _id: 682ab17ae88900c9
+    name: Slam
+    type: weapon
     sort: 0
     flags:
       sw5e:
         veshsGalacticHolodex:
           embeddedFromSource: true
-          classification: non-weapon
-          kind: featAction
-          sourceSection: actions
-          sourceSemanticKey: vgh:aberration:ngok
+          classification: validated-natural-weapon
+          kind: weaponNatural
+          sourceActionNames:
+            - Slam
+          sourceSemanticKey: vgh:beast:mantellian-savrip
     img: systems/dnd5e/icons/svg/actors/npc.svg
     effects: []
     folder: null
     system:
       description:
-        value: >-
-          <p>The ng'ok slams creatures grappled by it into each other or a solid surface. Each creature must succeed on
-          a DC 14 Constitution saving throw or take 10 (2d6+3) kinetic damage and be stunned until the end of the
-          ng'ok's next turn. On a successful save, the target takes half the kinetic damage and isn't stunned.</p>
+        value: <p>*Melee Weapon Attack:* +7 to hit, reach 10 ft., one target. *Hit:* 14 (2d8+5) kinetic damage.</p>
         chat: ""
-      requirements: ""
       source:
         custom: Vesh's Galactic Holodex
+      quantity: 1
+      weight:
+        value: 1
+        units: lb
+      price:
+        value: 0
+        denomination: gc
+      attunement: ""
+      equipped: false
+      rarity: ""
+      identified: true
       activation:
         type: action
         cost: 1
@@ -339,9 +245,9 @@ items:
         type: ""
         prompt: true
       range:
-        value: null
+        value: 10
         long: null
-        units: ""
+        units: ft
       uses:
         value: null
         max: ""
@@ -353,38 +259,123 @@ items:
         target: null
         amount: null
         scale: false
-      ability: ""
-      actionType: ""
+      ability: str
+      actionType: mwak
       chatFlavor: ""
       critical:
         threshold: null
         damage: ""
       damage:
-        parts: []
+        parts:
+          - - 2d8+5
+            - kinetic
         versatile: ""
       formula: ""
       save:
         ability: ""
         dc: null
         scaling: spell
-      type:
-        value: ""
-        subtype: ""
-      recharge:
+      armor:
+        value: 10
+      hp:
+        value: 0
+        max: 0
+        dt: null
+        conditions: ""
+      modify:
+        chassis: none
+        augmentSlots: 0
+        modSlots: 4
+        items: []
+        changes: {}
+      weaponClass: ""
+      ammo:
+        target: null
         value: null
-        charged: false
-      attributes:
-        speed:
-          space: null
-          turn: null
+        use: null
+        types: []
+      properties: []
+      proficient: 1
+      type:
+        value: natural
+        subtype: ""
+        baseItem: ""
+      unidentified:
+        description: ""
       attack:
         bonus: ""
         flat: false
+      container: null
+      attuned: false
       enchantment: null
       summons: null
-      prerequisites:
-        level: null
-      properties: []
+      magicalBonus: null
+      firingArc: ""
+      activities:
+        1b7198a2e4ea3596:
+          _id: 1b7198a2e4ea3596
+          type: attack
+          activation:
+            type: action
+            value: 1
+            condition: ""
+            override: false
+          attack:
+            ability: ""
+            bonus: "7"
+            flat: true
+            type:
+              classification: weapon
+              value: melee
+            critical: {}
+          damage:
+            critical: {}
+            includeBase: false
+            parts:
+              - number: 2
+                denomination: 8
+                bonus: "+5"
+                types:
+                  - kinetic
+                custom:
+                  enabled: false
+                  formula: ""
+                scaling:
+                  mode: ""
+                  number: null
+                  formula: ""
+          description: {}
+          duration:
+            units: inst
+            concentration: false
+            override: false
+          effects: []
+          range:
+            override: false
+            units: ft
+            value: "10"
+          target:
+            template:
+              contiguous: false
+              units: ft
+              type: ""
+            affects:
+              choice: false
+              type: creature
+              count: "1"
+            override: false
+            prompt: true
+          consumption:
+            targets: []
+            scaling:
+              allowed: false
+            spellSlot: true
+          uses:
+            spent: 0
+            max: ""
+            recovery: []
+          sort: 0
+      attackBonus: "7"
     ownership:
       default: 0
     _stats:
@@ -396,8 +387,8 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.c2cd0ed011a42306"
-  - _id: 9e1c5ae2e4fd3f6e
+    _key: "!actors.items!65cc1eb5e9b984bc.682ab17ae88900c9"
+  - _id: a27458e07686e891
     name: Bite
     type: weapon
     sort: 0
@@ -409,19 +400,16 @@ items:
           kind: weaponNatural
           sourceActionNames:
             - Bite
-          sourceSemanticKey: vgh:aberration:ngok
+          sourceSemanticKey: vgh:beast:mantellian-savrip
     img: modules/sw5e-module/icons/packs/Naturals/Teeth.webp
     effects: []
     folder: null
     system:
       description:
         value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is a creature, it must succeed on a DC 15 Constitution saving throw against disease or become poisoned until
-          the disease is cured. Every 24 hours that elapse, the target must repeat the saving throw, reducing its hit
-          point maximum by 5 (1d10) on a failure. The disease is cured on a success. The target dies if the disease
-          reduces its hit point maximum to 0. This reduction to the target's hit point maximum lasts until the disease
-          is cured.</p>
+          <p>*Melee Weapon Attack:* +7 to hit, reach 5 ft., one target. *Hit:* 12 (2d6+5) kinetic damage and the target
+          must succeed on a DC 14 Constitution saving throw or become poisoned for 1 minute. A poisoned creature can
+          repeat the saving throw at the end of its turn, ending the effect on a success.</p>
         chat: ""
       source:
         custom: Vesh's Galactic Holodex
@@ -474,7 +462,7 @@ items:
         damage: ""
       damage:
         parts:
-          - - 2d8+3
+          - - 2d6+5
             - kinetic
         versatile: ""
       formula: ""
@@ -519,8 +507,8 @@ items:
       magicalBonus: null
       firingArc: ""
       activities:
-        fa04c0c0c5498243:
-          _id: fa04c0c0c5498243
+        b0ffbc76dde80886:
+          _id: b0ffbc76dde80886
           type: attack
           activation:
             type: action
@@ -529,7 +517,7 @@ items:
             override: false
           attack:
             ability: ""
-            bonus: "6"
+            bonus: "7"
             flat: true
             type:
               classification: weapon
@@ -540,8 +528,8 @@ items:
             includeBase: false
             parts:
               - number: 2
-                denomination: 8
-                bonus: "+3"
+                denomination: 6
+                bonus: "+5"
                 types:
                   - kinetic
                 custom:
@@ -582,7 +570,7 @@ items:
             max: ""
             recovery: []
           sort: 0
-      attackBonus: "6"
+      attackBonus: "7"
     ownership:
       default: 0
     _stats:
@@ -594,206 +582,11 @@ items:
       lastModifiedBy: null
       compendiumSource: null
       duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.9e1c5ae2e4fd3f6e"
-  - _id: 93854eb0d910db2b
-    name: Claws
-    type: weapon
-    sort: 0
-    flags:
-      sw5e:
-        veshsGalacticHolodex:
-          embeddedFromSource: true
-          classification: validated-natural-weapon
-          kind: weaponNatural
-          sourceActionNames:
-            - Claws
-          sourceSemanticKey: vgh:aberration:ngok
-    img: modules/sw5e-module/icons/packs/Naturals/Claws.webp
-    effects: []
-    folder: null
-    system:
-      description:
-        value: >-
-          <p>*Melee Weapon Attack:* +6 to hit, reach 10 ft., one target. *Hit:* 12 (2d8+3) kinetic damage. If the target
-          is Medium or smaller, it is grappled (escape DC 13) and restrained until the grapple ends. The ng'ok has two
-          claws, each of which can grapple one target.</p>
-        chat: ""
-      source:
-        custom: Vesh's Galactic Holodex
-      quantity: 1
-      weight:
-        value: 1
-        units: lb
-      price:
-        value: 0
-        denomination: gc
-      attunement: ""
-      equipped: false
-      rarity: ""
-      identified: true
-      activation:
-        type: action
-        cost: 1
-        condition: ""
-      duration:
-        value: ""
-        units: ""
-      cover: null
-      crewed: false
-      target:
-        value: ""
-        width: null
-        units: ""
-        type: ""
-        prompt: true
-      range:
-        value: 10
-        long: null
-        units: ft
-      uses:
-        value: null
-        max: ""
-        per: null
-        recovery: ""
-        prompt: true
-      consume:
-        type: ""
-        target: null
-        amount: null
-        scale: false
-      ability: str
-      actionType: mwak
-      chatFlavor: ""
-      critical:
-        threshold: null
-        damage: ""
-      damage:
-        parts:
-          - - 2d8+3
-            - kinetic
-        versatile: ""
-      formula: ""
-      save:
-        ability: ""
-        dc: null
-        scaling: spell
-      armor:
-        value: 10
-      hp:
-        value: 0
-        max: 0
-        dt: null
-        conditions: ""
-      modify:
-        chassis: none
-        augmentSlots: 0
-        modSlots: 4
-        items: []
-        changes: {}
-      weaponClass: ""
-      ammo:
-        target: null
-        value: null
-        use: null
-        types: []
-      properties: []
-      proficient: 1
-      type:
-        value: natural
-        subtype: ""
-        baseItem: ""
-      unidentified:
-        description: ""
-      attack:
-        bonus: ""
-        flat: false
-      container: null
-      attuned: false
-      enchantment: null
-      summons: null
-      magicalBonus: null
-      firingArc: ""
-      activities:
-        064a719e0a048c49:
-          _id: 064a719e0a048c49
-          type: attack
-          activation:
-            type: action
-            value: 1
-            condition: ""
-            override: false
-          attack:
-            ability: ""
-            bonus: "6"
-            flat: true
-            type:
-              classification: weapon
-              value: melee
-            critical: {}
-          damage:
-            critical: {}
-            includeBase: false
-            parts:
-              - number: 2
-                denomination: 8
-                bonus: "+3"
-                types:
-                  - kinetic
-                custom:
-                  enabled: false
-                  formula: ""
-                scaling:
-                  mode: ""
-                  number: null
-                  formula: ""
-          description: {}
-          duration:
-            units: inst
-            concentration: false
-            override: false
-          effects: []
-          range:
-            override: false
-            units: ft
-            value: "10"
-          target:
-            template:
-              contiguous: false
-              units: ft
-              type: ""
-            affects:
-              choice: false
-              type: creature
-              count: "1"
-            override: false
-            prompt: true
-          consumption:
-            targets: []
-            scaling:
-              allowed: false
-            spellSlot: true
-          uses:
-            spent: 0
-            max: ""
-            recovery: []
-          sort: 0
-      attackBonus: "6"
-    ownership:
-      default: 0
-    _stats:
-      systemId: null
-      systemVersion: null
-      coreVersion: "12.330"
-      createdTime: null
-      modifiedTime: null
-      lastModifiedBy: null
-      compendiumSource: null
-      duplicateSource: null
-    _key: "!actors.items!9edc886797b5c129.93854eb0d910db2b"
+    _key: "!actors.items!65cc1eb5e9b984bc.a27458e07686e891"
 effects: []
 prototypeToken:
   flags: {}
-  name: Ng'ok
+  name: Mantellian Savrip
   displayName: 40
   width: 2
   height: 2
@@ -870,14 +663,14 @@ prototypeToken:
 system:
   abilities:
     str:
-      value: 16
+      value: 20
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     dex:
-      value: 11
+      value: 14
       proficient: 0
       max: null
       bonuses:
@@ -891,21 +684,21 @@ system:
         check: ""
         save: ""
     int:
-      value: 6
+      value: 8
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     wis:
-      value: 13
+      value: 10
       proficient: 0
       max: null
       bonuses:
         check: ""
         save: ""
     cha:
-      value: 6
+      value: 9
       proficient: 0
       max: null
       bonuses:
@@ -931,11 +724,11 @@ system:
       calc: natural
       formula: ""
     hp:
-      value: 114
-      max: 114
+      value: 76
+      max: 76
       temp: 0
       tempmax: 0
-      formula: 12d10+48
+      formula: 8d10+32
     init:
       ability: ""
       bonus: "0"
@@ -948,13 +741,13 @@ system:
       climb: 0
       fly: 0
       swim: 0
-      walk: 30
+      walk: 25
       units: ft
       hover: false
     attunement:
       max: 3
     senses:
-      darkvision: 120
+      darkvision: 0
       blindsight: 0
       tremorsense: 0
       truesight: 0
@@ -1017,12 +810,12 @@ system:
     alignment: Unaligned
     species: null
     type:
-      value: aberration
+      value: beast
       subtype: ""
       swarm: ""
       custom: ""
     environment: ""
-    cr: 5
+    cr: 4
     powerForceLevel: 0
     powerTechLevel: 0
     superiorityLevel: 0
@@ -1076,7 +869,7 @@ system:
         max: null
         mode: 0
     ath:
-      value: 0
+      value: 1
       ability: str
       bonuses:
         check: ""
@@ -1367,10 +1160,10 @@ flags:
       sourceIdentity: veshs-galactic-holodex
       sourceFile: ai/Veshs_Galactic_Holodex.md
       sourceSection: Beastiary
-      sourceHash: 32DE97952BE959711CEC3D7A8675CB29A3CEE5E85C09B1661BD0BE0C92D8B452
-      semanticKey: vgh:aberration:ngok
+      sourceHash: 24EC088EC645BF4F3D4ED3E1D28E4ED398698D7FA06BB4352DC0F425A84F2F9D
+      semanticKey: vgh:beast:mantellian-savrip
       generatorVersion: vgh-phase2-2026-08-07
-      sourceEntry: Ng'ok
+      sourceEntry: Mantellian Savrip
       trackedPack: veshs-galactic-holodex
       collectionId: sw5e-module.veshs-galactic-holodex
       parseStatus: parsed-valid
@@ -1379,7 +1172,7 @@ flags:
       productionReadiness: prototype-validated
       unsupportedMechanics: []
       generatedStatus: production
-      creatureTypeFolder: Aberration
+      creatureTypeFolder: Beast
       forceTechEmbedding:
         forcePowers: []
         techPowers: []
@@ -1398,5 +1191,5 @@ _stats:
   lastModifiedBy: null
   compendiumSource: null
   duplicateSource: null
-_key: "!actors!9edc886797b5c129"
+_key: "!actors!65cc1eb5e9b984bc"
 
