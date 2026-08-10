@@ -5,6 +5,470 @@
   "sourceAbbreviation": "VGH",
   "sourceFile": "ai/Veshs_Galactic_Holodex.md",
   "visibleActorSource": "Vesh's Galactic Holodex",
-  "folders": {},
-  "actors": {}
+  "folders": {
+    "vgh-folder:Beast": {
+      "id": "6f8e5fbcb21cb696",
+      "name": "Beast",
+      "key": "!folders!6f8e5fbcb21cb696",
+      "pinned": true,
+      "origin": "phase-3-pilot",
+      "folderTaxonomy": "foundry-creature-type"
+    },
+    "vgh-folder:Aberration": {
+      "id": "97379aa171754463",
+      "name": "Aberration",
+      "key": "!folders!97379aa171754463",
+      "pinned": true,
+      "origin": "phase-3-pilot",
+      "folderTaxonomy": "foundry-creature-type"
+    },
+    "vgh-folder:Droid": {
+      "id": "c724c0c5daa02cd9",
+      "name": "Droid",
+      "key": "!folders!c724c0c5daa02cd9",
+      "pinned": true,
+      "origin": "phase-3-pilot",
+      "folderTaxonomy": "foundry-creature-type"
+    },
+    "vgh-folder:Humanoid": {
+      "id": "569b095af4903164",
+      "name": "Humanoid",
+      "key": "!folders!569b095af4903164",
+      "pinned": true,
+      "origin": "phase-3-pilot",
+      "folderTaxonomy": "foundry-creature-type"
+    }
+  },
+  "actors": {
+    "vgh:beast:acklay-gladiator": {
+      "id": "9630405a635f9a49",
+      "name": "Acklay, Gladiator",
+      "folderId": "6f8e5fbcb21cb696",
+      "key": "!actors!9630405a635f9a49",
+      "items": {
+        "47b6f0e13f243232": {
+          "id": "47b6f0e13f243232",
+          "name": "Amphibious",
+          "type": "feat",
+          "key": "!actors.items!9630405a635f9a49.47b6f0e13f243232",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "f25c44ad713ea0e6": {
+          "id": "f25c44ad713ea0e6",
+          "name": "Trampling Charge",
+          "type": "feat",
+          "key": "!actors.items!9630405a635f9a49.f25c44ad713ea0e6",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "df24d170af666ffc": {
+          "id": "df24d170af666ffc",
+          "name": "Multiattack",
+          "type": "feat",
+          "key": "!actors.items!9630405a635f9a49.df24d170af666ffc",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "082e4a752e1ca968": {
+          "id": "082e4a752e1ca968",
+          "name": "Bite",
+          "type": "weapon",
+          "key": "!actors.items!9630405a635f9a49.082e4a752e1ca968",
+          "activities": {
+            "000915530a5a13e6": {
+              "id": "000915530a5a13e6",
+              "pinned": true,
+              "origin": "phase-3-pilot"
+            }
+          },
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "940f529aeb79ec06": {
+          "id": "940f529aeb79ec06",
+          "name": "Claw",
+          "type": "weapon",
+          "key": "!actors.items!9630405a635f9a49.940f529aeb79ec06",
+          "activities": {
+            "7c149379028b1cf5": {
+              "id": "7c149379028b1cf5",
+              "pinned": true,
+              "origin": "phase-3-pilot"
+            }
+          },
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        }
+      },
+      "pinned": true,
+      "origin": "phase-3-pilot",
+      "batch": "phase-3-pilot"
+    },
+    "vgh:aberration:ngok": {
+      "id": "9edc886797b5c129",
+      "name": "Ng'ok",
+      "folderId": "97379aa171754463",
+      "key": "!actors!9edc886797b5c129",
+      "items": {
+        "b4b0164816fcd3a1": {
+          "id": "b4b0164816fcd3a1",
+          "name": "Limited Telepathy",
+          "type": "feat",
+          "key": "!actors.items!9edc886797b5c129.b4b0164816fcd3a1",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "c5603f775acfa118": {
+          "id": "c5603f775acfa118",
+          "name": "Stench",
+          "type": "feat",
+          "key": "!actors.items!9edc886797b5c129.c5603f775acfa118",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "49d0e12911ee535f": {
+          "id": "49d0e12911ee535f",
+          "name": "Multiattack",
+          "type": "feat",
+          "key": "!actors.items!9edc886797b5c129.49d0e12911ee535f",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "c2cd0ed011a42306": {
+          "id": "c2cd0ed011a42306",
+          "name": "Grapple Slam",
+          "type": "feat",
+          "key": "!actors.items!9edc886797b5c129.c2cd0ed011a42306",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "9e1c5ae2e4fd3f6e": {
+          "id": "9e1c5ae2e4fd3f6e",
+          "name": "Bite",
+          "type": "weapon",
+          "key": "!actors.items!9edc886797b5c129.9e1c5ae2e4fd3f6e",
+          "activities": {
+            "fa04c0c0c5498243": {
+              "id": "fa04c0c0c5498243",
+              "pinned": true,
+              "origin": "phase-3-pilot"
+            }
+          },
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "93854eb0d910db2b": {
+          "id": "93854eb0d910db2b",
+          "name": "Claws",
+          "type": "weapon",
+          "key": "!actors.items!9edc886797b5c129.93854eb0d910db2b",
+          "activities": {
+            "064a719e0a048c49": {
+              "id": "064a719e0a048c49",
+              "pinned": true,
+              "origin": "phase-3-pilot"
+            }
+          },
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        }
+      },
+      "pinned": true,
+      "origin": "phase-3-pilot",
+      "batch": "phase-3-pilot"
+    },
+    "vgh:beast:oggdo-legendary": {
+      "id": "c2304b0740cc4e93",
+      "name": "Oggdo, Legendary",
+      "folderId": "6f8e5fbcb21cb696",
+      "key": "!actors!c2304b0740cc4e93",
+      "items": {
+        "65da1243a7b68761": {
+          "id": "65da1243a7b68761",
+          "name": "Amphibious",
+          "type": "feat",
+          "key": "!actors.items!c2304b0740cc4e93.65da1243a7b68761",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "4c3f42d7925c0318": {
+          "id": "4c3f42d7925c0318",
+          "name": "Legendary Resistance (3/day)",
+          "type": "feat",
+          "key": "!actors.items!c2304b0740cc4e93.4c3f42d7925c0318",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "40219e933e283ad5": {
+          "id": "40219e933e283ad5",
+          "name": "Multiattack",
+          "type": "feat",
+          "key": "!actors.items!c2304b0740cc4e93.40219e933e283ad5",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "ef6c6a51633ca309": {
+          "id": "ef6c6a51633ca309",
+          "name": "Bite",
+          "type": "weapon",
+          "key": "!actors.items!c2304b0740cc4e93.ef6c6a51633ca309",
+          "activities": {
+            "51b9c9e122c6b4f9": {
+              "id": "51b9c9e122c6b4f9",
+              "pinned": true,
+              "origin": "phase-3-pilot"
+            }
+          },
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "d631f414af0219aa": {
+          "id": "d631f414af0219aa",
+          "name": "Tongue",
+          "type": "weapon",
+          "key": "!actors.items!c2304b0740cc4e93.d631f414af0219aa",
+          "activities": {
+            "90702ef7f28eae6a": {
+              "id": "90702ef7f28eae6a",
+              "pinned": true,
+              "origin": "phase-3-pilot"
+            }
+          },
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "6ed76a0bde5acbb0": {
+          "id": "6ed76a0bde5acbb0",
+          "name": "Slam",
+          "type": "weapon",
+          "key": "!actors.items!c2304b0740cc4e93.6ed76a0bde5acbb0",
+          "activities": {
+            "787e69b31548e59c": {
+              "id": "787e69b31548e59c",
+              "pinned": true,
+              "origin": "phase-3-pilot"
+            }
+          },
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        }
+      },
+      "pinned": true,
+      "origin": "phase-3-pilot",
+      "batch": "phase-3-pilot"
+    },
+    "vgh:droid:gemini-conspirator-droid": {
+      "id": "8d0eb72ae57af997",
+      "name": "GEMINI Conspirator Droid",
+      "folderId": "c724c0c5daa02cd9",
+      "key": "!actors!8d0eb72ae57af997",
+      "items": {
+        "d11fdee7c4a4494d": {
+          "id": "d11fdee7c4a4494d",
+          "name": "Circuitry",
+          "type": "feat",
+          "key": "!actors.items!8d0eb72ae57af997.d11fdee7c4a4494d",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "f9eb6d1ad56a8666": {
+          "id": "f9eb6d1ad56a8666",
+          "name": "Iokath Superiority",
+          "type": "feat",
+          "key": "!actors.items!8d0eb72ae57af997.f9eb6d1ad56a8666",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "54e66ac2f2639c63": {
+          "id": "54e66ac2f2639c63",
+          "name": "Master of the Droid",
+          "type": "feat",
+          "key": "!actors.items!8d0eb72ae57af997.54e66ac2f2639c63",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "36243bb5bda1573a": {
+          "id": "36243bb5bda1573a",
+          "name": "Memory Override",
+          "type": "feat",
+          "key": "!actors.items!8d0eb72ae57af997.36243bb5bda1573a",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "8480398c7f16b70d": {
+          "id": "8480398c7f16b70d",
+          "name": "Onslaught",
+          "type": "feat",
+          "key": "!actors.items!8d0eb72ae57af997.8480398c7f16b70d",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "d606a3577a79fc47": {
+          "id": "d606a3577a79fc47",
+          "name": "Tech Resistance",
+          "type": "feat",
+          "key": "!actors.items!8d0eb72ae57af997.d606a3577a79fc47",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "0e25e22cc437eb38": {
+          "id": "0e25e22cc437eb38",
+          "name": "Multiattack",
+          "type": "feat",
+          "key": "!actors.items!8d0eb72ae57af997.0e25e22cc437eb38",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "abbd12e9a2e60a7c": {
+          "id": "abbd12e9a2e60a7c",
+          "name": "Techstaff",
+          "type": "weapon",
+          "key": "!actors.items!8d0eb72ae57af997.abbd12e9a2e60a7c",
+          "activities": {
+            "60ceff4ad6a1dbea": {
+              "id": "60ceff4ad6a1dbea",
+              "pinned": true,
+              "origin": "phase-3-pilot"
+            }
+          },
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "ce49e24f44f6d899": {
+          "id": "ce49e24f44f6d899",
+          "name": "Blaster Rifle",
+          "type": "weapon",
+          "key": "!actors.items!8d0eb72ae57af997.ce49e24f44f6d899",
+          "activities": {
+            "36f94fbab338b96f": {
+              "id": "36f94fbab338b96f",
+              "pinned": true,
+              "origin": "phase-3-pilot"
+            }
+          },
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        }
+      },
+      "pinned": true,
+      "origin": "phase-3-pilot",
+      "batch": "phase-3-pilot"
+    },
+    "vgh:humanoid:emperors-wrath": {
+      "id": "f16ffad8fe11249f",
+      "name": "Emperor's Wrath",
+      "folderId": "569b095af4903164",
+      "key": "!actors!f16ffad8fe11249f",
+      "items": {
+        "436a0e747121ee11": {
+          "id": "436a0e747121ee11",
+          "name": "Force-Empowered Strikes",
+          "type": "feat",
+          "key": "!actors.items!f16ffad8fe11249f.436a0e747121ee11",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "10dab8f316a8d5d9": {
+          "id": "10dab8f316a8d5d9",
+          "name": "Force Resistance",
+          "type": "feat",
+          "key": "!actors.items!f16ffad8fe11249f.10dab8f316a8d5d9",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "ff44de3ea8abbaed": {
+          "id": "ff44de3ea8abbaed",
+          "name": "Fury of the Emperor",
+          "type": "feat",
+          "key": "!actors.items!f16ffad8fe11249f.ff44de3ea8abbaed",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "183f9d6f1ca7e21f": {
+          "id": "183f9d6f1ca7e21f",
+          "name": "Jar'kai Assault",
+          "type": "feat",
+          "key": "!actors.items!f16ffad8fe11249f.183f9d6f1ca7e21f",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "2d455f0bcc0834a8": {
+          "id": "2d455f0bcc0834a8",
+          "name": "The Way of the Acklay (1/day)",
+          "type": "feat",
+          "key": "!actors.items!f16ffad8fe11249f.2d455f0bcc0834a8",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "02c5945184bff0ad": {
+          "id": "02c5945184bff0ad",
+          "name": "Twin Strike (4/day)",
+          "type": "feat",
+          "key": "!actors.items!f16ffad8fe11249f.02c5945184bff0ad",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "479736d95b739b90": {
+          "id": "479736d95b739b90",
+          "name": "Multiattack",
+          "type": "feat",
+          "key": "!actors.items!f16ffad8fe11249f.479736d95b739b90",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "615a7ca77059b3ff": {
+          "id": "615a7ca77059b3ff",
+          "name": "Mad Dash (Recharge 5 or 6)",
+          "type": "feat",
+          "key": "!actors.items!f16ffad8fe11249f.615a7ca77059b3ff",
+          "activities": {},
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        },
+        "40c289c2dc6bec24": {
+          "id": "40c289c2dc6bec24",
+          "name": "Lightsaber",
+          "type": "weapon",
+          "key": "!actors.items!f16ffad8fe11249f.40c289c2dc6bec24",
+          "activities": {
+            "51101c83fcec5886": {
+              "id": "51101c83fcec5886",
+              "pinned": true,
+              "origin": "phase-3-pilot"
+            }
+          },
+          "pinned": true,
+          "origin": "phase-3-pilot"
+        }
+      },
+      "pinned": true,
+      "origin": "phase-3-pilot",
+      "batch": "phase-3-pilot"
+    }
+  }
 }

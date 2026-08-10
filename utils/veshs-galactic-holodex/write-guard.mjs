@@ -22,7 +22,7 @@ const FORBIDDEN_PREFIXES = Object.freeze([
 	path.resolve(COMMITTED_PACK_SOURCE)
 ]);
 
-export const PRODUCTION_BATCH_DESCRIPTORS = Object.freeze({});
+export const PRODUCTION_BATCH_DESCRIPTORS = Object.create(null);
 
 function resolvePath(targetPath) {
 	return path.isAbsolute(targetPath) ? path.resolve(targetPath) : path.resolve(ROOT, targetPath);
@@ -42,6 +42,20 @@ export function getProductionBatchDescriptor(batch) {
 		throw new Error(`[veshs-galactic-holodex] unknown production batch: ${batch}`);
 	}
 	return descriptor;
+}
+
+export function registerProductionBatchDescriptor(descriptor) {
+	if ( !descriptor?.batch ) {
+		throw new Error("[veshs-galactic-holodex] production batch descriptor requires batch");
+	}
+	const normalized = {
+		...descriptor,
+		approvedYamlRelativePaths: [...new Set(descriptor.approvedYamlRelativePaths || [])],
+		allowedTrackedRelativePaths: [...new Set(descriptor.allowedTrackedRelativePaths || [])],
+		productionRoot: descriptor.productionRoot || COMMITTED_PACK_SOURCE
+	};
+	PRODUCTION_BATCH_DESCRIPTORS[normalized.batch] = normalized;
+	return normalized;
 }
 
 export function getAllowedTrackedRelativePaths(batch) {

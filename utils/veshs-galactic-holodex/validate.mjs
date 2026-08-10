@@ -26,7 +26,16 @@ export function validateIdentityMap(map = loadIdentityMap()) {
 		failures.push(`collectionId drift: ${map.collectionId}`);
 	}
 	const summary = summarizeIdentityMap(map);
-	if ( summary.actors !== 0 ) failures.push(`phase1 identity map must not prepopulate actors: ${summary.actors}`);
+	const folderIds = new Set(Object.values(map.folders || {}).map(folder => folder.id));
+	for ( const [semanticKey, actor] of Object.entries(map.actors || {}) ) {
+		if ( !/^vgh:/.test(semanticKey) ) failures.push(`actor semantic key drift: ${semanticKey}`);
+		if ( actor.folderId && !folderIds.has(actor.folderId) ) {
+			failures.push(`actor ${semanticKey} references unknown folderId ${actor.folderId}`);
+		}
+	}
+	for ( const semanticKey of Object.keys(map.folders || {}) ) {
+		if ( !/^vgh-folder:/.test(semanticKey) ) failures.push(`folder semantic key drift: ${semanticKey}`);
+	}
 	return { ok: failures.length === 0, failures, summary };
 }
 

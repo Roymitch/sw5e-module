@@ -78,15 +78,22 @@ test("creature-type folders use a VGH namespace distinct from SnV", () => {
 	assert.equal(CREATURE_TYPE_FOLDERS["Force Entity"].semanticKey, "vgh-folder:Force Entity");
 });
 
-test("identity map metadata targets the VGH collection with no prepopulated actors", () => {
+test("identity map metadata targets the VGH collection and remains self-consistent", () => {
 	const map = loadIdentityMap();
+	const summary = summarizeIdentityMap(map);
 	assert.equal(map.pack, PACK_NAME);
 	assert.equal(map.collectionId, COLLECTION_ID);
 	assert.equal(map.sourceIdentity, SOURCE_IDENTITY);
 	assert.equal(map.sourceFile, SOURCE_FILE);
 	assert.equal(map.visibleActorSource, SOURCE_VISIBLE);
-	assert.equal(summarizeIdentityMap(map).actors, 0);
-	assert.equal(summarizeIdentityMap(map).folders, 0);
+	assert.ok(summary.actors >= 0);
+	assert.ok(summary.folders >= 0);
+	for ( const semanticKey of Object.keys(map.actors || {}) ) {
+		assert.match(semanticKey, /^vgh:/);
+	}
+	for ( const semanticKey of Object.keys(map.folders || {}) ) {
+		assert.match(semanticKey, /^vgh-folder:/);
+	}
 });
 
 test("write guard is fail-closed and sandbox-scoped", () => {
@@ -101,7 +108,7 @@ test("write guard is fail-closed and sandbox-scoped", () => {
 test("actor publication source helper stamps visible source and internal provenance", () => {
 	const actor = applyActorPublicationSource({
 		name: "Test Actor",
-		system: { details: { source: { custom: "" } } },
+		system: { source: { custom: "" }, details: { source: { custom: "" } } },
 		flags: { sw5e: {} }
 	}, {
 		sourceEntry: "Test Actor",
@@ -110,6 +117,7 @@ test("actor publication source helper stamps visible source and internal provena
 		semanticKey: "vgh:Beast:test-actor",
 		generatorVersion: "phase1-test"
 	});
+	assert.equal(actor.system.source.custom, SOURCE_VISIBLE);
 	assert.equal(actor.system.details.source.custom, SOURCE_VISIBLE);
 	assert.equal(actor.flags.sw5e[VGH_PROVENANCE_FLAG].sourceIdentity, SOURCE_IDENTITY);
 	assert.equal(actor.flags.sw5e[VGH_PROVENANCE_FLAG].sourceFile, SOURCE_FILE);
@@ -120,7 +128,7 @@ test("actor publication source helper stamps visible source and internal provena
 test("actor publication source validator rejects SnV, VGH-only, and empty visible source values", () => {
 	for ( const value of ["SnV", "Scum and Villainy", "SnV_Final.md", "VGH", ""] ) {
 		assert.throws(() => assertValidActorPublicationSource({
-			system: { details: { source: { custom: value } } },
+			system: { source: { custom: value }, details: { source: { custom: value } } },
 			flags: { sw5e: { [VGH_PROVENANCE_FLAG]: {
 				sourceIdentity: SOURCE_IDENTITY,
 				sourceFile: SOURCE_FILE,

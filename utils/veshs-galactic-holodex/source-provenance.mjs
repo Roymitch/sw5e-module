@@ -27,6 +27,9 @@ function normalizeActor(actor) {
 				source: {
 					...((((actor.system || {}).details || {}).source) || {})
 				}
+			},
+			source: {
+				...((actor.system && actor.system.source) || {})
 			}
 		},
 		flags: {
@@ -62,8 +65,14 @@ export function applyActorPublicationSource(actor, provenance) {
 				...nextActor.system.details,
 				source: {
 					...nextActor.system.details.source,
-					custom: SOURCE_VISIBLE
+					custom: SOURCE_VISIBLE,
+					label: SOURCE_VISIBLE
 				}
+			},
+			source: {
+				...nextActor.system.source,
+				custom: SOURCE_VISIBLE,
+				label: SOURCE_VISIBLE
 			}
 		},
 		flags: {
@@ -78,8 +87,9 @@ export function applyActorPublicationSource(actor, provenance) {
 
 export function validateActorPublicationSource(actor) {
 	const failures = [];
-	const visibleSource = actor?.system?.details?.source?.custom;
-	if ( visibleSource !== SOURCE_VISIBLE ) {
+	const visibleSource = actor?.system?.source?.custom;
+	const legacyVisibleSource = actor?.system?.details?.source?.custom;
+	if ( visibleSource !== SOURCE_VISIBLE && legacyVisibleSource !== SOURCE_VISIBLE ) {
 		failures.push(`visible source must equal ${JSON.stringify(SOURCE_VISIBLE)}`);
 	}
 	const internal = actor?.flags?.sw5e?.[VGH_PROVENANCE_FLAG];
