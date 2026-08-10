@@ -13,7 +13,7 @@ Current target compatibility: **Foundry VTT `13`** with **`dnd5e` `5.2.5`**.
 >
 > - **Most users** should install from the latest public **Release**
 > - **Contributors** should use the `v.next` branch as the active developement branch to submit Pull Rerquests to
-> - **Beta testers** should install from the latest **Pre-release** in the [Releases](https://github.com/sw5e-foundry/sw5e-module/releases) section and follow the [Beta Test Guide — v1.3.8](https://github.com/sw5e-foundry/sw5e-module/wiki/Beta-Test-Guide-1.3.8) ([repo copy](docs/beta-test-1.3.7-1.3.8.md)).
+> - **Beta testers** should install from the latest **Pre-release** in the [Releases](https://github.com/sw5e-foundry/sw5e-module/releases) section and follow the [Beta Test Guide — v1.4.0](https://github.com/sw5e-foundry/sw5e-module/wiki/Beta-Test-Guide-v1.4.0) ([repo copy](docs/beta-test-1.4.0.md)).
 > - Before installing or updating, always review the current **Release Notes** for compatibility and breaking changes
 
 ## Documentation
@@ -23,7 +23,7 @@ Current target compatibility: **Foundry VTT `13`** with **`dnd5e` `5.2.5`**.
 The project wiki is now the main home for end-user documentation.
 
 - [Wiki Home](https://github.com/sw5e-foundry/sw5e-module/wiki)
-- [Beta Test Guide — v1.3.8](https://github.com/sw5e-foundry/sw5e-module/wiki/Beta-Test-Guide-1.3.8) (pre-release testing checklist)
+- [Beta Test Guide — v1.4.0](https://github.com/sw5e-foundry/sw5e-module/wiki/Beta-Test-Guide-v1.4.0) (pre-release testing checklist; [repo copy](docs/beta-test-1.4.0.md))
 - **Getting Started**
 - **Troubleshooting**
 - **FAQ**
