@@ -341,7 +341,7 @@ Do **not** send passwords, license keys, or unrelated world data.
 - [ ] Aggregate NPC quantity promotes/adjusts without cloning Actors (if tested).
 - [ ] Flight Manifest counts and assignments persist after reopen.
 
-**Failure signs:** Active Crew activate/deactivate UI present; multi-select ignored; picker never appears with multiple candidates; crew vanishes after reopen; non-GM sees hidden members.
+**Failure signs:** Active Crew UI or selector present; multi-select ignored; picker never appears with multiple candidates; crew vanishes after reopen; non-GM sees hidden members.
 
 **Cleanup:** Remove temporary crew assignments from the test ship.
 
