@@ -46,7 +46,6 @@ function patchAllowFeatsAndASI() {
 		async function (wrapped, level, data) {
 			if ( data?.type !== "both" || !isEnabled() ) return wrapped(level, data);
 
-			// Apply ASI first through native path.
 			await wrapped(level, {
 				type: "asi",
 				assignments: data.assignments,
@@ -56,24 +55,27 @@ function patchAllowFeatsAndASI() {
 			const uuid = data.featUuid ?? data.uuid;
 			if ( !uuid ) return;
 
-			// Grant feat without calling apply(type:feat), which would reverse the ASI.
 			const assignments = foundry.utils.deepClone(this.value.assignments ?? {});
-			if ( this.actor.items.get(Object.keys(this.value.feat ?? {})[0]) ) {
-				// Unexpected existing feat from prior state — leave native reverse to callers.
-			}
-			let itemData = data.retainedItems?.[uuid];
-			if ( !itemData ) itemData = await this.createItemData(uuid);
-			if ( !itemData ) return;
-
-			const feat = { [itemData._id]: uuid };
-			this.actor.updateSource({ items: [itemData] });
-			this.updateSource({
-				value: {
+			const originalReverse = this.reverse;
+			this.reverse = function () {
+				return this.value?.toObject?.() ?? {};
+			};
+			try {
+				await wrapped(level, {
 					type: "feat",
-					assignments: foundry.utils.isEmpty(assignments) ? null : assignments,
-					feat
-				}
-			});
+					uuid,
+					retainedItems: data.retainedItems
+				});
+			} finally {
+				this.reverse = originalReverse;
+			}
+
+			if ( !foundry.utils.isEmpty(assignments) ) {
+				this.updateSource({
+					"value.assignments": assignments,
+					"value.type": "feat"
+				});
+			}
 		},
 		"WRAPPER"
 	);
