@@ -1614,7 +1614,15 @@ function _migrateAdvancements(itemData, updateData) {
 
 	let changed = false;
 	const moduleId = getModuleId();
-	for (const adv of itemData.system.advancement) {
+	const rawAdvancement = itemData.system.advancement;
+	// DND5e v5.3.3 / P3-C: advancement is object-native; accept legacy arrays too.
+	const advancementEntries = Array.isArray(rawAdvancement)
+		? rawAdvancement
+		: (rawAdvancement && typeof rawAdvancement === "object")
+			? Object.values(rawAdvancement)
+			: [];
+
+	for (const adv of advancementEntries) {
 		for (const field of ["pool", "items", "grants"]) {
 			if ( !adv?.configuration?.[field] ) continue;
 			if ( field === "grants" ) {
