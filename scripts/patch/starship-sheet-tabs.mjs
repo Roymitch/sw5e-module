@@ -192,37 +192,91 @@ export function registerStarshipCoreTabPart() {
 	VAS._sw5eStarshipCoreTabRegistered = true;
 }
 
+/**
+ * Build a PrimarySheetMixin Record tab entry from a static TABS descriptor.
+ * @param {{ tab: string, label: string }} descriptor
+ * @param {boolean} active
+ * @returns {object}
+ */
+function makeStarshipRecordTab(descriptor, active) {
+	return {
+		label: descriptor.label,
+		id: descriptor.tab,
+		group: "primary",
+		active,
+		cssClass: active ? "active" : ""
+	};
+}
+
+/**
+ * Adapt starship primary tabs for DND5e v5.3.3 Record-shaped `context.tabs`.
+ * Preserves legacy array behavior when tabs are still an array.
+ * DOM nav bridges remain in place until Phase 4 retirement is authorized.
+ * @param {object} context
+ * @param {object} sheet
+ * @returns {object}
+ */
 export function applyStarshipTabsContext(context, sheet) {
 	const VAS = globalThis.dnd5e?.applications?.actor?.VehicleActorSheet;
 	if ( !VAS || !(sheet instanceof VAS) || !isSw5eStarshipActor(sheet.actor) ) return context;
-	if ( !Array.isArray(context?.tabs) ) return context;
+	const tabs = context?.tabs;
+	if ( !tabs || (typeof tabs !== "object") ) return context;
 
 	const includeCore = true;
-	context.tabs = dedupeTabs(context.tabs.filter(tab => tab?.tab !== "crew"));
-
-	const inventoryTab = context.tabs.find(tab => tab?.tab === STOCK_CARGO_TAB_ID);
-	if ( inventoryTab ) inventoryTab.label = "DND5E.Inventory";
-
-	if ( includeCore && !context.tabs.some(tab => tab.tab === STARSHIP_TAB_ID) ) {
-		const inventoryIdx = context.tabs.findIndex(tab => tab.tab === STOCK_CARGO_TAB_ID);
-		const coreTab = makeStarshipCoreTabDescriptor();
-		delete coreTab.condition;
-		if ( inventoryIdx >= 0 ) context.tabs.splice(inventoryIdx, 0, coreTab);
-		else context.tabs.unshift(coreTab);
-	}
-
-	if ( !context.tabs.some(tab => tab.tab === STARSHIP_FEATURES_TAB_ID) ) {
-		const inventoryIdx = context.tabs.findIndex(tab => tab.tab === STOCK_CARGO_TAB_ID);
-		const featuresTab = makeStarshipFeaturesTabDescriptor();
-		delete featuresTab.condition;
-		if ( inventoryIdx >= 0 ) context.tabs.splice(inventoryIdx + 1, 0, featuresTab);
-		else context.tabs.push(featuresTab);
-	}
-
-	context.tabs = ensureStarshipPrimaryTabOrder(context.tabs, { includeCore });
 	const activeTabId = typeof sheet?.tabGroups?.primary === "string" ? sheet.tabGroups.primary : STARSHIP_TAB_ID;
-	const desiredTabId = context.tabs.some(tab => tab.tab === activeTabId) ? activeTabId : STARSHIP_TAB_ID;
-	for ( const tab of context.tabs ) tab.active = tab.tab === desiredTabId;
+
+	// Legacy array shape (pre-5.3.3 / dual-shape bridge)
+	if ( Array.isArray(tabs) ) {
+		context.tabs = dedupeTabs(tabs.filter(tab => tab?.tab !== "crew"));
+
+		const inventoryTab = context.tabs.find(tab => tab?.tab === STOCK_CARGO_TAB_ID);
+		if ( inventoryTab ) inventoryTab.label = "DND5E.Inventory";
+
+		if ( includeCore && !context.tabs.some(tab => tab.tab === STARSHIP_TAB_ID) ) {
+			const inventoryIdx = context.tabs.findIndex(tab => tab.tab === STOCK_CARGO_TAB_ID);
+			const coreTab = makeStarshipCoreTabDescriptor();
+			delete coreTab.condition;
+			if ( inventoryIdx >= 0 ) context.tabs.splice(inventoryIdx, 0, coreTab);
+			else context.tabs.unshift(coreTab);
+		}
+
+		if ( !context.tabs.some(tab => tab.tab === STARSHIP_FEATURES_TAB_ID) ) {
+			const inventoryIdx = context.tabs.findIndex(tab => tab.tab === STOCK_CARGO_TAB_ID);
+			const featuresTab = makeStarshipFeaturesTabDescriptor();
+			delete featuresTab.condition;
+			if ( inventoryIdx >= 0 ) context.tabs.splice(inventoryIdx + 1, 0, featuresTab);
+			else context.tabs.push(featuresTab);
+		}
+
+		context.tabs = ensureStarshipPrimaryTabOrder(context.tabs, { includeCore });
+		const desiredTabId = context.tabs.some(tab => tab.tab === activeTabId) ? activeTabId : STARSHIP_TAB_ID;
+		for ( const tab of context.tabs ) {
+			tab.active = tab.tab === desiredTabId;
+			tab.cssClass = tab.active ? "active" : "";
+		}
+		return context;
+	}
+
+	// DND5e v5.3.3 Record shape from PrimarySheetMixin#_getTabs
+	delete tabs.crew;
+
+	if ( tabs[STOCK_CARGO_TAB_ID] ) tabs[STOCK_CARGO_TAB_ID].label = "DND5E.Inventory";
+
+	if ( includeCore && !tabs[STARSHIP_TAB_ID] ) {
+		tabs[STARSHIP_TAB_ID] = makeStarshipRecordTab(makeStarshipCoreTabDescriptor(), false);
+	}
+	if ( !tabs[STARSHIP_FEATURES_TAB_ID] ) {
+		tabs[STARSHIP_FEATURES_TAB_ID] = makeStarshipRecordTab(makeStarshipFeaturesTabDescriptor(), false);
+	}
+
+	const desiredTabId = tabs[activeTabId] ? activeTabId : STARSHIP_TAB_ID;
+	for ( const [id, tab] of Object.entries(tabs) ) {
+		if ( !tab || (typeof tab !== "object") ) continue;
+		tab.id ??= id;
+		tab.group ??= "primary";
+		tab.active = id === desiredTabId;
+		tab.cssClass = tab.active ? "active" : "";
+	}
 	return context;
 }
 

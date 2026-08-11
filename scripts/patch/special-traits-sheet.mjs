@@ -80,10 +80,26 @@ function registerWrapper(target, callback) {
 	}
 }
 
+/**
+ * Relabel the specialTraits primary tab.
+ * Supports DND5e v5.3.3 Record tabs and legacy array tabs.
+ * @param {object} context
+ * @returns {object}
+ */
 export function applySpecialTraitsTabLabel(context) {
-	if ( Array.isArray(context?.tabs) ) {
-		const specialTraitsTab = context.tabs.find(tab => tab?.tab === "specialTraits");
-		if ( specialTraitsTab ) specialTraitsTab.label = localizeOrFallback("SW5E.SpecialTraits.Label", "Special Traits");
+	const tabs = context?.tabs;
+	if ( !tabs || (typeof tabs !== "object") ) return context;
+
+	if ( Array.isArray(tabs) ) {
+		const specialTraitsTab = tabs.find(tab => tab?.tab === "specialTraits");
+		if ( specialTraitsTab ) {
+			specialTraitsTab.label = localizeOrFallback("SW5E.SpecialTraits.Label", "Special Traits");
+		}
+		return context;
+	}
+
+	if ( tabs.specialTraits && (typeof tabs.specialTraits === "object") ) {
+		tabs.specialTraits.label = localizeOrFallback("SW5E.SpecialTraits.Label", "Special Traits");
 	}
 	return context;
 }

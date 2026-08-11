@@ -34,7 +34,7 @@ import {
 } from "../powercasting-known.mjs";
 
 const PRECALCULATED_SPELLCASTING_KEY = "sw5e-preCalculatedSpellcastingClasses";
-let baseActorTabsContextWrapped = false;
+let baseActorTabsWrapped = false;
 
 function getHtmlRoot(html) {
 	return html instanceof HTMLElement ? html : html?.[0] ?? html;
@@ -69,22 +69,41 @@ function formatSuperiorityPool(superiority) {
 	return `${current}/${max}d${die}`;
 }
 
+/**
+ * Relabel the spells primary tab to Powers.
+ * Supports DND5e v5.3.3 Record tabs (`context.tabs.spells`) and legacy array tabs.
+ * @param {object} context
+ * @returns {object}
+ */
 export function applyPowersTabLabel(context) {
-	if ( Array.isArray(context?.tabs) ) {
-		const spellsTab = context.tabs.find(tab => tab?.tab === "spells");
+	const tabs = context?.tabs;
+	if ( !tabs || (typeof tabs !== "object") ) return context;
+
+	if ( Array.isArray(tabs) ) {
+		const spellsTab = tabs.find(tab => tab?.tab === "spells");
 		if ( spellsTab ) spellsTab.label = localizeOrFallback("TYPES.Item.spellPl", "Powers");
+		return context;
+	}
+
+	if ( tabs.spells && (typeof tabs.spells === "object") ) {
+		tabs.spells.label = localizeOrFallback("TYPES.Item.spellPl", "Powers");
 	}
 	return context;
 }
 
+/**
+ * DND5e v5.3.3: PrimarySheetMixin#_getTabs returns a Record of ApplicationTab by id.
+ * Retarget from removed BaseActorSheet#_prepareTabsContext (LW-018 / D53-LW-018).
+ */
 function patchBaseActorTabsContext() {
-	if ( baseActorTabsContextWrapped ) return;
-	baseActorTabsContextWrapped = registerWrapper("dnd5e.applications.actor.BaseActorSheet.prototype._prepareTabsContext", async function (wrapped, context, options) {
-		context = await wrapped.call(this, context, options);
-		context = applyPowersTabLabel(context);
-		context = applySpecialTraitsTabLabel(context);
-		context = applyStarshipTabsContext(context, this);
-		return context;
+	if ( baseActorTabsWrapped ) return;
+	baseActorTabsWrapped = registerWrapper("dnd5e.applications.actor.BaseActorSheet.prototype._getTabs", function (wrapped, ...args) {
+		const tabs = wrapped.call(this, ...args);
+		const context = { tabs };
+		applyPowersTabLabel(context);
+		applySpecialTraitsTabLabel(context);
+		applyStarshipTabsContext(context, this);
+		return context.tabs;
 	});
 }
 
