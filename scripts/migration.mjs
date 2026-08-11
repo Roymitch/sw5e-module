@@ -31,6 +31,12 @@ import {
 	endStarshipFoodCurrentMigrationReport,
 	getActiveStarshipFoodCurrentMigrationReport
 } from "./starship-food-value-migration.mjs";
+import {
+	applyImagePathMigration,
+	ArtworkMigrationInvariantError,
+	collectArtworkInvariantViolations,
+	formatArtworkInvariantDiagnostic
+} from "./image-path-migration.mjs";
 
 export { auditStarshipFoodCurrent };
 
@@ -221,11 +227,23 @@ export const migrateWorld = async function() {
 	beginStarshipFoodCurrentMigrationReport();
 	try {
 		await _migrateWorldDocuments(migrationData);
+	} catch(err) {
+		if ( err instanceof ArtworkMigrationInvariantError ) {
+			for ( const violation of err.violations ) {
+				console.error(formatArtworkInvariantDiagnostic(violation));
+			}
+			ui.notifications.error(
+				`SW5E migration aborted: protected artwork invariant failed (${err.violations.length}). Migration version was not advanced.`,
+				{ permanent: true }
+			);
+		}
+		// Do not advance moduleMigrationVersion — leave world eligible for a corrected rerun.
+		throw err;
 	} finally {
 		endStarshipFoodCurrentMigrationReport();
 	}
 
-	// Set the migration as complete
+	// Set the migration as complete only after every candidate write succeeded.
 	const moduleVersion = getModule()?.version ?? version;
 	if (moduleVersion !== "#{VERSION}#") game.settings.set(SETTINGS_NAMESPACE, "moduleMigrationVersion", moduleVersion);
 	ui.notifications.info(game.i18n.format("MIGRATION.sw5eComplete", { version }), { permanent: true });
@@ -233,136 +251,215 @@ export const migrateWorld = async function() {
 
 /**
  * Document migration body for migrateWorld (Actors, Items, Scenes, world packs).
+ * Preferred sequence: build all candidates → validate artwork → write only if clean.
  * @param {object} migrationData
  * @private
  */
 async function _migrateWorldDocuments(migrationData) {
-	// Migrate World Actors
+	const migrationVersion = getModule()?.flags?.needsMigrationVersion
+		?? getModule()?.version
+		?? "";
+	const candidates = [];
+
+	const pushCandidate = candidate => {
+		if ( !candidate?.preparedUpdate ) return;
+		if ( foundry.utils.isEmpty(candidate.preparedUpdate) && !candidate.persistSourceMigration ) return;
+		candidates.push(candidate);
+	};
+
+	// --- Collect World Actors ---
 	const actors = game.actors.map(a => [a, true])
 		.concat(Array.from(game.actors.invalidDocumentIds).map(id => [game.actors.getInvalid(id), false]));
 	for ( const [actor, valid] of actors ) {
-		try {
-			const flags = { persistSourceMigration: false };
-			const source = valid ? actor.toObject() : getInvalidDocumentSource(game.actors, actor.id, "actors");
-			if ( !source ) continue;
-			let updateData = migrateActorData(source, migrationData, flags, { actorUuid: actor.uuid });
-			if ( !foundry.utils.isEmpty(updateData) ) {
-				console.log(`Migrating Actor document ${actor.name}`);
-				updateData = prepareMigratedSource(source, updateData, flags);
-				await actor.update(updateData, getDocumentUpdateOptions({
-					valid,
-					persistSourceMigration: flags.persistSourceMigration
-				}));
-			}
-		} catch(err) {
-			err.message = `Failed sw5e module migration for Actor ${actor.name}: ${err.message}`;
-			console.error(err);
-			const foodReport = getActiveStarshipFoodCurrentMigrationReport();
-			if ( foodReport ) foodReport.failures += 1;
-		}
+		const flags = { persistSourceMigration: false };
+		const source = valid ? actor.toObject() : getInvalidDocumentSource(game.actors, actor.id, "actors");
+		if ( !source ) continue;
+		let updateData = migrateActorData(source, migrationData, flags, { actorUuid: actor.uuid });
+		if ( foundry.utils.isEmpty(updateData) ) continue;
+		const preparedUpdate = prepareMigratedSource(source, updateData, flags);
+		const options = getDocumentUpdateOptions({
+			valid,
+			persistSourceMigration: flags.persistSourceMigration
+		});
+		pushCandidate({
+			documentType: "Actor",
+			documentId: actor.id,
+			document: actor,
+			beforeSource: source,
+			preparedUpdate,
+			options,
+			caller: "migrateWorld:Actor",
+			persistSourceMigration: flags.persistSourceMigration,
+			logName: actor.name
+		});
 	}
 
-	// Migrate World Items
+	// --- Collect World Items ---
 	const items = game.items.map(i => [i, true])
 		.concat(Array.from(game.items.invalidDocumentIds).map(id => [game.items.getInvalid(id), false]));
 	for ( const [item, valid] of items ) {
-		try {
-			const flags = { persistSourceMigration: false };
-			const source = valid ? item.toObject() : getInvalidDocumentSource(game.items, item.id, "items");
-			if ( !source ) continue;
-			let updateData = migrateItemData(source, migrationData, flags);
-			if ( !foundry.utils.isEmpty(updateData) ) {
-				console.log(`Migrating Item document ${item.name}`);
-				updateData = prepareMigratedSource(source, updateData, flags);
-				await item.update(updateData, getDocumentUpdateOptions({
-					valid,
-					persistSourceMigration: flags.persistSourceMigration
-				}));
-			}
-		} catch(err) {
-			err.message = `Failed sw5e module migration for Item ${item.name}: ${err.message}`;
-			console.error(err);
-		}
+		const flags = { persistSourceMigration: false };
+		const source = valid ? item.toObject() : getInvalidDocumentSource(game.items, item.id, "items");
+		if ( !source ) continue;
+		let updateData = migrateItemData(source, migrationData, flags);
+		if ( foundry.utils.isEmpty(updateData) ) continue;
+		const preparedUpdate = prepareMigratedSource(source, updateData, flags);
+		const options = getDocumentUpdateOptions({
+			valid,
+			persistSourceMigration: flags.persistSourceMigration
+		});
+		pushCandidate({
+			documentType: "Item",
+			documentId: item.id,
+			document: item,
+			beforeSource: source,
+			preparedUpdate,
+			options,
+			caller: "migrateWorld:Item",
+			persistSourceMigration: flags.persistSourceMigration,
+			logName: item.name
+		});
 	}
 
-	// Migrate World Macros
+	// --- Collect World Macros ---
 	for ( const m of game.macros ) {
-		try {
-			const updateData = migrateMacroData(m.toObject(), migrationData);
-			if ( !foundry.utils.isEmpty(updateData) ) {
-				console.log(`Migrating Macro document ${m.name}`);
-				await m.update(updateData, {enforceTypes: false, render: false});
-			}
-		} catch(err) {
-			err.message = `Failed sw5e module migration for Macro ${m.name}: ${err.message}`;
-			console.error(err);
-		}
+		const source = m.toObject();
+		const updateData = migrateMacroData(source, migrationData);
+		if ( foundry.utils.isEmpty(updateData) ) continue;
+		const preparedUpdate = applyUpdateToClone(source, updateData);
+		pushCandidate({
+			documentType: "Macro",
+			documentId: m.id,
+			document: m,
+			beforeSource: source,
+			preparedUpdate,
+			writePayload: updateData,
+			options: { enforceTypes: false, render: false },
+			caller: "migrateWorld:Macro",
+			persistSourceMigration: false,
+			logName: m.name,
+			writeMode: "delta"
+		});
 	}
 
-	// Migrate World Roll Tables
+	// --- Collect World Roll Tables ---
 	for ( const table of game.tables ) {
-		try {
-			const updateData = migrateRollTableData(table.toObject(), migrationData);
-			if ( !foundry.utils.isEmpty(updateData) ) {
-				console.log(`Migrating RollTable document ${table.name}`);
-				await table.update(updateData, { enforceTypes: false, render: false });
-			}
-		} catch(err) {
-			err.message = `Failed sw5e module migration for RollTable ${table.name}: ${err.message}`;
-			console.error(err);
-		}
+		const source = table.toObject();
+		const updateData = migrateRollTableData(source, migrationData);
+		if ( foundry.utils.isEmpty(updateData) ) continue;
+		const preparedUpdate = applyUpdateToClone(source, updateData);
+		pushCandidate({
+			documentType: "RollTable",
+			documentId: table.id,
+			document: table,
+			beforeSource: source,
+			preparedUpdate,
+			writePayload: updateData,
+			options: { enforceTypes: false, render: false },
+			caller: "migrateWorld:RollTable",
+			persistSourceMigration: false,
+			logName: table.name,
+			writeMode: "delta"
+		});
 	}
 
-	// Migrate Actor Override Tokens
+	// --- Collect Scenes + ActorDeltas ---
 	for ( const s of game.scenes ) {
-		try {
-			const updateData = migrateSceneData(s, migrationData);
-			if ( !foundry.utils.isEmpty(updateData) ) {
-				console.log(`Migrating Scene document ${s.name}`);
-				await s.update(updateData, {enforceTypes: false, render: false});
-			}
-		} catch(err) {
-			err.message = `Failed sw5e module migration for Scene ${s.name}: ${err.message}`;
-			console.error(err);
+		const sceneSource = s.toObject?.() ?? s;
+		const sceneUpdate = migrateSceneData(s, migrationData);
+		if ( !foundry.utils.isEmpty(sceneUpdate) ) {
+			const preparedUpdate = applyUpdateToClone(sceneSource, sceneUpdate);
+			pushCandidate({
+				documentType: "Scene",
+				documentId: s.id,
+				document: s,
+				beforeSource: sceneSource,
+				preparedUpdate,
+				writePayload: sceneUpdate,
+				options: { enforceTypes: false, render: false },
+				caller: "migrateWorld:Scene",
+				persistSourceMigration: false,
+				logName: s.name,
+				writeMode: "delta",
+				sceneTokenArtwork: true,
+				sceneUpdate
+			});
 		}
 
-		// Migrate ActorDeltas individually in order to avoid issues with ActorDelta bulk updates.
 		for ( const token of s.tokens ) {
 			if ( token.actorLink || !token.actor ) continue;
-			try {
-				const flags = { persistSourceMigration: false };
-				const source = token.actor.toObject();
-				let updateData = migrateActorData(source, migrationData, flags, { actorUuid: token.actor.uuid });
-				if ( !foundry.utils.isEmpty(updateData) ) {
-					console.log(`Migrating ActorDelta document ${token.actor.name} [${token.delta.id}] in Scene ${s.name}`);
-					if ( flags.persistSourceMigration ) {
-						updateData = prepareMigratedSource(source, updateData, flags);
-					} else {
-						// Workaround for core issue of bulk updating ActorDelta collections.
-						["items", "effects"].forEach(col => {
-							for ( const [i, update] of (updateData[col] ?? []).entries() ) {
-								const original = token.actor[col].get(update._id);
-								updateData[col][i] = foundry.utils.mergeObject(original.toObject(), update, { inplace: false });
-							}
-						});
+			const flags = { persistSourceMigration: false };
+			const source = token.actor.toObject();
+			let updateData = migrateActorData(source, migrationData, flags, { actorUuid: token.actor.uuid });
+			if ( foundry.utils.isEmpty(updateData) ) continue;
+			let writePayload;
+			let preparedUpdate;
+			if ( flags.persistSourceMigration ) {
+				writePayload = prepareMigratedSource(source, updateData, flags);
+				preparedUpdate = writePayload;
+			} else {
+				writePayload = foundry.utils.deepClone(updateData);
+				["items", "effects"].forEach(col => {
+					for ( const [i, update] of (writePayload[col] ?? []).entries() ) {
+						const original = token.actor[col].get(update._id);
+						writePayload[col][i] = foundry.utils.mergeObject(original.toObject(), update, { inplace: false });
 					}
-					await token.actor.update(updateData, getDocumentUpdateOptions({
-						valid: true,
-						persistSourceMigration: flags.persistSourceMigration
-					}));
-				}
-			} catch(err) {
-				err.message = `Failed sw5e module migration for ActorDelta [${token.id}]: ${err.message}`;
-				console.error(err);
+				});
+				preparedUpdate = applyUpdateToClone(source, writePayload);
 			}
+			pushCandidate({
+				documentType: "ActorDelta",
+				documentId: token.delta?.id ?? token.id,
+				document: token.actor,
+				beforeSource: source,
+				preparedUpdate,
+				writePayload,
+				options: getDocumentUpdateOptions({
+					valid: true,
+					persistSourceMigration: flags.persistSourceMigration
+				}),
+				caller: "migrateWorld:ActorDelta",
+				persistSourceMigration: flags.persistSourceMigration,
+				logName: token.actor.name
+			});
 		}
 	}
 
-	// Migrate World Compendium Packs
+	// --- Collect world Compendium pack document candidates ---
+	const packCandidates = [];
 	for ( let p of game.packs ) {
 		if ( p.metadata.packageType !== "world" ) continue;
 		if ( !MIGRATABLE_COMPENDIUM_DOCUMENTS.includes(p.documentName) ) continue;
-		await migrateCompendium(p);
+		const collected = await _collectCompendiumMigrationCandidates(p, migrationData);
+		packCandidates.push(...collected);
+	}
+
+	const allCandidates = candidates.concat(packCandidates);
+	_assertArtworkInvariantsForCandidates(allCandidates, migrationVersion);
+
+	// --- Write phase (only after complete candidate set passes) ---
+	for ( const candidate of candidates ) {
+		console.log(`Migrating ${candidate.documentType} document ${candidate.logName}`);
+		const payload = candidate.writePayload ?? candidate.preparedUpdate;
+		await candidate.document.update(payload, candidate.options);
+	}
+
+	for ( let p of game.packs ) {
+		if ( p.metadata.packageType !== "world" ) continue;
+		if ( !MIGRATABLE_COMPENDIUM_DOCUMENTS.includes(p.documentName) ) continue;
+		const forPack = packCandidates.filter(c => c.packCollection === p.collection);
+		if ( !forPack.length ) continue;
+		const wasLocked = p.locked;
+		await p.configure({ locked: false });
+		try {
+			await p.migrate();
+			for ( const candidate of forPack ) {
+				console.log(`Migrating ${candidate.documentType} document ${candidate.logName} in Compendium ${p.collection}`);
+				await candidate.document.update(candidate.preparedUpdate, candidate.options);
+			}
+		} finally {
+			await p.configure({ locked: wasLocked });
+		}
 	}
 
 	// Empty legacy folders (e.g. "Powers & Maneuvers", "Tools") are left in place.
@@ -383,33 +480,71 @@ async function _migrateWorldDocuments(migrationData) {
 	}
 }
 
-/* -------------------------------------------- */
+/**
+ * @param {object[]} candidates
+ * @param {string} migrationVersion
+ * @private
+ */
+function _assertArtworkInvariantsForCandidates(candidates, migrationVersion) {
+	const violations = [];
+	for ( const candidate of candidates ) {
+		if ( candidate.sceneTokenArtwork && candidate.sceneUpdate?.tokens ) {
+			const beforeTokens = candidate.beforeSource?.tokens ?? [];
+			for ( const tokenUpdate of candidate.sceneUpdate.tokens ) {
+				const beforeToken = beforeTokens.find(t => t._id === tokenUpdate._id) ?? {};
+				const afterToken = foundry.utils.mergeObject(
+					foundry.utils.deepClone(beforeToken),
+					tokenUpdate,
+					{ inplace: false }
+				);
+				violations.push(...collectArtworkInvariantViolations({
+					documentType: "Token",
+					documentId: tokenUpdate._id,
+					beforeSource: beforeToken,
+					preparedSource: afterToken,
+					caller: "migrateWorld:Scene.tokens",
+					updateMode: candidate.options,
+					migrationVersion
+				}));
+			}
+		}
+
+		violations.push(...collectArtworkInvariantViolations({
+			documentType: candidate.documentType,
+			documentId: candidate.documentId,
+			beforeSource: candidate.beforeSource,
+			preparedSource: candidate.preparedUpdate,
+			caller: candidate.caller,
+			updateMode: {
+				diff: candidate.options?.diff,
+				recursive: candidate.options?.recursive,
+				persistSourceMigration: candidate.persistSourceMigration
+			},
+			migrationVersion
+		}));
+	}
+	if ( violations.length ) throw new ArtworkMigrationInvariantError(violations);
+}
 
 /**
- * Apply migration rules to all Documents within a single Compendium pack
- * @param {CompendiumCollection} pack  Pack to be migrated.
- * @returns {Promise}
+ * Collect pack document migration candidates without writing.
+ * @param {CompendiumCollection} pack
+ * @param {object} migrationData
+ * @returns {Promise<object[]>}
+ * @private
  */
-export const migrateCompendium = async function(pack) {
+async function _collectCompendiumMigrationCandidates(pack, migrationData) {
 	const documentName = pack.documentName;
-	if ( !MIGRATABLE_COMPENDIUM_DOCUMENTS.includes(documentName) ) return;
-
-	const migrationData = await getMigrationData();
-
-	// Unlock the pack for editing
 	const wasLocked = pack.locked;
-	await pack.configure({locked: false});
-
-	// Begin by requesting server-side data model migration and get the migrated content
-	await pack.migrate();
-	const documents = await pack.getDocuments();
-
-	// Iterate over compendium entries - applying fine-tuned migration functions
-	for ( let doc of documents ) {
-		let updateData = {};
-		try {
+	await pack.configure({ locked: false });
+	try {
+		await pack.migrate();
+		const documents = await pack.getDocuments();
+		const collected = [];
+		for ( let doc of documents ) {
 			const flags = { persistSourceMigration: false };
 			const source = doc.toObject();
+			let updateData = {};
 			switch ( documentName ) {
 				case "Actor":
 					updateData = migrateActorData(source, migrationData, flags, { actorUuid: doc.uuid });
@@ -418,7 +553,7 @@ export const migrateCompendium = async function(pack) {
 					updateData = migrateItemData(source, migrationData, flags);
 					break;
 				case "Scene":
-					updateData = migrateSceneData(source, migrationData, flags);
+					updateData = migrateSceneData(source, migrationData);
 					break;
 				case "JournalEntry":
 					updateData = migrateJournalEntryData(source, migrationData);
@@ -427,26 +562,60 @@ export const migrateCompendium = async function(pack) {
 					updateData = migrateRollTableData(source, migrationData);
 					break;
 			}
-
-			// Save the entry, if data was changed
 			if ( foundry.utils.isEmpty(updateData) ) continue;
-			updateData = prepareMigratedSource(source, updateData, flags);
-			await doc.update(updateData, getDocumentUpdateOptions({
-				valid: true,
-				persistSourceMigration: flags.persistSourceMigration
-			}));
-			console.log(`Migrated ${documentName} document ${doc.name} in Compendium ${pack.collection}`);
+			const preparedUpdate = prepareMigratedSource(source, updateData, flags);
+			collected.push({
+				documentType: documentName,
+				documentId: doc.id,
+				document: doc,
+				beforeSource: source,
+				preparedUpdate,
+				options: getDocumentUpdateOptions({
+					valid: true,
+					persistSourceMigration: flags.persistSourceMigration
+				}),
+				caller: `migrateCompendium:${pack.collection}`,
+				persistSourceMigration: flags.persistSourceMigration,
+				logName: doc.name,
+				packCollection: pack.collection
+			});
 		}
-
-		// Handle migration failures
-		catch(err) {
-			err.message = `Failed sw5e module migration for document ${doc.name} in pack ${pack.collection}: ${err.message}`;
-			console.error(err);
-		}
+		return collected;
+	} finally {
+		await pack.configure({ locked: wasLocked });
 	}
+}
 
-	// Apply the original locked status for the pack
-	await pack.configure({locked: wasLocked});
+/* -------------------------------------------- */
+
+/**
+ * Apply migration rules to all Documents within a single Compendium pack.
+ * Preflights protected artwork for the entire pack before any document write.
+ * @param {CompendiumCollection} pack  Pack to be migrated.
+ * @returns {Promise}
+ */
+export const migrateCompendium = async function(pack) {
+	const documentName = pack.documentName;
+	if ( !MIGRATABLE_COMPENDIUM_DOCUMENTS.includes(documentName) ) return;
+
+	const migrationData = await getMigrationData();
+	const migrationVersion = getModule()?.flags?.needsMigrationVersion
+		?? getModule()?.version
+		?? "";
+	const candidates = await _collectCompendiumMigrationCandidates(pack, migrationData);
+	_assertArtworkInvariantsForCandidates(candidates, migrationVersion);
+
+	const wasLocked = pack.locked;
+	await pack.configure({ locked: false });
+	try {
+		await pack.migrate();
+		for ( const candidate of candidates ) {
+			await candidate.document.update(candidate.preparedUpdate, candidate.options);
+			console.log(`Migrated ${documentName} document ${candidate.logName} in Compendium ${pack.collection}`);
+		}
+	} finally {
+		await pack.configure({ locked: wasLocked });
+	}
 	console.log(`Migrated all ${documentName} documents from Compendium ${pack.collection}`);
 };
 
@@ -818,7 +987,7 @@ export const migrateActorData = function(actor, migrationData, flags={}, { actor
 		|| normalizeLegacyMasterActorSource(workingActor)
 		|| normalizeLegacyStarshipActorSource(workingActor);
 
-	_migrateImage(workingActor, updateData);
+	applyImagePathMigration(workingActor, updateData);
 	_migrateObjectFlags(workingActor, updateData);
 	_migrateStalePowercastingKnownMax(workingActor, updateData);
 	_migrateStaleSuperiorityDiceMax(workingActor, updateData);
@@ -899,7 +1068,7 @@ export function migrateItemData(item, migrationData, flags={}) {
 		|| normalizeLegacyStarshipItemSource(workingItem);
 	if ( requiresFullSourceMigration ) flags.persistSourceMigration = true;
 
-	_migrateImage(workingItem, updateData);
+	applyImagePathMigration(workingItem, updateData);
 	_migrateDescriptionLinks(workingItem, updateData);
 	_migrateObjectFlags(workingItem, updateData);
 	_migrateItemProperties(workingItem, updateData);
@@ -939,7 +1108,7 @@ export function migrateItemData(item, migrationData, flags={}) {
  */
 export const migrateEffectData = function(effect, migrationData, { parent }={}) {
 	const updateData = {};
-	_migrateImage(effect, updateData);
+	applyImagePathMigration(effect, updateData);
 	_remapSuperiorityEffectKeys(effect, updateData);
 	_cleanEffect(effect, updateData, parent);
 	return updateData;
@@ -955,7 +1124,7 @@ export const migrateEffectData = function(effect, migrationData, { parent }={}) 
  */
 export const migrateMacroData = function(macro, migrationData) {
 	const updateData = {};
-	_migrateImage(macro, updateData);
+	applyImagePathMigration(macro, updateData);
 	_migrateObjectFlags(macro, updateData);
 	if ( typeof macro.command === "string" ) {
 		const normalized = normalizeLegacyContentString(macro.command);
@@ -978,14 +1147,14 @@ export const migrateMacroData = function(macro, migrationData) {
  */
 export function migrateRollTableData(table, migrationData) {
 	const updateData = {};
-	_migrateImage(table, updateData);
+	applyImagePathMigration(table, updateData);
 	_migrateObjectFlags(table, updateData);
 
 	if ( Array.isArray(table.results) ) {
 		const results = table.results.reduce((arr, result) => {
 			const resultData = result instanceof foundry.abstract.DataModel ? result.toObject() : foundry.utils.deepClone(result);
 			const resultUpdate = {};
-			_migrateImage(resultData, resultUpdate);
+			applyImagePathMigration(resultData, resultUpdate);
 			_migrateObjectFlags(resultData, resultUpdate);
 
 			if ( typeof resultData.text === "string" ) {
@@ -1024,14 +1193,14 @@ export function migrateRollTableData(table, migrationData) {
  */
 export function migrateJournalEntryData(journal, migrationData) {
 	const updateData = {};
-	_migrateImage(journal, updateData);
+	applyImagePathMigration(journal, updateData);
 	_migrateObjectFlags(journal, updateData);
 
 	if ( Array.isArray(journal.pages) ) {
 		const pages = journal.pages.reduce((arr, page) => {
 			const pageData = page instanceof foundry.abstract.DataModel ? page.toObject() : foundry.utils.deepClone(page);
 			const pageUpdate = {};
-			_migrateImage(pageData, pageUpdate);
+			applyImagePathMigration(pageData, pageUpdate);
 			_migrateObjectFlags(pageData, pageUpdate);
 
 			if ( typeof pageData.text?.content === "string" ) {
@@ -1064,7 +1233,7 @@ export const migrateSceneData = function(scene, migrationData) {
 	const tokens = scene.tokens.reduce((arr, token) => {
 		const t = token instanceof foundry.abstract.DataModel ? token.toObject() : token;
 		const update = {};
-		_migrateImage(t, update);
+		applyImagePathMigration(t, update);
 		_migrateObjectFlags(t, update);
 		if ( !game.actors.has(t.actorId) ) update.actorId = null;
 		const deltaSource = (!t.actorLink && t.actorId) ? getTokenActorDeltaSource(t) : null;
@@ -1165,111 +1334,6 @@ function mergePersistedMigrationSource(source, updateData) {
 /* -------------------------------------------- */
 /*  Low level migration utilities
 /* -------------------------------------------- */
-
-const SPECIES_PACK_IMG_REMAPS = Object.freeze({
-	"Droid%20Class%20I.webp": "Droid-ClassI.webp",
-	"Droid%20Class%20II.webp": "Droid-ClassIi.webp",
-	"Droid%20Class%20III.webp": "Droid-ClassIii.webp",
-	"Droid%20Class%20IV.webp": "Droid-ClassIv.webp",
-	"Droid%20Class%20V.webp": "Droid-ClassV.webp",
-	"Droid Class I.webp": "Droid-ClassI.webp",
-	"Droid Class II.webp": "Droid-ClassIi.webp",
-	"Droid Class III.webp": "Droid-ClassIii.webp",
-	"Droid Class IV.webp": "Droid-ClassIv.webp",
-	"Droid Class V.webp": "Droid-ClassV.webp",
-	"Flesh%20Raider.webp": "FleshRaider.webp",
-	"Flesh Raider.webp": "FleshRaider.webp",
-	"Kel%20Dor.webp": "KelDor.webp",
-	"Kel Dor.webp": "KelDor.webp",
-	"Mon%20Calamari.webp": "MonCalamari.webp",
-	"Mon Calamari.webp": "MonCalamari.webp"
-});
-
-/**
- * Remap known broken Species pack filenames (spaces / %20) to on-disk names.
- * @param {string} path
- * @returns {string}
- */
-function remapSpeciesPackImage(path) {
-	if ( typeof path !== "string" ) return path;
-	for ( const [badSuffix, goodSuffix] of Object.entries(SPECIES_PACK_IMG_REMAPS) ) {
-		if ( path.endsWith(badSuffix) ) return `${path.slice(0, -badSuffix.length)}${goodSuffix}`;
-	}
-	return path;
-}
-
-/**
- * Remap legacy short companion icon folder to canonical packs path.
- * Exact `icons/companions/` only (do not match `icons/packs/Companions/`).
- * @param {string} path
- * @returns {string}
- */
-function remapLegacyCompanionIconPath(path) {
-	if ( typeof path !== "string" ) return path;
-	return path.replaceAll("icons/companions/", "icons/packs/Companions/");
-}
-
-/**
- * Migrate any module images from system or old module path to new one.
- * @param {object} objectData      Object data to migrate.
- * @param {object} updateData      Existing update to expand upon.
- * @returns {object}               The updateData to apply
- * @private
- */
-function _migrateImage(objectData, updateData) {
-	const actorTypesWithBlankAvatarFallback = new Set(["character", "npc", "starship", "vehicle"]);
-	const isActorAvatarTarget = actorTypesWithBlankAvatarFallback.has(objectData?.type);
-	const isLegacyDndIcon = path => /^systems\/dnd5e\/icons\/.+$/.test(path ?? "");
-	const isLootBagFallback = path => path === "icons/svg/item-bag.svg";
-	const normalizeModuleImagePath = path => path
-		?.replace(/^modules\/sw5e\//, `${getModulePath()}/`)
-		?.replace(/^modules\/sw5e-module-test\//, `${getModulePath()}/`)
-		?.replace("systems/sw5e/packs/Icons", getModulePath("icons/packs"))
-		?.replace("modules/sw5e/icons/", `${getModulePath("icons")}/`)
-		?.replace("modules/sw5e-module-test/icons/", `${getModulePath("icons")}/`);
-	const getMonsterTokenPathFromAvatar = path => /^modules\/sw5e-module\/icons\/packs\/monsters\/.+\/Avatar\.webp$/i.test(path ?? "")
-		? path.replace(/\/Avatar\.webp$/i, "/Token.webp")
-		: "";
-	const isKnownBrokenExternalImage = path => /^https?:\/\/(?:static\.wikia\.nocookie\.net|cdn[ab]\.artstation\.com)\//.test(path ?? "");
-	const isInvalidImageValue = path => {
-		if ( typeof path !== "string" ) return false;
-		const normalized = path.trim().toLowerCase();
-		return ["", "undefined", "null", "nan"].includes(normalized)
-			|| normalized.startsWith("tokenizer/")
-			|| isKnownBrokenExternalImage(normalized);
-	};
-	const props = ["img", "texture.src", "prototypeToken.texture.src"];
-	// ActiveEffect5e#icon is deprecated since Foundry v12 (migrated to img); avoid accessing it on documents.
-	// Legacy embedded effect source data may still store icon — migrate it when present on plain objects.
-	const isEffect = objectData?.documentName === "ActiveEffect" || (objectData?.changes && Array.isArray(objectData.changes));
-	if ( !isEffect ) props.push("icon");
-	else if ( typeof objectData?.icon === "string" ) props.push("icon");
-	for (const prop of props) {
-		const path = foundry.utils.getProperty(objectData, prop);
-		if ( isInvalidImageValue(path) ) {
-			updateData[prop] = "";
-			console.log("Cleared invalid image path", objectData.name, "prop", prop, "old", path);
-			continue;
-		}
-
-		let newPath = remapLegacyCompanionIconPath(remapSpeciesPackImage(normalizeModuleImagePath(path)));
-		if ( prop === "prototypeToken.texture.src" ) {
-			const actorAvatar = normalizeModuleImagePath(foundry.utils.getProperty(objectData, "img"));
-			const canonicalMonsterToken = getMonsterTokenPathFromAvatar(actorAvatar);
-			if ( canonicalMonsterToken && (newPath === actorAvatar) ) newPath = canonicalMonsterToken;
-		}
-		if ( isActorAvatarTarget && (prop !== "icon") && (isLegacyDndIcon(newPath) || isLootBagFallback(newPath)) ) {
-			newPath = "";
-		} else {
-			newPath = newPath?.replace(/^systems\/dnd5e\/icons\/.+$/, "icons/svg/item-bag.svg");
-		}
-		if (newPath !== path) {
-			updateData[prop] = newPath;
-			console.log("Changed image path", objectData.name, "prop", prop, "old", path, "new", newPath);
-		}
-	}
-	return updateData;
-}
 
 /**
  * Migrate flags from the sw5e test module.
