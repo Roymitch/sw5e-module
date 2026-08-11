@@ -39,25 +39,75 @@ function patchAllowFeatsAndASI() {
 		"WRAPPER"
 	);
 
-	// Document class: type "both" applies one ASI pass then one feat pass
+	// Document class: type "both" grants 1 ASI + feat without FlowV2 reverse wiping the ASI
 	libWrapper.register(
 		getModuleId(),
 		"CONFIG.DND5E.advancementTypes.AbilityScoreImprovement.documentClass.prototype.apply",
 		async function (wrapped, level, data) {
 			if ( data?.type !== "both" || !isEnabled() ) return wrapped(level, data);
+
+			// Apply ASI first through native path.
 			await wrapped(level, {
 				type: "asi",
 				assignments: data.assignments,
 				retainedItems: data.retainedItems
 			});
-			await wrapped(level, {
-				type: "feat",
-				featUuid: data.featUuid,
-				uuid: data.featUuid ?? data.uuid,
-				retainedItems: data.retainedItems
+
+			const uuid = data.featUuid ?? data.uuid;
+			if ( !uuid ) return;
+
+			// Grant feat without calling apply(type:feat), which would reverse the ASI.
+			const assignments = foundry.utils.deepClone(this.value.assignments ?? {});
+			if ( this.actor.items.get(Object.keys(this.value.feat ?? {})[0]) ) {
+				// Unexpected existing feat from prior state — leave native reverse to callers.
+			}
+			let itemData = data.retainedItems?.[uuid];
+			if ( !itemData ) itemData = await this.createItemData(uuid);
+			if ( !itemData ) return;
+
+			const feat = { [itemData._id]: uuid };
+			this.actor.updateSource({ items: [itemData] });
+			this.updateSource({
+				value: {
+					type: "feat",
+					assignments: foundry.utils.isEmpty(assignments) ? null : assignments,
+					feat
+				}
 			});
 		},
 		"WRAPPER"
+	);
+
+	// Reverse must undo both the feat grant and any SW5e companion ASI assignments.
+	libWrapper.register(
+		getModuleId(),
+		"CONFIG.DND5E.advancementTypes.AbilityScoreImprovement.documentClass.prototype.reverse",
+		function (wrapped, level, options={}) {
+			if ( !isEnabled() ) return wrapped(level, options);
+			const hasFeat = !!Object.keys(this.value?.feat ?? {}).length;
+			const hasAssignments = !foundry.utils.isEmpty(this.value?.assignments ?? {});
+			if ( !(hasFeat && hasAssignments) ) return wrapped(level, options);
+
+			const source = this.value.toObject();
+			const updates = {};
+			for ( const [key, change] of Object.entries(this.value.assignments ?? {}) ) {
+				const ability = this.actor.system.toObject().abilities[key];
+				if ( !ability || !this.canImprove(key) ) continue;
+				updates[system.abilities..value] = ability.value - change;
+			}
+			this.actor.updateSource(updates);
+
+			const [id, uuid] = Object.entries(this.value.feat ?? {})[0] ?? [];
+			const item = this.actor.items.get(id);
+			if ( item ) source.retainedItems = { [uuid]: item.toObject() };
+			if ( id ) {
+				this.actor.items.delete(id);
+				this.actor.reset();
+			}
+			this.updateSource({ value: { assignments: null, feat: null, type: null } });
+			return source;
+		},
+		"MIXED"
 	);
 
 	const Flow = globalThis.dnd5e?.applications?.advancement?.AbilityScoreImprovementFlow;
