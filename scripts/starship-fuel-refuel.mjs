@@ -450,7 +450,7 @@ export async function postStarshipFuelRefuelChatMessage(actor, payload) {
 			{ name: actor.name }
 		);
 		await ChatMessage.create({
-			user: globalThis.game?.user?.id,
+			author: globalThis.game?.user?.id,
 			speaker: ChatMessage.getSpeaker({ actor }),
 			flavor,
 			content

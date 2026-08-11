@@ -263,7 +263,7 @@ export async function postStarshipSuppliesConsumeChatMessage(actor, payload) {
 		}
 		const content = await render(templatePath, payload);
 		await ChatMessage.create({
-			user: globalThis.game?.user?.id,
+			author: globalThis.game?.user?.id,
 			speaker: ChatMessage.getSpeaker({ actor }),
 			flavor: localizeSimple("SW5E.StarshipSheet.SuppliesConsumeChatFlavor", "Consume"),
 			content

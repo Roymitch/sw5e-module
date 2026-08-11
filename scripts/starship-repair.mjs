@@ -324,7 +324,7 @@ async function postRepairChatMessage(actor, { refitting, result }) {
 		)}</p>`;
 	}
 	await ChatMessage.create({
-		user: game.user.id,
+		author: game.user.id,
 		speaker: ChatMessage.getSpeaker({ actor }),
 		flavor: localizeOrFallback(flavorKey, refitting ? "Refitting Repair (8 hours)" : "Recharge Repair (1 hour)"),
 		content
@@ -717,7 +717,7 @@ async function postRegenChatMessage(actor, { shieldDieSpent = false, shieldPoint
 	if ( powerDiceRecovered > 0 ) messageKey += "P";
 
 	await ChatMessage.create({
-		user: game.user.id,
+		author: game.user.id,
 		speaker: ChatMessage.getSpeaker({ actor }),
 		flavor: localizeOrFallback("SW5E.RegenRepair", "Starship Regen"),
 		content: localizeOrFallback(messageKey, "{name} regenerates.", {
