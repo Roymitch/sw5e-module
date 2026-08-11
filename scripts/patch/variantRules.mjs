@@ -93,7 +93,7 @@ function patchAllowFeatsAndASI() {
 			for ( const [key, change] of Object.entries(this.value.assignments ?? {}) ) {
 				const ability = this.actor.system.toObject().abilities[key];
 				if ( !ability || !this.canImprove(key) ) continue;
-				updates[system.abilities..value] = ability.value - change;
+				updates[`system.abilities.${key}.value`] = ability.value - change;
 			}
 			this.actor.updateSource(updates);
 
