@@ -651,7 +651,10 @@ export class CharacterImporter {
 		if ( !itemData ) return false;
 		const embeddedData = foundry.utils.deepClone(itemData);
 		delete embeddedData._id;
-		const hasAdvancement = Array.isArray(embeddedData.system?.advancement) && embeddedData.system.advancement.length > 0;
+		const rawAdvancement = embeddedData.system?.advancement;
+		const hasAdvancement = Array.isArray(rawAdvancement)
+			? rawAdvancement.length > 0
+			: !!(rawAdvancement && typeof rawAdvancement === "object" && Object.keys(rawAdvancement).length > 0);
 		if ( hasAdvancement ) {
 			this.#report.bypassedAdvancementItems.push(label);
 		}
