@@ -589,31 +589,57 @@ function normalizeScaleValue(scaleValue, scaleType) {
 	return changed
 }
 
+/**
+ * Normalize Item `system.advancement` to DND5e v5.3.3 object-native storage.
+ *
+ * Q-02 / D53-ADV-001: Do not force objects back into arrays. Accept legacy arrays
+ * as a transition input and convert toward `{ [advancement._id]: advancement }`
+ * matching DND5e AdvancementTemplate.#migrateStorage.
+ *
+ * @param {object} item  Plain Item source object
+ * @returns {boolean} Whether the source was mutated
+ */
 export function normalizeLegacyItemAdvancement(item) {
 	if ( !item?.system || !("advancement" in item.system) ) return false
 
 	const rawAdvancement = item.system.advancement
-	if ( rawAdvancement === undefined ) return false
+	if ( rawAdvancement === undefined || rawAdvancement === null ) return false
 
 	let changed = false
 	let advancement = rawAdvancement
 
-	if ( isObjectLike(rawAdvancement) ) {
-		advancement = Object.values(rawAdvancement)
-		item.system.advancement = advancement
+	// Legacy array → object-native (DND5e v5.3.3 #migrateStorage)
+	if ( Array.isArray(rawAdvancement) ) {
+		const asObject = {}
+		for ( const entry of rawAdvancement ) {
+			if ( !isObjectLike(entry) ) continue
+			// Match upstream: key by existing `_id` only; do not fabricate IDs.
+			if ( typeof entry._id === "string" && entry._id ) asObject[entry._id] = entry
+		}
+		item.system.advancement = asObject
+		advancement = asObject
+		changed = true
+	} else if ( !isObjectLike(rawAdvancement) ) {
+		return false
+	}
+
+	// Object-native path: drop non-object values without converting the map to an array.
+	const cleaned = {}
+	let removedNonObject = false
+	for ( const [key, entry] of Object.entries(advancement) ) {
+		if ( !isObjectLike(entry) ) {
+			removedNonObject = true
+			continue
+		}
+		cleaned[key] = entry
+	}
+	if ( removedNonObject ) {
+		item.system.advancement = cleaned
+		advancement = cleaned
 		changed = true
 	}
 
-	if ( !Array.isArray(advancement) ) return changed
-
-	const normalized = advancement.filter(adv => isObjectLike(adv))
-	if ( normalized.length !== advancement.length ) {
-		item.system.advancement = normalized
-		advancement = normalized
-		changed = true
-	}
-
-	for ( const adv of advancement ) {
+	for ( const adv of Object.values(advancement) ) {
 		if ( !isObjectLike(adv) ) continue
 		if ( !isObjectLike(adv.configuration) ) {
 			adv.configuration = {}
@@ -680,7 +706,7 @@ export function normalizeLegacyMasterItemSource(item) {
 			item.system ??= {}
 			item.system.description ??= { value: "", chat: "" }
 			item.system.source ??= {}
-			item.system.advancement ??= []
+			item.system.advancement ??= {}
 			item.system.type ??= {}
 			item.system.type.value = legacyFeatLike.value
 			item.system.type.subtype = legacyFeatLike.subtype ?? ""
