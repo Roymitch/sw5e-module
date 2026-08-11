@@ -123,7 +123,8 @@ function escapeHtml(value) {
 }
 
 function getLegacyPackHint(item) {
-	const sourceId = item?.flags?.core?.sourceId;
+	// Foundry v14: prefer _stats.compendiumSource; retain flags.core.sourceId for legacy content.
+	const sourceId = item?._stats?.compendiumSource ?? item?.flags?.core?.sourceId;
 	const match = /^Compendium\.[^.]+\.([^.]+)\./.exec(sourceId ?? "");
 	return match?.[1] ?? null;
 }
