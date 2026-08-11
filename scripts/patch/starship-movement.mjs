@@ -1,5 +1,3 @@
-import { getModuleId } from "../module-support.mjs";
-
 export function isSw5eStarshipActor(actor) {
 	return actor?.type === "vehicle" && actor?.flags?.sw5e?.legacyStarshipActor?.type === "starship";
 }
@@ -38,40 +36,16 @@ function wireStarshipSpaceMovementActionHandlers() {
 	actionConfig.getCostFunction = (...args) => TokenDocument5e.getMovementActionCostFunction(type, ...args);
 }
 
-let starshipSpaceMovementWrapperRegistered = false;
-
-function registerStarshipSpaceMovementInitWrapper() {
-	if ( starshipSpaceMovementWrapperRegistered ) return;
-	starshipSpaceMovementWrapperRegistered = true;
-
-	try {
-		libWrapper.register(
-			getModuleId(),
-			"foundry.utils.deepFreeze",
-			function(wrapped, obj) {
-				if ( obj === CONFIG.Token?.movement?.actions ) ensureStarshipTokenMovementActionConfig();
-				return wrapped(obj);
-			},
-			"WRAPPER"
-		);
-	} catch ( err ) {
-		starshipSpaceMovementWrapperRegistered = false;
-		console.warn("SW5E MODULE | Could not wrap foundry.utils.deepFreeze for starship space movement.", err);
-	}
-}
-
 /**
- * Register the deepFreeze wrapper after libWrapper is ready (never at module import time).
+ * Foundry v14.365: `foundry.utils.deepFreeze` is non-configurable, so libWrapper cannot
+ * register a WRAPPER on it (LibWrapperPackageError). Starship `space` token movement is
+ * injected instead by {@link ensureStarshipTokenMovementActionConfig} during module `init`,
+ * which runs before `Game#initializeConfig` freezes `CONFIG.Token.movement.actions`.
+ *
+ * Retained as a no-op entry point so call sites stay stable.
  */
 export function initializeStarshipMovementWrappers() {
-	if ( !globalThis.libWrapper ) {
-		console.warn("SW5E MODULE | libWrapper not available; starship movement wrapper not registered.");
-		return;
-	}
-
-	const register = () => registerStarshipSpaceMovementInitWrapper();
-	if ( libWrapper.ready ) register();
-	else Hooks.once("libWrapper.Ready", register);
+	// Intentionally empty on Foundry v14 — see ensureStarshipTokenMovementActionConfig.
 }
 
 /**
