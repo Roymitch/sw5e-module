@@ -199,6 +199,13 @@ export function patchDataModels() {
 		changeProficiency(result, "creature");
 		return result;
 	}, 'WRAPPER');
+	// DND5e 5.3.3 owns NPC `details` on NPCData, not CreatureTemplate. Re-apply legacy
+	// powerForceLevel / powerTechLevel / superiorityLevel after NPCData.replace-merge.
+	libWrapper.register(getModuleId(), 'dnd5e.dataModels.actor.NPCData.defineSchema', function (wrapped, ...args) {
+		const result = wrapped(...args);
+		addLegacyNpcDetailFields(result);
+		return result;
+	}, 'WRAPPER');
 	libWrapper.register(getModuleId(), 'dnd5e.dataModels.item.ToolData.defineSchema', function (wrapped, ...args) {
 		const result = wrapped(...args);
 		changeProficiency(result, "tool");
