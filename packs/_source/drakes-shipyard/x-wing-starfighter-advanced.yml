@@ -6969,8 +6969,8 @@ items:
       - _id: DwFh63OFTvVGSjQD
         flags: {}
         changes:
-          - key: system.abilities.dex.save
-            value: ((@str.mod)/2)
+          - key: system.abilities.dex.bonuses.save
+            value: "+max(1, floor((@abilities.str.value - 10) / 4))"
             mode: 2
             priority: 20
         disabled: false
@@ -7558,8 +7558,8 @@ effects:
     _key: '!actors.effects!1iE0TPVtIaqWPKRH.LFPMwbeLk6imYznT'
   - _id: orWtrxT3iqkIc0hG
     changes:
-      - key: system.abilities.dex.save
-        value: ((@str.mod)/2)
+      - key: system.abilities.dex.bonuses.save
+        value: "+max(1, floor((@abilities.str.value - 10) / 4))"
         mode: 2
         priority: 20
     disabled: false
