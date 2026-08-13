@@ -31,6 +31,10 @@ import {
 	endStarshipFoodCurrentMigrationReport,
 	getActiveStarshipFoodCurrentMigrationReport
 } from "./starship-food-value-migration.mjs";
+import {
+	cleanEffectAdvancementSupplantedChanges,
+	remapSuperiorityEffectKeys
+} from "./effect-change-collection.mjs";
 
 export { auditStarshipFoodCurrent };
 
@@ -699,35 +703,8 @@ export async function convertLegacyWorldPayload(payload, {
 
 /* -------------------------------------------- */
 
-const LEGACY_SUPERIORITY_EFFECT_KEY_MAP = {
-	"system.attributes.super.dice.max": "system.superiority.dice.max",
-	"system.attributes.super.dice.value": "system.superiority.dice.value",
-	"system.attributes.super.die": "system.superiority.die",
-	"system.attributes.super.level": "system.superiority.level",
-	"bonuses.super.dc": "bonuses.superiority.dc.all",
-	"bonuses.super.physicalDC": "bonuses.superiority.dc.physical",
-	"bonuses.super.mentalDC": "bonuses.superiority.dc.mental"
-};
-
-/**
- * Remap legacy standalone SW5e superiority Active Effect keys to dnd5e-module paths.
- * @param {object} effect
- * @param {object} updateData
- * @returns {object}
- * @private
- */
 function _remapSuperiorityEffectKeys(effect, updateData) {
-	if ( !Array.isArray(effect.changes) ) return updateData;
-
-	let changed = false;
-	for ( const change of effect.changes ) {
-		const mappedKey = LEGACY_SUPERIORITY_EFFECT_KEY_MAP[change.key];
-		if ( !mappedKey ) continue;
-		change.key = mappedKey;
-		changed = true;
-	}
-	if ( changed ) updateData.changes = effect.changes;
-	return updateData;
+	return remapSuperiorityEffectKeys(effect, updateData);
 }
 
 /**
@@ -1295,27 +1272,7 @@ function _migrateObjectFlags(objectData, updateData) {
  * @private
  */
 function _cleanEffect(effect, updateData, parent) {
-	const hasAdvancements = parent?.system?.advancement !== undefined || parent?.advancement !== undefined;
-	if (!hasAdvancements) return updateData;
-
-	const key_blacklist = [
-		"system.details.background",
-		"system.details.species",
-		"system.traits.languages.value",
-		"system.traits.toolProf.value",
-	];
-	const key_blacklist_re = [
-		/system\.tools\.\w+\.prof/,
-	];
-	function blacklisted(key) {
-		if (key_blacklist.includes(key)) return true;
-		for (const re of key_blacklist_re) if (re.test(key)) return true;
-		return false;
-	}
-
-	const newChanges = effect.changes.filter(change => !blacklisted(change.key));
-	if (newChanges.length !== effect.changes.length) updateData["changes"] = newChanges;
-	return updateData;
+	return cleanEffectAdvancementSupplantedChanges(effect, updateData, parent);
 }
 
 function _migrateDescriptionLinks(itemData, updateData) {
