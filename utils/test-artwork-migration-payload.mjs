@@ -109,8 +109,7 @@ check("legacy remap then second pass stable", () => {
 	assert.deepEqual(second.updateData, {});
 });
 
-check("fail-closed: simulated completion does not advance version on violation", () => {
-	let moduleMigrationVersion = "1.3.1";
+check("artwork-violating candidate is skipped; version advancement is coordinator-owned", () => {
 	const before = { type: "npc", img: "worlds/keep.png", prototypeToken: { texture: { src: "worlds/t.png" } } };
 	const prepared = { type: "npc", img: "", prototypeToken: { texture: { src: "worlds/t.png" } } };
 	const violations = collectArtworkInvariantViolations({
@@ -122,14 +121,9 @@ check("fail-closed: simulated completion does not advance version on violation",
 		migrationVersion: "1.3.6"
 	});
 	assert.ok(violations.length > 0);
-	try {
-		throw new ArtworkMigrationInvariantError(violations);
-	} catch ( err ) {
-		assert.equal(err instanceof ArtworkMigrationInvariantError, true);
-		// migrateWorld would rethrow before settings.set
-		assert.equal(moduleMigrationVersion, "1.3.1");
-		assert.match(formatArtworkInvariantDiagnostic(violations[0]), /ActorBad/);
-	}
+	const err = new ArtworkMigrationInvariantError(violations);
+	assert.equal(err instanceof ArtworkMigrationInvariantError, true);
+	assert.match(formatArtworkInvariantDiagnostic(violations[0]), /ActorBad/);
 });
 
 check("already-current world: no artwork update when paths already canonical", () => {

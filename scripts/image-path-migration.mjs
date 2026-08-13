@@ -25,8 +25,11 @@ export const SPECIES_PACK_IMG_REMAPS = Object.freeze({
 	"Mon Calamari.webp": "MonCalamari.webp"
 });
 
-/** Exact pack-monster Avatar.webp paths under the canonical module id. */
+/** Exact pack-monster Avatar.webp paths under the canonical module id. Pack-generation helper only. */
 const AUTHORIZED_MONSTER_AVATAR_RE = /^modules\/sw5e-module\/icons\/packs\/monsters\/[^/]+\/Avatar\.webp$/i;
+
+const SPECIES_PACK_PATH_RE = /(?:systems\/sw5e\/packs\/Icons\/[Ss]pecies\/|modules\/(?:sw5e|sw5e-module|sw5e-module-test)\/icons\/packs\/[Ss]pecies\/)/i;
+const MODULE_COMPANION_PATH_RE = /^(modules\/(?:sw5e|sw5e-module|sw5e-module-test)\/)icons\/companions\//;
 
 export const PROTECTED_ARTWORK_FIELDS = Object.freeze([
 	"img",
@@ -86,12 +89,14 @@ export function preserveImagePath(path, _context={}) {
 }
 
 /**
- * Remap known Species pack filenames (exact suffix map only).
+ * Remap known Species pack filenames (recognized pack prefixes only).
+ * World files that merely end with the same filename are left unchanged.
  * @param {string} path
  * @returns {string}
  */
 export function remapSpeciesPackImage(path) {
 	if ( typeof path !== "string" ) return path;
+	if ( !SPECIES_PACK_PATH_RE.test(path) ) return path;
 	for ( const [badSuffix, goodSuffix] of Object.entries(SPECIES_PACK_IMG_REMAPS) ) {
 		if ( path.endsWith(badSuffix) ) return `${path.slice(0, -badSuffix.length)}${goodSuffix}`;
 	}
@@ -99,14 +104,17 @@ export function remapSpeciesPackImage(path) {
 }
 
 /**
- * Remap legacy short companion icon folder to canonical packs path.
- * Exact `icons/companions/` only.
+ * Remap legacy companion icon folder to canonical packs path.
+ * Only `icons/companions/` prefix or module-qualified `.../icons/companions/`.
  * @param {string} path
  * @returns {string}
  */
 export function remapLegacyCompanionIconPath(path) {
 	if ( typeof path !== "string" ) return path;
-	return path.replaceAll("icons/companions/", "icons/packs/Companions/");
+	if ( path.startsWith("icons/companions/") ) {
+		return `icons/packs/Companions/${path.slice("icons/companions/".length)}`;
+	}
+	return path.replace(MODULE_COMPANION_PATH_RE, (_, prefix) => `${prefix}icons/packs/Companions/`);
 }
 
 /**
@@ -154,21 +162,6 @@ export function remapKnownLegacyImagePath(path, context={}) {
 	let newPath = remapLegacyCompanionIconPath(
 		remapSpeciesPackImage(normalizeModuleImagePath(path, context))
 	);
-
-	if ( context.prop === "prototypeToken.texture.src" && context.objectData ) {
-		const rawAvatar = hasDottedProperty(context.objectData, "img")
-			? getDottedProperty(context.objectData, "img")
-			: undefined;
-		if ( typeof rawAvatar === "string" && rawAvatar.length > 0 ) {
-			const actorAvatar = normalizeModuleImagePath(rawAvatar, context);
-			const canonicalMonsterToken = getAuthorizedMonsterTokenPathFromAvatar(actorAvatar);
-			// Only when token currently equals the Avatar portrait under the exact pack pattern.
-			if ( canonicalMonsterToken && newPath === actorAvatar ) {
-				newPath = canonicalMonsterToken;
-			}
-		}
-	}
-
 	return newPath;
 }
 

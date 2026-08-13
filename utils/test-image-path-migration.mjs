@@ -101,7 +101,25 @@ check("species pack filename remap", () => {
 	);
 });
 
-check("authorized monster Avatar→Token when token equals Avatar", () => {
+check("world file named Kel Dor.webp is not remapped", () => {
+	const update = migrate({
+		type: "npc",
+		img: "worlds/demo/Kel Dor.webp",
+		prototypeToken: { texture: { src: "worlds/demo/Kel Dor.webp" } }
+	});
+	assert.deepEqual(update, {});
+});
+
+check("world path containing icons/companions is not remapped", () => {
+	const update = migrate({
+		type: "npc",
+		img: "worlds/demo/icons/companions/beast.webp",
+		prototypeToken: { texture: { src: "worlds/demo/icons/companions/beast.webp" } }
+	});
+	assert.deepEqual(update, {});
+});
+
+check("world migration does not remap pack-monster Avatar to Token", () => {
 	const avatar = "modules/sw5e-module/icons/packs/monsters/Wampa/Avatar.webp";
 	assert.equal(getAuthorizedMonsterTokenPathFromAvatar(avatar), "modules/sw5e-module/icons/packs/monsters/Wampa/Token.webp");
 	const update = migrate({
@@ -109,7 +127,7 @@ check("authorized monster Avatar→Token when token equals Avatar", () => {
 		img: avatar,
 		prototypeToken: { texture: { src: avatar } }
 	});
-	assert.equal(update["prototypeToken.texture.src"], "modules/sw5e-module/icons/packs/monsters/Wampa/Token.webp");
+	assert.equal("prototypeToken.texture.src" in update, false);
 	assert.equal("img" in update, false);
 });
 
@@ -133,13 +151,14 @@ check("no Avatar→Token when token intentionally differs", () => {
 	assert.equal("prototypeToken.texture.src" in update, false);
 });
 
-check("authorized pack-monster Avatar→Token still applies on character type", () => {
+check("world migration does not remap pack-monster Avatar on character type", () => {
 	const update = migrate({
 		type: "character",
 		img: "modules/sw5e-module/icons/packs/monsters/Wampa/Avatar.webp",
 		prototypeToken: { texture: { src: "modules/sw5e-module/icons/packs/monsters/Wampa/Avatar.webp" } }
 	});
-	assert.equal(update["prototypeToken.texture.src"], "modules/sw5e-module/icons/packs/monsters/Wampa/Token.webp");
+	assert.equal("prototypeToken.texture.src" in update, false);
+	assert.equal("img" in update, false);
 });
 
 check("isAuthorizedArtworkRemap recognizes companion remap", () => {
