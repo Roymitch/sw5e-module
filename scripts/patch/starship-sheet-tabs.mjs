@@ -17,10 +17,41 @@ import {
 } from "../starship-sheet-ids.mjs";
 import { scheduleStarshipModificationsSectionHeader } from "./starship-sheet-inventory.mjs";
 
+/**
+ * Read icon/svg from the live CharacterActorSheet TABS record.
+ * Does not mutate CharacterActorSheet.TABS.
+ * @param {string} characterTabId
+ * @returns {{ icon?: string, svg?: string }}
+ */
+function getCharacterSheetTabVisual(characterTabId) {
+	const tabs = globalThis.dnd5e?.applications?.actor?.CharacterActorSheet?.TABS;
+	const rec = Array.isArray(tabs) ? tabs.find(tab => tab?.tab === characterTabId) : null;
+	if ( !rec || (typeof rec !== "object") ) return {};
+	const visual = {};
+	if ( typeof rec.icon === "string" && rec.icon ) visual.icon = rec.icon;
+	if ( typeof rec.svg === "string" && rec.svg ) visual.svg = rec.svg;
+	return visual;
+}
+
+/**
+ * Copy character-sheet icon/svg onto a starship tab record when missing.
+ * @param {object} tab
+ * @param {string} characterTabId
+ * @returns {object}
+ */
+function applyCharacterSheetTabVisual(tab, characterTabId) {
+	if ( !tab || (typeof tab !== "object") ) return tab;
+	const visual = getCharacterSheetTabVisual(characterTabId);
+	if ( visual.icon && !tab.icon ) tab.icon = visual.icon;
+	if ( visual.svg && !tab.svg ) tab.svg = visual.svg;
+	return tab;
+}
+
 function makeStarshipCoreTabDescriptor() {
 	return {
 		tab: STARSHIP_TAB_ID,
 		label: "SW5E.StarshipSheet.CoreTab",
+		...getCharacterSheetTabVisual("details"),
 		condition: actor => isSw5eStarshipActor(actor)
 	};
 }
@@ -29,6 +60,7 @@ function makeStarshipFeaturesTabDescriptor() {
 	return {
 		tab: STARSHIP_FEATURES_TAB_ID,
 		label: "DND5E.Features",
+		...getCharacterSheetTabVisual("features"),
 		condition: actor => isSw5eStarshipActor(actor)
 	};
 }
@@ -108,24 +140,24 @@ export function hideStockCrewTab(nav) {
 	crewButton.setAttribute("aria-hidden", "true");
 }
 
+function setStarshipTabAccessibleName(button, label) {
+	if ( !(button instanceof HTMLElement) || !label ) return;
+	button.setAttribute("aria-label", label);
+	if ( !button.hasAttribute("data-tooltip") ) button.setAttribute("data-tooltip", "");
+}
+
 export function configureStarshipPrimaryTabLabels(nav) {
 	if ( !nav ) return;
 	const coreButton = nav.querySelector(`[data-tab="${STARSHIP_TAB_ID}"]`);
-	if ( coreButton ) {
-		const label = coreButton.querySelector("span") ?? coreButton;
-		label.textContent = localizeOrFallback("SW5E.StarshipSheet.CoreTab", "Core");
-	}
+	setStarshipTabAccessibleName(coreButton, localizeOrFallback("SW5E.StarshipSheet.CoreTab", "Core"));
 	const inventoryButton = nav.querySelector(`[data-tab="${STOCK_CARGO_TAB_ID}"]`);
-	if ( inventoryButton ) {
-		const label = inventoryButton.querySelector("span") ?? inventoryButton;
-		const inventoryLabel = game.i18n.localize("DND5E.Inventory");
-		label.textContent = inventoryLabel && inventoryLabel !== "DND5E.Inventory" ? inventoryLabel : "Inventory";
-	}
+	const inventoryLabel = game.i18n.localize("DND5E.Inventory");
+	setStarshipTabAccessibleName(
+		inventoryButton,
+		inventoryLabel && inventoryLabel !== "DND5E.Inventory" ? inventoryLabel : "Inventory"
+	);
 	const featuresButton = nav.querySelector(`[data-tab="${STARSHIP_FEATURES_TAB_ID}"]`);
-	if ( featuresButton ) {
-		const label = featuresButton.querySelector("span") ?? featuresButton;
-		label.textContent = getStarshipFeaturesTabLabel();
-	}
+	setStarshipTabAccessibleName(featuresButton, getStarshipFeaturesTabLabel());
 	hideStockCrewTab(nav);
 }
 
@@ -199,13 +231,16 @@ export function registerStarshipCoreTabPart() {
  * @returns {object}
  */
 function makeStarshipRecordTab(descriptor, active) {
-	return {
+	const tab = {
 		label: descriptor.label,
 		id: descriptor.tab,
 		group: "primary",
 		active,
 		cssClass: active ? "active" : ""
 	};
+	if ( descriptor.icon ) tab.icon = descriptor.icon;
+	if ( descriptor.svg ) tab.svg = descriptor.svg;
+	return tab;
 }
 
 /**
@@ -230,7 +265,10 @@ export function applyStarshipTabsContext(context, sheet) {
 		context.tabs = dedupeTabs(tabs.filter(tab => tab?.tab !== "crew"));
 
 		const inventoryTab = context.tabs.find(tab => tab?.tab === STOCK_CARGO_TAB_ID);
-		if ( inventoryTab ) inventoryTab.label = "DND5E.Inventory";
+		if ( inventoryTab ) {
+			inventoryTab.label = "DND5E.Inventory";
+			applyCharacterSheetTabVisual(inventoryTab, "inventory");
+		}
 
 		if ( includeCore && !context.tabs.some(tab => tab.tab === STARSHIP_TAB_ID) ) {
 			const inventoryIdx = context.tabs.findIndex(tab => tab.tab === STOCK_CARGO_TAB_ID);
@@ -239,6 +277,8 @@ export function applyStarshipTabsContext(context, sheet) {
 			if ( inventoryIdx >= 0 ) context.tabs.splice(inventoryIdx, 0, coreTab);
 			else context.tabs.unshift(coreTab);
 		}
+		const coreTab = context.tabs.find(tab => tab?.tab === STARSHIP_TAB_ID);
+		if ( coreTab ) applyCharacterSheetTabVisual(coreTab, "details");
 
 		if ( !context.tabs.some(tab => tab.tab === STARSHIP_FEATURES_TAB_ID) ) {
 			const inventoryIdx = context.tabs.findIndex(tab => tab.tab === STOCK_CARGO_TAB_ID);
@@ -247,6 +287,8 @@ export function applyStarshipTabsContext(context, sheet) {
 			if ( inventoryIdx >= 0 ) context.tabs.splice(inventoryIdx + 1, 0, featuresTab);
 			else context.tabs.push(featuresTab);
 		}
+		const featuresTab = context.tabs.find(tab => tab?.tab === STARSHIP_FEATURES_TAB_ID);
+		if ( featuresTab ) applyCharacterSheetTabVisual(featuresTab, "features");
 
 		context.tabs = ensureStarshipPrimaryTabOrder(context.tabs, { includeCore });
 		const desiredTabId = context.tabs.some(tab => tab.tab === activeTabId) ? activeTabId : STARSHIP_TAB_ID;
@@ -260,14 +302,19 @@ export function applyStarshipTabsContext(context, sheet) {
 	// DND5e v5.3.3 Record shape from PrimarySheetMixin#_getTabs
 	delete tabs.crew;
 
-	if ( tabs[STOCK_CARGO_TAB_ID] ) tabs[STOCK_CARGO_TAB_ID].label = "DND5E.Inventory";
+	if ( tabs[STOCK_CARGO_TAB_ID] ) {
+		tabs[STOCK_CARGO_TAB_ID].label = "DND5E.Inventory";
+		applyCharacterSheetTabVisual(tabs[STOCK_CARGO_TAB_ID], "inventory");
+	}
 
 	if ( includeCore && !tabs[STARSHIP_TAB_ID] ) {
 		tabs[STARSHIP_TAB_ID] = makeStarshipRecordTab(makeStarshipCoreTabDescriptor(), false);
 	}
+	if ( tabs[STARSHIP_TAB_ID] ) applyCharacterSheetTabVisual(tabs[STARSHIP_TAB_ID], "details");
 	if ( !tabs[STARSHIP_FEATURES_TAB_ID] ) {
 		tabs[STARSHIP_FEATURES_TAB_ID] = makeStarshipRecordTab(makeStarshipFeaturesTabDescriptor(), false);
 	}
+	if ( tabs[STARSHIP_FEATURES_TAB_ID] ) applyCharacterSheetTabVisual(tabs[STARSHIP_FEATURES_TAB_ID], "features");
 
 	const desiredTabId = tabs[activeTabId] ? activeTabId : STARSHIP_TAB_ID;
 	for ( const [id, tab] of Object.entries(tabs) ) {
@@ -295,8 +342,17 @@ export function ensureStarshipFeaturesTabNav(root, app, nav) {
 	tabButton.classList.remove("active");
 	tabButton.dataset.tab = STARSHIP_FEATURES_TAB_ID;
 	tabButton.removeAttribute("aria-selected");
-	const labelEl = tabButton.querySelector("span") ?? tabButton;
-	labelEl.textContent = getStarshipFeaturesTabLabel();
+	const featuresLabel = getStarshipFeaturesTabLabel();
+	setStarshipTabAccessibleName(tabButton, featuresLabel);
+	const visual = getCharacterSheetTabVisual("features");
+	const iconEl = tabButton.querySelector("i");
+	if ( iconEl && visual.icon ) iconEl.className = visual.icon;
+	else if ( visual.icon && !tabButton.querySelector("i, dnd5e-icon") ) {
+		const icon = document.createElement("i");
+		icon.className = visual.icon;
+		icon.setAttribute("inert", "");
+		tabButton.replaceChildren(icon);
+	}
 
 	const anchor = nav.querySelector("[data-tab=\"effects\"]") ?? templateButton.nextElementSibling;
 	if ( anchor?.parentElement === nav ) nav.insertBefore(tabButton, anchor);

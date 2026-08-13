@@ -407,14 +407,14 @@
   --sw5e-starship-border-faint: 1px solid rgb(255 255 255 / 7%);
 }
 
-.dnd5e2.sheet.actor.sw5e-starship-sheet .sheet-navigation[data-group='primary'],
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sheet-navigation[data-group='primary']:not(.tabs-right),
 .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-fallback-nav {
   display: flex;
   gap: 0.25rem;
   width: 100%;
 }
 
-.dnd5e2.sheet.actor.sw5e-starship-sheet .sheet-navigation[data-group='primary'] > [data-tab],
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sheet-navigation[data-group='primary']:not(.tabs-right) > [data-tab],
 .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-fallback-nav > [data-tab] {
   flex: 1 1 0;
   min-width: 0;
@@ -451,6 +451,24 @@
   --sidebar-padding: 6px;
   --sidebar-margin: 4px;
   --stations-size: 0px;
+}
+
+/*
+ * DND5e 5.3.3 `.has-stations` uses a 3-column grid (sidebar | stations | 1fr).
+ * Starships hide stations, so `.sheet-body` auto-places into the 0-width stations
+ * column and the 1fr column stays empty. Force the two-column vehicle grid.
+ */
+.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet.has-stations .window-content {
+  grid-template-columns: calc(var(--sidebar-size) + var(--sidebar-margin)) 1fr;
+}
+
+.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet.sidebar-collapsed.has-stations .window-content {
+  grid-template-columns: var(--sidebar-margin) 1fr;
+}
+
+/* Stations are hidden; do not keep the 1000px has-stations minimum. */
+.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet.has-stations:not(.minimized, .minimizing, .maximizing) {
+  min-width: 700px;
 }
 
 .dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet .sheet-body .main-content {
