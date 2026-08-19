@@ -1,6 +1,12 @@
 /* SW5e module stylesheet entry — compile via `npm run build:styles`.
  * Post-theme-subsystem: stock Foundry/dnd5e appearance + core branding + functional layout. */
 
+/* —— Light and Dark theme based variables —— */
+@layer variables {
+  @import "variables/light.less";
+  @import "variables/dark.less";
+}
+
 /* —— Legacy functional core (powercasting, chassis structure, neutralized lightsaber headers) —— */
 @import (inline) "../module.legacy.css";
 
