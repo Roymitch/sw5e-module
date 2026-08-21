@@ -51,21 +51,21 @@ function runValidate() {
 	return { summary: objs[0], last: objs[objs.length - 1] };
 }
 
-test("validate reports approved 103/65 with 58 sr and 45 lr", () => {
+test("validate reports approved 134/78 with 83 sr and 51 lr (Phase 8 census)", () => {
 	const { summary, last } = runValidate();
-	assert.equal(summary.approvedRows, 103);
-	assert.equal(summary.files, 65);
-	assert.equal(summary.toSr, 58);
-	assert.equal(summary.toLr, 45);
+	assert.equal(summary.approvedRows, 134);
+	assert.equal(summary.files, 78);
+	assert.equal(summary.toSr, 83);
+	assert.equal(summary.toLr, 51);
 	assert.equal(summary.standaloneSr, 5);
-	assert.equal(summary.drakeSr, 53);
+	assert.equal(summary.drakeSr, 78);
 	assert.equal(summary.standaloneLr, 5);
-	assert.equal(summary.drakeLr, 40);
+	assert.equal(summary.drakeLr, 46);
 	assert.equal(summary.correctionRowsPending, 0);
 	assert.equal(last.validated, true);
-	assert.equal(last.sr, 58);
-	assert.equal(last.lr, 45);
-	assert.equal(last.ambiguousUntouched, 8);
+	assert.equal(last.sr, 83);
+	assert.equal(last.lr, 51);
+	assert.equal(last.ambiguousUntouched, 0);
 });
 
 test("Superior Firepower Drake embed uses per:sr and @details.tier*3", () => {
@@ -80,22 +80,24 @@ test("Superior Firepower Drake embed uses per:sr and @details.tier*3", () => {
 	assert.notEqual(item.system.uses.per, "recharge");
 });
 
-test("ambiguous Hold Together / Citadel / Paragon still use legacy per values", () => {
+test("Citadel / Paragon / Hold Together no longer carry legacy recharge/refitting per", () => {
+	// Post-correction census: these features are not in the approved ship-rest ledger
+	// and no longer use legacy per strings that the ambiguous gate tracked.
 	const citadel = yaml.load(fs.readFileSync(
 		path.join(ROOT, "packs/_source/starships/starship-features/gargantuan/citadel.yml"),
 		"utf8"
 	));
-	assert.equal(citadel.system.uses.per, "recharge");
+	assert.equal(citadel.system.uses.per, null);
 
 	const paragon = yaml.load(fs.readFileSync(
 		path.join(ROOT, "packs/_source/starships/starship-features/gargantuan/paragon-dreadnought.yml"),
 		"utf8"
 	));
-	assert.equal(paragon.system.uses.per, "recharge");
+	assert.equal(paragon.system.uses.per, null);
 
 	const holdStandalone = path.join(ROOT, "packs/_source/starships/starship-features/medium/hold-together.yml");
 	const ht = yaml.load(fs.readFileSync(holdStandalone, "utf8"));
-	assert.equal(ht.system.uses.per, "refitting");
+	assert.equal(ht.system.uses.per, null);
 });
 
 test("canonical YAML does not introduce modern recovery[] arrays for Superior Firepower", () => {

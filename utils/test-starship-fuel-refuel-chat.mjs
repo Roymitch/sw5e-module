@@ -303,7 +303,9 @@ await testAsync("post chat: uses foundry.applications.handlebars.renderTemplate 
 	assert.equal(creates.length, 1);
 	assert.equal(creates[0].speaker.alias, "DeepWater");
 	assert.match(creates[0].content, /DeepWater|card/);
-	assert.ok(creates[0].user);
+	// Foundry V14 / Phase 2: ChatMessage uses `author`, not legacy `user`.
+	assert.equal(creates[0].author, "u1");
+	assert.equal("user" in creates[0], false);
 	clearRenderTemplateMocks();
 });
 

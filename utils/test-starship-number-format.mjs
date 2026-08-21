@@ -78,36 +78,22 @@ test("7. Food summary uses formatted current and capacity", () => {
 	assert.equal(bar.foodBarLabel, "0 / 576,000,000 portions");
 });
 
-test("8–10. Capacity display: text, formatted, centered, no name", () => {
-	const foodCapMatch = layerHbs.match(/<input[^>]*id="sw5e-core-food-effective-cap"[\s\S]*?>/);
-	assert.ok(foodCapMatch, "Capacity input present");
-	const foodCap = foodCapMatch[0];
-	assert.match(foodCap, /type="text"/);
-	assert.match(foodCap, /systemsCore\.food\.effectiveCapacityFormatted/);
-	assert.equal(/\bname=/.test(foodCap), false);
+test("8–10. Inline food capacity controls remain off the Core layer (config dialog owns them)", () => {
+	// Align with test-starship-food-capacity.mjs: Ship's Stores settings moved to config dialog.
+	assert.equal(/id="sw5e-core-food-effective-cap"/.test(layerHbs), false);
+	assert.equal(/id="sw5e-core-food-value"/.test(layerHbs), false);
+	assert.equal(/id="sw5e-core-food-cost"/.test(layerHbs), false);
 	assert.match(foodLess, /text-align:\s*center/);
 });
 
-test("11–12. EDIT Current and Restock Cost remain raw number inputs", () => {
-	assert.match(
-		layerHbs,
-		/\{\{#if @root\.systemsSetupEditable\}\}[\s\S]*?id="sw5e-core-food-value"[\s\S]*?type="number"[\s\S]*?name="system\.attributes\.food\.value"/
-	);
-	assert.match(
-		layerHbs,
-		/\{\{#if @root\.systemsSetupEditable\}\}[\s\S]*?id="sw5e-core-food-cost"[\s\S]*?type="number"[\s\S]*?name="system\.attributes\.food\.cost"/
-	);
-});
-
-test("13–14. PLAY Current and Restock Cost use formatted text displays", () => {
-	assert.match(
-		layerHbs,
-		/\{\{else\}\}[\s\S]*?id="sw5e-core-food-value"[\s\S]*?type="text"[\s\S]*?systemsCore\.food\.valueFormatted/
-	);
-	assert.match(
-		layerHbs,
-		/\{\{else\}\}[\s\S]*?id="sw5e-core-food-cost"[\s\S]*?type="text"[\s\S]*?systemsCore\.food\.costFormatted/
-	);
+test("11–14. Food value/cap/cost editable fields live on Ship's Stores config dialog", () => {
+	const configHbs = readFileSync(join(__dirname, "..", "templates", "apps", "starship-ships-stores-config.hbs"), "utf8");
+	assert.match(configHbs, /id="sw5e-ships-stores-food-value"[\s\S]*?type="number"/);
+	assert.match(configHbs, /id="sw5e-ships-stores-food-cap"[\s\S]*?type="number"/);
+	assert.match(configHbs, /id="sw5e-ships-stores-food-cost"[\s\S]*?type="number"/);
+	assert.match(configHbs, /name="system\.attributes\.food\.value"/);
+	assert.match(configHbs, /name="system\.attributes\.food\.foodCap"/);
+	assert.match(configHbs, /name="system\.attributes\.food\.cost"/);
 });
 
 test("15–16. Consume/Restock quantity fields remain type=number", () => {

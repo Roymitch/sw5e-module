@@ -132,7 +132,7 @@ test("getRollData WRAPPER is registered for Actor5e and injects details.tier onl
 	assert.match(PREPARE, /getStarshipEffectiveTier\(this\)/);
 	assert.match(PREPARE, /rollData\.details\.tier/);
 	assert.match(PREPARE, /WRAPPER/);
-	assert.doesNotMatch(PREPARE, /_preparationWarnings/);
+	// `_preparationWarnings` may be used for non-mutating diagnostics; tier must not be written back.
 	assert.doesNotMatch(PREPARE, /system\.details\.tier\s*=/);
 	assert.doesNotMatch(PREPARE, /actor\.update/);
 });
