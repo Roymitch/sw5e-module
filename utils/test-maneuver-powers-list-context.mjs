@@ -63,10 +63,14 @@ assert(
 	"STOCK_SPELLBOOK_COLUMN_MAP_INPUT matches dnd5e _prepareSpellbook input"
 );
 
-const reused = [{ id: "time", template: "x" }];
+const reused = [{ id: "time", template: "x" }, { id: "school", template: "systems/dnd5e/templates/inventory/columns/school.hbs" }];
+const remappedReuse = resolveManeuverSpellbookColumns(reused, {});
+assert(remappedReuse !== reused, "resolveManeuverSpellbookColumns returns a new columns array");
+assert(remappedReuse[0] === reused[0], "non-school Force/Tech column descriptors are preserved by reference");
+assert(reused[1].template.includes("school.hbs"), "original Force/Tech school column is not mutated");
 assert(
-	resolveManeuverSpellbookColumns(reused, {}) === reused,
-	"resolveManeuverSpellbookColumns reuses non-empty Force/Tech columns"
+	remappedReuse[1].template.includes("maneuver-type.hbs"),
+	"school column remaps to Maneuver type-icon template"
 );
 
 const mapped = [];

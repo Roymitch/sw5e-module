@@ -1,6 +1,7 @@
 import { getBestAbility } from "./../utils.mjs";
 import {
 	getModuleId,
+	getModulePath,
 	getModuleType,
 	getModuleTypeCandidates,
 	isModuleType,
@@ -629,7 +630,28 @@ function patchHealActivityAbility() {
 	}
 }
 
+/**
+ * Ensure the Maneuver type-icon column template is available on Powers-tab sheet parts.
+ * Inventory rows resolve columns via Handlebars partials keyed by the full `.hbs` path.
+ */
+function registerManeuverTypeColumnTemplate() {
+	const template = getModulePath("templates/inventory/columns/maneuver-type.hbs");
+	const sheets = [
+		globalThis.dnd5e?.applications?.actor?.CharacterActorSheet,
+		globalThis.dnd5e?.applications?.actor?.NPCActorSheet,
+		globalThis.dnd5e?.applications?.actor?.BaseActorSheet
+	].filter(Boolean);
+
+	for ( const Sheet of sheets ) {
+		const part = Sheet.PARTS?.spells;
+		if ( !part ) continue;
+		part.templates ??= [];
+		if ( !part.templates.includes(template) ) part.templates.push(template);
+	}
+}
+
 export function patchManeuver() {
+	registerManeuverTypeColumnTemplate();
 	adjustItemSpellcastingGetter();
 	patchItemSheet();
 	patchPowerAbilityScore();

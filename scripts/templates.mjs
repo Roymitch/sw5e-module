@@ -30,11 +30,13 @@ async function preloadHandlebarsTemplates() {
 		getModulePath("templates/starship-sidebar-max-fires.hbs"),
 		getModulePath("templates/starship-warnings-dialog.hbs"),
 		getModulePath("templates/starship-attack-crew-picker.hbs"),
-		getModulePath("templates/inventory/columns/starship-recovery.hbs")
+		getModulePath("templates/inventory/columns/starship-recovery.hbs"),
+		getModulePath("templates/inventory/columns/maneuver-type.hbs")
 	];
 
 	const paths = {};
 	for (const path of partials) {
+		paths[path] = path;
 		paths[path.replace(".hbs", ".html")] = path;
 		const baseName = path.split("/").pop().replace(".hbs", "");
 		paths[`sw5e.${baseName}`] = path;

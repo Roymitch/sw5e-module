@@ -4,6 +4,7 @@
  * Column fallback and Time/Range ctx shapes mirror dnd5e 5.2.5 `_prepareSpellbook` /
  * `_prepareItemSpell` exactly. Do not invent descriptor tables or alternate ctx shapes.
  */
+import { getModulePath } from "./module-support.mjs";
 
 /**
  * Exact `Inventory.mapColumns` *input* used by dnd5e 5.2.5 `_prepareSpellbook`.
@@ -21,29 +22,52 @@ export const STOCK_SPELLBOOK_COLUMN_MAP_INPUT = Object.freeze([
 	"controls"
 ]);
 
+/** Maneuver school column template — superiority.types icons, not spellSchools. */
+export const MANEUVER_TYPE_COLUMN_TEMPLATE = getModulePath("templates/inventory/columns/maneuver-type.hbs");
+
+/**
+ * Remap the stock school column onto the Maneuver type-icon template.
+ * Always returns a new array so Force/Tech section columns are not mutated.
+ *
+ * @param {object[]} columns
+ * @returns {object[]}
+ */
+export function applyManeuverTypeSchoolColumn(columns) {
+	if ( !Array.isArray(columns) ) return [];
+	return columns.map(col => {
+		if ( !col || col.id !== "school" ) return col;
+		return { ...col, template: MANEUVER_TYPE_COLUMN_TEMPLATE };
+	});
+}
+
 /**
  * Resolve inventory column descriptors for Maneuver spellbook sections.
  * Prefer a non-empty prepared Force/Tech section columns array; otherwise map the stock
  * spellbook input via the sheet's inventory element class.
+ * School column always points at the Maneuver type-icon template.
  *
  * @param {unknown[]} existingColumns  Columns already on the first spellbook section, if any.
  * @param {object} [sheet]             Actor sheet application (`options.elements.inventory`).
  * @returns {object[]}
  */
 export function resolveManeuverSpellbookColumns(existingColumns, sheet) {
-	if ( Array.isArray(existingColumns) && existingColumns.length ) return existingColumns;
-
-	const tag = sheet?.options?.elements?.inventory ?? "dnd5e-inventory";
-	const Inventory = globalThis.customElements?.get?.(tag);
-	if ( typeof Inventory?.mapColumns !== "function" ) {
-		console.warn(
-			"SW5E | Maneuver Powers-tab columns: inventory mapColumns unavailable;",
-			`tag=${tag}`
-		);
-		return Array.isArray(existingColumns) ? existingColumns : [];
+	let columns;
+	if ( Array.isArray(existingColumns) && existingColumns.length ) {
+		columns = existingColumns;
+	} else {
+		const tag = sheet?.options?.elements?.inventory ?? "dnd5e-inventory";
+		const Inventory = globalThis.customElements?.get?.(tag);
+		if ( typeof Inventory?.mapColumns !== "function" ) {
+			console.warn(
+				"SW5E | Maneuver Powers-tab columns: inventory mapColumns unavailable;",
+				`tag=${tag}`
+			);
+			return applyManeuverTypeSchoolColumn(Array.isArray(existingColumns) ? existingColumns : []);
+		}
+		columns = Inventory.mapColumns([...STOCK_SPELLBOOK_COLUMN_MAP_INPUT]);
 	}
 
-	return Inventory.mapColumns([...STOCK_SPELLBOOK_COLUMN_MAP_INPUT]);
+	return applyManeuverTypeSchoolColumn(columns);
 }
 
 /**

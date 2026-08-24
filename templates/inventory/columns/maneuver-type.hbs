@@ -1,0 +1,13 @@
+{{!-- Maneuver Powers-tab school column: look up superiority type icons. --}}
+{{#if isItem}}
+<div class="item-detail item-school" data-tooltip aria-label="{{ entry.labels.type }}"
+     data-column-id="school">
+    {{#with (lookup @root.config.superiority.types entry.system.type.value) as |typeConfig|}}
+    {{#if typeConfig.icon}}
+    <dnd5e-icon src="{{ typeConfig.icon }}"></dnd5e-icon>
+    {{/if}}
+    {{/with}}
+</div>
+{{else}}
+<div class="item-detail item-school empty" data-column-id="school"></div>
+{{/if}}
