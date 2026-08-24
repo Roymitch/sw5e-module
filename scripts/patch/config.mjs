@@ -999,6 +999,15 @@ export function patchConfig(config, strict = true) {
 			reference: "SW5E.Item.Property.FinesseDesc",
 			isCharacter: true
 		},
+		// DND5e 5.3+ NPC collectable-gear property. Strict patchConfig wipes stock
+		// itemProperties, so this must be re-declared or NPC gear UX loses its label.
+		gear: {
+			label: "SW5E.Item.Property.Gear",
+			full: "SW5E.Item.Property.GearFull",
+			type: "Boolean",
+			reference: "SW5E.Item.Property.GearDesc",
+			isCharacter: true
+		},
 		fixed: {
 			label: "SW5E.Item.Property.Fixed",
 			full: "SW5E.Item.Property.FixedFull",
