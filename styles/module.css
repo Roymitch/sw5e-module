@@ -1,6 +1,49 @@
 /* Generated from styles/less/module.less. Do not edit styles/module.css directly. */
 /* SW5e module stylesheet entry — compile via `npm run build:styles`.
  * Post-theme-subsystem: stock Foundry/dnd5e appearance + core branding + functional layout. */
+/* —— Light and Dark theme based variables —— */
+@layer variables {
+  @scope (.theme-light) to (.themed) {
+    .dnd5e2,
+    :where(:scope).dnd5e2 {
+      /* Applications — SW5e lightsaber branding via DND5e theme header variables (PR #72). */
+      --dnd5e-item-header-content: none;
+      --dnd5e-item-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
+      --dnd5e-encounter-header-content: none;
+      --dnd5e-encounter-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
+      --dnd5e-npc-header-content: none;
+      --dnd5e-npc-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
+      --dnd5e-group-header-content: none;
+      --dnd5e-group-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
+      --dnd5e-character-background-content: none;
+      --dnd5e-character-background-image: transparent;
+      --dnd5e-character-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
+      --dnd5e-character-body-image: var(--dnd5e-background-texture-paper-red);
+      --dnd5e-vehicle-header-content: "";
+      --dnd5e-vehicle-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
+    }
+  }
+  @scope (.theme-dark) to (.themed) {
+    .dnd5e2,
+    :where(:scope).dnd5e2 {
+      /* Applications — SW5e lightsaber branding via DND5e theme header variables (PR #72). */
+      --dnd5e-item-header-content: "";
+      --dnd5e-item-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
+      --dnd5e-encounter-header-content: "";
+      --dnd5e-encounter-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
+      --dnd5e-npc-header-content: "";
+      --dnd5e-npc-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
+      --dnd5e-group-header-content: "";
+      --dnd5e-group-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
+      --dnd5e-character-background-content: "";
+      --dnd5e-character-background-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
+      --dnd5e-character-header-image: transparent;
+      --dnd5e-character-body-image: none;
+      --dnd5e-vehicle-header-content: "";
+      --dnd5e-vehicle-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
+    }
+  }
+}
 /* —— Legacy functional core (powercasting, chassis structure, neutralized lightsaber headers) —— */
 /*
  * SW5e legacy stylesheet — inlined first in styles/less/module.less.
@@ -23,13 +66,13 @@
   text-align: left;
 }
 
-/* Core SW5e branding — lightsaber sheet headers (ungated; no theme roots). */
-
-.dnd5e2 {
+/* Core SW5e branding — lightsaber sheet header is now handled using light/dark variables. */
+/*.dnd5e2 {
   --dnd5e-character-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
-}
+}*/
 
-.dnd5e2.sheet.actor.character:not(.minimized) .window-content::before {
+/* Redundant as it matches DND5e normal format*/
+/*.dnd5e2.sheet.actor.character:not(.minimized) .window-content::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
@@ -40,39 +83,39 @@
   background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
   -webkit-mask-image: linear-gradient(to bottom, black, transparent);
   mask-image: linear-gradient(to bottom, black, transparent);
-}
+}*/
 
 .dnd5e2.sheet.actor.encounter:not(.minimized)::before {
   content: "";
-  background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
+  background: var(--dnd5e-encounter-header-image) no-repeat top center / cover;
   opacity: 0.5;
   filter: hue-rotate(315deg);
 }
 
 .dnd5e2.sheet.actor.group:not(.minimized)::before {
   content: "";
-  background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
+  background: var(--dnd5e-group-header-image) no-repeat top center / cover;
   opacity: 0.5;
   filter: hue-rotate(45deg);
 }
 
 .dnd5e2.sheet.actor.npc:not(.minimized)::before {
   content: "";
-  background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
+  background: var(--dnd5e-npc-header-image) no-repeat top center / cover;
   opacity: 0.5;
   filter: hue-rotate(135deg);
 }
 
 .dnd5e2.sheet.actor.vehicle:not(.minimized)::before {
   content: "";
-  background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
+  background: var(--dnd5e-vehicle-header-image) no-repeat top center / cover;
   opacity: 0.5;
   filter: hue-rotate(270deg);
 }
 
 .dnd5e2.sheet.item:not(.minimized)::before {
   content: "";
-  background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
+  background: var(--dnd5e-item-header-image) no-repeat top center / cover;
   opacity: 0.5;
   filter: hue-rotate(225deg);
 }
@@ -155,7 +198,7 @@
 
 /* Powers tab — sheet-integrated summary panel; school accents on segments only */
 .dnd5e2.sheet.actor .sw5e-powers-summary.sw5e-powers-banner {
-  --sw5e-powers-banner-surface: color-mix(in oklab, var(--color-canvas-2, #2c2620) 88%, transparent);
+  --sw5e-powers-banner-surface: var(--dnd5e-background-card, #2c2620);
   --sw5e-powers-banner-border: color-mix(in oklab, var(--color-border-light-tertiary, #c9c7b8) 38%, transparent);
   --sw5e-powers-banner-text: var(--color-text-primary, var(--dnd5e-color-parchment, #f0ebe0));
   --sw5e-powers-banner-muted: var(--color-text-secondary, var(--dnd5e-color-tan, #b0a080));
@@ -166,12 +209,10 @@
   align-self: stretch;
   margin: 0 0 0.55rem 0;
   padding: 0.6rem 0.85rem 0.65rem;
-  border: 1px solid var(--sw5e-powers-banner-border);
+  border: var(--dnd5e-border-gold);
   border-radius: 6px;
   background: var(--sw5e-powers-banner-surface);
-  box-shadow:
-    inset 0 1px 0 color-mix(in oklab, var(--color-canvas-5, #fff) 6%, transparent),
-    0 1px 3px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 0 6px var(--dnd5e-shadow-45);
   color: var(--sw5e-powers-banner-text);
   font-size: var(--font-size-12, 0.85rem);
   line-height: 1.45;
@@ -214,7 +255,7 @@
   font-size: 0.7rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-text-secondary, var(--dnd5e-color-tan, #b0a080));
+  color: var(--dnd5e-heading-3-color);
 }
 
 .dnd5e2.sheet.actor .sw5e-powers-banner-kicker .sw5e-powercasting-ability-config {
@@ -263,13 +304,13 @@
   white-space: nowrap;
   border-radius: 4px;
   border: 1px solid var(--sw5e-powers-banner-border);
-  background: color-mix(in oklab, var(--color-canvas-1, #1e1a16) 55%, transparent);
-  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-canvas-5, #fff) 5%, transparent);
+  background: color-mix(in oklab, var(--dnd5e-background-5, #1e1a16) 55%, transparent);
+  box-shadow: 0 0 6px color-mix(in oklab, var(--dnd5e-shadow-45, #fff) 50%, transparent);
 }
 
 .dnd5e2.sheet.actor .sw5e-powers-known-label {
   font-weight: 600;
-  color: var(--sw5e-powers-banner-muted);
+  color: var(--dnd5e-heading-3-color);
   font-size: 0.76em;
   letter-spacing: 0.02em;
 }
