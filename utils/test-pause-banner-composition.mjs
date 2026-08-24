@@ -43,9 +43,10 @@ test("banner root #pause is not resized or repositioned", () => {
 });
 
 test("hologram and GAME PAUSED have independent vertical ownership", () => {
-	assert.match(PAUSE_LESS, /padding-bottom:\s*0\.55rem/);
+	// PR #72 pause offset correction: caption inset 1.4rem; ring top 0.2rem.
+	assert.match(PAUSE_LESS, /padding-bottom:\s*1\.4rem/);
 	assert.match(PAUSE_LESS, /justify-content:\s*flex-end/);
-	assert.match(PAUSE_LESS, /top:\s*0\.4rem/);
+	assert.match(PAUSE_LESS, /top:\s*0\.2rem/);
 	const withoutComments = PAUSE_LESS.replace(/\/\*[\s\S]*?\*\//g, "");
 	assert.doesNotMatch(withoutComments, /top:\s*-112px/);
 });
@@ -90,8 +91,8 @@ test("no scene-content, die, or Foundry branding selectors introduced", () => {
 
 test("generated CSS contains intended neutral Pause rules after build", () => {
 	assert.match(MODULE_CSS, /#pause:has\(img\[src\*="systems\/dnd5e\/ui\/official\/ampersand\.svg"\]\) figcaption/);
-	assert.match(MODULE_CSS, /padding-bottom:\s*0\.55rem/);
-	assert.match(MODULE_CSS, /top:\s*0\.4rem/);
+	assert.match(MODULE_CSS, /padding-bottom:\s*1\.4rem/);
+	assert.match(MODULE_CSS, /top:\s*0\.2rem/);
 	assert.doesNotMatch(MODULE_CSS, /top:\s*-112px/);
 	assert.match(MODULE_CSS, /@keyframes sw5e-pause-spin/);
 });
