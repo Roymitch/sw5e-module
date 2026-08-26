@@ -1,0 +1,140 @@
+import { getModuleId } from "../module-support.mjs";
+
+export function isSw5eStarshipActor(actor) {
+	return actor?.type === "vehicle" && actor?.flags?.sw5e?.legacyStarshipActor?.type === "starship";
+}
+
+/** Starship-only movement keys registered globally; populated on starship actors only. */
+export const STARSHIP_MOVEMENT_TYPE_KEYS = Object.freeze(["space", "turn"]);
+
+/**
+ * Inject starship space movement into token actions before CONFIG.Token.movement.actions is frozen.
+ * Movement type labels live in {@link applySw5eStarshipMovementTypes} (config.mjs) for dnd5e pre-localization.
+ */
+export function ensureStarshipTokenMovementActionConfig() {
+	const actions = CONFIG.Token?.movement?.actions;
+	const fly = actions?.fly;
+	if ( actions && fly && !actions.space ) {
+		actions.space = foundry.utils.mergeObject(foundry.utils.deepClone(fly), {
+			label: "SW5E.MovementSpace",
+			icon: "fa-solid fa-shuttle-space",
+			img: "icons/svg/wing.svg",
+			order: 1.25
+		});
+	}
+}
+
+function wireStarshipSpaceMovementActionHandlers() {
+	const type = "space";
+	const actionConfig = CONFIG.Token?.movement?.actions?.[type];
+	const TokenDocument5e = dnd5e?.documents?.TokenDocument5e;
+	if ( !actionConfig || !TokenDocument5e?.getMovementActionCostFunction ) return;
+
+	actionConfig.getAnimationOptions = token => {
+		const actorMovement = token?.actor?.system.attributes?.movement ?? {};
+		if ( !(type in actorMovement) || actorMovement[type] ) return {};
+		return { movementSpeed: CONFIG.Token.movement.defaultSpeed / 2 };
+	};
+	actionConfig.getCostFunction = (...args) => TokenDocument5e.getMovementActionCostFunction(type, ...args);
+}
+
+let starshipSpaceMovementWrapperRegistered = false;
+
+function registerStarshipSpaceMovementInitWrapper() {
+	if ( starshipSpaceMovementWrapperRegistered ) return;
+	starshipSpaceMovementWrapperRegistered = true;
+
+	try {
+		libWrapper.register(
+			getModuleId(),
+			"foundry.utils.deepFreeze",
+			function(wrapped, obj) {
+				if ( obj === CONFIG.Token?.movement?.actions ) ensureStarshipTokenMovementActionConfig();
+				return wrapped(obj);
+			},
+			"WRAPPER"
+		);
+	} catch ( err ) {
+		starshipSpaceMovementWrapperRegistered = false;
+		console.warn("SW5E MODULE | Could not wrap foundry.utils.deepFreeze for starship space movement.", err);
+	}
+}
+
+/**
+ * Register the deepFreeze wrapper after libWrapper is ready (never at module import time).
+ */
+export function initializeStarshipMovementWrappers() {
+	if ( !globalThis.libWrapper ) {
+		console.warn("SW5E MODULE | libWrapper not available; starship movement wrapper not registered.");
+		return;
+	}
+
+	const register = () => registerStarshipSpaceMovementInitWrapper();
+	if ( libWrapper.ready ) register();
+	else Hooks.once("libWrapper.Ready", register);
+}
+
+/**
+ * Vehicle actors need persisted `attributes.movement.space` / `.turn` for config + token ruler speed.
+ */
+export function addStarshipSpaceMovementSchemaField() {
+	try {
+		const movement = dnd5e?.dataModels?.actor?.VehicleData?.schema?.fields?.attributes?.fields?.movement;
+		if ( !movement?.fields ) return;
+
+		const FormulaField = dnd5e.dataModels.fields.FormulaField;
+		if ( !movement.fields.space ) {
+			movement.fields.space = new FormulaField({
+				deterministic: true,
+				label: "SW5E.MovementSpace",
+				speed: true
+			});
+		}
+		if ( !movement.fields.turn ) {
+			movement.fields.turn = new FormulaField({
+				deterministic: true,
+				label: "SW5E.MovementTurn",
+				speed: true
+			});
+		}
+	} catch ( err ) {
+		console.warn("SW5E MODULE | Could not add starship movement fields to VehicleData schema.", err);
+	}
+}
+
+async function ensureStarshipTokenMovementAction(actor) {
+	if ( !isSw5eStarshipActor(actor) || !CONFIG.Token.movement.actions.space ) return;
+	for ( const token of actor.getActiveTokens() ) {
+		if ( token.document.movementAction === "space" ) continue;
+		try {
+			await token.document.update({ movementAction: "space" });
+		} catch {
+			/* Token may be locked or user may lack permission. */
+		}
+	}
+}
+
+export function registerStarshipMovementReadyHooks() {
+	initializeStarshipMovementWrappers();
+	addStarshipSpaceMovementSchemaField();
+	ensureStarshipTokenMovementActionConfig();
+	wireStarshipSpaceMovementActionHandlers();
+
+	Hooks.on("preCreateToken", (doc, data) => {
+		const actor = doc.actor ?? (data.actorId ? game.actors.get(data.actorId) : null);
+		if ( isSw5eStarshipActor(actor) && CONFIG.Token.movement.actions.space ) {
+			data.movementAction ??= "space";
+		}
+	});
+
+	Hooks.on("updateActor", actor => {
+		void ensureStarshipTokenMovementAction(actor);
+	});
+
+	Hooks.once("ready", () => {
+		for ( const actor of game.actors ) {
+			if ( !isSw5eStarshipActor(actor) ) continue;
+			void ensureStarshipTokenMovementAction(actor);
+		}
+	});
+}

@@ -1,0 +1,86 @@
+_id: KAVTEkNRyWghicEE
+name: Foe Slayer
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/SCT-Passive.webp
+effects: []
+folder: WYjA4idQca6yXa2o
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:58.6720233+00:00'
+    importer_version: 3
+    uid: Feature.name-foe_slayer.source-class.sourceName-scout.level-20
+system:
+  description:
+    value: >-
+      <p><em><strong>Scout:</strong> 20th level</em></p>
+
+      <p>You become an unparalleled hunter. Your Strength or Dexterity score
+      increases by 2, and your Intelligence score increases by 2. Your maximum
+      for those scores increases by 2.</p>
+
+      <p>Additionally, once on each of your turns, you can add your Intelligence
+      modifier to the attack roll or the damage roll of an attack you make. </p>
+    chat: ''
+  requirements: Scout 20
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2014'
+  cover: null
+  crewed: false
+  uses:
+    max: ''
+    spent: 0
+    recovery: []
+  type:
+    value: class
+    subtype: ''
+  prerequisites:
+    level: null
+    items: []
+    repeatable: false
+  properties: []
+  activities: {}
+  advancement:
+    - type: AbilityScoreImprovement
+      _id: 7XbRi7dT2oj1VmAq
+      configuration:
+        cap: 2
+        fixed:
+          str: 0
+          dex: 0
+          con: 0
+          int: 2
+          wis: 0
+          cha: 0
+        locked:
+          - con
+          - int
+          - wis
+          - cha
+        points: 2
+        recommendation: null
+        max: 22
+      value:
+        type: asi
+      level: 20
+      title: ''
+      hint: >-
+        our Strength or Dexterity score increases by 2, and your Intelligence
+        score increases by 2. Your maximum for those scores increases by 2.
+  identifier: foe-slayer
+  enchant: {}
+_stats:
+  duplicateSource: null
+  exportSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1777752135936
+  modifiedTime: 1780602576241
+  lastModifiedBy: dnd5ebuilder0000
+ownership:
+  default: 0
+sort: 0
+_key: '!items!KAVTEkNRyWghicEE'
+

@@ -1,0 +1,107 @@
+_id: 77eHwAtyGrVLTCvb
+name: Berserker Instincts
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/BSKR-Passive.webp
+effects: []
+folder: BaN92qsqR1A7h4Os
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:58.5600877+00:00'
+    importer_version: 3
+    uid: Feature.name-berserker_instincts.source-class.sourceName-berserker.level-2
+system:
+  description:
+    value: >-
+      <p><em><strong>Berserker:</strong> 2nd level</em></p>
+
+      <p>You've honed two instincts, as detailed at the end of the class
+      description, and you hone more at higher levels, as shown in the Berserker
+      Instincts column of the berserker table.</p>
+    chat: ''
+  requirements: Berserker 2
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2014'
+  cover: null
+  crewed: false
+  uses:
+    max: ''
+    spent: 0
+    recovery: []
+  type:
+    value: class
+    subtype: ''
+  prerequisites:
+    level: null
+    items: []
+    repeatable: false
+  properties: []
+  activities: {}
+  advancement:
+    - _id: sw5e24ic00000000
+      configuration:
+        allowDrops: true
+        choices:
+          '2':
+            count: 2
+            replacement: false
+          '7':
+            count: 1
+            replacement: false
+          '13':
+            count: 1
+            replacement: false
+          '17':
+            count: 1
+            replacement: false
+        pool:
+          - uuid: Compendium.sw5e-module.character-classes.355B8jbz6aTORMAt
+          - uuid: Compendium.sw5e-module.character-classes.yQQ9wmRUcgiTdA5y
+          - uuid: Compendium.sw5e-module.character-classes.DIznH2D3ousMnf2s
+          - uuid: Compendium.sw5e-module.character-classes.C4JJhQ4ajhysH4nF
+          - uuid: Compendium.sw5e-module.character-classes.2h32FtTSQio5WwYi
+          - uuid: Compendium.sw5e-module.character-classes.n1wfqpweqWX0OoIL
+          - uuid: Compendium.sw5e-module.character-classes.1Roufpw9cLgVbRDg
+          - uuid: Compendium.sw5e-module.character-classes.Lu5tqHyfbm4MSpqX
+          - uuid: Compendium.sw5e-module.character-classes.nX4v06gvT41RNI5a
+          - uuid: Compendium.sw5e-module.character-classes.4Qm95U2wD73HTNNl
+          - uuid: Compendium.sw5e-module.character-classes.QCHwLn8GqG1VEcnY
+          - uuid: Compendium.sw5e-module.character-classes.BC6q40mybKU0v6ad
+          - uuid: Compendium.sw5e-module.character-classes.68t3amUsgY54K1au
+          - uuid: Compendium.sw5e-module.character-classes.uBzT35TWA3iFDxoT
+          - uuid: Compendium.sw5e-module.character-classes.H3Z1OTK0LsgjkahN
+          - uuid: Compendium.sw5e-module.character-classes.5fsgk5KBV19NGFza
+          - uuid: Compendium.sw5e-module.character-classes.aQAn9mcZfcj5JSCh
+        restriction:
+          level: ''
+          subtype: berserkerInvocation
+          type: class
+          list: []
+        type: feat
+        spell: null
+      title: Berserker Instincts
+      type: ItemChoice
+      value:
+        added: {}
+        replaced: {}
+      hint: >-
+        You've honed two instincts, as detailed at the end of the class
+        description, and you hone more at higher levels, as shown in the
+        Berserker Instincts column of the berserker table.
+  identifier: berserker-instincts
+  enchant: {}
+_stats:
+  duplicateSource: null
+  exportSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1777752135936
+  modifiedTime: 1780598923625
+  lastModifiedBy: dnd5ebuilder0000
+ownership:
+  default: 0
+sort: 0
+_key: '!items!77eHwAtyGrVLTCvb'
+

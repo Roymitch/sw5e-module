@@ -1,0 +1,21 @@
+<div class="label roboto-condensed-upper">
+    <span>{{label}}</span>
+    {{#if isEditable}}
+    <button type="button" class="config-button unbutton" data-action="configure-superiority-points"
+        data-tooltip aria-label="{{configureLabel}}">
+        <i class="fas fa-cog" inert></i>
+    </button>
+    {{/if}}
+</div>
+<div class="meter sw5e-power-points superiority-dice-points">
+    <div class="progress superiority-dice-points" role="meter" aria-valuemin="0" aria-valuenow="{{value}}"
+        aria-valuemax="{{ariaMax}}" style="--bar-percentage: {{pct}}%">
+        <div class="label">
+            <span class="value">{{value}}</span>
+            <span class="separator"> / </span>
+            <span class="max">{{maxSegment}}</span>
+        </div>
+        <input type="text" name="system.superiority.dice.value" data-dtype="Number" placeholder="0"
+            value="{{value}}" hidden>
+    </div>
+</div>

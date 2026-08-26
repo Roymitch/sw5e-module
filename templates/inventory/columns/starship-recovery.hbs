@@ -1,0 +1,12 @@
+{{!-- Starship Features tab Recovery column: RF/RC for lr/sr; otherwise stock labels.recovery. --}}
+{{#if ctx.starshipRecoveryLabel}}
+<div class="item-detail item-recovery" data-column-id="recovery">
+    <span class="condensed">{{ ctx.starshipRecoveryLabel }}</span>
+</div>
+{{else}}
+<div class="item-detail item-recovery {{#unless entry.labels.recovery}}empty{{/unless}}" data-column-id="recovery">
+    {{#if entry.labels.recovery}}
+    <span class="condensed">{{ entry.labels.recovery }}</span>
+    {{/if}}
+</div>
+{{/if}}

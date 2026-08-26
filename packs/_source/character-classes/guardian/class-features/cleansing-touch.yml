@@ -1,0 +1,117 @@
+_id: 7P9odvqB70JlZVMa
+name: Cleansing Touch
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/GRDN-Action.webp
+effects: []
+folder: SuxX921ywvnCOjZ6
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:58.5740802+00:00'
+    importer_version: 3
+    uid: Feature.name-cleansing_touch.source-class.sourceName-guardian.level-14
+system:
+  description:
+    value: >-
+      <p><em><strong>Guardian:</strong> 14th level</em></p>
+
+      <p>You can use your action and expend a use of your Channel the Force
+      ability to end one force power on yourself or on one willing creature that
+      you touch.</p>
+    chat: ''
+  requirements: Guardian 14
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2014'
+  cover: null
+  crewed: false
+  uses:
+    max: ''
+    spent: 0
+    recovery: []
+  type:
+    value: class
+    subtype: ''
+  prerequisites:
+    level: null
+    items: []
+    repeatable: false
+  properties: []
+  activities:
+    sw5e0utility0000:
+      _id: sw5e0utility0000
+      activation:
+        type: action
+        override: false
+        condition: ''
+      description:
+        chatFlavor: ''
+      duration:
+        units: inst
+        concentration: false
+        override: false
+      img: ''
+      range:
+        units: touch
+        override: false
+        value: ''
+        special: ''
+      roll:
+        formula: ''
+        prompt: false
+        visible: false
+        name: ''
+      target:
+        template:
+          type: ''
+          units: ft
+          contiguous: false
+        affects:
+          choice: false
+          type: creature
+          count: '1'
+          special: ''
+        override: false
+        prompt: true
+      type: utility
+      sort: 0
+      consumption:
+        scaling:
+          allowed: false
+        spellSlot: true
+        targets:
+          - type: itemUses
+            value: '1'
+            target: Compendium.sw5e-module.character-classes.Item.ck9f8sKVbhB6S4di
+      effects: []
+      flags: {}
+      uses:
+        spent: 0
+        recovery: []
+        max: ''
+      visibility:
+        level:
+          min: null
+          max: null
+        requireAttunement: false
+        requireIdentification: false
+        requireMagic: false
+        identifier: ''
+      name: ''
+  advancement: []
+  identifier: cleansing-touch
+  enchant: {}
+_stats:
+  duplicateSource: null
+  exportSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1777752135936
+  modifiedTime: 1780501123830
+  lastModifiedBy: dnd5ebuilder0000
+ownership:
+  default: 0
+sort: 0
+_key: '!items!7P9odvqB70JlZVMa'
+

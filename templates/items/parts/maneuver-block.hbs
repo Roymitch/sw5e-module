@@ -1,0 +1,11 @@
+{{!-- Maneuver Description summary (prepared Item labels; omit empty rows). --}}
+{{#if maneuverSummary.length}}
+<ul class="spell-block unlist full-width">
+    {{#each maneuverSummary}}
+    <li>
+        <strong>{{ localize this.label }}:</strong>
+        <span class="value">{{ this.value }}</span>
+    </li>
+    {{/each}}
+</ul>
+{{/if}}

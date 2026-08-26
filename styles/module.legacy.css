@@ -1,0 +1,4263 @@
+/*
+ * SW5e legacy stylesheet — inlined first in styles/less/module.less.
+ * Theme parchment/chat/application shells gated on data-sw5e-theme / .sw5e-theme-root
+ * have been pruned. Ungated lightsaber sheet headers are retained as core SW5e branding.
+ * CSS-4B: prune confirmed-dead blocks (orphaned SotG inner nav, pre-slot-grid chassis,
+ * aug-table chrome) after staged QA — do not bulk-delete without template/script audit.
+ */
+
+.dnd5e .form-group.grid>label {
+  flex: 0 0 100%;
+  margin: 0;
+}
+
+.dnd5e .form-group.grid label.number,
+.dnd5e .form-group.grid label.checkbox,
+.dnd5e .form-group.grid label.radio {
+  flex: 19% 0;
+  margin: 0 1% 0 0;
+  text-align: left;
+}
+
+/* Core SW5e branding — lightsaber sheet header is now handled using light/dark variables. */
+/*.dnd5e2 {
+  --dnd5e-character-header-image: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg");
+}*/
+
+/* Redundant as it matches DND5e normal format*/
+/*.dnd5e2.sheet.actor.character:not(.minimized) .window-content::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 300px;
+  border-radius: inherit;
+  opacity: 0.5;
+  pointer-events: none;
+  background: url("/modules/sw5e-module/styles/dual_color_saber3.jpeg") no-repeat top center / cover;
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+  mask-image: linear-gradient(to bottom, black, transparent);
+}*/
+
+.dnd5e2.sheet.actor.encounter:not(.minimized)::before {
+  content: "";
+  background: var(--dnd5e-encounter-header-image) no-repeat top center / cover;
+  opacity: 0.5;
+  filter: hue-rotate(315deg);
+}
+
+.dnd5e2.sheet.actor.group:not(.minimized)::before {
+  content: "";
+  background: var(--dnd5e-group-header-image) no-repeat top center / cover;
+  opacity: 0.5;
+  filter: hue-rotate(45deg);
+}
+
+.dnd5e2.sheet.actor.npc:not(.minimized)::before {
+  content: "";
+  background: var(--dnd5e-npc-header-image) no-repeat top center / cover;
+  opacity: 0.5;
+  filter: hue-rotate(135deg);
+}
+
+.dnd5e2.sheet.actor.vehicle:not(.minimized)::before {
+  content: "";
+  background: var(--dnd5e-vehicle-header-image) no-repeat top center / cover;
+  opacity: 0.5;
+  filter: hue-rotate(270deg);
+}
+
+.dnd5e2.sheet.item:not(.minimized)::before {
+  content: "";
+  background: var(--dnd5e-item-header-image) no-repeat top center / cover;
+  opacity: 0.5;
+  filter: hue-rotate(225deg);
+}
+
+/* Force Point CSS for the main sheet */
+
+.dnd5e2.sheet.actor .meter.sw5e-power-points .progress {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  position: relative;
+}
+
+/* Match dnd5e HP sectioned meter: progress grows; .tmp stays a fixed TMP column. */
+.dnd5e2.sheet.actor .meter.sw5e-power-points.sectioned > .progress {
+  flex: 1 1 0%;
+  width: auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  cursor: var(--cursor-pointer);
+}
+
+.dnd5e2.sheet.actor .meter.sw5e-power-points .progress::before {
+  z-index: 0;
+}
+
+.dnd5e2.sheet.actor .meter.sw5e-power-points .progress > .label,
+.dnd5e2.sheet.actor .meter.sw5e-power-points .progress > input {
+  position: relative;
+  z-index: 1;
+}
+
+.dnd5e2.sheet.actor .meter.sw5e-power-points .progress.editing > input {
+  width: 100%;
+  height: 100%;
+  padding: 0 0.5rem;
+  text-align: center;
+  color: var(--dnd5e-color-text-dark-primary);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.dnd5e2.sheet.actor .meter.force-points .progress::before {
+  background: linear-gradient(to right, #08568a 0%, #AFC6D5 100%);
+}
+
+/* Tech Point CSS for the main sheet */
+
+.dnd5e2.sheet.actor .meter.tech-points .progress::before {
+  background: linear-gradient(to right, #2F2F2F 0%, #7e7e7e 100%);
+}
+
+.dnd5e2.sheet.actor .meter.superiority-dice-points .progress::before {
+  background: linear-gradient(to right, #6b4423 0%, #c4916b 100%);
+}
+
+.dnd5e2.sheet.actor .meter-group.sw5e-superiority-meter > .label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.dnd5e2.sheet.actor .meter-group.sw5e-powercasting-meter > .label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.dnd5e2.sheet.actor .meter-group.sw5e-powercasting-meter .config-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1rem;
+  padding: 0;
+}
+
+/* Powers tab — sheet-integrated summary panel; school accents on segments only */
+.dnd5e2.sheet.actor .sw5e-powers-summary.sw5e-powers-banner {
+  --sw5e-powers-banner-surface: var(--dnd5e-background-card, #2c2620);
+  --sw5e-powers-banner-border: color-mix(in oklab, var(--color-border-light-tertiary, #c9c7b8) 38%, transparent);
+  --sw5e-powers-banner-text: var(--color-text-primary, var(--dnd5e-color-parchment, #f0ebe0));
+  --sw5e-powers-banner-muted: var(--color-text-secondary, var(--dnd5e-color-tan, #b0a080));
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  align-self: stretch;
+  margin: 0 0 0.55rem 0;
+  padding: 0.6rem 0.85rem 0.65rem;
+  border: var(--dnd5e-border-gold);
+  border-radius: 6px;
+  background: var(--sw5e-powers-banner-surface);
+  box-shadow: 0 0 6px var(--dnd5e-shadow-45);
+  color: var(--sw5e-powers-banner-text);
+  font-size: var(--font-size-12, 0.85rem);
+  line-height: 1.45;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-block {
+  position: relative;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-head--single {
+  margin-bottom: 0.35rem;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-head-left {
+  flex: 1 1 auto;
+  min-width: 8rem;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-head-right {
+  flex: 0 1 auto;
+  text-align: right;
+  margin-left: auto;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-head .sw5e-powers-banner-kicker {
+  margin-bottom: 0;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-kicker {
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dnd5e-heading-3-color);
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-kicker .sw5e-powercasting-ability-config {
+  margin-left: 0.35rem;
+  padding: 0;
+  font-size: 0.85em;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.75;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-kicker .sw5e-powercasting-ability-config:hover {
+  opacity: 1;
+  color: var(--dnd5e-color-gold, #d4b060);
+}
+
+.power-casting-ability-config .sw5e-power-ability-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.power-casting-ability-config .sw5e-power-ability-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.power-casting-ability-config .sw5e-power-ability-col-label {
+  font-size: var(--font-size-12);
+  color: var(--color-text-secondary);
+}
+
+.power-casting-ability-config .form-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-head-right .sw5e-powers-known-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.2rem 0.5rem;
+  white-space: nowrap;
+  border-radius: 4px;
+  border: 1px solid var(--sw5e-powers-banner-border);
+  background: color-mix(in oklab, var(--dnd5e-background-5, #1e1a16) 55%, transparent);
+  box-shadow: 0 0 6px color-mix(in oklab, var(--dnd5e-shadow-45, #fff) 50%, transparent)
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-known-label {
+  font-weight: 600;
+  color: var(--dnd5e-heading-3-color);
+  font-size: 0.76em;
+  letter-spacing: 0.02em;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-known-pair {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--sw5e-powers-banner-text);
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-known-pair.sw5e-powers-known--over {
+  color: color-mix(in oklab, var(--dnd5e-color-gold, #d4b060) 88%, var(--sw5e-powers-banner-text));
+  font-weight: 800;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-block + .sw5e-powers-banner-block {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--sw5e-powers-banner-border);
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0;
+  row-gap: 0.3rem;
+  font-size: 0.9em;
+  border-top: 1px solid var(--sw5e-powers-banner-border);
+  margin-top: 0;
+  padding-top: 0.45rem;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-head--single + .sw5e-powers-banner-flow {
+  margin-top: 0;
+  padding-top: 0.45rem;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.15rem;
+  font-weight: 500;
+  padding: 0.08rem 0.35rem 0.1rem;
+  margin: 0;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 0 color-mix(in srgb, var(--sw5e-powers-seg-accent, transparent) 65%, transparent);
+  background: color-mix(in srgb, var(--sw5e-powers-seg-accent, transparent) 10%, transparent);
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-seg-label {
+  font-weight: 700;
+  color: color-mix(in oklab, var(--sw5e-powers-seg-accent, var(--sw5e-powers-banner-text)) 82%, var(--sw5e-powers-banner-text));
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-seg--lgt {
+  --sw5e-powers-seg-accent: #7eb8d8;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-seg--drk {
+  --sw5e-powers-seg-accent: #c45a5a;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-seg--uni {
+  --sw5e-powers-seg-accent: #9d86d4;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-seg--tec {
+  --sw5e-powers-seg-accent: #9aa3ad;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-seg--mental {
+  --sw5e-powers-seg-accent: #7a9ab8;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-seg--physical {
+  --sw5e-powers-seg-accent: #c4916b;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-seg--general {
+  --sw5e-powers-seg-accent: #a89878;
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-abbr {
+  font-weight: 700;
+  color: var(--sw5e-powers-banner-text);
+}
+
+.dnd5e2.sheet.actor .sw5e-powers-banner-sep {
+  display: inline;
+  opacity: 0.55;
+  font-weight: 300;
+  padding: 0 0.4rem;
+  user-select: none;
+  color: var(--sw5e-powers-banner-muted);
+}
+
+.power-point-config .final-value {
+  margin-bottom: 0.75rem;
+  font-size: var(--font-size-28);
+  font-weight: 700;
+  text-align: center;
+}
+
+.power-point-config .form-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.power-point-config .form-fields > button[data-action="reset-calculated"] {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sheet-tabs {
+  font-size: var(--font-size-16);
+  margin: 20px 0px 12px 0px;
+}
+
+/*
+ * Starship sheet rhythm (SotG + sub-tabs): one scale for padding/gaps so header → summary → nav → panels align.
+ */
+.dnd5e2.sheet.actor.sw5e-starship-sheet {
+  --sw5e-starship-space-2xs: 0.2rem;
+  --sw5e-starship-space-xs: 0.35rem;
+  --sw5e-starship-space-sm: 0.5rem;
+  --sw5e-starship-space-md: 0.75rem;
+  --sw5e-starship-space-lg: 1rem;
+  --sw5e-starship-space-xl: 1.25rem;
+  --sw5e-starship-radius-sm: 6px;
+  --sw5e-starship-radius-md: 8px;
+  --sw5e-starship-border-subtle: 1px solid rgb(255 255 255 / 10%);
+  --sw5e-starship-border-faint: 1px solid rgb(255 255 255 / 7%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sheet-navigation[data-group='primary'],
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-fallback-nav {
+  display: flex;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sheet-navigation[data-group='primary'] > [data-tab],
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-fallback-nav > [data-tab] {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab-button {
+  display: inline-flex;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-hidden-tab {
+  display: none !important;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab-host {
+  margin-bottom: var(--sw5e-starship-space-md);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-fallback-nav {
+  margin-bottom: var(--sw5e-starship-space-sm);
+}
+
+/*
+ * Starship vehicle shell (dnd5e less/v2/vehicle.less): SW5E owns the main starship content architecture
+ * through SotG + Cargo, so the native stations rail is suppressed and its column is collapsed.
+ */
+.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet {
+  --dnd5e-sheet-sidebar-width: 200px;
+}
+
+.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet .window-content {
+  --sidebar-padding: 6px;
+  --sidebar-margin: 4px;
+  --stations-size: 0px;
+}
+
+.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet .sheet-body .main-content {
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet .sheet-stations,
+.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet [data-application-part="stations"] {
+  display: none !important;
+}
+
+/* CL3: sidebar movement — read-only Space + Turning Speed; stock dnd5e movement hidden */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-suppress-stock-movement {
+  display: none !important;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet :is(.sheet-sidebar, [data-application-part="sidebar"]) .sw5e-starship-sidebar-movement {
+  display: grid;
+  gap: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet :is(.sheet-sidebar, [data-application-part="sidebar"]) .sw5e-starship-sidebar-movement-row {
+  margin-bottom: 0.28rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet :is(.sheet-sidebar, [data-application-part="sidebar"]) .sw5e-starship-sidebar-movement-row > h3.icon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet :is(.sheet-sidebar, [data-application-part="sidebar"]) .sw5e-starship-sidebar-movement-row .config-button {
+  margin-left: auto;
+}
+
+/* Duplicate native dnd5e vehicle controls neutralized for SW5E starships (name removed; hidden) */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-neutralized-stock-size,
+.dnd5e2.sheet.actor.sw5e-starship-sheet [data-sw5e-neutralized="duplicate-native-traits-size"],
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-neutralized-stock-hp,
+.dnd5e2.sheet.actor.sw5e-starship-sheet [data-sw5e-neutralized="duplicate-native-hp"] {
+  display: none !important;
+}
+
+/* Whole stock Hit Points block (native vehicle UI); custom SW5E Hull + Shield sidebar is the visible durability surface. */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-suppress-stock-hp {
+  display: none !important;
+}
+
+/* Stock Armor Class trait-line; portrait AC badge is authoritative for starships. */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-suppress-stock-ac {
+  display: none !important;
+}
+
+/*
+ * dnd5e 5.2.x vehicle sidebar: Hit Points are `div.pills-group` (see templates/actors/vehicle/sidebar.hbs), not `.meter-group`.
+ * PLAY: block contains `input[name^="system.attributes.hp."]` (hidden). EDIT: block has `button[data-config="hitPoints"]` only until inline expand.
+ * Starship-only; other pills-groups lack both signals.
+ */
+.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet aside.sheet-sidebar .pills-group:has([name^="system.attributes.hp."]),
+.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet [data-application-part="sidebar"] .pills-group:has([name^="system.attributes.hp."]),
+.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet aside.sheet-sidebar .pills-group:has(button[data-config="hitPoints"]),
+.dnd5e2.sheet.actor.vehicle.sw5e-starship-sheet [data-application-part="sidebar"] .pills-group:has(button[data-config="hitPoints"]) {
+  display: none !important;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet dialog.sw5e-starship-warnings-dialog {
+  max-width: 28rem;
+  border: 1px solid var(--dnd5e-color-gold);
+  border-radius: 8px;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-warnings-body {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab {
+  padding-top: var(--sw5e-starship-space-md);
+}
+
+/* SotG tab shell: one outer frame (like a dnd5e tab body), inner sections use lighter inset panels */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sw5e-starship-space-lg);
+  /* Size to full subtab content — do not shrink to viewport via min-height:0 / flex-fill children */
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
+  padding: var(--sw5e-starship-space-lg) var(--sw5e-starship-space-md);
+  border: 1px solid var(--dnd5e-color-gold);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at top left, rgb(98 121 170 / 18%), transparent 32%),
+    linear-gradient(180deg, rgb(12 15 23 / 94%), rgb(20 25 36 / 90%));
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 4%),
+    0 12px 32px rgb(0 0 0 / 20%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-section {
+  display: grid;
+  gap: var(--sw5e-starship-space-lg);
+  padding: var(--sw5e-starship-space-lg) var(--sw5e-starship-space-md);
+  border: var(--sw5e-starship-border-subtle);
+  border-radius: var(--sw5e-starship-radius-md);
+  background: linear-gradient(180deg, rgb(255 255 255 / 6%), rgb(255 255 255 / 2%));
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-section-header {
+  display: grid;
+  gap: var(--sw5e-starship-space-xs);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-section-header h2,
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-section-header p {
+  margin: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-kicker {
+  font-size: 0.72rem;
+  line-height: 1.25;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--dnd5e-color-gold);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-subtitle {
+  margin: 0.15rem 0 0;
+  color: var(--dnd5e-color-tan);
+  font-size: 0.9rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-main-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sw5e-starship-space-md);
+  /* Content height drives the gold frame; flex-fill here capped the panel mid-content */
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+/* SotG inner tabs — removed 2026-07-07 (CSS-4B-5): orphaned nav/tab markup; overview-only panel remains. */
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-sotg-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sw5e-starship-space-lg);
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-sotg-panel[hidden] {
+  display: none !important;
+}
+
+/* SotG Features sub-tab rules removed 2026-07-07 (CSS-4B-6 Pass 2): overview-only SotG shell. */
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-link,
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-button {
+  appearance: none;
+  border: var(--sw5e-starship-border-subtle);
+  border-radius: var(--sw5e-starship-radius-sm);
+  background: rgb(255 255 255 / 6%);
+  color: var(--dnd5e-color-parchment);
+  cursor: pointer;
+  font: inherit;
+  line-height: 1.2;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-link {
+  padding: var(--sw5e-starship-space-sm) var(--sw5e-starship-space-md);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-button {
+  padding: 0.38rem 0.55rem;
+  min-width: 5rem;
+  text-align: center;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-button-danger {
+  background: rgb(73 18 22 / 42%);
+  color: rgb(255 210 210);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-link:hover,
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-link:focus,
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-button:hover,
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-button:focus {
+  border-color: var(--dnd5e-color-gold);
+  background: rgb(255 255 255 / 10%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group:not(.items-section) {
+  display: grid;
+  gap: var(--sw5e-starship-space-xs);
+  padding: var(--sw5e-starship-space-md);
+  border: var(--sw5e-starship-border-faint);
+  border-radius: var(--sw5e-starship-radius-md);
+  background: linear-gradient(180deg, rgb(255 255 255 / 6%), rgb(255 255 255 / 3%));
+}
+
+/* SoTG grouped lists: reuse dnd5e Cargo/inventory section chrome (see templates/inventory/inventory.hbs). */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group.items-section.card {
+  display: block;
+  padding: 0;
+  margin: 0;
+  gap: 0;
+  background: var(--dnd5e-background-card, rgb(8 10 14 / 88%));
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group.items-section .items-header.sw5e-starship-group-header {
+  margin-bottom: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group.items-section .items-header h3.item-name {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: 1.2;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group.items-section .items-header .item-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-subtitle {
+  display: block;
+  margin-top: 0.12rem;
+  font-size: var(--font-size-11, 0.72rem);
+  line-height: 1.35;
+  font-weight: 400;
+  color: var(--color-text-secondary, var(--dnd5e-color-tan));
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-sotg-group-actions {
+  width: auto;
+  min-width: 0;
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0 0.35rem;
+  border: none;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-meta,
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-title p {
+  color: var(--dnd5e-color-tan);
+  font-size: 0.75rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-meta.subtitle {
+  color: var(--color-text-secondary, var(--dnd5e-color-tan));
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--sw5e-starship-space-md);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-groups.items-list {
+  display: flex;
+  flex-direction: column;
+  grid-template-columns: unset;
+  gap: 8px;
+  container-type: inline-size;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-header:not(.items-header) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sw5e-starship-space-md);
+  margin-bottom: var(--sw5e-starship-space-xs);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-title {
+  display: grid;
+  gap: var(--sw5e-starship-space-2xs);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-header:not(.items-header) h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-title p {
+  margin: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-tools {
+  display: grid;
+  justify-items: end;
+  gap: var(--sw5e-starship-space-xs);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-count {
+  min-width: 1.8rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 10%);
+  text-align: center;
+  font-size: 0.75rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-groups-stacked {
+  grid-template-columns: 1fr;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-overview-dashboard {
+  display: grid;
+  gap: var(--sw5e-starship-space-md);
+  margin-top: 0;
+  align-items: start;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-overview-abilities-row {
+  grid-column: 1 / -1;
+  /* NPC save tabs are absolute (top: calc(100% + 10px)); reserve extension below the strip. */
+  padding-bottom: calc(10px + 1.7rem);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-overview-main {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.95fr) minmax(320px, 1.05fr);
+  gap: var(--sw5e-starship-space-md);
+  align-items: start;
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-overview-main > :only-child {
+  grid-column: 1 / -1;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-overview-operations {
+  display: grid;
+  gap: var(--sw5e-starship-space-md);
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-panel {
+  display: grid;
+  gap: var(--sw5e-starship-space-sm);
+  min-width: 0;
+  padding: var(--sw5e-starship-space-lg) var(--sw5e-starship-space-md);
+  border-radius: var(--sw5e-starship-radius-md);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-core-routing-panel,
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-core-fuel-panel {
+  display: grid;
+  gap: var(--sw5e-starship-space-sm);
+  min-width: 0;
+  padding: var(--sw5e-starship-space-lg) var(--sw5e-starship-space-md);
+  border-radius: var(--sw5e-starship-radius-md);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-overview-operations .sw5e-starship-systems-field--routing-primary,
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-overview-operations .sw5e-starship-systems-field--fuel {
+  margin: 0;
+}
+
+/* CL2b: Core operations — routing select layout + fuel grid */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab [data-sw5e-sotg-panel="overview"] .sw5e-starship-overview-operations .sw5e-starship-systems-routing-select {
+  margin-left: 0;
+  width: 100%;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab [data-sw5e-sotg-panel="overview"] .sw5e-starship-core-fuel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sw5e-starship-space-sm);
+  width: 100%;
+  min-width: 0;
+  align-items: start;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab [data-sw5e-sotg-panel="overview"] .sw5e-starship-core-fuel-grid > .sw5e-starship-systems-subfield {
+  min-width: 0;
+  width: 100%;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab [data-sw5e-sotg-panel="overview"] .sw5e-starship-core-fuel-grid .sw5e-starship-systems-label {
+  min-height: 2.35em;
+  line-height: 1.15;
+  font-size: 0.68rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab [data-sw5e-sotg-panel="overview"] .sw5e-starship-core-fuel-grid .sw5e-starship-systems-input {
+  width: 100%;
+  max-width: none;
+  flex: none;
+  box-sizing: border-box;
+}
+
+@media (max-width: 420px) {
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab [data-sw5e-sotg-panel="overview"] .sw5e-starship-core-fuel-grid {
+    grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  }
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-moved-note {
+  margin: 0 0 var(--sw5e-starship-space-md);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-overview-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Starship Core ability strip — mirror dnd5e NPC header ability-scores layout (CL4c) */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-ability-strip.ability-scores {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  gap: 0;
+  padding: 10px 0;
+  position: relative;
+  box-shadow: none;
+  font-family: var(--dnd5e-font-roboto);
+  overflow: visible;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-ability-strip .ability-score {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  padding: 0 4px;
+  border-right: var(--dnd5e-border-separator-heavy);
+  overflow: visible;
+  pointer-events: all;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-ability-strip .ability-score:last-child {
+  border-right: none;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-ability-strip .ability-score > * {
+  position: relative;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-ability-strip .ability-score > img {
+  border: none;
+  position: absolute;
+  top: 0;
+  left: 25%;
+  width: 50%;
+  height: 100%;
+  margin: 0;
+  object-fit: contain;
+  opacity: 0.035;
+  filter: var(--npc-ability-score-filter, none);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-ability-strip .ability-score .save-tab {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 80%;
+  background: var(--dnd5e-background-card);
+  border-radius: 0 0 3px 3px;
+  border: var(--dnd5e-border-gold);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 0 4px var(--dnd5e-shadow-45);
+  clip-path: polygon(-5% 0, 105% 0, 105% 105%, -5% 105%);
+  font-weight: bold;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-ability-strip .ability-score .save-tab > i {
+  color: var(--color-text-tertiary);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-ability-strip .ability-score .save-tab.rollable {
+  cursor: var(--cursor-pointer);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-ability-strip .ability-score .save-tab.rollable:hover .save {
+  text-shadow: 0 0 8px var(--color-shadow-primary);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-overview-skills {
+  display: grid;
+  gap: 0.75rem;
+  padding: var(--sw5e-starship-space-md);
+  border: 1px solid color-mix(in oklab, var(--dnd5e-color-tan), transparent 60%);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 5%), rgb(255 255 255 / 1%)),
+    linear-gradient(180deg, rgb(18 22 34 / 92%), rgb(12 14 23 / 92%));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 5%),
+    0 0 0 1px rgb(0 0 0 / 22%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-overview-skills-header h3 {
+  margin: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-overview-skills-title {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-list--pc {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgb(255 255 255 / 6%);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgb(0 0 0 / 10%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-row--pc {
+  display: flex;
+  align-items: stretch;
+  min-height: 2.05rem;
+  border-bottom: 1px solid rgb(255 255 255 / 5%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-row--pc:last-child {
+  border-bottom: none;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-row--pc:nth-child(even) {
+  background: rgb(255 255 255 / 4%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-roll-area {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 1.35rem 2.45rem minmax(0, 1fr) minmax(3.35rem, auto) minmax(3.35rem, auto);
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0.34rem 0.55rem 0.34rem 0.5rem;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-roll-area:hover {
+  background: rgb(230 171 72 / 8%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-roll-area:focus-visible {
+  outline: 2px solid var(--dnd5e-color-gold);
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-prof {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  min-width: 1.35rem;
+  font-size: 0.72rem;
+  line-height: 1;
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 16%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-prof .sw5e-starship-skill-prof-custom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  padding: 0 0.12rem;
+  border-radius: 4px;
+  border: 1px solid rgb(230 171 72 / 35%);
+  font-size: 0.62rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 6%);
+  background: rgb(0 0 0 / 18%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-ability-abbr {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 5%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-mod,
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-passive {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 0;
+  justify-self: end;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-mod {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-passive {
+  font-size: 0.74rem;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 6%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-config--edit-only {
+  display: none;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  min-width: 2.35rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-left: 1px solid rgb(255 255 255 / 7%);
+  background: rgb(0 0 0 / 18%);
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 12%);
+  cursor: pointer;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-config--edit-only:hover {
+  color: var(--dnd5e-color-gold);
+  background: rgb(230 171 72 / 10%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-panel.sw5e-starship-sotg--mode-edit
+  .sw5e-starship-skill-config--edit-only {
+  display: inline-flex;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-lede {
+  margin: 0;
+  max-width: 52ch;
+  font-size: 0.72rem;
+  line-height: 1.38;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 6%);
+  font-weight: 400;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-lede strong {
+  font-weight: 600;
+  color: var(--dnd5e-color-parchment);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-sotg-empty-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 10%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-field--routing-primary {
+  position: relative;
+  gap: 0.35rem;
+  padding: var(--sw5e-starship-space-sm) var(--sw5e-starship-space-md);
+  border-radius: 0.4rem;
+  border: 1px solid color-mix(in oklab, var(--dnd5e-color-gold), transparent 45%);
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklab, var(--dnd5e-color-gold), transparent 92%) 0%,
+    rgb(12 10 8 / 94%) 48%,
+    rgb(8 7 6 / 96%) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 35%),
+    0 1px 10px rgb(0 0 0 / 22%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-field--routing-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  border-radius: 0.4rem 0 0 0.4rem;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--dnd5e-color-gold), transparent 15%),
+    color-mix(in oklab, var(--dnd5e-color-gold), transparent 55%)
+  );
+  pointer-events: none;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-panel.sw5e-starship-sotg--mode-play
+  .sw5e-starship-systems-field--routing-primary:not(.sw5e-starship-systems-field--locked) {
+  border-color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 28%);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--dnd5e-color-gold), transparent 55%),
+    0 0 14px color-mix(in oklab, var(--dnd5e-color-gold), transparent 78%),
+    0 2px 12px rgb(0 0 0 / 28%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-field--routing-primary.sw5e-starship-systems-field--locked {
+  border-color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 60%);
+  background: color-mix(in oklab, rgb(0 0 0 / 40%), transparent);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 25%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-field--routing-primary.sw5e-starship-systems-field--locked::before {
+  background: color-mix(in oklab, var(--dnd5e-color-tan), transparent 55%);
+  opacity: 0.55;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-routing-title {
+  margin: 0;
+  padding-left: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--dnd5e-color-parchment);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-routing-hint {
+  margin: 0;
+  padding-left: 0.35rem;
+  max-width: 58ch;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 5%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-routing-select {
+  margin-top: 0.15rem;
+  margin-left: 0.35rem;
+  width: calc(100% - 0.35rem);
+  min-height: 2.15rem;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 40%);
+  background: rgb(10 9 8 / 95%);
+  cursor: pointer;
+  transition:
+    border-color 0.12s ease,
+    box-shadow 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-panel.sw5e-starship-sotg--mode-play
+  .sw5e-starship-systems-field--routing-primary:not(.sw5e-starship-systems-field--locked)
+  .sw5e-starship-systems-routing-select:hover {
+  border-color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 18%);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--dnd5e-color-gold), transparent 50%);
+  background: rgb(14 12 10 / 96%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-panel.sw5e-starship-sotg--mode-play
+  .sw5e-starship-systems-field--routing-primary:not(.sw5e-starship-systems-field--locked)
+  .sw5e-starship-systems-routing-select:focus-visible {
+  outline: none;
+  border-color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 12%);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--dnd5e-color-gold), transparent 45%),
+    0 0 0 3px color-mix(in oklab, var(--dnd5e-color-gold), transparent 82%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-panel.sw5e-starship-sotg--mode-play
+  .sw5e-starship-systems-field--fuel.sw5e-starship-systems-field--locked {
+  cursor: default;
+  padding: 0.4rem 0.45rem 0.45rem;
+  border-radius: 0.3rem;
+  border: 1px dashed color-mix(in oklab, var(--dnd5e-color-tan), transparent 52%);
+  background: color-mix(in oklab, rgb(0 0 0 / 22%), transparent);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-panel.sw5e-starship-sotg--mode-play
+  .sw5e-starship-systems-field--fuel.sw5e-starship-systems-field--locked
+  .sw5e-starship-systems-field-heading,
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-panel.sw5e-starship-sotg--mode-play
+  .sw5e-starship-systems-field--fuel.sw5e-starship-systems-field--locked
+  .sw5e-starship-systems-label {
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 28%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-panel.sw5e-starship-sotg--mode-play
+  .sw5e-starship-systems-field--fuel.sw5e-starship-systems-field--locked
+  .sw5e-starship-systems-input {
+  cursor: not-allowed;
+  opacity: 0.58;
+  border-style: dotted;
+  border-color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 48%);
+  background: color-mix(in oklab, rgb(0 0 0 / 45%), transparent);
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 25%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-field-heading {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 5%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--dnd5e-color-tan);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-input,
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-select {
+  width: 100%;
+  min-width: 0;
+  padding: 0.25rem 0.4rem;
+  font-size: 0.85rem;
+  border-radius: 0.25rem;
+  border: 1px solid color-mix(in oklab, var(--dnd5e-color-tan), transparent 55%);
+  background: rgb(18 16 14 / 92%);
+  color: var(--dnd5e-color-parchment);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-field--locked .sw5e-starship-systems-input,
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-field--locked .sw5e-starship-systems-select {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-inline {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-inline .sw5e-starship-systems-input {
+  flex: 1 1 5rem;
+  max-width: 8rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-inline--triple {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sw5e-starship-space-sm);
+  width: 100%;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-subfield {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-subfield .sw5e-starship-systems-input {
+  max-width: none;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-systems-sep {
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 25%);
+  font-weight: 600;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-roles {
+  margin-top: var(--sw5e-starship-space-lg);
+  padding-top: var(--sw5e-starship-space-md);
+  border-top: var(--sw5e-starship-border-faint);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-roles-lede {
+  margin: var(--sw5e-starship-space-xs) 0 0;
+  max-width: 52ch;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--dnd5e-color-tan);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-list {
+  display: grid;
+  gap: var(--sw5e-starship-space-sm);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: var(--sw5e-starship-space-md);
+  align-items: center;
+}
+
+/* SotG item lists: `ol.item-list` + `li.item` — border/hover from dnd5e inventory.less; SW5E tweaks below */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-list.sw5e-starship-item-list--sotg {
+  gap: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-row--sotg.item {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-row--sotg:hover {
+  background: rgb(255 255 255 / 4%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-row--sotg .item-name.item-action {
+  cursor: pointer;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-panel.sw5e-starship-sotg--mode-play .sw5e-starship-item-row--sotg {
+  cursor: default;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-row--sotg .item-row {
+  width: 100%;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-row--sotg-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0.1rem 0;
+  gap: 0.6rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-name-cell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  position: relative;
+  z-index: 1;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-economy {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(4.75rem, auto);
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: end;
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-stat {
+  display: block;
+  min-width: 4.75rem;
+  font-size: var(--font-size-11, 0.72rem);
+  line-height: 1.25;
+  text-align: right;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 4%);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-economy--header {
+  align-self: stretch;
+  color: var(--dnd5e-color-gold);
+  text-transform: uppercase;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-stat--heading {
+  font-size: var(--font-size-10, 0.65rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-stat--empty {
+  opacity: 0.2;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-item-row--sotg
+  .item-image.sw5e-starship-item-image {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid color-mix(in oklab, var(--dnd5e-color-tan), transparent 50%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-row--sotg .sw5e-starship-item-name.title {
+  font-size: var(--font-size-13, 0.88rem);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--dnd5e-color-parchment);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-row--sotg .sw5e-starship-item-meta.subtitle {
+  font-size: var(--font-size-11, 0.72rem);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-icon-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab span.sw5e-starship-item-icon-fallback.item-image {
+  border-radius: 3px;
+  border: 1px solid color-mix(in oklab, var(--dnd5e-color-tan), transparent 55%);
+  background: rgb(0 0 0 / 25%);
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 12%);
+  font-size: 0.85rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-row--sotg .item-controls.sw5e-starship-item-actions {
+  display: flex;
+  flex-flow: row nowrap;
+  width: auto;
+  min-width: min-content;
+  max-width: 100%;
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  align-items: center;
+  align-self: center;
+  gap: 0.2rem;
+  padding: 0 2px 0 4px;
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-item-row--sotg
+  .item-controls.sw5e-starship-item-actions
+  .item-control {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  min-width: 1.75rem;
+  min-height: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-item-row--sotg
+  .sw5e-starship-sotg-controls-edit {
+  display: inline-flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 0.15rem;
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-panel.sw5e-starship-sotg--mode-play
+  .sw5e-starship-sotg-controls-edit {
+  display: none !important;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-panel.sw5e-starship-sotg--mode-play
+  .sw5e-starship-group-manage {
+  display: none !important;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-panel.sw5e-starship-sotg--readonly
+  .sw5e-starship-sotg-controls-edit {
+  display: none !important;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet
+  .sw5e-starship-tab
+  .sw5e-starship-panel.sw5e-starship-sotg--readonly
+  .sw5e-starship-group-manage {
+  display: none !important;
+}
+
+/* Overview dashboard rules live with the main Overview section styles above. */
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-main {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-image {
+  width: 34px;
+  height: 34px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgb(255 255 255 / 10%);
+  background: rgb(0 0 0 / 18%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-copy {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  row-gap: var(--sw5e-starship-space-sm);
+  column-gap: var(--sw5e-starship-space-xs);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet [data-item-id].sw5e-starship-item-pulse {
+  border-color: var(--dnd5e-color-gold);
+  box-shadow: 0 0 0 2px rgb(230 171 72 / 30%);
+}
+
+@media (max-width: 700px) {
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-ability-strip.ability-scores {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-ability-strip .ability-score {
+    flex: 1 1 5.25rem;
+    max-width: 6.5rem;
+  }
+
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-row--sotg-inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-economy {
+    grid-column: 1 / 2;
+    justify-content: start;
+    grid-auto-columns: minmax(4rem, auto);
+    gap: 0.5rem;
+  }
+
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-economy--header {
+    display: none;
+  }
+
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-item-actions {
+    grid-column: 2 / 3;
+    grid-row: 1 / span 2;
+  }
+
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-roll-area {
+    grid-template-columns: 1.1rem 2rem minmax(0, 1fr) 2.35rem 2rem;
+    gap: 0.25rem;
+    padding-inline: 0.4rem;
+  }
+
+  .dnd5e2.sheet.actor.sw5e-starship-sheet
+    .sw5e-starship-tab
+    .sw5e-starship-panel.sw5e-starship-sotg--mode-edit
+    .sw5e-starship-skill-roll-area {
+    grid-template-columns: 1.1rem 2rem minmax(0, 1fr) 2.35rem;
+  }
+
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-skill-label {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-header:not(.items-header),
+  .dnd5e2.sheet.actor.sw5e-starship-sheet
+    .sw5e-starship-tab
+    .sw5e-starship-item-row:not(.sw5e-starship-item-row--sotg) {
+    grid-template-columns: 1fr;
+  }
+
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-group-tools,
+  .dnd5e2.sheet.actor.sw5e-starship-sheet
+    .sw5e-starship-tab
+    .sw5e-starship-item-actions.sw5e-starship-crew-row-actions {
+    justify-items: start;
+    justify-content: start;
+  }
+}
+
+/* Crew Management Section */
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-command {
+  display: grid;
+  gap: var(--sw5e-starship-space-sm);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-heading {
+  display: grid;
+  gap: var(--sw5e-starship-space-2xs);
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-crew-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-add {
+  flex: 0 0 auto;
+  margin-top: 0.1rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid rgb(255 255 255 / 8%);
+  background: rgb(0 0 0 / 18%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-status-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--dnd5e-color-tan);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-status-value {
+  margin-inline-start: auto;
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--dnd5e-color-parchment);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-operations {
+  display: grid;
+  gap: 0.5rem;
+  padding-top: 0.05rem;
+  border-top: 1px solid rgb(255 255 255 / 7%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-roster .sw5e-starship-item-row {
+  padding: 0.6rem var(--sw5e-starship-space-sm);
+  border: var(--sw5e-starship-border-faint);
+  border-radius: var(--sw5e-starship-radius-sm);
+  background: linear-gradient(180deg, rgb(255 255 255 / 4%), rgb(0 0 0 / 8%));
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-row .sw5e-starship-item-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-row-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  flex: 0 0 auto;
+  row-gap: 0;
+  column-gap: 4px;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-panel .sw5e-starship-crew-icon-button {
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-panel .sw5e-starship-crew-icon-button i {
+  pointer-events: none;
+  font-size: 0.82rem;
+  line-height: 1;
+}
+
+@media (max-width: 520px) {
+  .dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-starship-crew-row .sw5e-starship-item-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-crew-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  margin-top: 0.15rem;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-crew-badge {
+  padding: 0.1rem 0.35rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 10%);
+  background: rgb(255 255 255 / 7%);
+  color: var(--dnd5e-color-tan);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-crew-badge-pilot {
+  border-color: rgb(230 171 72 / 40%);
+  background: rgb(230 171 72 / 12%);
+  color: var(--dnd5e-color-gold);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-crew-badge-active {
+  border-color: rgb(100 200 100 / 35%);
+  background: rgb(100 200 100 / 10%);
+  color: rgb(160 220 160);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-crew-active {
+  border-color: rgb(230 171 72 / 35%);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-tab .sw5e-crew-empty {
+  margin: 0;
+  color: var(--dnd5e-color-tan);
+  font-size: 0.8rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px dashed rgb(255 255 255 / 12%);
+  border-radius: 6px;
+}
+
+/* Add Crew Dialog */
+
+.sw5e-add-crew-dialog {
+  padding: 0.25rem 0;
+}
+
+.sw5e-add-crew-list {
+  display: grid;
+  gap: 0.4rem;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.sw5e-add-crew-entry {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--color-border-light-tertiary, #c9c7b8);
+  border-radius: 6px;
+}
+
+.sw5e-add-crew-entry.sw5e-add-crew-elsewhere {
+  opacity: 0.6;
+}
+
+.sw5e-add-crew-entry img {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.sw5e-add-crew-copy {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.sw5e-add-crew-copy strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sw5e-add-crew-note {
+  font-size: var(--font-size-11);
+  color: var(--color-text-dark-secondary, #4b4a44);
+}
+
+.sw5e-add-crew-roles {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.sw5e-add-crew-roles button {
+  min-height: 26px;
+  padding: 0.1rem 0.5rem;
+  font-size: var(--font-size-12);
+  line-height: 1.1;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Item sheet — modification chassis (native-style panel, Phase 3.5) */
+
+.sw5e-chassis-panel-host {
+  margin: 0.35rem 0 0.65rem;
+}
+
+.sheet.item .sw5e-chassis-panel,
+.dnd5e2.sheet.item .sw5e-chassis-panel {
+  position: relative;
+  padding: 0.45rem 0.55rem 0.55rem;
+  border: 1px solid var(--dnd5e-color-dark-3, var(--color-border-dark-3, rgba(0, 0, 0, 0.35)));
+  border-radius: 4px;
+  background: var(
+    --dnd5e-background-card,
+    linear-gradient(180deg, rgba(0, 0, 0, 0.14) 0%, rgba(0, 0, 0, 0.22) 100%)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.18);
+  font-size: var(--font-size-12);
+  color: inherit;
+}
+
+.sheet.item .sw5e-chassis-panel .subdued,
+.dnd5e2.sheet.item .sw5e-chassis-panel .subdued {
+  opacity: 0.78;
+  font-size: var(--font-size-11);
+}
+
+.sheet.item .sw5e-chassis-panel-header,
+.dnd5e2.sheet.item .sw5e-chassis-panel-header,
+.sheet.item .sw5e-chassis-header,
+.dnd5e2.sheet.item .sw5e-chassis-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0 0 0.35rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.08));
+}
+
+.sheet.item .sw5e-chassis-panel.is-collapsed .sw5e-chassis-panel-header,
+.dnd5e2.sheet.item .sw5e-chassis-panel.is-collapsed .sw5e-chassis-panel-header {
+  margin-bottom: 0;
+  border-bottom-color: transparent;
+  padding-bottom: 0;
+}
+
+.sheet.item .sw5e-chassis-panel-body,
+.dnd5e2.sheet.item .sw5e-chassis-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.sheet.item .sw5e-chassis-panel.is-collapsed .sw5e-chassis-panel-body,
+.dnd5e2.sheet.item .sw5e-chassis-panel.is-collapsed .sw5e-chassis-panel-body {
+  display: none;
+}
+
+.sheet.item .sw5e-chassis-collapse-toggle,
+.dnd5e2.sheet.item .sw5e-chassis-collapse-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.65rem;
+  height: 1.65rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.1));
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.12);
+  color: inherit;
+  cursor: pointer;
+}
+
+.sheet.item .sw5e-chassis-collapse-toggle:hover,
+.dnd5e2.sheet.item .sw5e-chassis-collapse-toggle:hover {
+  filter: brightness(1.08);
+}
+
+.sheet.item .sw5e-chassis-collapse-toggle .fa-chevron-down,
+.dnd5e2.sheet.item .sw5e-chassis-collapse-toggle .fa-chevron-down {
+  transition: transform 0.15s ease;
+}
+
+.sheet.item .sw5e-chassis-panel.is-collapsed .sw5e-chassis-collapse-toggle .fa-chevron-down,
+.dnd5e2.sheet.item .sw5e-chassis-panel.is-collapsed .sw5e-chassis-collapse-toggle .fa-chevron-down {
+  transform: rotate(-90deg);
+}
+
+.sheet.item .sw5e-chassis-override-block,
+.dnd5e2.sheet.item .sw5e-chassis-override-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.sheet.item .sw5e-chassis-slots-block,
+.dnd5e2.sheet.item .sw5e-chassis-slots-block {
+  margin: 0;
+}
+
+.sheet.item .sw5e-chassis-footer-actions,
+.dnd5e2.sheet.item .sw5e-chassis-footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.15rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.08));
+}
+
+.sheet.item .sw5e-chassis-footer-btn,
+.dnd5e2.sheet.item .sw5e-chassis-footer-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  padding: 0;
+  border-radius: 3px;
+  border: 1px solid var(--dnd5e-color-dark-3, rgba(0, 0, 0, 0.4));
+  background: var(--dnd5e-color-dark-6, rgba(0, 0, 0, 0.35));
+  color: inherit;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.sheet.item .sw5e-chassis-footer-btn:hover:not(:disabled),
+.dnd5e2.sheet.item .sw5e-chassis-footer-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.sheet.item .sw5e-chassis-footer-btn:disabled,
+.dnd5e2.sheet.item .sw5e-chassis-footer-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.sheet.item .sw5e-chassis-footer-btn--upgrade,
+.dnd5e2.sheet.item .sw5e-chassis-footer-btn--upgrade {
+  border-color: var(--dnd5e-color-gold, rgba(180, 160, 100, 0.65));
+  background: linear-gradient(180deg, rgba(90, 78, 50, 0.55) 0%, rgba(40, 36, 24, 0.75) 100%);
+}
+
+.sheet.item .sw5e-chassis-footer-btn--disable,
+.dnd5e2.sheet.item .sw5e-chassis-footer-btn--disable {
+  border-color: rgba(160, 130, 70, 0.45);
+  background: rgba(60, 48, 24, 0.35);
+}
+
+.sheet.item .sw5e-chassis-footer-btn--danger,
+.dnd5e2.sheet.item .sw5e-chassis-footer-btn--danger {
+  border-color: rgba(140, 50, 50, 0.55);
+  background: rgba(80, 28, 28, 0.35);
+}
+
+.sheet.item .sw5e-chassis-title,
+.dnd5e2.sheet.item .sw5e-chassis-title {
+  margin: 0;
+  font-family: var(--dnd5e-font-tertiary, var(--font-primary));
+  font-size: var(--font-size-14);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--dnd5e-color-gold, var(--color-text-light-highlight, inherit));
+}
+
+.sheet.item .sw5e-chassis-hint,
+.dnd5e2.sheet.item .sw5e-chassis-hint {
+  margin: 0 0 0.45rem;
+  line-height: 1.35;
+}
+
+.sheet.item .sw5e-chassis-section-intro,
+.dnd5e2.sheet.item .sw5e-chassis-section-intro {
+  margin: 0 0 0.45rem;
+  line-height: 1.35;
+  font-size: var(--font-size-11);
+}
+
+.sheet.item .sw5e-chassis-rules-primary,
+.dnd5e2.sheet.item .sw5e-chassis-rules-primary {
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.sheet.item .sw5e-chassis-rules-secondary,
+.dnd5e2.sheet.item .sw5e-chassis-rules-secondary {
+  margin-top: 0.2rem;
+  font-size: var(--font-size-11);
+  line-height: 1.35;
+}
+
+.sheet.item .sw5e-chassis-slot-overflow,
+.dnd5e2.sheet.item .sw5e-chassis-slot-overflow {
+  margin: 0 0 0.5rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--dnd5e-color-gold, rgba(180, 150, 90, 0.45));
+  border-radius: 4px;
+  background: color-mix(in oklab, var(--dnd5e-color-gold, #b89528) 12%, transparent);
+  font-size: var(--font-size-11);
+  line-height: 1.35;
+}
+
+.sheet.item .sw5e-chassis-slot-overflow-title,
+.dnd5e2.sheet.item .sw5e-chassis-slot-overflow-title {
+  display: block;
+  margin: 0 0 0.25rem;
+  font-size: var(--font-size-12);
+  font-weight: 600;
+}
+
+.sheet.item .sw5e-chassis-slot-overflow-body,
+.dnd5e2.sheet.item .sw5e-chassis-slot-overflow-body {
+  margin: 0;
+  opacity: 0.92;
+}
+
+/* Summary key/value grid */
+.sheet.item .sw5e-chassis-summary,
+.dnd5e2.sheet.item .sw5e-chassis-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.35rem 0.85rem;
+  margin: 0 0 0.2rem;
+}
+
+.sheet.item .sw5e-chassis-kv,
+.dnd5e2.sheet.item .sw5e-chassis-kv {
+  margin: 0;
+  min-width: 0;
+}
+
+.sheet.item .sw5e-chassis-kv--wide,
+.dnd5e2.sheet.item .sw5e-chassis-kv--wide {
+  grid-column: 1 / -1;
+}
+
+.sheet.item .sw5e-chassis-kv dt,
+.dnd5e2.sheet.item .sw5e-chassis-kv dt {
+  margin: 0 0 0.1rem;
+  font-size: var(--font-size-10);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.65;
+}
+
+.sheet.item .sw5e-chassis-kv dd,
+.dnd5e2.sheet.item .sw5e-chassis-kv dd {
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.sheet.item .sw5e-chassis-rules-value.is-override,
+.dnd5e2.sheet.item .sw5e-chassis-rules-value.is-override {
+  color: var(--dnd5e-color-gold, inherit);
+}
+
+.sheet.item .sw5e-chassis-slots-stat,
+.dnd5e2.sheet.item .sw5e-chassis-slots-stat {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.sheet.item .sw5e-chassis-slots-detail,
+.dnd5e2.sheet.item .sw5e-chassis-slots-detail {
+  margin: 0 0 0.45rem;
+  line-height: 1.3;
+}
+
+/* Chassis — install browser */
+.chassis-install-browser .chassis-browser-context {
+  margin: 0 0 0.5rem;
+  line-height: 1.35;
+}
+
+.chassis-install-browser .chassis-browser-search {
+  width: 100%;
+  margin-bottom: 0.35rem;
+}
+
+.chassis-install-browser .chassis-browser-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 340px;
+  overflow: auto;
+  border: 1px solid var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.08));
+  border-radius: 3px;
+}
+
+.chassis-install-browser .chassis-browser-row {
+  border-bottom: 1px solid var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.06));
+}
+
+.chassis-install-browser .chassis-browser-row:last-child {
+  border-bottom: none;
+}
+
+.chassis-install-browser .chassis-browser-row.is-filtered-out {
+  display: none;
+}
+
+.chassis-install-browser .chassis-browser-pick {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.4rem;
+  margin: 0;
+  cursor: pointer;
+}
+
+.chassis-install-browser .chassis-browser-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.chassis-install-browser .chassis-browser-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.chassis-install-browser .chassis-browser-name {
+  font-weight: 600;
+}
+
+.chassis-install-browser .chassis-browser-info-hint {
+	display: block;
+	font-size: 0.85em;
+	margin-top: 0.15rem;
+	line-height: 1.25;
+	opacity: 0.88;
+}
+
+.chassis-install-browser .chassis-browser-warn-hint {
+	display: block;
+	font-size: 0.85em;
+	margin-top: 0.15rem;
+	line-height: 1.25;
+}
+
+.chassis-install-browser .chassis-browser-meta {
+  font-size: var(--font-size-11);
+  line-height: 1.25;
+}
+
+.chassis-install-browser .chassis-browser-badge {
+  flex-shrink: 0;
+  font-size: var(--font-size-11);
+  font-weight: 600;
+  padding: 0.1rem 0.35rem;
+  border-radius: 2px;
+}
+
+.chassis-install-browser .chassis-browser-badge--valid {
+  background: rgba(40, 120, 60, 0.35);
+}
+
+.chassis-install-browser .chassis-browser-badge--warn {
+  background: rgba(160, 120, 40, 0.35);
+}
+
+.chassis-install-browser .chassis-browser-badge--blocked {
+  background: rgba(140, 50, 50, 0.35);
+}
+
+.chassis-install-browser .chassis-browser-advanced {
+  margin-top: 0.5rem;
+}
+
+.chassis-install-browser .chassis-browser-empty {
+  margin: 0.35rem 0;
+}
+
+.sheet.item .sw5e-chassis-btn--slot-install,
+.dnd5e2.sheet.item .sw5e-chassis-btn--slot-install {
+  margin-top: 0.35rem;
+  width: 100%;
+  font-size: var(--font-size-11);
+  padding: 0.2rem 0.35rem;
+}
+
+/* Rules override field */
+.sheet.item .sw5e-chassis-rules-field,
+.dnd5e2.sheet.item .sw5e-chassis-rules-field {
+  margin: 0.35rem 0 0.5rem;
+  padding: 0.35rem 0.4rem;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.06));
+}
+
+.sheet.item .sw5e-chassis-rules-field-label,
+.dnd5e2.sheet.item .sw5e-chassis-rules-field-label {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: var(--font-size-11);
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.sheet.item .sw5e-chassis-select,
+.dnd5e2.sheet.item .sw5e-chassis-select {
+  width: 100%;
+  max-width: 100%;
+}
+
+.sheet.item .sw5e-chassis-field-hint,
+.dnd5e2.sheet.item .sw5e-chassis-field-hint {
+  margin: 0.25rem 0 0;
+  line-height: 1.3;
+}
+
+/* Slot layout — compact grid */
+.sheet.item .sw5e-chassis-slots-core,
+.dnd5e2.sheet.item .sw5e-chassis-slots-core {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.sheet.item .sw5e-chassis-section-title,
+.dnd5e2.sheet.item .sw5e-chassis-section-title {
+  margin: 0 0 0.4rem;
+  font-size: var(--font-size-12);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  opacity: 0.88;
+}
+
+.sheet.item .sw5e-chassis-slot-group,
+.dnd5e2.sheet.item .sw5e-chassis-slot-group {
+  margin-bottom: 0.45rem;
+}
+
+.sheet.item .sw5e-chassis-slot-group:last-child,
+.dnd5e2.sheet.item .sw5e-chassis-slot-group:last-child {
+  margin-bottom: 0;
+}
+
+.sheet.item .sw5e-chassis-slot-group-head,
+.dnd5e2.sheet.item .sw5e-chassis-slot-group-head {
+  margin: 0 0 0.3rem;
+  font-size: var(--font-size-11);
+  font-weight: 600;
+  opacity: 0.72;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sheet.item .sw5e-chassis-slot-grid,
+.dnd5e2.sheet.item .sw5e-chassis-slot-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+@media (max-width: 28rem) {
+  .sheet.item .sw5e-chassis-slot-grid,
+  .dnd5e2.sheet.item .sw5e-chassis-slot-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.sheet.item .sw5e-chassis-slot-card,
+.dnd5e2.sheet.item .sw5e-chassis-slot-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-height: 4.5rem;
+  padding: 0.32rem 0.38rem 0.42rem;
+  border-radius: 3px;
+  border: 1px solid var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.07));
+  background: rgba(0, 0, 0, 0.12);
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.sheet.item .sw5e-chassis-slot-card--empty,
+.dnd5e2.sheet.item .sw5e-chassis-slot-card--empty {
+  border-style: dashed;
+  opacity: 0.72;
+}
+
+.sheet.item .sw5e-chassis-slot-card.sw5e-chassis-drop-target--active,
+.dnd5e2.sheet.item .sw5e-chassis-slot-card.sw5e-chassis-drop-target--active {
+  border-color: rgb(98 121 170 / 72%);
+  background: rgb(98 121 170 / 14%);
+  opacity: 1;
+  box-shadow: inset 0 0 0 1px rgb(98 121 170 / 28%), 0 0 0 2px rgb(98 121 170 / 16%);
+}
+
+.sheet.item .chassis-browser-dropzone,
+.dnd5e2.sheet.item .chassis-browser-dropzone,
+.sw5e-chassis-install-browser-app .chassis-browser-dropzone {
+  margin: 0 0 0.55rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px dashed rgb(255 255 255 / 18%);
+  border-radius: 6px;
+  background: rgb(0 0 0 / 12%);
+}
+
+.sheet.item .chassis-browser-dropzone.sw5e-chassis-drop-target--active,
+.dnd5e2.sheet.item .chassis-browser-dropzone.sw5e-chassis-drop-target--active,
+.sw5e-chassis-install-browser-app .chassis-browser-dropzone.sw5e-chassis-drop-target--active {
+  border-color: rgb(98 121 170 / 62%);
+  background: rgb(98 121 170 / 12%);
+  box-shadow: inset 0 0 0 1px rgb(98 121 170 / 24%);
+}
+
+.sheet.item .sw5e-chassis-slot-card--installed,
+.dnd5e2.sheet.item .sw5e-chassis-slot-card--installed {
+  border-color: var(--dnd5e-color-gold, rgba(180, 160, 100, 0.45));
+  background: rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(180, 160, 100, 0.12);
+  opacity: 1;
+}
+
+.sheet.item .sw5e-chassis-slot-name,
+.dnd5e2.sheet.item .sw5e-chassis-slot-name,
+.sheet.item .sw5e-chassis-installed-name,
+.dnd5e2.sheet.item .sw5e-chassis-installed-name,
+.sheet.item .sw5e-chassis-slot-mod,
+.dnd5e2.sheet.item .sw5e-chassis-slot-mod {
+  font-size: var(--font-size-12);
+  font-weight: 600;
+  line-height: 1.2;
+  word-break: break-word;
+  padding-right: 1.1rem;
+}
+
+.sheet.item .sw5e-chassis-installed-name,
+.dnd5e2.sheet.item .sw5e-chassis-installed-name {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0 1.1rem 0 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  white-space: normal;
+  text-transform: none;
+  line-height: 1.15;
+  cursor: pointer;
+  text-decoration: none;
+  filter: none;
+}
+
+.sheet.item .sw5e-chassis-installed-name:hover,
+.dnd5e2.sheet.item .sw5e-chassis-installed-name:hover,
+.sheet.item .sw5e-chassis-installed-name:focus-visible,
+.dnd5e2.sheet.item .sw5e-chassis-installed-name:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+
+.sheet.item .sw5e-chassis-slot-remove,
+.dnd5e2.sheet.item .sw5e-chassis-slot-remove {
+  position: absolute;
+  right: 0.2rem;
+  bottom: 0.18rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: inherit;
+  opacity: 0.72;
+  cursor: pointer;
+}
+
+.sheet.item .sw5e-chassis-slot-remove:hover,
+.dnd5e2.sheet.item .sw5e-chassis-slot-remove:hover {
+  opacity: 1;
+  background: rgba(120, 40, 40, 0.22);
+}
+
+.sheet.item .sw5e-chassis-slot-install,
+.dnd5e2.sheet.item .sw5e-chassis-slot-install,
+.sheet.item .sw5e-chassis-btn--slot-install,
+.dnd5e2.sheet.item .sw5e-chassis-btn--slot-install {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-top: auto;
+  padding: 0.12rem 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: var(--font-size-10);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  opacity: 0.88;
+}
+
+.sheet.item .sw5e-chassis-slot-install:hover,
+.dnd5e2.sheet.item .sw5e-chassis-slot-install:hover,
+.sheet.item .sw5e-chassis-btn--slot-install:hover,
+.dnd5e2.sheet.item .sw5e-chassis-btn--slot-install:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.sheet.item .sw5e-chassis-slot-label,
+.dnd5e2.sheet.item .sw5e-chassis-slot-label {
+  font-size: var(--font-size-10);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.65;
+}
+
+.sheet.item .sw5e-chassis-slot-body,
+.dnd5e2.sheet.item .sw5e-chassis-slot-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.sheet.item .sw5e-chassis-slot-mod,
+.dnd5e2.sheet.item .sw5e-chassis-slot-mod {
+  font-size: var(--font-size-12);
+  font-weight: 600;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.sheet.item .sw5e-chassis-slot-cost,
+.dnd5e2.sheet.item .sw5e-chassis-slot-cost {
+  font-size: var(--font-size-10);
+}
+
+.sheet.item .sw5e-chassis-slot-empty,
+.dnd5e2.sheet.item .sw5e-chassis-slot-empty {
+  font-size: var(--font-size-11);
+  font-style: italic;
+  margin-top: auto;
+}
+
+/* Installation log — collapsible (Phase 2) */
+.sheet.item .sw5e-chassis-installed-details,
+.dnd5e2.sheet.item .sw5e-chassis-installed-details {
+  margin: 0.35rem 0 0.25rem;
+}
+
+.sheet.item .sw5e-chassis-installed-summary,
+.dnd5e2.sheet.item .sw5e-chassis-installed-summary {
+  cursor: pointer;
+  font-size: var(--font-size-12);
+  font-weight: 600;
+  padding: 0.15rem 0;
+  color: var(--dnd5e-color-gold, var(--color-text-light-highlight, inherit));
+}
+
+.sheet.item .sw5e-chassis-installed-details-body,
+.dnd5e2.sheet.item .sw5e-chassis-installed-details-body {
+  margin-top: 0.35rem;
+  padding: 0.35rem 0 0 0.45rem;
+  border-left: 2px solid var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.12));
+}
+
+.sheet.item .sw5e-chassis-btn,
+.dnd5e2.sheet.item .sw5e-chassis-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.55rem;
+  min-height: 1.75rem;
+  border-radius: 3px;
+  font-size: var(--font-size-12);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--dnd5e-color-dark-3, rgba(0, 0, 0, 0.4));
+  background: var(--dnd5e-color-dark-6, rgba(0, 0, 0, 0.35));
+  color: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.sheet.item .sw5e-chassis-btn:hover:not(:disabled),
+.dnd5e2.sheet.item .sw5e-chassis-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.sheet.item .sw5e-chassis-btn:disabled,
+.dnd5e2.sheet.item .sw5e-chassis-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.sheet.item .sw5e-chassis-btn--primary,
+.dnd5e2.sheet.item .sw5e-chassis-btn--primary {
+  border-color: var(--dnd5e-color-gold, rgba(180, 160, 100, 0.65));
+  background: linear-gradient(180deg, rgba(90, 78, 50, 0.55) 0%, rgba(40, 36, 24, 0.75) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.sheet.item .sw5e-chassis-btn--quiet,
+.dnd5e2.sheet.item .sw5e-chassis-btn--quiet {
+  background: transparent;
+  border-color: var(--dnd5e-color-dark-4, rgba(255, 255, 255, 0.12));
+  font-weight: 500;
+  opacity: 0.88;
+}
+
+.sheet.item .sw5e-chassis-btn--danger,
+.dnd5e2.sheet.item .sw5e-chassis-btn--danger {
+  border-color: rgba(140, 50, 50, 0.55);
+  background: rgba(80, 28, 28, 0.35);
+}
+
+/* Chassis workflow dialogs (Phase 3) */
+
+.chassis-val-report ul {
+  margin: 0.35rem 0 0 1.1rem;
+  padding: 0;
+}
+
+.chassis-val-block {
+  color: var(--color-text-dark, #191813);
+}
+
+.chassis-val-warn {
+  color: var(--color-text-dark-secondary, #4b4a44);
+}
+
+.chassis-placement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.5rem 0;
+}
+
+.chassis-placement-opt {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sw5e-chassis-install-dialog .notes,
+form .notes {
+  font-size: var(--font-size-12);
+  color: var(--color-text-dark-secondary, #4b4a44);
+}
+
+/* ——— Cybernetic augmentations / droid customizations: inline actor sheet cards ——— */
+
+.dnd5e2.sheet.actor :is(.sw5e-augmentations-inline, .sw5e-droid-customizations-inline) {
+  margin: 0.45rem 0 0.55rem;
+}
+
+.dnd5e2.sheet.actor .sw5e-droid-customizations-inline {
+  margin-top: 0.55rem;
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline .sw5e-bodymods-inline-card {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.52rem 0.65rem;
+  border: 1px solid color-mix(in oklab, var(--dnd5e-color-card-border, rgb(255 255 255 / 14%)), var(--dnd5e-color-gold) 20%);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgb(122 96 58 / 10%), rgb(255 255 255 / 0%)),
+    color-mix(in oklab, var(--dnd5e-background-5, rgb(0 0 0 / 18%)) 84%, rgb(88 66 34 / 14%));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 4%),
+    0 1px 2px rgb(0 0 0 / 10%);
+  color: color-mix(in oklab, var(--dnd5e-color-parchment, var(--dnd5e-color-tan)), transparent 6%);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 120ms ease, background-color 120ms ease, transform 120ms ease;
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline .sw5e-bodymods-inline-card:hover {
+  border-color: color-mix(in oklab, var(--dnd5e-color-gold), var(--dnd5e-color-card-border, rgb(255 255 255 / 14%)) 45%);
+  background:
+    linear-gradient(180deg, rgb(152 118 70 / 14%), rgb(255 255 255 / 0%)),
+    color-mix(in oklab, var(--dnd5e-background-5, rgb(0 0 0 / 18%)) 72%, rgb(110 82 46 / 18%));
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline .sw5e-bodymods-inline-card:focus-visible {
+  outline: 2px solid var(--dnd5e-color-gold);
+  outline-offset: 2px;
+}
+
+.dnd5e2.sheet.actor .sw5e-droid-customizations-inline.sw5e-droid-drop-target--active .sw5e-bodymods-inline-card {
+  border-color: color-mix(in oklab, var(--dnd5e-color-gold), white 12%);
+  background:
+    linear-gradient(180deg, rgb(186 144 84 / 20%), rgb(255 255 255 / 0%)),
+    color-mix(in oklab, var(--dnd5e-background-5, rgb(0 0 0 / 18%)) 62%, rgb(120 92 48 / 22%));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 7%),
+    0 0 0 1px rgb(230 171 72 / 28%);
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline .sw5e-bodymods-inline-card--empty {
+  justify-content: center;
+  padding: 0.58rem 0.8rem;
+  border-style: dashed;
+  background: transparent;
+  box-shadow: none;
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline .sw5e-bodymods-inline-card--empty:hover {
+  background: rgb(255 255 255 / 2%);
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline .sw5e-bodymods-inline-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 1.9rem;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 6px;
+  border: 1px solid rgb(214 177 109 / 16%);
+  background: linear-gradient(180deg, rgb(154 121 76 / 12%), rgb(255 255 255 / 3%));
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 6%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%);
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline .sw5e-bodymods-inline-icon i {
+  font-size: 0.95rem;
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline .sw5e-bodymods-inline-label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline .sw5e-bodymods-inline-title {
+  display: block;
+  font-family: var(--dnd5e-font-tertiary, var(--font-primary));
+  font-size: var(--font-size-12);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: inherit;
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline .sw5e-bodymods-inline-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 18%);
+  font-size: 0.85rem;
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline .sw5e-bodymods-inline-note {
+  margin: 0 0.08rem;
+  font-size: var(--font-size-11);
+  line-height: 1.35;
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline .sw5e-bodymods-inline-note--warn {
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 12%);
+}
+
+.dnd5e2.sheet.actor .sw5e-bodymods-inline .sw5e-bodymods-inline-note--accent {
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 14%);
+}
+
+/* ——— Cybernetic augmentations manager (ApplicationV2): dark shell, sheet-like controls ——— */
+
+.window-app:has(section.sw5e-augmentations-manager) {
+  display: flex;
+  flex-direction: column;
+  max-height: min(92vh, 920px);
+  min-height: 0;
+}
+
+/*
+ * AppV2 chain: .window-content → section.sw5e-augmentations-manager → (optional [data-application-part]) → .sw5e-augmentations-app
+ * Prior bug: section used flex: 0 0 auto, so it always grew to full content height and .window-content never gained scrollHeight > clientHeight.
+ * Fix: constrain the flex column (overflow hidden on ancestors) and scroll on .sw5e-augmentations-app only.
+ */
+.window-app:has(> .window-content > section.sw5e-augmentations-manager) .window-content,
+.window-app:has(section.sw5e-augmentations-manager) .window-content {
+  color-scheme: dark;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+  background: transparent;
+}
+
+section.sw5e-augmentations-manager {
+  color-scheme: dark;
+  color: color-mix(in oklab, var(--dnd5e-color-parchment, var(--dnd5e-color-tan)), transparent 5%);
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+
+section.sw5e-augmentations-manager [data-application-part] {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+section.sw5e-augmentations-manager .sw5e-augmentations-app.standard-form {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0.5rem 0.65rem 0.65rem;
+  background:
+    radial-gradient(circle at top left, rgb(98 121 170 / 14%), transparent 38%),
+    linear-gradient(180deg, rgb(16 20 30 / 98%), rgb(22 28 40 / 96%));
+}
+
+/* Scrollbar appearance only (manager scroll body); does not change overflow/flex. */
+.window-app:has(section.sw5e-augmentations-manager) section.sw5e-augmentations-manager .sw5e-augmentations-app.standard-form {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(118 104 78 / 72%) rgb(10 14 22 / 92%);
+}
+
+.window-app:has(section.sw5e-augmentations-manager) section.sw5e-augmentations-manager .sw5e-augmentations-app.standard-form::-webkit-scrollbar {
+  width: 9px;
+}
+
+.window-app:has(section.sw5e-augmentations-manager) section.sw5e-augmentations-manager .sw5e-augmentations-app.standard-form::-webkit-scrollbar-track {
+  background: rgb(10 14 22 / 88%);
+  border-radius: 5px;
+}
+
+.window-app:has(section.sw5e-augmentations-manager) section.sw5e-augmentations-manager .sw5e-augmentations-app.standard-form::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgb(98 121 170 / 38%), rgb(92 82 58 / 52%));
+  border-radius: 5px;
+  border: 2px solid rgb(10 14 22 / 55%);
+}
+
+.window-app:has(section.sw5e-augmentations-manager) section.sw5e-augmentations-manager .sw5e-augmentations-app.standard-form::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgb(118 138 178 / 48%), rgb(118 104 72 / 62%));
+}
+
+.window-app:has(section.sw5e-augmentations-manager) section.sw5e-augmentations-manager .sw5e-augmentations-app.standard-form::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+section.sw5e-augmentations-manager button.sw5e-aug-installed-name {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  font: inherit;
+  line-height: inherit;
+  text-align: left;
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 6%);
+  text-decoration: underline;
+  text-decoration-color: rgb(230 171 72 / 32%);
+  text-underline-offset: 0.12em;
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-radius: 0;
+}
+
+section.sw5e-augmentations-manager button.sw5e-aug-installed-name:hover {
+  color: var(--dnd5e-color-gold);
+  text-decoration-color: rgb(230 171 72 / 55%);
+}
+
+section.sw5e-augmentations-manager button.sw5e-aug-installed-name:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--dnd5e-color-gold), transparent 25%);
+  outline-offset: 2px;
+}
+
+section.sw5e-augmentations-manager .sw5e-augmentations-app .notification {
+  margin: 0 0 0.65rem;
+}
+
+section.sw5e-augmentations-manager .notification.warning {
+  border: 1px solid rgb(230 171 72 / 35%);
+  background: rgb(230 171 72 / 10%);
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 4%);
+}
+
+section.sw5e-augmentations-manager :is(
+  .sw5e-augmentations-summary,
+  .sw5e-augmentations-installed,
+  .sw5e-augmentations-install,
+  .sw5e-augmentations-gm
+) {
+  margin: 0 0 0.6rem;
+  padding: 0.55rem 0.65rem 0.65rem;
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 4%), rgb(255 255 255 / 1%)),
+    rgb(0 0 0 / 14%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%);
+}
+
+section.sw5e-augmentations-manager h3 {
+  margin: 0.65rem 0 0.4rem;
+  font-family: var(--dnd5e-font-tertiary, var(--font-primary));
+  font-size: var(--font-size-13);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 5%);
+  border-bottom: 1px solid rgb(230 171 72 / 28%);
+  padding-bottom: 0.32rem;
+}
+
+section.sw5e-augmentations-manager :is(
+  .sw5e-augmentations-summary,
+  .sw5e-augmentations-installed,
+  .sw5e-augmentations-install,
+  .sw5e-augmentations-gm
+) > h3 {
+  margin-top: 0;
+}
+
+section.sw5e-augmentations-manager h4.sw5e-aug-subheading {
+  margin: 0.5rem 0 0.28rem;
+  font-size: var(--font-size-12);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 8%);
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-kv {
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+  margin: 0.2rem 0 0.45rem;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-kv-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-kv-row dt {
+  font-weight: 600;
+  min-width: 10rem;
+  margin: 0;
+  font-size: var(--font-size-11);
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 10%);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-kv-row dd {
+  margin: 0;
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 4%);
+  font-variant-numeric: tabular-nums;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-installed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-installed-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.42rem;
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 7px;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 2%), transparent),
+    rgb(8 11 18 / 54%);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-installed-main {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-installed-art {
+  flex: 0 0 54px;
+  inline-size: 54px;
+  block-size: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid rgb(255 255 255 / 9%);
+  background: linear-gradient(180deg, rgb(98 121 170 / 24%), rgb(24 29 42 / 62%));
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 14%);
+  font-size: 1.15rem;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-installed-art img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-installed-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-installed-header {
+  min-width: 0;
+}
+
+section.sw5e-augmentations-manager .sw5e-augmentations-gm {
+  margin-bottom: 0;
+}
+
+section.sw5e-augmentations-manager .sw5e-augmentations-gm .hint {
+  margin-top: 0;
+}
+
+section.sw5e-augmentations-manager .form-group {
+  margin: 0.35rem 0;
+}
+
+section.sw5e-augmentations-manager .form-group label {
+  display: block;
+  margin-bottom: 0.22rem;
+  font-size: var(--font-size-11);
+  font-weight: 600;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 6%);
+}
+
+section.sw5e-augmentations-manager .checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  font-size: var(--font-size-11);
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 8%);
+}
+
+section.sw5e-augmentations-manager .checkbox input {
+  margin-top: 0.12rem;
+}
+
+section.sw5e-augmentations-manager select,
+section.sw5e-augmentations-manager input[type="text"] {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.28rem 0.4rem;
+  font-size: var(--font-size-12);
+  border-radius: 4px;
+  border: 1px solid rgb(255 255 255 / 14%);
+  background: rgb(12 14 20 / 92%);
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 6%);
+}
+
+section.sw5e-augmentations-manager select:focus-visible,
+section.sw5e-augmentations-manager input[type="text"]:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--dnd5e-color-gold), transparent 25%);
+  outline-offset: 1px;
+}
+
+section.sw5e-augmentations-manager .hint {
+  margin: 0.25rem 0 0.35rem;
+  font-size: var(--font-size-11);
+  line-height: 1.4;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 12%);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-validation {
+  margin-top: 0.5rem;
+  padding: 0.45rem 0.5rem;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 6px;
+  background: rgb(0 0 0 / 22%);
+  max-height: 240px;
+  overflow: auto;
+  font-size: var(--font-size-11);
+  line-height: 1.38;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-validation ul {
+  margin: 0.25rem 0 0.35rem 1.1rem;
+  padding: 0;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-val-blocking {
+  color: rgb(255 186 178);
+  font-weight: 600;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-val-warn {
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 12%);
+  font-weight: 600;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-info-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15rem 0.75rem;
+  margin: 0.25rem 0;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-info-dl dt {
+  font-weight: 600;
+  margin: 0;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 8%);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-info-dl dd {
+  margin: 0;
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 5%);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-installed-title,
+section.sw5e-augmentations-manager button.sw5e-aug-installed-name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-16);
+  font-weight: 700;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-installed-title {
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 4%);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-installed-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.16rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 11%);
+  background: rgb(255 255 255 / 5%);
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 6%);
+  font-size: var(--font-size-11);
+  line-height: 1.2;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-meta-pill--detail {
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 10%);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-installed-date {
+  margin: 0;
+  font-size: var(--font-size-11);
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 12%);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-install-submit {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.42rem;
+  padding: 0.38rem 0.85rem;
+  min-height: 1.85rem;
+  border-radius: 4px;
+  font: inherit;
+  font-size: var(--font-size-12);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid color-mix(in oklab, var(--dnd5e-color-gold), transparent 35%);
+  background: linear-gradient(180deg, rgb(80 70 45 / 55%), rgb(40 36 26 / 78%));
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 4%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 10%),
+    0 1px 2px rgb(0 0 0 / 28%);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-install-body {
+  background:
+    linear-gradient(180deg, rgb(32 38 52 / 84%), rgb(20 24 34 / 72%));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 5%),
+    0 0 0 1px rgb(230 171 72 / 20%);
+  border-radius: 6px;
+  padding: 0.65rem;
+  margin-top: 0.35rem;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-install-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-install-actions .sw5e-aug-install-submit {
+  margin-top: 0;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-install-submit:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  filter: saturate(0.7);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-install-submit:disabled,
+section.sw5e-augmentations-manager .sw5e-aug-install-world-submit:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  filter: saturate(0.7);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-install-submit:hover {
+  filter: brightness(1.08);
+  border-color: var(--dnd5e-color-gold);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-install-submit:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--dnd5e-color-gold), transparent 20%);
+  outline-offset: 2px;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-install-submit:focus-visible,
+section.sw5e-augmentations-manager .sw5e-aug-install-world-submit:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--dnd5e-color-gold), transparent 20%);
+  outline-offset: 2px;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-install-world-submit {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.38rem 0.85rem;
+  min-height: 1.85rem;
+  border-radius: 4px;
+  font: inherit;
+  font-size: var(--font-size-12);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgb(255 255 255 / 14%);
+  background: rgb(18 23 34 / 84%);
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 6%);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-install-world-submit:hover {
+  border-color: rgb(230 171 72 / 38%);
+  background: rgb(24 31 46 / 88%);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-install-body.sw5e-aug-drop-target--active {
+  box-shadow:
+    inset 0 0 0 1px rgb(230 171 72 / 52%),
+    0 0 0 2px rgb(230 171 72 / 22%);
+  background:
+    linear-gradient(180deg, rgb(44 50 66 / 88%), rgb(26 30 42 / 78%));
+}
+
+section.sw5e-augmentations-inline.sw5e-aug-drop-target--active .sw5e-bodymods-inline-card {
+  border-color: rgb(230 171 72 / 62%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 10%),
+    0 0 0 2px rgb(230 171 72 / 18%);
+  background:
+    linear-gradient(180deg, rgb(72 65 45 / 62%), rgb(45 40 28 / 88%));
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-active-effects {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-active-effect {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid rgb(230 171 72 / 28%);
+  background: rgb(230 171 72 / 9%);
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 4%);
+  font-size: var(--font-size-12);
+  line-height: 1.35;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-active-effect i {
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 10%);
+  margin-top: 0.05rem;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-active-effect--override {
+  border-color: rgb(98 121 170 / 42%);
+  background: rgb(98 121 170 / 12%);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-override-status {
+  margin: 0 0 0.22rem;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-actions .sw5e-aug-remove {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.22rem 0.45rem;
+  font: inherit;
+  font-size: var(--font-size-11);
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 3px;
+  border: 1px solid rgb(140 50 50 / 45%);
+  background: rgb(60 22 24 / 55%);
+  color: rgb(255 210 205);
+  white-space: nowrap;
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-actions .sw5e-aug-remove:hover {
+  border-color: rgb(200 90 90 / 55%);
+  background: rgb(80 28 30 / 62%);
+}
+
+section.sw5e-augmentations-manager .sw5e-aug-actions .sw5e-aug-remove:focus-visible {
+  outline: 2px solid rgb(255 150 140 / 55%);
+  outline-offset: 1px;
+}
+
+@media (max-width: 560px) {
+  section.sw5e-augmentations-manager .sw5e-aug-installed-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  section.sw5e-augmentations-manager .sw5e-aug-actions {
+    inline-size: 100%;
+  }
+
+  section.sw5e-augmentations-manager .sw5e-aug-install-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  section.sw5e-augmentations-manager .sw5e-aug-install-actions .sw5e-aug-install-submit,
+  section.sw5e-augmentations-manager .sw5e-aug-install-actions .sw5e-aug-install-world-submit {
+    inline-size: 100%;
+    justify-content: center;
+  }
+
+  section.sw5e-augmentations-manager .sw5e-aug-actions .sw5e-aug-remove {
+    inline-size: 100%;
+    justify-content: center;
+  }
+}
+
+/* ——— Droid customizations manager (ApplicationV2): parallel shell to augmentations ——— */
+
+.window-app:has(section.sw5e-droid-customizations-manager) {
+  display: flex;
+  flex-direction: column;
+  max-height: min(92vh, 920px);
+  min-height: 0;
+}
+
+.window-app:has(> .window-content > section.sw5e-droid-customizations-manager) .window-content,
+.window-app:has(section.sw5e-droid-customizations-manager) .window-content {
+  color-scheme: dark;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+  background: transparent;
+}
+
+section.sw5e-droid-customizations-manager {
+  color-scheme: dark;
+  color: color-mix(in oklab, var(--dnd5e-color-parchment, var(--dnd5e-color-tan)), transparent 5%);
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+
+section.sw5e-droid-customizations-manager [data-application-part] {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-customizations-app.standard-form {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0.5rem 0.65rem 0.65rem;
+  background:
+    radial-gradient(circle at top left, rgb(98 121 170 / 14%), transparent 38%),
+    linear-gradient(180deg, rgb(16 20 30 / 98%), rgb(22 28 40 / 96%));
+}
+
+.window-app:has(section.sw5e-droid-customizations-manager) section.sw5e-droid-customizations-manager .sw5e-droid-customizations-app.standard-form {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(118 104 78 / 72%) rgb(10 14 22 / 92%);
+}
+
+.window-app:has(section.sw5e-droid-customizations-manager) section.sw5e-droid-customizations-manager .sw5e-droid-customizations-app.standard-form::-webkit-scrollbar {
+  width: 9px;
+}
+
+.window-app:has(section.sw5e-droid-customizations-manager) section.sw5e-droid-customizations-manager .sw5e-droid-customizations-app.standard-form::-webkit-scrollbar-track {
+  background: rgb(10 14 22 / 88%);
+  border-radius: 5px;
+}
+
+.window-app:has(section.sw5e-droid-customizations-manager) section.sw5e-droid-customizations-manager .sw5e-droid-customizations-app.standard-form::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgb(98 121 170 / 38%), rgb(92 82 58 / 52%));
+  border-radius: 5px;
+  border: 2px solid rgb(10 14 22 / 55%);
+}
+
+section.sw5e-droid-customizations-manager button.sw5e-droid-installed-name {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  font: inherit;
+  line-height: inherit;
+  text-align: left;
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 6%);
+  text-decoration: underline;
+  text-decoration-color: rgb(230 171 72 / 32%);
+  text-underline-offset: 0.12em;
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-radius: 0;
+}
+
+section.sw5e-droid-customizations-manager button.sw5e-droid-installed-name:hover {
+  color: var(--dnd5e-color-gold);
+  text-decoration-color: rgb(230 171 72 / 55%);
+}
+
+section.sw5e-droid-customizations-manager button.sw5e-droid-installed-name:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--dnd5e-color-gold), transparent 25%);
+  outline-offset: 2px;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-customizations-app .notification {
+  margin: 0 0 0.65rem;
+}
+
+section.sw5e-droid-customizations-manager h3 {
+  margin: 0.65rem 0 0.4rem;
+  font-family: var(--dnd5e-font-tertiary, var(--font-primary));
+  font-size: var(--font-size-13);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 5%);
+  border-bottom: 1px solid rgb(230 171 72 / 28%);
+  padding-bottom: 0.32rem;
+}
+
+section.sw5e-droid-customizations-manager :is(
+  .sw5e-droid-customizations-summary,
+  .sw5e-droid-customizations-installed,
+  .sw5e-droid-customizations-motor,
+  .sw5e-droid-customizations-limits
+) {
+  margin: 0 0 0.55rem;
+  padding: 0.62rem 0.7rem 0.68rem;
+  border: 1px solid rgb(255 255 255 / 7%);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 2.5%), transparent),
+    rgb(7 10 16 / 52%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%);
+}
+
+section.sw5e-droid-customizations-manager :is(
+  .sw5e-droid-customizations-summary,
+  .sw5e-droid-customizations-installed,
+  .sw5e-droid-customizations-motor,
+  .sw5e-droid-customizations-limits
+) h3 {
+  margin-top: 0;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-customizations-limits {
+  margin-bottom: 0;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.32rem;
+  margin-bottom: 0.4rem;
+  border-bottom: 1px solid rgb(230 171 72 / 28%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-section-header h3 {
+  margin: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-section-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.35rem;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-collapsible {
+  display: block;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-collapsible-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-collapsible-summary::-webkit-details-marker {
+  display: none;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-collapsible-summary h3 {
+  flex: 1 1 auto;
+  margin-bottom: 0;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-collapsible-summary i {
+  flex: 0 0 auto;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 8%);
+  transition: transform 120ms ease, color 120ms ease;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-collapsible[open] .sw5e-droid-collapsible-summary i {
+  transform: rotate(180deg);
+  color: var(--dnd5e-color-gold);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-collapsible-summary:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--dnd5e-color-gold), transparent 25%);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-collapsible-content {
+  margin-top: 0.55rem;
+}
+
+section.sw5e-droid-customizations-manager .notes {
+  margin: 0.2rem 0 0;
+  font-size: var(--font-size-11);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-kv {
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+  margin: 0.2rem 0 0.45rem;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-kv-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-kv-row dt {
+  font-weight: 600;
+  min-width: 10rem;
+  margin: 0;
+  font-size: var(--font-size-11);
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 10%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-kv-row dd {
+  margin: 0;
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 4%);
+  font-variant-numeric: tabular-nums;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-installed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-installed-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.42rem;
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 7px;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 2%), transparent),
+    rgb(8 11 18 / 54%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-installed-main {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-installed-art {
+  flex: 0 0 54px;
+  inline-size: 54px;
+  block-size: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid rgb(255 255 255 / 9%);
+  background: linear-gradient(180deg, rgb(98 121 170 / 24%), rgb(24 29 42 / 62%));
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 14%);
+  font-size: 1.15rem;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-installed-art img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-installed-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+  min-width: 0;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-installed-title,
+section.sw5e-droid-customizations-manager button.sw5e-droid-installed-name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-16);
+  font-weight: 700;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-installed-title {
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 4%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-installed-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.16rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 11%);
+  background: rgb(255 255 255 / 5%);
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 6%);
+  font-size: var(--font-size-11);
+  line-height: 1.2;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-meta-pill--detail {
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 10%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-installed-date {
+  margin: 0;
+  font-size: var(--font-size-11);
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 12%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-installed-install {
+  margin-top: 0.75rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgb(255 255 255 / 8%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-installed-install h4 {
+  margin: 0 0 0.4rem;
+  font-family: var(--dnd5e-font-tertiary, var(--font-primary));
+  font-size: var(--font-size-11);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 10%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-motor-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.35rem 0 0.55rem;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-motor-stat {
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 8%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-motor-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.45rem;
+  margin: 0.45rem 0 0.2rem;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-motor-preview-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.38rem 0.48rem;
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 6px;
+  background: rgb(255 255 255 / 3%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-motor-preview-label {
+  font-size: var(--font-size-11);
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 10%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-motor-preview-value {
+  font-size: var(--font-size-13);
+  font-weight: 700;
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 4%);
+  font-variant-numeric: tabular-nums;
+}
+
+section.sw5e-droid-customizations-manager .form-group {
+  margin: 0.35rem 0;
+}
+
+section.sw5e-droid-customizations-manager .form-group label {
+  display: block;
+  margin-bottom: 0.22rem;
+  font-size: var(--font-size-11);
+  font-weight: 600;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 6%);
+}
+
+section.sw5e-droid-customizations-manager .checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  font-size: var(--font-size-11);
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 8%);
+}
+
+section.sw5e-droid-customizations-manager .checkbox input {
+  margin-top: 0.12rem;
+}
+
+section.sw5e-droid-customizations-manager select {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.28rem 0.4rem;
+  font-size: var(--font-size-12);
+  border-radius: 4px;
+  border: 1px solid rgb(255 255 255 / 14%);
+  background: rgb(12 14 20 / 92%);
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 6%);
+}
+
+section.sw5e-droid-customizations-manager select:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--dnd5e-color-gold), transparent 25%);
+  outline-offset: 1px;
+}
+
+section.sw5e-droid-customizations-manager .hint {
+  margin: 0.25rem 0 0.35rem;
+  font-size: var(--font-size-11);
+  line-height: 1.4;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 12%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-validation {
+  margin-top: 0.5rem;
+  padding: 0.45rem 0.5rem;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 6px;
+  background: rgb(0 0 0 / 22%);
+  max-height: 240px;
+  overflow: auto;
+  font-size: var(--font-size-11);
+  line-height: 1.38;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-validation ul {
+  margin: 0.25rem 0 0.35rem 1.1rem;
+  padding: 0;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-val-blocking {
+  color: rgb(255 186 178);
+  font-weight: 600;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-val-warn {
+  color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 12%);
+  font-weight: 600;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-info-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15rem 0.75rem;
+  margin: 0.25rem 0;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-info-dl dt {
+  font-weight: 600;
+  margin: 0;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 8%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-info-dl dd {
+  margin: 0;
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 5%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-install-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.42rem;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-installed-install.sw5e-droid-drop-target--active {
+  border-color: rgb(230 171 72 / 42%);
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 2.5%), transparent),
+    rgb(20 24 34 / 72%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 5%),
+    0 0 0 1px rgb(230 171 72 / 20%);
+  border-radius: 6px;
+  padding: 0.65rem;
+  margin: 0.55rem -0.1rem -0.1rem;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-install-actions .sw5e-aug-install-submit {
+  margin-top: 0;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-install-submit {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.42rem;
+  padding: 0.38rem 0.85rem;
+  min-height: 1.85rem;
+  border-radius: 4px;
+  font: inherit;
+  font-size: var(--font-size-12);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid color-mix(in oklab, var(--dnd5e-color-gold), transparent 35%);
+  background: linear-gradient(180deg, rgb(80 70 45 / 55%), rgb(40 36 26 / 78%));
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 4%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-install-submit:disabled,
+section.sw5e-droid-customizations-manager .sw5e-droid-install-world-submit:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  filter: saturate(0.7);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-install-submit:hover {
+  filter: brightness(1.08);
+  border-color: var(--dnd5e-color-gold);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-install-submit:focus-visible,
+section.sw5e-droid-customizations-manager .sw5e-droid-install-world-submit:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--dnd5e-color-gold), transparent 20%);
+  outline-offset: 2px;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-install-world-submit {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.38rem 0.85rem;
+  min-height: 1.85rem;
+  border-radius: 4px;
+  font: inherit;
+  font-size: var(--font-size-12);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgb(255 255 255 / 14%);
+  background: rgb(18 23 34 / 84%);
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 6%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-droid-install-world-submit:hover {
+  border-color: rgb(230 171 72 / 38%);
+  background: rgb(24 31 46 / 88%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-actions .sw5e-aug-remove {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.22rem 0.45rem;
+  font: inherit;
+  font-size: var(--font-size-11);
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 3px;
+  border: 1px solid rgb(140 50 50 / 45%);
+  background: rgb(60 22 24 / 55%);
+  color: rgb(255 210 205);
+  white-space: nowrap;
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-actions .sw5e-aug-remove:hover {
+  border-color: rgb(200 90 90 / 55%);
+  background: rgb(80 28 30 / 62%);
+}
+
+section.sw5e-droid-customizations-manager .sw5e-aug-actions .sw5e-aug-remove:focus-visible {
+  outline: 2px solid rgb(255 150 140 / 55%);
+  outline-offset: 1px;
+}
+
+@media (max-width: 560px) {
+  section.sw5e-droid-customizations-manager .sw5e-droid-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  section.sw5e-droid-customizations-manager .sw5e-droid-section-stats {
+    justify-content: flex-start;
+  }
+
+  section.sw5e-droid-customizations-manager .sw5e-droid-installed-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  section.sw5e-droid-customizations-manager .sw5e-aug-actions {
+    inline-size: 100%;
+  }
+
+  section.sw5e-droid-customizations-manager .sw5e-aug-actions .sw5e-aug-remove,
+  section.sw5e-droid-customizations-manager .sw5e-aug-install-submit,
+  section.sw5e-droid-customizations-manager .sw5e-droid-install-world-submit {
+    inline-size: 100%;
+    justify-content: center;
+  }
+}
+
+/* Character Deployment — Features tab: mirror dnd5e 5.2.x `section.classes` pill row + `.level-selector` */
+
+/* Nested inside stock class pills strip: wrappers must not break flex layout */
+.dnd5e2.sheet.actor section.tab[data-tab="features"] section.classes .sw5e-deployment-features-header--in-classes {
+  display: contents;
+}
+
+.dnd5e2.sheet.actor section.tab[data-tab="features"] section.classes .sw5e-deployment-features-header--in-classes .sw5e-features-deployment-cards {
+  display: contents;
+}
+
+/* Fallback mount (before inventory / legacy rows): cluster Deployment pills */
+.dnd5e2.sheet.actor section.tab[data-tab="features"] .sw5e-deployment-features-header:not(.sw5e-deployment-features-header--in-classes) {
+  margin: 4px 0 8px;
+}
+
+.dnd5e2.sheet.actor section.tab[data-tab="features"] .sw5e-deployment-features-header:not(.sw5e-deployment-features-header--in-classes) .sw5e-features-deployment-cards {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 8px;
+}
+
+/* Inline legacy flexrow mount */
+.dnd5e2.sheet.actor section.tab[data-tab="features"] .sw5e-deployment-features-header--inline:not(.sw5e-deployment-features-header--in-classes) {
+  margin: 0;
+  align-self: stretch;
+  display: inline-flex;
+  align-items: stretch;
+  flex: 0 1 auto;
+}
+
+.dnd5e2.sheet.actor section.tab[data-tab="features"] .sw5e-deployment-features-header--inline:not(.sw5e-deployment-features-header--in-classes) .sw5e-features-deployment-cards {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Open deployment item: real hit target (avoid `display: contents` on `<button>`); icon + name share one control */
+.dnd5e2.sheet.actor section.tab[data-tab="features"] .sw5e-deployment-pill .sw5e-deployment-card-open {
+  display: inline-flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+}
+
+.dnd5e2.sheet.actor section.tab[data-tab="features"] .sw5e-deployment-pill .sw5e-deployment-card-open:hover .gold-icon,
+.dnd5e2.sheet.actor section.tab[data-tab="features"] .sw5e-deployment-pill .sw5e-deployment-card-open:hover .sw5e-deployment-icon-placeholder {
+  filter: brightness(1.06);
+}
+
+.dnd5e2.sheet.actor section.tab[data-tab="features"] .sw5e-deployment-pill .sw5e-deployment-card-open:hover .name-stacked .title {
+  filter: brightness(1.06);
+}
+
+.dnd5e2.sheet.actor section.tab[data-tab="features"] .sw5e-deployment-pill .icons .sw5e-deployment-icon-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  min-height: 2rem;
+  opacity: 0.85;
+}
+
+/* PLAY rank readonly: rank column not editable; icon/name still use `.sw5e-deployment-card-open` when OBSERVER+ */
+.dnd5e2.sheet.actor section.tab[data-tab="features"] .sw5e-deployment-pill--rank-readonly > .level {
+  cursor: default;
+}
+
+/* Rank `<select>` uses stock `.level-selector`; keep only a scoped hook for debugging/overrides */
+.dnd5e2.sheet.actor section.tab[data-tab="features"] .sw5e-deployment-rank-select {
+  /* Intentionally minimal: inherit dnd5e `.level-selector` presentation */
+  max-width: none;
+}
+
+/* Droid customization install/remove procedure dialog (DialogV2) */
+.sw5e-droid-procedure-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-width: 22rem;
+}
+
+.sw5e-droid-procedure-dialog .notes {
+  margin: 0;
+}
+
+.sw5e-droid-procedure-dialog .sw5e-droid-procedure-warnings {
+  margin: 0;
+  padding: 0.45rem 0.55rem;
+  font-size: var(--font-size-12);
+}
+
+.sw5e-droid-procedure-dialog .sw5e-droid-procedure-warnings-title {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+}
+
+.sw5e-droid-procedure-dialog .sw5e-droid-procedure-warnings ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.sw5e-droid-procedure-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-12);
+}
+
+.sw5e-droid-procedure-table th,
+.sw5e-droid-procedure-table td {
+  padding: 0.35rem 0.5rem;
+  text-align: left;
+  border: 1px solid color-mix(in oklab, var(--dnd5e-color-gold), transparent 55%);
+}
+
+.sw5e-droid-procedure-table th {
+  font-weight: 600;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 5%);
+  background: color-mix(in oklab, var(--dnd5e-color-dark), transparent 20%);
+}
+
+.sw5e-droid-procedure-table td {
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 5%);
+}
+
+.sw5e-droid-procedure-rolls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.sw5e-droid-procedure-rolls-label {
+  flex: 0 0 100%;
+  font-size: var(--font-size-11);
+  font-weight: 600;
+  color: color-mix(in oklab, var(--dnd5e-color-tan), transparent 10%);
+  margin: 0;
+}
+
+.sw5e-droid-procedure-roller {
+  flex: 1 1 10rem;
+  min-width: 8rem;
+  max-width: 100%;
+}
+
+.sw5e-droid-procedure-roll {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.32rem 0.65rem;
+  border-radius: 4px;
+  font: inherit;
+  font-size: var(--font-size-12);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid color-mix(in oklab, var(--dnd5e-color-gold), transparent 35%);
+  background: color-mix(in oklab, var(--dnd5e-color-dark), transparent 15%);
+  color: color-mix(in oklab, var(--dnd5e-color-parchment), transparent 5%);
+}
+
+.sw5e-droid-procedure-roll:hover:not(:disabled) {
+  border-color: color-mix(in oklab, var(--dnd5e-color-gold), transparent 15%);
+  background: color-mix(in oklab, var(--dnd5e-color-gold), transparent 82%);
+}
+
+.sw5e-droid-procedure-roll:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.sw5e-droid-procedure-dialog .hint {
+  margin: 0;
+}
+

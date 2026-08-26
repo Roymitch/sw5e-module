@@ -1,0 +1,139 @@
+_id: 63uBgVYOHPYQzJM3
+name: Overlay Amplifier (Journeyman)
+type: loot
+img: modules/sw5e-module/icons/packs/Modifications/ArmorMod.webp
+effects:
+  - name: Overlay Amplifier (Journeyman) - Power Attack
+    origin: Compendium.sw5e-module.enhanceditems.Item.63uBgVYOHPYQzJM3
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    transfer: false
+    disabled: false
+    _id: 0b3f56331ba7d658
+    changes:
+      - key: system.bonuses.mpak.attack
+        mode: 2
+        value: '2'
+        priority: 20
+    description: ''
+    statuses: []
+    flags: {}
+    tint: '#ffffff'
+    _stats:
+      coreVersion: '13.351'
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: dnd5ebuilder0000
+      compendiumSource: null
+      duplicateSource: null
+    img: modules/sw5e-module/icons/packs/Modifications/ArmorMod.webp
+    type: base
+    system: {}
+    sort: 0
+    _key: '!items.effects!63uBgVYOHPYQzJM3.0b3f56331ba7d658'
+folder: 2opSaVXOBytTPCiA
+sort: 0
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:52:05.5190527+00:00'
+    importer_version: 3
+    uid: EnhancedItem.name-overlay_amplifier_journeyman.subtype-armor
+system:
+  description:
+    value: |-
+      <h4>Item Modification (Armor)</h4>
+       <p>While using this item as your focus, you gain a +2 bonus to melee force attacks.</p>
+    chat: ''
+  source:
+    custom: Modification
+    book: WH
+    page: Ch. 7 Pg. 74
+  quantity: 1
+  weight:
+    value: 0
+    units: lb
+  price:
+    value: 0
+    denomination: gc
+  rarity: prototype
+  identified: true
+  activation:
+    type: ''
+    cost: null
+    condition: ''
+  duration:
+    value: ''
+    units: inst
+  cover: null
+  crewed: false
+  target:
+    value: ''
+    width: null
+    units: ''
+    type: ''
+    prompt: true
+  range:
+    value: null
+    long: null
+    units: ''
+  uses:
+    value: null
+    max: ''
+    per: null
+    recovery: ''
+    prompt: true
+  consume:
+    type: ''
+    target: null
+    amount: null
+    scale: false
+  ability: null
+  actionType: other
+  chatFlavor: ''
+  critical:
+    threshold: null
+    damage: ''
+  damage:
+    parts: []
+    versatile: ''
+  formula: ''
+  save:
+    ability: ''
+    dc: null
+    scaling: spell
+  modifying:
+    id: null
+    disabled: false
+  properties: []
+  unidentified:
+    description: ''
+  type:
+    value: armor
+    subtype: slot1
+    baseItem: ''
+  attack:
+    bonus: ''
+    flat: false
+  container: null
+  enchantment: null
+  summons: null
+ownership:
+  default: 0
+_stats:
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  coreVersion: '12.331'
+  createdTime: 1674493999127
+  modifiedTime: 1720368835665
+  lastModifiedBy: dnd5ebuilder0000
+  duplicateSource: null
+_key: '!items!63uBgVYOHPYQzJM3'
+

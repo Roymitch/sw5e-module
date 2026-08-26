@@ -1,0 +1,86 @@
+_id: 0L38TGkU8ViI7klt
+name: Master of Combat
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/FGTR-Passive.webp
+effects: []
+folder: RSEVWzIEcC9KpdJt
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:58.5700824+00:00'
+    importer_version: 3
+    uid: Feature.name-master_of_combat.source-class.sourceName-fighter.level-20
+system:
+  description:
+    value: >-
+      <p><em><strong>Fighter:</strong> 20th level</em></p>
+
+      <p>You are the master of combat. Your Strength or Dexterity score
+      increases by 2, and your Constitution score increases by 2. Your maximum
+      for those scores increases by 2.</p>
+
+      <p>Additionally, you can attack four times, instead of three times,
+      whenever you take the Attack action on your turn.</p>
+    chat: ''
+  requirements: Fighter 20
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2014'
+  cover: null
+  crewed: false
+  uses:
+    max: ''
+    spent: 0
+    recovery: []
+  type:
+    value: class
+    subtype: ''
+  prerequisites:
+    level: null
+    items: []
+    repeatable: false
+  properties: []
+  activities: {}
+  advancement:
+    - type: AbilityScoreImprovement
+      _id: Pg73QPXuz2UL5HOi
+      configuration:
+        cap: 2
+        fixed:
+          str: 0
+          dex: 0
+          con: 2
+          int: 0
+          wis: 0
+          cha: 0
+        locked:
+          - con
+          - int
+          - wis
+          - cha
+        points: 2
+        recommendation: null
+        max: 22
+      value:
+        type: asi
+      level: 20
+      title: ''
+      hint: >-
+        Your Strength or Dexterity score increases by 2, and your Constitution
+        score increases by 2. Your maximum for those scores increases by 2.
+  identifier: master-of-combat
+  enchant: {}
+_stats:
+  duplicateSource: null
+  exportSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1777752135936
+  modifiedTime: 1780494287191
+  lastModifiedBy: dnd5ebuilder0000
+ownership:
+  default: 0
+sort: 0
+_key: '!items!0L38TGkU8ViI7klt'
+

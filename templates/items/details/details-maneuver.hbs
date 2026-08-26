@@ -2,7 +2,7 @@
     <legend>{{ localize "SW5E.Maneuver.Details" }}</legend>
 
     {{!-- Maneuver Type --}}
-    {{ formField fields.type.fields.value value=source.type.value choices=config.superiority.types labelAttr="label" blank=""
+    {{ formField fields.type.fields.value value=source.type.value choices=CONFIG.superiority.types labelAttr="label" blank=""
                  localize=true }}
 
     {{!-- Maneuver Properties --}}
@@ -11,8 +11,7 @@
 
     {{!-- Source Class --}}
     {{#if isEmbedded}}
-    {{ formField fields.sourceClass value=source.sourceClass localize=true choices=item.parent.spellcastingClasses
-                 labelAttr="name" blank="" }}
+    {{ formField fields.sourceClass value=source.sourceClass localize=true options=spellcastingClasses blank="" }}
 
     {{ formField fields.ability value=source.ability localize=true choices=config.abilities
                  labelAttr="label" blank=defaultAbility }}

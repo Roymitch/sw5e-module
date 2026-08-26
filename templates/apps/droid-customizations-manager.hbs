@@ -1,0 +1,184 @@
+<div class="sw5e-droid-customizations-app standard-form">
+	{{#unless actorPresent}}
+		<p class="notification warning">{{localize "SW5E.DroidCustomizations.ActorMissing"}}</p>
+	{{else}}
+		{{#unless eligible}}
+			<p class="notification warning">{{localize "SW5E.DroidCustomizations.IneligibleActor"}}</p>
+		{{/unless}}
+
+		{{#if eligible}}
+			<section class="sw5e-droid-customizations-installed">
+				<div class="sw5e-droid-section-header">
+					<h3>{{localize "SW5E.DroidCustomizations.InstalledTitle"}}</h3>
+					<div class="sw5e-droid-section-stats">
+						<span class="sw5e-droid-meta-pill">{{localize "SW5E.DroidCustomizations.SummaryParts"}}: {{partsCount}} / {{partsAllowed}}</span>
+						<span class="sw5e-droid-meta-pill">{{localize "SW5E.DroidCustomizations.SummaryProtocols"}}: {{protocolsCount}} / {{protocolsAllowed}}</span>
+					</div>
+				</div>
+				{{#if installedRows.length}}
+					<div class="sw5e-droid-installed-list">
+						{{#each installedRows}}
+							<article class="sw5e-droid-installed-card">
+								<div class="sw5e-droid-installed-main">
+									<div class="sw5e-droid-installed-art" aria-hidden="true">
+										{{#if img}}
+											<img src="{{img}}" alt="" loading="lazy" />
+										{{else}}
+											<i class="fas fa-robot"></i>
+										{{/if}}
+									</div>
+									<div class="sw5e-droid-installed-copy">
+										<div class="sw5e-droid-installed-header">
+											{{#if uuid}}
+												<button type="button" class="unbutton sw5e-droid-installed-name" data-sw5e-droid-open-item="{{uuid}}" aria-label="{{localize "SW5E.DroidCustomizations.OpenItemSheetAria"}}">{{name}}</button>
+											{{else}}
+												<span class="sw5e-droid-installed-title">{{name}}</span>
+											{{/if}}
+										</div>
+										<div class="sw5e-droid-installed-meta">
+											<span class="sw5e-droid-meta-pill">{{categoryLabel}}</span>
+											<span class="sw5e-droid-meta-pill">{{rarity}}</span>
+											<span class="sw5e-droid-meta-pill sw5e-droid-meta-pill--detail">{{localize "SW5E.DroidCustomizations.ColMotorCost"}}: {{motorSlotCost}}</span>
+										</div>
+										<p class="sw5e-droid-installed-date">{{localize "SW5E.DroidCustomizations.ColInstalled"}}: {{installedAtText}}</p>
+									</div>
+								</div>
+								{{#if ../canEdit}}
+									<div class="sw5e-aug-actions">
+										<button type="button" class="sw5e-aug-remove" data-sw5e-droid-remove="{{uuid}}" data-sw5e-droid-remove-name="{{name}}">
+											<i class="fas fa-trash" aria-hidden="true"></i> {{localize "SW5E.DroidCustomizations.Remove"}}
+										</button>
+									</div>
+								{{/if}}
+							</article>
+						{{/each}}
+					</div>
+				{{else}}
+					<p class="hint">{{localize "SW5E.DroidCustomizations.NoneInstalled"}}</p>
+				{{/if}}
+				{{#if canEdit}}
+					<div class="sw5e-droid-installed-install" data-sw5e-droid-install-dropzone>
+						<h4>{{localize "SW5E.DroidCustomizations.InstallTitle"}}</h4>
+					{{#if showWorkflow}}
+						{{#if isGm}}
+							<div class="form-group">
+								<label class="checkbox">
+									<input type="checkbox" name="sw5e-droid-force-install" />
+									{{localize "SW5E.DroidCustomizations.ForceInstallGm"}}
+								</label>
+							</div>
+						{{/if}}
+						<div class="sw5e-droid-install-actions">
+							<button type="button" class="sw5e-aug-install-submit sw5e-droid-install-submit">
+								<i class="fas fa-plus" aria-hidden="true"></i> {{localize "SW5E.DroidCustomizations.InstallSubmit"}}
+							</button>
+							{{#if hasWorldInstallChoices}}
+								<button type="button" class="sw5e-droid-install-world-submit">
+									<i class="fas fa-box-open" aria-hidden="true"></i> {{localize "SW5E.DroidCustomizations.WorldInstallButton"}}
+								</button>
+							{{/if}}
+						</div>
+						{{#if hasWorldInstallChoices}}
+							<p class="hint">{{localize "SW5E.DroidCustomizations.WorldInstallHint"}}</p>
+						{{/if}}
+					{{else}}
+						<p class="hint">{{localize "SW5E.DroidCustomizations.InstallUnavailable"}}</p>
+					{{/if}}
+					<div class="sw5e-aug-validation" data-sw5e-droid-validation-install hidden></div>
+					</div>
+				{{/if}}
+			</section>
+
+			{{#if canEdit}}
+				<section class="sw5e-droid-customizations-motor">
+					<details class="sw5e-droid-collapsible">
+						<summary class="sw5e-droid-collapsible-summary">
+							<h3>{{localize "SW5E.DroidCustomizations.MotorTitle"}}</h3>
+							<i class="fas fa-chevron-down" aria-hidden="true"></i>
+						</summary>
+						<div class="sw5e-droid-collapsible-content">
+							{{#if showWorkflow}}
+								<p class="hint">{{localize "SW5E.DroidCustomizations.MotorHint"}}</p>
+								<div class="sw5e-droid-motor-stats">
+									<span class="sw5e-droid-meta-pill sw5e-droid-motor-stat">{{localize "SW5E.DroidCustomizations.SummaryMotorTotal"}}: {{motorSlots}}</span>
+									<span class="sw5e-droid-meta-pill sw5e-droid-motor-stat">{{localize "SW5E.DroidCustomizations.SummaryMotorUsed"}}: {{motorUsed}}</span>
+									<span class="sw5e-droid-meta-pill sw5e-droid-motor-stat">{{localize "SW5E.DroidCustomizations.SummaryMotorAvailable"}}: {{motorAvailable}}</span>
+								</div>
+								<div class="form-group">
+									<label for="sw5e-droid-motor-target">{{localize "SW5E.DroidCustomizations.MotorTargetLabel"}}</label>
+									<select id="sw5e-droid-motor-target" name="sw5e-droid-motor-target">
+										<option value="">{{localize "SW5E.DroidCustomizations.MotorSelectPlaceholder"}}</option>
+										{{#each motorUpgradeTargets}}
+											<option value="{{value}}" {{#if disabled}}disabled{{/if}} {{#if selected}}selected{{/if}}>
+												{{localize "SW5E.DroidCustomizations.MotorSlotsLabel"}} {{value}}{{#if disabled}} — {{localize "SW5E.DroidCustomizations.MotorUnavailable"}}{{/if}}
+											</option>
+										{{/each}}
+									</select>
+								</div>
+								<div class="sw5e-droid-motor-preview">
+									<div class="sw5e-droid-motor-preview-row">
+										<span class="sw5e-droid-motor-preview-label">{{localize "SW5E.DroidCustomizations.MotorPreviewCost"}}</span>
+										<span class="sw5e-droid-motor-preview-value" data-sw5e-droid-motor-cost>—</span>
+									</div>
+									<div class="sw5e-droid-motor-preview-row">
+										<span class="sw5e-droid-motor-preview-label">{{localize "SW5E.DroidCustomizations.MotorPreviewHours"}}</span>
+										<span class="sw5e-droid-motor-preview-value" data-sw5e-droid-motor-hours>—</span>
+									</div>
+								</div>
+								{{#if isGm}}
+									<div class="form-group">
+										<label class="checkbox">
+											<input type="checkbox" name="sw5e-droid-force-motor" />
+											{{localize "SW5E.DroidCustomizations.ForceMotorGm"}}
+										</label>
+									</div>
+								{{/if}}
+								<button type="button" class="sw5e-aug-install-submit sw5e-droid-motor-upgrade-submit">
+									<i class="fas fa-arrow-up" aria-hidden="true"></i> {{localize "SW5E.DroidCustomizations.MotorUpgradeSubmit"}}
+								</button>
+							{{else}}
+								<p class="hint">{{localize "SW5E.DroidCustomizations.MotorUnavailableWorkflow"}}</p>
+							{{/if}}
+							<div class="sw5e-aug-validation" data-sw5e-droid-validation-motor hidden></div>
+						</div>
+					</details>
+				</section>
+
+				<section class="sw5e-droid-customizations-limits">
+					<details class="sw5e-droid-collapsible">
+						<summary class="sw5e-droid-collapsible-summary">
+							<h3>{{localize "SW5E.DroidCustomizations.LimitsTitle"}}</h3>
+							<i class="fas fa-chevron-down" aria-hidden="true"></i>
+						</summary>
+						<div class="sw5e-droid-collapsible-content">
+							<p class="hint">{{localize "SW5E.DroidCustomizations.LimitsHint"}}</p>
+							<div class="form-group">
+								<label for="sw5e-droid-parts-ability">{{localize "SW5E.DroidCustomizations.LimitsPartsLabel"}}</label>
+								<select id="sw5e-droid-parts-ability" name="sw5e-droid-parts-ability">
+									<option value="">{{localize "SW5E.DroidCustomizations.LimitsFallbackOption"}}</option>
+									{{#each partsAbilityOptions}}
+										<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+									{{/each}}
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="sw5e-droid-protocols-ability">{{localize "SW5E.DroidCustomizations.LimitsProtocolsLabel"}}</label>
+								<select id="sw5e-droid-protocols-ability" name="sw5e-droid-protocols-ability">
+									<option value="">{{localize "SW5E.DroidCustomizations.LimitsFallbackOption"}}</option>
+									{{#each protocolsAbilityOptions}}
+										<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+									{{/each}}
+								</select>
+							</div>
+							<button type="button" class="sw5e-aug-install-submit sw5e-droid-limits-save-submit">
+								<i class="fas fa-save" aria-hidden="true"></i> {{localize "SW5E.DroidCustomizations.LimitsSave"}}
+							</button>
+						</div>
+					</details>
+				</section>
+			{{else}}
+				<p class="hint">{{localize "SW5E.DroidCustomizations.ReadOnlyHint"}}</p>
+			{{/if}}
+		{{/if}}
+	{{/unless}}
+</div>

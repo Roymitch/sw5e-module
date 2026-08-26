@@ -1,0 +1,108 @@
+/* Pause overlay — single source of truth (core SW5e branding).
+   Do not change the root `#pause` layout box (width/height/position/background/opacity).
+   Decorative art and GAME PAUSED use independent vertical placement inside the banner.
+   Ungated: must not depend on removed theme attributes or theme-root wrappers. */
+
+@pause-stock-ampersand: ~'img[src*="systems/dnd5e/ui/official/ampersand.svg"]';
+
+/* Animation owns `transform` exclusively — do not add static translate/rotate on these nodes. */
+@keyframes sw5e-pause-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#pause {
+  color: var(--color-text-secondary, #6e6a66) !important;
+}
+
+#pause figcaption {
+  position: relative;
+  isolation: isolate;
+  color: var(--color-text-primary, #191813) !important;
+  text-shadow:
+    0 1px 2px rgba(255, 255, 255, 0.75),
+    0 2px 6px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Preserve stock image layout, but hide the confirmed native DND ampersand art when SW5E custom rings are active. */
+#pause @{pause-stock-ampersand} {
+  visibility: hidden !important;
+}
+
+/*
+  Composition (SW5e rings active only):
+  - `#pause` / banner chrome: Foundry + dnd5e own size, position, opacity (unchanged).
+  - `#pause > div`: stretch child so figcaption can fill the banner as positioning context.
+  - `figcaption`: GAME PAUSED anchored near the banner bottom (padding-bottom inset).
+  - `figcaption::before/::after`: hologram rings anchored near the banner top (top inset).
+  Horizontal centering uses left + margin-left (not transform) so spin keyframes stay exclusive.
+*/
+#pause:has(@{pause-stock-ampersand}) > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: stretch;
+}
+
+#pause:has(@{pause-stock-ampersand}) figcaption {
+  position: relative;
+  isolation: isolate;
+  flex: 1 1 auto;
+  align-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 0;
+  /* Bottom-oriented GAME PAUSED — small inset so text does not clip the banner edge. */
+  padding-bottom: 1.4rem;
+  text-align: center;
+}
+
+#pause:has(@{pause-stock-ampersand}) figcaption::before,
+#pause:has(@{pause-stock-ampersand}) figcaption::after {
+  content: "";
+  position: absolute;
+  /* Prior caption-relative negative top offset pulled rings above the banner edge. */
+  top: 0.2rem;
+  left: 50%;
+  width: 128px;
+  height: 128px;
+  margin-left: -64px;
+  bottom: auto;
+  pointer-events: none;
+  z-index: -1;
+}
+
+#pause:has(@{pause-stock-ampersand}) figcaption::before {
+  z-index: -2;
+  background: url("/modules/sw5e-module/assets/ui/pause-inner.svg") no-repeat 50% 50%;
+  animation: sw5e-pause-spin 10s linear infinite;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.4));
+  opacity: 0.95;
+}
+
+#pause:has(@{pause-stock-ampersand}) figcaption::after {
+  background: url("/modules/sw5e-module/assets/ui/pause-outer.svg") no-repeat 50% 50%;
+  animation: sw5e-pause-spin 5s linear infinite reverse;
+  filter: drop-shadow(0 0 14px rgba(0, 0, 0, 0.45));
+  opacity: 0.92;
+}
+
+/* Narrow responsive safeguard — Pause composition only. */
+@media (max-height: 720px) {
+  #pause:has(@{pause-stock-ampersand}) figcaption {
+    padding-bottom: 0.4rem;
+  }
+
+  #pause:has(@{pause-stock-ampersand}) figcaption::before,
+  #pause:has(@{pause-stock-ampersand}) figcaption::after {
+    top: 0.25rem;
+  }
+}

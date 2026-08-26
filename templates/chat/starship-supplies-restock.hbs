@@ -1,0 +1,15 @@
+<div class="sw5e-starship-supplies-restock-chat">
+  <p><strong>{{heading}}</strong></p>
+  {{#if showFuel}}
+  <p>{{fuelLine}}</p>
+  <p>{{fuelCostLine}}</p>
+  {{/if}}
+  {{#if showFood}}
+  <p>{{foodLine}}</p>
+  <p>{{foodCostLine}}</p>
+  {{/if}}
+  {{#if showTotal}}
+  <p>{{totalLine}}</p>
+  {{/if}}
+  <p class="notes">{{noCurrencyNote}}</p>
+</div>

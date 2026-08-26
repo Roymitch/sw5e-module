@@ -1,0 +1,4722 @@
+_id: 6965b08068c3d7c6
+name: Imperial Cipher Agent
+type: npc
+img: systems/dnd5e/icons/svg/actors/npc.svg
+folder: 569b095af4903164
+items:
+  - _id: 969d5547e0979b63
+    name: Assassinate
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+    img: modules/sw5e-module/icons/packs/Monster Traits/Assassinate.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The creature has advantage on attack rolls against any creature that hasn't taken a turn yet. Additionally,
+          any hit it scores against a surprised creature is a critical hit.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6965b08068c3d7c6.969d5547e0979b63"
+  - _id: 450ad0359ecbba73
+    name: Cunning Action
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+    img: modules/sw5e-module/icons/packs/Monster Traits/Cunning Action.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>On each of its turns, the cipher agent can use a bonus action to take the Dash, Disengage, or Hide
+          Action.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6965b08068c3d7c6.450ad0359ecbba73"
+  - _id: 81aa786af156c3a5
+    name: Evasion
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>If the cipher agent is subjected to an effect that allows it to make a saving throw to only take half
+          damage, it instead takes no damage if it succeeds on the saving throw, and only half damage if it fails.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6965b08068c3d7c6.81aa786af156c3a5"
+  - _id: 0e6f2ef9f5292a39
+    name: Stealth Field Generator
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The cipher agent can use a bonus action to become invisible. Any equipment the cipher agent wears or
+          carries is also invisible as long as the equipment is on its person. The invisibility ends immediately after
+          the cipher agent makes an attack roll or is hit by an attack roll.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6965b08068c3d7c6.0e6f2ef9f5292a39"
+  - _id: eb2584f114009170
+    name: Lethal Strikes
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The cipher agent's strikes are enhanced for the purposes of overcoming resistances. When it hits with a
+          weapon attack, it deals an additional 2d6 poison damage (included.)</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6965b08068c3d7c6.eb2584f114009170"
+  - _id: 4f1b1e936ed2a99c
+    name: Tech Resistance
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+    img: modules/sw5e-module/icons/packs/Monster Traits/Tech Resistance.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The cipher agent has advantage on saving throws against tech powers and other tech effects.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6965b08068c3d7c6.4f1b1e936ed2a99c"
+  - _id: 063b9f33404be7e0
+    name: Sneak Attack (1/turn)
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featPassiveOrRider
+          sourceSection: traits
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The cipher agent deals an extra 21 (6d6) damage when it hits a target with a weapon attack and has
+          advantage on the attack roll, or when the target is within 5 feet of an ally of the cipher agent that isn't
+          incapacitated and the cipher agent doesn't have disadvantage on the roll.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6965b08068c3d7c6.063b9f33404be7e0"
+  - _id: 277b3ce7e4c777c5
+    name: Multiattack
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featAction
+          sourceSection: actions
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+    img: modules/sw5e-module/icons/packs/Monster Traits/Multiattack.webp
+    effects: []
+    folder: null
+    system:
+      description:
+        value: <p>The cipher agent makes one venomous vibrodagger attack and casts one at-will power.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6965b08068c3d7c6.277b3ce7e4c777c5"
+  - _id: 74ef0e95268fb991
+    name: Noxious Knives (Recharge 5 or 6)
+    type: feat
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: non-weapon
+          kind: featAction
+          sourceSection: actions
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>The cipher agent hurls poison-coated knives in a 15-foot cone. Each creature in the area must succeed on a
+          DC 17 Dexterity saving throw or take 14 (4d6) kinetic damage and 14 (4d6) poison damage and be poisoned for 1
+          minute. On a success, a creature takes half damage and isn't poisoned. A poisoned creature can repeat the
+          saving throw at the end of its turn. A creature that succeeds on the saving throw is immune to being poisoned
+          in this way for 24 hours.</p>
+        chat: ""
+      requirements: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: ""
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      recharge:
+        value: null
+        charged: false
+      attributes:
+        speed:
+          space: null
+          turn: null
+      attack:
+        bonus: ""
+        flat: false
+      enchantment: null
+      summons: null
+      prerequisites:
+        level: null
+      properties: []
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6965b08068c3d7c6.74ef0e95268fb991"
+  - _id: e7fd3c3936a0779f
+    name: Venomous Vibrodagger
+    type: weapon
+    sort: 0
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromSource: true
+          classification: source-specific-manufactured-weapon
+          kind: weaponSourceSpecific
+          sourceActionNames:
+            - Venomous Vibrodagger
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+    img: systems/dnd5e/icons/svg/actors/npc.svg
+    effects: []
+    folder: null
+    system:
+      description:
+        value: >-
+          <p>*Melee Weapon Attack:* +11 to hit, reach 5 ft., one target. *Hit:* 8 (1d4+6) kinetic damage plus 7 (2d6)
+          poison damage.</p>
+        chat: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      quantity: 1
+      weight:
+        value: 1
+        units: lb
+      price:
+        value: 0
+        denomination: gc
+      attunement: ""
+      equipped: false
+      rarity: ""
+      identified: true
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 5
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      ability: str
+      actionType: mwak
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 1d4+6
+            - kinetic
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      armor:
+        value: 10
+      hp:
+        value: 0
+        max: 0
+        dt: null
+        conditions: ""
+      modify:
+        chassis: none
+        augmentSlots: 0
+        modSlots: 4
+        items: []
+        changes: {}
+      weaponClass: ""
+      ammo:
+        target: null
+        value: null
+        use: null
+        types: []
+      properties: []
+      proficient: 1
+      type:
+        value: simpleM
+        subtype: ""
+        baseItem: ""
+      unidentified:
+        description: ""
+      attack:
+        bonus: ""
+        flat: false
+      container: null
+      attuned: false
+      enchantment: null
+      summons: null
+      magicalBonus: null
+      firingArc: ""
+      activities:
+        e3519a370e882894:
+          _id: e3519a370e882894
+          type: attack
+          activation:
+            type: action
+            value: 1
+            condition: ""
+            override: false
+          attack:
+            ability: ""
+            bonus: "11"
+            flat: true
+            type:
+              classification: weapon
+              value: melee
+            critical: {}
+          damage:
+            critical: {}
+            includeBase: false
+            parts:
+              - number: 1
+                denomination: 4
+                bonus: "+6"
+                types:
+                  - kinetic
+                custom:
+                  enabled: false
+                  formula: ""
+                scaling:
+                  mode: ""
+                  number: null
+                  formula: ""
+          description: {}
+          duration:
+            units: inst
+            concentration: false
+            override: false
+          effects: []
+          range:
+            override: false
+            units: ft
+            value: "5"
+          target:
+            template:
+              contiguous: false
+              units: ft
+              type: ""
+            affects:
+              choice: false
+              type: creature
+              count: "1"
+            override: false
+            prompt: true
+          consumption:
+            targets: []
+            scaling:
+              allowed: false
+            spellSlot: true
+          uses:
+            spent: 0
+            max: ""
+            recovery: []
+          sort: 0
+      attackBonus: "11"
+    ownership:
+      default: 0
+    _stats:
+      systemId: null
+      systemVersion: null
+      coreVersion: "12.330"
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+      compendiumSource: null
+      duplicateSource: null
+    _key: "!actors.items!6965b08068c3d7c6.e7fd3c3936a0779f"
+  - _id: c957e1e6da212f1c
+    _key: "!actors.items!6965b08068c3d7c6.c957e1e6da212f1c"
+    name: Techcasting
+    type: feat
+    img: systems/dnd5e/icons/svg/items/feature.svg
+    system:
+      description:
+        value: >-
+          <p>The Imperial Cipher Agent is a 11th level techcaster it's tech casting ability is Intelligence (tech save
+          DC 17, +9 to hit with power attacks, 44 tech points). The Imperial Cipher Agent knows the following
+          powers:<br>*At Will:* assess the situation, encrypted message, poison spray, venomous strike<br><br><br>*1st
+          Level:* element of surprise, energy shield, expeditious retreat, flash, poison dart<br><br><br>*2nd Level:*
+          acid dart, concealed caltrops, translocate<br><br><br>*3rd Level:* invisibility to cameras, kolto cloud,
+          tactical advantage, tech override<br><br><br>*4th Level:* corrosive sphere<br><br><br>*5th Level:* mislead,
+          toxic cloud</p>
+        chat: ""
+      source:
+        custom: Vesh's Galactic Holodex
+      activation:
+        type: ""
+        cost: null
+        condition: ""
+      duration:
+        value: ""
+        units: ""
+      cover: null
+      crewed: false
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: ""
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      consume:
+        type: ""
+        target: ""
+        amount: null
+        scale: false
+      ability: null
+      actionType: ""
+      chatFlavor: ""
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      type:
+        value: ""
+        subtype: ""
+      requirements: ""
+      recharge:
+        value: null
+        charged: false
+    effects: []
+    folder: null
+    flags:
+      sw5e:
+        veshsGalacticHolodex:
+          castingTrait: true
+          castType: tech
+          parsedLevel: 11
+          parsedPoints: 44
+          parsedAbility: int
+          parsedSaveDc: 17
+          parsedAttackBonus: 9
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+  - name: Assess the Situation
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1437497+00:00"
+        importer_version: 3
+        uid: Power.name-assess_the_situation.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Assess the Situation
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: At Will
+          tierKind: at-will
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.Zrq1CwKjA4GlY6JU
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/AssessTheSituation.webp
+    system:
+      description:
+        value: >-
+          <p>You take a sensory snapshot of a target within range. Your tech grants you a brief insight into the
+          target's defenses. You have advantage on the next attack roll you make against the target before the end of
+          your next turn.</p>
+
+          <p>This power benefits additional attacks at higher levels: two attacks at 5th level, three attacks at 11th
+          level, and four attacks at 17th level.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: round
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 30
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 0
+      school: tec
+      properties:
+        - concentration
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: none
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: round
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "30"
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 10d3c53f40c47197
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.Zrq1CwKjA4GlY6JU
+    _key: "!actors.items!6965b08068c3d7c6.10d3c53f40c47197"
+  - name: Encrypted Message
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1527446+00:00"
+        importer_version: 3
+        uid: Power.name-encrypted_message.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Encrypted Message
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: At Will
+          tierKind: at-will
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.RZKUHTQ91h9i8XiJ
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/EncryptedMessage.webp
+    system:
+      description:
+        value: >-
+          <p>You point your finger toward a creature within range that possesses a commlink and whisper a message. The
+          target (and only the target) hears the message and can send an encrypted reply that only you can hear. These
+          messages cannot be intercepted or decrypted by unenhanced means.</p>
+
+          <p>You can cast this power through solid objects if you are familiar with the target and know it is beyond the
+          barrier. 1 foot of stone, 1 inch of common metal, a thin sheet of lead, or 3 feet of wood blocks the power.
+          The power doesn't have to follow a straight line and can travel freely around corners or through openings.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: round
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 120
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 0
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: none
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: round
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "120"
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 0d01c8b31b23328c
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.RZKUHTQ91h9i8XiJ
+    _key: "!actors.items!6965b08068c3d7c6.0d01c8b31b23328c"
+  - name: Poison Spray
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1767313+00:00"
+        importer_version: 3
+        uid: Power.name-poison_spray.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Poison Spray
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: At Will
+          tierKind: at-will
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.k6A6OHZkEECqIP1Q
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/PoisonSpray.webp
+    system:
+      description:
+        value: >-
+          <p>You extend your hand toward a creature you can see within range and project a puff of noxious gas. The
+          creature must succeed on a Constitution saving throw or take [[/r 1d12]] poison damage. </p>
+
+          <p>This power's damage increases by [[/r 1d12]] when you reach 5th level ([[/r 2d12]]), 11th level ([[/r
+          3d12]]), and 17th level ([[/r 4d12]]).</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 10
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: save
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 1d12
+            - poison
+        versatile: ""
+      formula: ""
+      save:
+        ability: con
+        dc: null
+        scaling: spell
+      level: 0
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: atwill
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 12
+                number: 1
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - poison
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "10"
+          save:
+            ability: con
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: save
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 203ce5fd05d44666
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.k6A6OHZkEECqIP1Q
+    _key: "!actors.items!6965b08068c3d7c6.203ce5fd05d44666"
+  - name: Venomous Strike
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1917223+00:00"
+        importer_version: 3
+        uid: Power.name-venomous_strike.level-0
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Venomous Strike
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: At Will
+          tierKind: at-will
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.JfLU2k3NeqwsmjPm
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/VenomousStrike.webp
+    system:
+      description:
+        value: >-
+          <p>As part of the action used to cast this power, you must make a melee weapon attack against one creature
+          within your reach, otherwise the power fails. On a hit, the target suffers the attack's normal effects, and if
+          you were hidden from it, it takes an additional [[/r 1d4]] poison damage. </p>
+
+          <p>This power's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra
+          [[/r 1d8]] poison damage to the target, and the damage the target takes when you are hidden from it increases
+          to [[/r 2d4]]. Both damage rolls increase by [[/r 1d8]] and [[/r 1d4]], respectively, at 11th level and 17th
+          level.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: touch
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 1d4
+            - poison
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 0
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: atwill
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: ""
+        target: null
+        amount: null
+        scale: false
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0damage00000:
+          _id: sw5e0damage00000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            critical:
+              allow: true
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 4
+                number: 1
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - poison
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            override: false
+            units: touch
+          target:
+            template:
+              type: ""
+              units: ""
+          type: damage
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 465300a96c35024f
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.JfLU2k3NeqwsmjPm
+    _key: "!actors.items!6965b08068c3d7c6.465300a96c35024f"
+  - name: Element of Surprise
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1527446+00:00"
+        importer_version: 3
+        uid: Power.name-element_of_surprise.level-1
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Element of Surprise
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 1st Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.9oa9lVCrr03LBTa8
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/ElementOfSurprise.webp
+    system:
+      description:
+        value: >-
+          <p>You expel a sabotage charge at the creature that attacked you. The creature must make a Dexterity saving
+          throw. It takes [[/r 2d10]] fire damage on a failed save, or half as much damage on a successful one.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 2nd level or
+          higher, the damage increases by [[/r 1d10]] for each slot level above 1st.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: reaction
+        cost: 1
+        condition: in response to being damaged by a creature within 60 feet of you that you can see
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 60
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: save
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 2d10
+            - fire
+        versatile: ""
+      formula: ""
+      save:
+        ability: dex
+        dc: null
+        scaling: spell
+      level: 1
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: 1d10
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 2
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: in response to being damaged by a creature within 60 feet of you that you can see
+            type: reaction
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 10
+                number: 2
+                scaling:
+                  mode: whole
+                  number: 1
+                types:
+                  - fire
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "60"
+          save:
+            ability: dex
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "2"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: e2df34ae63e65fe1
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.9oa9lVCrr03LBTa8
+    _key: "!actors.items!6965b08068c3d7c6.e2df34ae63e65fe1"
+  - name: Energy Shield
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1537443+00:00"
+        importer_version: 3
+        uid: Power.name-energy_shield.level-1
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Energy Shield
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 1st Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.iqGdVAC4ZjCrakEh
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/EnergyShield.webp
+    system:
+      description:
+        value: >-
+          <p>You quickly create an energy shield. Until the start of your next turn, you have a +5 bonus to AC. This
+          includes the triggering attack. </p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: reaction
+        cost: 1
+        condition: when you are hit by an attack
+      duration:
+        value: "1"
+        units: round
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: self
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 1
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: none
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 2
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: when you are hit by an attack
+            type: reaction
+          description: {}
+          duration:
+            units: round
+            value: "1"
+          img: null
+          range:
+            override: false
+            units: self
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "2"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 1e3ef8faf8c3b152
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.iqGdVAC4ZjCrakEh
+    _key: "!actors.items!6965b08068c3d7c6.1e3ef8faf8c3b152"
+  - name: Expeditious Retreat
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1547431+00:00"
+        importer_version: 3
+        uid: Power.name-expeditious_retreat.level-1
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Expeditious Retreat
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 1st Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.OFMkAfPQL2AML1Xp
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/ExpeditiousRetreat.webp
+    system:
+      description:
+        value: >-
+          <p>This power gives you a burst of adrenaline that allows you to move at an incredible pace. When you cast
+          this power, and then as a bonus action on each of your turns until the power ends, you can take the Dash
+          action.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: "10"
+        units: minute
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: self
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 1
+      school: tec
+      properties:
+        - concentration
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: none
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 2
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: bonus
+          description: {}
+          duration:
+            units: minute
+            value: "10"
+          img: null
+          range:
+            override: false
+            units: self
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "2"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 8481eebd94965e44
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.OFMkAfPQL2AML1Xp
+    _key: "!actors.items!6965b08068c3d7c6.8481eebd94965e44"
+  - name: Flash
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1567429+00:00"
+        importer_version: 3
+        uid: Power.name-flash.level-1
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Flash
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 1st Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.oYgX5iLQt1JiLOIr
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/Flash.webp
+    system:
+      description:
+        value: >-
+          <p>You create a massive flash of light and explosion of sound at a point within range. Roll [[/r 6d10]]; the
+          total is how many hit points of creatures this power can affect. Creatures within 20 feet of the point are
+          affected in ascending order of their current hit points (ignoring unconscious creatures).</p>
+
+          <p>Starting with the creature that has the lowest current hit points, each creature affected by this power is
+          blinded until the end of your next turn. Subtract each creature's hit points from the total before moving on
+          to the creature with the next lowest hit points. A creature's hit points must be equal to or less than the
+          remaining total for that creature to be affected.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 2nd level or
+          higher, roll an additional [[/r 2d10]] for each slot level above 1st.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: round
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 90
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: 6d10
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 1
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 2
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: round
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "90"
+          roll:
+            formula: 6d10
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "2"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 31127a5863eb5184
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.oYgX5iLQt1JiLOIr
+    _key: "!actors.items!6965b08068c3d7c6.31127a5863eb5184"
+  - name: Poison Dart
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1767313+00:00"
+        importer_version: 3
+        uid: Power.name-poison_dart.level-1
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Poison Dart
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 1st Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.4SMoxAzUGjUatKmR
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/PoisonDart.webp
+    system:
+      description:
+        value: >-
+          <p>Make a ranged tech attack against a creature within range. On hit, the target takes [[/r 2d8]] poison
+          damage and must make a Constitution save. On a failed save, it is also poisoned until the end of your next
+          turn.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 2nd level or
+          higher, the damage increases by [[/r 1d8]] for each slot level above 1st.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 60
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: rpak
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 2d8
+            - poison
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 1
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: 1d8
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 2
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0attack00000:
+          _id: sw5e0attack00000
+          activation:
+            condition: ""
+            type: action
+          attack:
+            ability: ""
+            bonus: ""
+            flat: false
+            type:
+              classification: spell
+              value: ranged
+          damage:
+            critical: {}
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 2
+                scaling:
+                  mode: whole
+                  number: 1
+                types:
+                  - poison
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "60"
+          target:
+            template:
+              type: ""
+              units: ""
+          type: attack
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "2"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 8f76ce504b928f87
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.4SMoxAzUGjUatKmR
+    _key: "!actors.items!6965b08068c3d7c6.8f76ce504b928f87"
+  - name: Acid Dart
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1417509+00:00"
+        importer_version: 3
+        uid: Power.name-acid_dart.level-2
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Acid Dart
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 2nd Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.1YrVk8kNgTbVLEzu
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/AcidDart.webp
+    system:
+      description:
+        value: >-
+          <p>A shimmering green dart streaks toward a target within range and bursts in a spray of acid. Make a ranged
+          tech attack against the target. On a hit, the target takes [[/r 4d4]] acid damage immediately and [[/r 2d4]]
+          acid damage at the end of its next turn. On a miss, the dart splashes the target with acid for half as much of
+          the initial damage and no damage at the end of its next turn.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 3rd level or
+          higher, the damage (both initial and later) increases by [[/r 1d4]] for each slot level above 2nd.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 90
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: rpak
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 4d4
+            - acid
+          - - 2d4
+            - acid
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 2
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: 1d4
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 3
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0attack00000:
+          _id: sw5e0attack00000
+          activation:
+            condition: ""
+            type: action
+          attack:
+            ability: ""
+            bonus: ""
+            flat: false
+            type:
+              classification: spell
+              value: ranged
+          damage:
+            critical: {}
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 4
+                number: 4
+                scaling:
+                  mode: whole
+                  number: 1
+                types:
+                  - acid
+              - custom:
+                  enabled: false
+                denomination: 4
+                number: 2
+                scaling:
+                  mode: whole
+                  number: 1
+                types:
+                  - acid
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "90"
+          target:
+            template:
+              type: ""
+              units: ""
+          type: attack
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "3"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: baea789afe12f1b2
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.1YrVk8kNgTbVLEzu
+    _key: "!actors.items!6965b08068c3d7c6.baea789afe12f1b2"
+  - name: Concealed Caltrops
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1457493+00:00"
+        importer_version: 3
+        uid: Power.name-concealed_caltrops.level-2
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Concealed Caltrops
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 2nd Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.ETSswGFncMq4wRR1
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/ConcealedCaltrops.webp
+    system:
+      description:
+        value: >-
+          <p>You scatter a large number of caltrops across ground in a 20-foot radius centered on a point within range.
+          These caltrops pierce deep into the feet and boots of anyone who walks upon them. The area becomes difficult
+          terrain for the duration. When a creature moves into or within the area, it takes [[/r 2d4]] kinetic damage
+          for every 5 feet it travels.</p>
+
+          <p>The caltrops are nearly invisible to the naked eye. Any creature that can't see the area at the time the
+          power is cast must make a Wisdom (Perception) check against your tech save DC to notice the caltrops before
+          entering the area.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: hour
+      target:
+        value: "20"
+        width: null
+        units: ft
+        type: radius
+        prompt: true
+      range:
+        value: 150
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 2d4
+            - kinetic
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 2
+      school: tec
+      properties:
+        - concentration
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: none
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 3
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0check000000:
+          _id: sw5e0check000000
+          activation:
+            condition: ""
+            type: action
+          check:
+            ability: ""
+            associated: []
+            dc:
+              calculation: ""
+              formula: ""
+          description: {}
+          duration:
+            units: hour
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "150"
+          target:
+            template:
+              size: "20"
+              type: radius
+          type: check
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "3"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 8cc14bb7f43785c9
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.ETSswGFncMq4wRR1
+    _key: "!actors.items!6965b08068c3d7c6.8cc14bb7f43785c9"
+  - name: Translocate
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1907223+00:00"
+        importer_version: 3
+        uid: Power.name-translocate.level-2
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Translocate
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 2nd Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.UE0M55tPWDoPpJyu
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/Translocate.webp
+    system:
+      description:
+        value: >-
+          <p>Your form shimmers in a holographic configuration, and then collapses. You teleport up to 30 feet to an
+          unoccupied space that you can see.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: self
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 2
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: none
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 3
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: bonus
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            override: false
+            units: self
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "3"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: c44331c30a77231d
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.UE0M55tPWDoPpJyu
+    _key: "!actors.items!6965b08068c3d7c6.c44331c30a77231d"
+  - name: Invisibility to Cameras
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1627387+00:00"
+        importer_version: 3
+        uid: Power.name-invisibility_to_cameras.level-3
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Invisibility to Cameras
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 3rd Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.kiveqtRQRzdi4MK0
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/InvisibilityToCameras.webp
+    system:
+      description:
+        value: >-
+          <p>Up to four creatures of your choice become undetectable to electronic sensors and cameras. Anything the
+          target is wearing or carrying is also undetectable, so long as it's on the target's person. The target is
+          still visible to regular vision.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: minute
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 10
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 3
+      school: tec
+      properties:
+        - concentration
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: none
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 4
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: minute
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "10"
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "4"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 42fdd1ad0f060f66
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.kiveqtRQRzdi4MK0
+    _key: "!actors.items!6965b08068c3d7c6.42fdd1ad0f060f66"
+  - name: Kolto Cloud
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1637382+00:00"
+        importer_version: 3
+        uid: Power.name-kolto_cloud.level-3
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Kolto Cloud
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 3rd Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.fNjwKIFTJz3jBrmY
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/KoltoCloud.webp
+    system:
+      description:
+        value: >-
+          <p>As you expel kolto, up to six creatures of your choice that you can see within range regain hit points
+          equal to [[/r 1d4]] + your techcasting ability modifier. This power has no effect on droids or constructs.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 4th level or
+          higher, the healing increases by [[/r 1d4]] for each slot level above 3rd.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: bonus
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 60
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: heal
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 1d4 + @mod
+            - healing
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 3
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: 1d4
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 4
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0heal0000000:
+          _id: sw5e0heal0000000
+          activation:
+            condition: ""
+            type: bonus
+          description: {}
+          duration:
+            units: inst
+          healing:
+            bonus: "@mod"
+            custom:
+              enabled: false
+            denomination: 4
+            number: 1
+            scaling:
+              formula: 1d4
+              mode: whole
+              number: 1
+            types:
+              - healing
+          img: null
+          range:
+            units: ft
+            value: "60"
+          target:
+            template:
+              type: ""
+              units: ""
+          type: heal
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "4"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 1ab58af5f8f368ae
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.fNjwKIFTJz3jBrmY
+    _key: "!actors.items!6965b08068c3d7c6.1ab58af5f8f368ae"
+  - name: Tactical Advantage
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1877241+00:00"
+        importer_version: 3
+        uid: Power.name-tactical_advantage.level-3
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Tactical Advantage
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 3rd Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.kZpokENKVSWG6uyP
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/TacticalAdvantage.webp
+    system:
+      description:
+        value: >-
+          <p>Choose a willing creature that you can see within range. Until the power ends, the target's speed is
+          doubled, it gains a +2 bonus to AC, it has advantage on Dexterity saving throws, and it gains an additional
+          action on each of its turns. That action can be used only to take the Attack (one weapon attack only), Dash,
+          Disengage, Hide, or Use an Object action.</p>
+
+          <p>When the power ends, the target can't move or take actions until after its next turn, as a wave of lethargy
+          sweeps over it.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: minute
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 30
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 3
+      school: tec
+      properties:
+        - concentration
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: none
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 4
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: minute
+            value: "1"
+          img: null
+          range:
+            units: ft
+            value: "30"
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "4"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: cb54486b0fde524c
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.kZpokENKVSWG6uyP
+    _key: "!actors.items!6965b08068c3d7c6.cb54486b0fde524c"
+  - name: Tech Override
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1887237+00:00"
+        importer_version: 3
+        uid: Power.name-tech_override.level-3
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Tech Override
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 3rd Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.MceRdMoyEe3Cya3W
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/TechOverride.webp
+    system:
+      description:
+        value: >-
+          <p>You attempt to interrupt a creature in the process of casting a tech power. If the creature is casting a
+          power of 3rd level or lower, its power fails and has no effect. If it is casting a power of 4th level or
+          higher, make an ability check using your techcasting ability. The DC equals 10 + the power's level. On a
+          success, the creature's power fails and has no effect.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 4th level or
+          higher, the interrupted power has no effect if its level is less than or equal to the level of the tech slot
+          you used.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: reaction
+        cost: 1
+        condition: when you see a creature within 60 feet of you casting a tech power
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: 60
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 3
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 4
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: when you see a creature within 60 feet of you casting a tech power
+            type: reaction
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "60"
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "4"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: ccdeee722571a296
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.MceRdMoyEe3Cya3W
+    _key: "!actors.items!6965b08068c3d7c6.ccdeee722571a296"
+  - name: Corrosive Sphere
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1467481+00:00"
+        importer_version: 3
+        uid: Power.name-corrosive_sphere.level-4
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Corrosive Sphere
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 4th Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.bESXXZRiJR1ufHXi
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/CorrosiveSphere.webp
+    system:
+      description:
+        value: >-
+          <p>You create a globule of acid and hurl it at a point within range, where it explodes in a 20-foot-radius
+          sphere. Each creature in that area must make a Dexterity saving throw. On a failed save, a creature takes [[/r
+          10d4]] acid damage and another [[/r 5d4]] acid damage at the end of its next turn. On a successful save, a
+          creature takes half the initial damage and no damage at the end of its next turn.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 5th level or
+          higher, the initial damage increases by [[/r 2d4]] for each slot level above 4th.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: ""
+        units: inst
+      target:
+        value: "20"
+        width: null
+        units: ft
+        type: sphere
+        prompt: true
+      range:
+        value: 150
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: save
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 10d4
+            - acid
+          - - 5d4
+            - acid
+        versatile: ""
+      formula: ""
+      save:
+        ability: dex
+        dc: null
+        scaling: spell
+      level: 4
+      school: tec
+      properties: []
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: 2d4
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 5
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 4
+                number: 10
+                scaling:
+                  mode: whole
+                  number: 2
+                types:
+                  - acid
+              - custom:
+                  enabled: false
+                denomination: 4
+                number: 5
+                scaling:
+                  mode: ""
+                  number: 1
+                types:
+                  - acid
+          description: {}
+          duration:
+            units: inst
+          img: null
+          range:
+            units: ft
+            value: "150"
+          save:
+            ability: dex
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              size: "20"
+              type: sphere
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "5"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: ab5289db511a1ca0
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.bESXXZRiJR1ufHXi
+    _key: "!actors.items!6965b08068c3d7c6.ab5289db511a1ca0"
+  - name: Mislead
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.1737327+00:00"
+        importer_version: 3
+        uid: Power.name-mislead.level-5
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Mislead
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 5th Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.oqxSwz1RPCQOrpKF
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/Mislead.webp
+    system:
+      description:
+        value: >-
+          <p>You become invisible at the same time that an illusory double of you appears where you are standing. The
+          double lasts for the duration, but the invisibility ends if you attack or cast a power.</p>
+
+          <p>You can use your action to move your illusory double up to twice your speed and make it gesture, speak, and
+          behave in whatever way you choose.</p>
+
+          <p>You can see through its eyes and hear through its ears as if you were located where it is. On each of your
+          turns as a bonus action, you can switch from using its senses to using your own, or back again. While you are
+          using its senses, you are blinded and deafened in regard to your own surroundings.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "1"
+        units: hour
+      target:
+        value: ""
+        width: null
+        units: ""
+        type: ""
+        prompt: true
+      range:
+        value: null
+        long: null
+        units: self
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: other
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts: []
+        versatile: ""
+      formula: ""
+      save:
+        ability: ""
+        dc: null
+        scaling: spell
+      level: 5
+      school: tec
+      properties:
+        - concentration
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: none
+        formula: null
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 6
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0utility0000:
+          _id: sw5e0utility0000
+          activation:
+            condition: ""
+            type: action
+          description: {}
+          duration:
+            units: hour
+            value: "1"
+          img: null
+          range:
+            override: false
+            units: self
+          roll:
+            formula: ""
+          target:
+            template:
+              type: ""
+              units: ""
+          type: utility
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "6"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: 557ecf4fe7c94c4a
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.oqxSwz1RPCQOrpKF
+    _key: "!actors.items!6965b08068c3d7c6.557ecf4fe7c94c4a"
+  - name: Toxic Cloud
+    flags:
+      sw5e-importer:
+        timestamp: "2023-03-09T01:51:59.189724+00:00"
+        importer_version: 3
+        uid: Power.name-toxic_cloud.level-5
+      dnd5e:
+        riders:
+          activity: []
+          effect: []
+      sw5e:
+        veshsGalacticHolodex:
+          embeddedFromCanonical: true
+          family: power
+          canonicalName: Toxic Cloud
+          castType: tech
+          sourceSemanticKey: vgh:humanoid:imperial-cipher-agent
+          tierLabel: 5th Level
+          tierKind: leveled
+      core:
+        sourceId: Compendium.sw5e-module.powers-maneuvers.Item.gbNUF51juNl9hKao
+    type: spell
+    img: modules/sw5e-module/icons/packs/Tech%20Powers/ToxicCloud.webp
+    system:
+      description:
+        value: >-
+          <p>You create a 20-foot-radius sphere of poisonous, yellow-green fog centered on a point you choose within
+          range. The fog spreads around corners. It lasts for the duration or until strong wind disperses the fog,
+          ending the power. Its area is heavily obscured.</p>
+
+          <p>When a creature enters the power's area for the first time on a turn or starts its turn there, that
+          creature must make a Constitution saving throw. The creature takes [[/r 5d8]] poison damage on a failed save,
+          or half as much damage on a successful one. Creatures are affected even if they hold their breath or don't
+          need to breathe.</p>
+
+          <p>The fog moves 10 feet away from you at the start of each of your turns, rolling along the surface of the
+          ground. The vapors, being heavier than air, sink to the lowest level of the land, even pouring down
+          openings.</p>
+
+          <p><strong><em>Overcharge Tech.</em></strong> When you cast this power using a tech slot of 6th level or
+          higher, the damage increases by [[/r 1d8]] for each slot level above 5th.</p>
+        chat: ""
+      source:
+        custom: PHB
+      activation:
+        type: action
+        cost: 1
+        condition: ""
+      duration:
+        value: "10"
+        units: minute
+      target:
+        value: "20"
+        width: null
+        units: ft
+        type: sphere
+        prompt: true
+      range:
+        value: 120
+        long: null
+        units: ft
+      uses:
+        value: null
+        max: ""
+        per: null
+        recovery: ""
+        prompt: true
+      ability: null
+      actionType: save
+      critical:
+        threshold: null
+        damage: ""
+      damage:
+        parts:
+          - - 5d8
+            - poison
+        versatile: ""
+      formula: ""
+      save:
+        ability: con
+        dc: null
+        scaling: spell
+      level: 5
+      school: tec
+      properties:
+        - concentration
+      materials:
+        value: ""
+        consumed: false
+        cost: 0
+        supply: 0
+      scaling:
+        mode: level
+        formula: 1d8
+      cover: null
+      crewed: false
+      consume:
+        type: attribute
+        target: powercasting.tech.points.value
+        amount: 6
+        scale: true
+      attack:
+        bonus: ""
+        flat: false
+      chatFlavor: ""
+      enchantment: null
+      summons: null
+      activities:
+        sw5e0save0000000:
+          _id: sw5e0save0000000
+          activation:
+            condition: ""
+            type: action
+          damage:
+            parts:
+              - custom:
+                  enabled: false
+                denomination: 8
+                number: 5
+                scaling:
+                  mode: whole
+                  number: 1
+                types:
+                  - poison
+          description: {}
+          duration:
+            units: minute
+            value: "10"
+          img: null
+          range:
+            units: ft
+            value: "120"
+          save:
+            ability: con
+            dc:
+              calculation: spellcasting
+              formula: ""
+          target:
+            template:
+              size: "20"
+              type: sphere
+          type: save
+          consumption:
+            spellSlot: false
+            targets:
+              - scaling:
+                  formula: ""
+                  mode: amount
+                target: powercasting.tech.points.value
+                type: attribute
+                value: "6"
+      method: powerCasting
+      prepared: true
+    effects: []
+    _id: d2e8be57276d33a3
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+    _stats:
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      coreVersion: "12.331"
+      createdTime: 1720296025398
+      modifiedTime: 1739121090144
+      lastModifiedBy: dnd5ebuilder0000
+      duplicateSource: null
+      compendiumSource: Compendium.sw5e-module.powers-maneuvers.Item.gbNUF51juNl9hKao
+    _key: "!actors.items!6965b08068c3d7c6.d2e8be57276d33a3"
+effects: []
+prototypeToken:
+  flags: {}
+  name: Imperial Cipher Agent
+  displayName: 40
+  width: 1
+  height: 1
+  lockRotation: false
+  rotation: 0
+  actorLink: false
+  disposition: -1
+  displayBars: 40
+  bar1:
+    attribute: attributes.hp
+  bar2:
+    attribute: attributes.bar2
+  randomImg: false
+  alpha: 1
+  light:
+    dim: 0
+    bright: 0
+    angle: 360
+    alpha: 1
+    animation:
+      speed: 5
+      intensity: 5
+      type: null
+      reverse: false
+    color: null
+    coloration: 1
+    attenuation: 0.5
+    luminosity: 0.5
+    saturation: 0
+    contrast: 0
+    shadows: 0
+    darkness:
+      min: 0
+      max: 1
+    negative: false
+    priority: 0
+  texture:
+    src: systems/dnd5e/icons/svg/actors/npc.svg
+    tint: "#ffffff"
+    scaleX: 1
+    scaleY: 1
+    offsetX: 0
+    offsetY: 0
+    rotation: 0
+    anchorX: 0.5
+    anchorY: 0.5
+    fit: contain
+    alphaThreshold: 0.75
+  sight:
+    angle: 360
+    enabled: false
+    range: 15
+    brightness: 1
+    visionMode: basic
+    color: null
+    attenuation: 0.1
+    saturation: 0
+    contrast: 0
+  detectionModes: []
+  appendNumber: false
+  prependAdjective: false
+  hexagonalShape: 0
+  occludable:
+    radius: 0
+  ring:
+    enabled: false
+    colors:
+      ring: null
+      background: null
+    effects: 1
+    subject:
+      scale: 1
+      texture: null
+system:
+  abilities:
+    str:
+      value: 12
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    dex:
+      value: 22
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    con:
+      value: 15
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    int:
+      value: 20
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    wis:
+      value: 15
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    cha:
+      value: 17
+      proficient: 0
+      max: null
+      bonuses:
+        check: ""
+        save: ""
+    hon:
+      value: 5
+      proficient: 0
+      bonuses:
+        check: ""
+        save: ""
+      max: null
+    san:
+      value: 12
+      proficient: 0
+      bonuses:
+        check: ""
+        save: ""
+      max: null
+  attributes:
+    ac:
+      flat: 18
+      calc: flat
+      formula: ""
+    hp:
+      value: 130
+      max: 130
+      temp: 0
+      tempmax: 0
+      formula: 20d8+60
+    init:
+      ability: ""
+      bonus: "0"
+      roll:
+        min: null
+        max: null
+        mode: 0
+    movement:
+      burrow: 0
+      climb: 0
+      fly: 0
+      swim: 0
+      walk: 30
+      units: ft
+      hover: false
+    attunement:
+      max: 3
+    senses:
+      darkvision: 60
+      blindsight: 0
+      tremorsense: 0
+      truesight: 0
+      units: ft
+      special: ""
+    force:
+      points:
+        value: 0
+        bonuses:
+          level: ""
+          overall: ""
+        max: null
+        temp: 0
+    tech:
+      points:
+        value: 44
+        bonuses:
+          level: ""
+          overall: ""
+        max: 44
+        temp: 0
+    super:
+      dice:
+        value: 0
+        bonuses:
+          level: ""
+          overall: ""
+        max: null
+      die: 0
+    deployed:
+      uuid: null
+      deployments: []
+    death:
+      success: 0
+      failure: 0
+      ability: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    exhaustion: 0
+    forcecasting: wis
+    techcasting: int
+    concentration:
+      ability: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+      bonuses:
+        save: ""
+      limit: 1
+    hd:
+      spent: 0
+    slowed: 0
+  details:
+    biography:
+      value: ""
+      public: ""
+    alignment: Lawful Dark
+    species: null
+    type:
+      value: humanoid
+      subtype: any
+      swarm: ""
+      custom: ""
+    environment: ""
+    cr: 13
+    powerForceLevel: 0
+    powerTechLevel: 11
+    superiorityLevel: 0
+    source:
+      custom: Vesh's Galactic Holodex
+      label: Vesh's Galactic Holodex
+  traits:
+    size: med
+    di:
+      value: []
+      bypasses: []
+      custom: ""
+    dr:
+      value: []
+      bypasses: []
+      custom: ""
+    dv:
+      value: []
+      bypasses: []
+      custom: ""
+    ci:
+      value: []
+      custom: ""
+    languages:
+      value: []
+      custom: "-"
+    dm:
+      amount: {}
+      bypasses: []
+  currency:
+    gc: 0
+  skills:
+    acr:
+      value: 1
+      ability: dex
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    ani:
+      value: 0
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    ath:
+      value: 0
+      ability: str
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    dec:
+      value: 2
+      ability: cha
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    ins:
+      value: 1
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    itm:
+      value: 0
+      ability: cha
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    inv:
+      value: 0
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    lor:
+      value: 0
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    med:
+      value: 0
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    nat:
+      value: 0
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    pil:
+      value: 0
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    prc:
+      value: 1
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    prf:
+      value: 0
+      ability: cha
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    per:
+      value: 1
+      ability: cha
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    slt:
+      value: 1
+      ability: dex
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    ste:
+      value: 2
+      ability: dex
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    sur:
+      value: 0
+      ability: wis
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+    tec:
+      value: 1
+      ability: int
+      bonuses:
+        check: ""
+        passive: ""
+      roll:
+        min: null
+        max: null
+        mode: 0
+  tools: {}
+  powers:
+    power1:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power2:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power3:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power4:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power5:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power6:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power7:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power8:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power9:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    pact:
+      fvalue: 0
+      foverride: null
+      tvalue: 0
+      toverride: null
+    power0:
+      fvalue: 0
+      tvalue: 0
+      foverride: null
+      toverride: null
+  bonuses:
+    mwak:
+      attack: ""
+      damage: ""
+    rwak:
+      attack: ""
+      damage: ""
+    mpak:
+      attack: ""
+      damage: ""
+    rpak:
+      attack: ""
+      damage: ""
+    abilities:
+      check: ""
+      save: ""
+      skill: ""
+    power:
+      dc: ""
+      forceLightDC: ""
+      forceUnivDC: ""
+      forceDarkDC: ""
+      techDC: ""
+  resources:
+    legact:
+      value: 0
+      max: 0
+    legres:
+      value: 0
+      max: 0
+    lair:
+      value: false
+      initiative: 0
+  powercasting:
+    force:
+      points:
+        value: 0
+        max: null
+        temp: null
+        tempmax: null
+        bonuses:
+          level: ""
+          overall: ""
+      schools:
+        lgt:
+          attr: wis
+          dc: null
+        uni:
+          attr: ""
+          dc: null
+        drk:
+          attr: cha
+          dc: null
+    tech:
+      points:
+        value: 44
+        max: 44
+        temp: null
+        tempmax: null
+        bonuses:
+          level: ""
+          overall: ""
+      schools:
+        tec:
+          attr: int
+          dc: null
+  source:
+    custom: Vesh's Galactic Holodex
+    label: Vesh's Galactic Holodex
+flags:
+  sw5e:
+    veshsGalacticHolodex:
+      sourceIdentity: veshs-galactic-holodex
+      sourceFile: ai/Veshs_Galactic_Holodex.md
+      sourceSection: Galaxy's Most Wanted
+      sourceHash: 7D320DE9DA103DA527115C665EE862C10D38A0D15D18CFFB111138CCCC46145E
+      semanticKey: vgh:humanoid:imperial-cipher-agent
+      generatorVersion: vgh-phase2-2026-08-07
+      sourceEntry: Imperial Cipher Agent
+      trackedPack: veshs-galactic-holodex
+      collectionId: sw5e-module.veshs-galactic-holodex
+      parseStatus: parsed-valid
+      capabilityStatus: partially-supported
+      outputSelection: selected-population
+      productionReadiness: requires-runtime-validation
+      unsupportedMechanics:
+        - tech-power-embedding-incomplete
+        - qualified-defense-parsing
+        - recharge-activity
+        - reaction-activity
+      generatedStatus: production
+      creatureTypeFolder: Humanoid
+      forceTechEmbedding:
+        forcePowers: []
+        techPowers:
+          - kind: casting-feat
+            name: Techcasting
+            id: c957e1e6da212f1c
+            castType: tech
+          - kind: power
+            name: Assess the Situation
+            id: 10d3c53f40c47197
+            castType: tech
+            canonicalId: Zrq1CwKjA4GlY6JU
+          - kind: power
+            name: Encrypted Message
+            id: 0d01c8b31b23328c
+            castType: tech
+            canonicalId: RZKUHTQ91h9i8XiJ
+          - kind: power
+            name: Poison Spray
+            id: 203ce5fd05d44666
+            castType: tech
+            canonicalId: k6A6OHZkEECqIP1Q
+          - kind: power
+            name: Venomous Strike
+            id: 465300a96c35024f
+            castType: tech
+            canonicalId: JfLU2k3NeqwsmjPm
+          - kind: power
+            name: Element of Surprise
+            id: e2df34ae63e65fe1
+            castType: tech
+            canonicalId: 9oa9lVCrr03LBTa8
+          - kind: power
+            name: Energy Shield
+            id: 1e3ef8faf8c3b152
+            castType: tech
+            canonicalId: iqGdVAC4ZjCrakEh
+          - kind: power
+            name: Expeditious Retreat
+            id: 8481eebd94965e44
+            castType: tech
+            canonicalId: OFMkAfPQL2AML1Xp
+          - kind: power
+            name: Flash
+            id: 31127a5863eb5184
+            castType: tech
+            canonicalId: oYgX5iLQt1JiLOIr
+          - kind: power
+            name: Poison Dart
+            id: 8f76ce504b928f87
+            castType: tech
+            canonicalId: 4SMoxAzUGjUatKmR
+          - kind: power
+            name: Acid Dart
+            id: baea789afe12f1b2
+            castType: tech
+            canonicalId: 1YrVk8kNgTbVLEzu
+          - kind: power
+            name: Concealed Caltrops
+            id: 8cc14bb7f43785c9
+            castType: tech
+            canonicalId: ETSswGFncMq4wRR1
+          - kind: power
+            name: Translocate
+            id: c44331c30a77231d
+            castType: tech
+            canonicalId: UE0M55tPWDoPpJyu
+          - kind: power
+            name: Invisibility to Cameras
+            id: 42fdd1ad0f060f66
+            castType: tech
+            canonicalId: kiveqtRQRzdi4MK0
+          - kind: power
+            name: Kolto Cloud
+            id: 1ab58af5f8f368ae
+            castType: tech
+            canonicalId: fNjwKIFTJz3jBrmY
+          - kind: power
+            name: Tactical Advantage
+            id: cb54486b0fde524c
+            castType: tech
+            canonicalId: kZpokENKVSWG6uyP
+          - kind: power
+            name: Tech Override
+            id: ccdeee722571a296
+            castType: tech
+            canonicalId: MceRdMoyEe3Cya3W
+          - kind: power
+            name: Corrosive Sphere
+            id: ab5289db511a1ca0
+            castType: tech
+            canonicalId: bESXXZRiJR1ufHXi
+          - kind: power
+            name: Mislead
+            id: 557ecf4fe7c94c4a
+            castType: tech
+            canonicalId: oqxSwz1RPCQOrpKF
+          - kind: power
+            name: Toxic Cloud
+            id: d2e8be57276d33a3
+            castType: tech
+            canonicalId: gbNUF51juNl9hKao
+        missingCanonical: []
+      superiorityEmbedding:
+        maneuvers: []
+        missingCanonical: []
+ownership:
+  default: 0
+_stats:
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  coreVersion: "13.345"
+  createdTime: null
+  modifiedTime: null
+  lastModifiedBy: null
+  compendiumSource: null
+  duplicateSource: null
+_key: "!actors!6965b08068c3d7c6"
+

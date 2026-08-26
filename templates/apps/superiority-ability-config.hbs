@@ -1,0 +1,32 @@
+<form class="flexcol sw5e-power-casting-ability-config-form sw5e-superiority-ability-config-form">
+	<fieldset class="card">
+		<legend>{{titleLabel}}</legend>
+
+		{{#each typeRows}}
+		<div class="form-group">
+			<label>{{typeLabel}}</label>
+			<div class="form-fields sw5e-power-ability-row">
+				<div class="sw5e-power-ability-col">
+					<span class="sw5e-power-ability-col-label">{{../abilityColumnLabel}}</span>
+					<select name="system.superiority.types.{{type}}.attr">
+						{{#each abilityOptions}}
+							<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+						{{/each}}
+					</select>
+				</div>
+			</div>
+		</div>
+		{{/each}}
+	</fieldset>
+
+	<footer class="form-footer">
+		<button type="submit" class="dialog-button" data-action="reset">
+			<i class="fas fa-undo" inert></i>
+			<span>{{resetLabel}}</span>
+		</button>
+		<button type="submit" class="dialog-button default">
+			<i class="fas fa-save" inert></i>
+			<span>{{saveLabel}}</span>
+		</button>
+	</footer>
+</form>

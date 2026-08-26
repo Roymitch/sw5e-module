@@ -1,0 +1,198 @@
+_id: h4WPdGXUliSHbSWW
+name: Empty Body
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/MNK-Action.webp
+effects:
+  - origin: Compendium.sw5e-module.character-classes.Item.h4WPdGXUliSHbSWW
+    duration:
+      rounds: 10
+      startTime: null
+      seconds: null
+      combat: null
+      turns: null
+      startRound: null
+      startTurn: null
+    disabled: false
+    name: Empty Body
+    _id: JEcECuosMRNxkmWH
+    changes:
+      - key: system.traits.dr.value
+        mode: 2
+        value: kinetic
+        priority: null
+      - key: system.traits.dr.value
+        mode: 2
+        value: acid
+        priority: null
+      - key: system.traits.dr.value
+        mode: 2
+        value: cold
+        priority: null
+      - key: system.traits.dr.value
+        mode: 2
+        value: energy
+        priority: null
+      - key: system.traits.dr.value
+        mode: 2
+        value: fire
+        priority: null
+      - key: system.traits.dr.value
+        mode: 2
+        value: ion
+        priority: null
+      - key: system.traits.dr.value
+        mode: 2
+        value: lightning
+        priority: null
+      - key: system.traits.dr.value
+        mode: 2
+        value: necrotic
+        priority: null
+      - key: system.traits.dr.value
+        mode: 2
+        value: poison
+        priority: null
+      - key: system.traits.dr.value
+        mode: 2
+        value: psychic
+        priority: null
+      - key: system.traits.dr.value
+        mode: 2
+        value: thunder
+        priority: null
+    description: ''
+    transfer: false
+    statuses:
+      - invisible
+    flags:
+      dnd5e:
+        riders:
+          statuses: []
+    tint: '#ffffff'
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      exportSource: null
+      coreVersion: '13.351'
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      lastModifiedBy: dnd5ebuilder0000
+      modifiedTime: 1780579482403
+    img: modules/sw5e-module/icons/packs/Class%20Features/MNK-Action.webp
+    type: base
+    system: {}
+    sort: 0
+    _key: '!items.effects!h4WPdGXUliSHbSWW.JEcECuosMRNxkmWH'
+folder: EuaUbhYGJmRG0ki8
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:58.6620289+00:00'
+    importer_version: 3
+    uid: Feature.name-empty_body.source-class.sourceName-monk.level-18
+system:
+  description:
+    value: >-
+      <p><em><strong>Monk:</strong> 18th level</em></p>
+
+      <p>You can use your action to spend 4 focus points to become invisible for
+      1 minute. During that time, you also have resistance to all damage but
+      force damage.</p>
+    chat: ''
+  requirements: Monk 18
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2014'
+  cover: null
+  crewed: false
+  uses:
+    max: ''
+    spent: 0
+    recovery: []
+  type:
+    value: class
+    subtype: ''
+  prerequisites:
+    level: null
+    items: []
+    repeatable: false
+  properties: []
+  activities:
+    sw5e0utility0000:
+      _id: sw5e0utility0000
+      activation:
+        type: action
+        override: false
+        condition: ''
+      description:
+        chatFlavor: ''
+      duration:
+        units: minute
+        value: '1'
+        concentration: false
+        override: false
+      img: systems/dnd5e/icons/svg/statuses/invisible.svg
+      range:
+        units: self
+        override: false
+        value: ''
+        special: ''
+      roll:
+        formula: ''
+        prompt: false
+        visible: false
+        name: ''
+      target:
+        template:
+          type: ''
+          units: ft
+          contiguous: false
+        affects:
+          choice: false
+          type: self
+          special: ''
+        override: false
+        prompt: false
+      type: utility
+      sort: 0
+      consumption:
+        scaling:
+          allowed: false
+        spellSlot: true
+        targets:
+          - type: itemUses
+            value: '4'
+            target: Compendium.sw5e-module.character-classes.Item.bdi8Z3rZZGkQVSEc
+      effects:
+        - _id: JEcECuosMRNxkmWH
+      flags: {}
+      uses:
+        spent: 0
+        recovery: []
+        max: ''
+      visibility:
+        level:
+          min: null
+          max: null
+        requireAttunement: false
+        requireIdentification: false
+        requireMagic: false
+        identifier: ''
+      name: Empty Body
+  advancement: []
+  identifier: empty-body
+  enchant: {}
+_stats:
+  duplicateSource: null
+  exportSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1777752135936
+  modifiedTime: 1780579513989
+  lastModifiedBy: dnd5ebuilder0000
+ownership:
+  default: 0
+sort: 0
+_key: '!items!h4WPdGXUliSHbSWW'
+

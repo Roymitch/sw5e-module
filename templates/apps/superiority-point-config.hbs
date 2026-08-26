@@ -1,0 +1,62 @@
+<form class="flexcol sw5e-power-point-config-form sw5e-superiority-point-config-form">
+	<section class="flexcol">
+		<div class="final-value">{{poolLabel}}</div>
+
+		<fieldset class="card">
+			<legend>{{maximumLegend}}</legend>
+
+			<div class="form-group">
+				<label>{{maxOverrideLabel}}</label>
+				<div class="form-fields">
+					<input type="text" name="system.superiority.dice.max" data-dtype="Number"
+						inputmode="numeric" pattern="^[+=\-]?\d*" placeholder="{{calculatedMax}}"
+						value="{{#if hasMaxOverride}}{{source.dice.max}}{{/if}}">
+				</div>
+				<p class="hint">{{maxOverrideHint}}</p>
+			</div>
+
+			<div class="form-group">
+				<label>{{perLevelBonusLabel}}</label>
+				<div class="form-fields">
+					<input type="text" name="system.superiority.dice.bonuses.level" value="{{source.dice.bonuses.level}}">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label>{{overallBonusLabel}}</label>
+				<div class="form-fields">
+					<input type="text" name="system.superiority.dice.bonuses.overall" value="{{source.dice.bonuses.overall}}">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label>{{dieOverrideLabel}}</label>
+				<div class="form-fields">
+					<input type="text" name="system.superiority.die" data-dtype="Number"
+						inputmode="numeric" pattern="^[+=\-]?\d*" placeholder="{{calculatedDie}}"
+						value="{{#if hasDieOverride}}{{source.die}}{{/if}}">
+				</div>
+				<p class="hint">{{dieOverrideHint}}</p>
+			</div>
+		</fieldset>
+
+		<fieldset class="card">
+			<legend>{{currentLegend}}</legend>
+
+			<div class="form-group">
+				<label>{{currentLabel}}</label>
+				<div class="form-fields">
+					<input type="text" name="system.superiority.dice.value" data-dtype="Number"
+						inputmode="numeric" pattern="^[+=\-]?\d*" placeholder="0" value="{{source.dice.value}}">
+				</div>
+			</div>
+		</fieldset>
+
+		<footer class="form-footer">
+			<button type="submit" class="dialog-button default">
+				<i class="fas fa-save" inert></i>
+				<span>{{saveLabel}}</span>
+			</button>
+		</footer>
+	</section>
+</form>

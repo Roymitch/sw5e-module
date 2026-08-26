@@ -1,0 +1,82 @@
+_id: z517Qm5VFOUCEYyk
+name: Perfect Self
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/MNK-Passive.webp
+effects: []
+folder: EuaUbhYGJmRG0ki8
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:58.6620289+00:00'
+    importer_version: 3
+    uid: Feature.name-perfect_self.source-class.sourceName-monk.level-20
+system:
+  description:
+    value: >-
+      <p><em><strong>Monk:</strong> 20th level</em></p>
+
+      <p>You've gained perfect control over your body. Your Dexterity and Wisdom
+      or Charisma scores (your choice) increase by 2. Your maximum for those
+      scores increases by 2. Additionally, when you roll for initiative and have
+      fewer than 6 focus points remaining, you regain up to 6 focus points.</p>
+    chat: ''
+  requirements: Monk 20
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2014'
+  cover: null
+  crewed: false
+  uses:
+    max: ''
+    spent: 0
+    recovery: []
+  type:
+    value: class
+    subtype: ''
+  prerequisites:
+    level: null
+    items: []
+    repeatable: false
+  properties: []
+  activities: {}
+  advancement:
+    - type: AbilityScoreImprovement
+      _id: K4Skcv6SrNXbUfcf
+      configuration:
+        cap: 2
+        fixed:
+          str: 0
+          dex: 2
+          con: 0
+          int: 0
+          wis: 0
+          cha: 0
+        locked:
+          - str
+          - dex
+          - con
+          - int
+        points: 2
+        recommendation: null
+        max: 22
+      value:
+        type: asi
+      level: 20
+      title: ''
+      hint: ''
+  identifier: perfect-self
+  enchant: {}
+_stats:
+  duplicateSource: null
+  exportSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1777752135936
+  modifiedTime: 1780581865665
+  lastModifiedBy: dnd5ebuilder0000
+ownership:
+  default: 0
+sort: 0
+_key: '!items!z517Qm5VFOUCEYyk'
+

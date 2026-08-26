@@ -1,0 +1,93 @@
+<div class="sw5e-starship-sidebar-movement" aria-label="{{movementAriaLabel}}">
+
+  <div class="pills-group empty sw5e-starship-sidebar-movement-row sw5e-starship-sidebar-space-speed">
+
+    <h3 class="icon">
+
+      <i class="fa-solid fa-shoe-prints fa-fw" inert=""></i>
+
+      <span class="roboto-upper">{{spaceSpeedLabel}}</span>
+
+      {{#if showMovementConfig}}
+
+        <button
+
+          type="button"
+
+          class="config-button unbutton"
+
+          data-sw5e-starship-movement-config
+
+          title="{{movementConfigLabel}}"
+
+          aria-label="{{movementConfigLabel}}"
+
+        >
+
+          <i class="fa-solid fa-gear" inert=""></i>
+
+        </button>
+
+      {{/if}}
+
+      {{#if showMovementCounters}}
+
+      <span class="counter">{{spaceSpeedDisplay}}</span>
+
+      {{/if}}
+
+    </h3>
+
+  </div>
+
+  <div class="pills-group empty sw5e-starship-sidebar-movement-row sw5e-starship-sidebar-turning-speed">
+
+    <h3 class="icon">
+
+      <i class="fa-solid fa-rotate-right fa-fw" inert=""></i>
+
+      <span class="roboto-upper">{{turningSpeedLabel}}</span>
+
+      <span class="counter">{{turningSpeedDisplay}}</span>
+
+    </h3>
+
+  </div>
+
+  <div class="pills-group empty sw5e-starship-sidebar-movement-row sw5e-starship-sidebar-travel-speed">
+
+    <h3 class="icon">
+
+      <i class="fa-solid fa-gauge-high fa-fw" inert=""></i>
+
+      <span class="roboto-upper">{{travelSpeedLabel}}</span>
+
+      {{#if showMovementCounters}}
+
+      <span class="counter">{{travelSpeedDisplay}}</span>
+
+      {{/if}}
+
+    </h3>
+
+  </div>
+
+  <div class="pills-group empty sw5e-starship-sidebar-movement-row sw5e-starship-sidebar-travel-pace">
+
+    <h3 class="icon">
+
+      <i class="fa-solid fa-route fa-fw" inert=""></i>
+
+      <span class="roboto-upper">{{travelPaceLabel}}</span>
+
+      {{#if showMovementCounters}}
+
+      <span class="counter">{{travelPaceDisplay}}</span>
+
+      {{/if}}
+
+    </h3>
+
+  </div>
+
+</div>

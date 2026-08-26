@@ -1,0 +1,143 @@
+_id: HtrwfasghzqPmVdi
+name: Withercasting Stitching Mk IV
+type: loot
+img: modules/sw5e-module/icons/packs/Modifications/ClothingMod.webp
+effects:
+  - name: Withercasting Stitching Mk IV - Save Target DC
+    origin: Compendium.sw5e-module.enhanceditems.Item.HtrwfasghzqPmVdi
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    transfer: false
+    disabled: false
+    _id: 980a650635c2897e
+    changes:
+      - key: system.bonuses.tech.save.wis.dc
+        mode: 2
+        value: '3'
+        priority: 20
+      - key: system.bonuses.tech.save.cha.dc
+        mode: 2
+        value: '3'
+        priority: 20
+    description: ''
+    statuses: []
+    flags: {}
+    tint: '#ffffff'
+    _stats:
+      coreVersion: '13.351'
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: dnd5ebuilder0000
+      compendiumSource: null
+      duplicateSource: null
+    img: modules/sw5e-module/icons/packs/Modifications/ClothingMod.webp
+    type: base
+    system: {}
+    sort: 0
+    _key: '!items.effects!HtrwfasghzqPmVdi.980a650635c2897e'
+folder: 2opSaVXOBytTPCiA
+sort: 0
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:52:05.549036+00:00'
+    importer_version: 3
+    uid: EnhancedItem.name-withercasting_stitching_mk_iv.subtype-clothing
+system:
+  description:
+    value: |-
+      <h4>Item Modification (Clothing)</h4>
+       <p>While using this item as your focus, you gain a +3 bonus to the tech save DC of powers that require a Wisdom or Charisma saving throw.</p>
+    chat: ''
+  source:
+    custom: Modification
+    book: WH
+    page: Ch. 7 Pg. 74
+  quantity: 1
+  weight:
+    value: 0
+    units: lb
+  price:
+    value: 0
+    denomination: gc
+  rarity: advanced
+  identified: true
+  activation:
+    type: ''
+    cost: null
+    condition: ''
+  duration:
+    value: ''
+    units: inst
+  cover: null
+  crewed: false
+  target:
+    value: ''
+    width: null
+    units: ''
+    type: ''
+    prompt: true
+  range:
+    value: null
+    long: null
+    units: ''
+  uses:
+    value: null
+    max: ''
+    per: null
+    recovery: ''
+    prompt: true
+  consume:
+    type: ''
+    target: null
+    amount: null
+    scale: false
+  ability: null
+  actionType: other
+  chatFlavor: ''
+  critical:
+    threshold: null
+    damage: ''
+  damage:
+    parts: []
+    versatile: ''
+  formula: ''
+  save:
+    ability: ''
+    dc: null
+    scaling: spell
+  modifying:
+    id: null
+    disabled: false
+  properties: []
+  unidentified:
+    description: ''
+  type:
+    value: clothing
+    subtype: slot1
+    baseItem: ''
+  attack:
+    bonus: ''
+    flat: false
+  container: null
+  enchantment: null
+  summons: null
+ownership:
+  default: 0
+_stats:
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  coreVersion: '12.331'
+  createdTime: 1674493999285
+  modifiedTime: 1720368842206
+  lastModifiedBy: dnd5ebuilder0000
+  duplicateSource: null
+_key: '!items!HtrwfasghzqPmVdi'
+

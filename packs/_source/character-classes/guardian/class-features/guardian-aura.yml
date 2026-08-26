@@ -1,0 +1,98 @@
+_id: vXzXE8x75rjyq56U
+name: Guardian Aura
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/GRDN-Passive.webp
+effects: []
+folder: SuxX921ywvnCOjZ6
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:58.5710815+00:00'
+    importer_version: 3
+    uid: Feature.name-guardian_aura.source-class.sourceName-guardian.level-3
+system:
+  description:
+    value: >-
+      <p><em><strong>Guardian:</strong> 3rd level</em></p>
+
+      <p>You gain an aura of your choice, as detailed at the end of the class
+      description, and you gain more at higher levels, as shown in the Auras
+      Known column of the guardian table. Your aura has a radius of 5 feet,
+      which increases at higher levels, as shown in the Aura Radius column of
+      the guardian table.</p>
+    chat: ''
+  requirements: Guardian 3
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2014'
+  cover: null
+  crewed: false
+  uses:
+    max: ''
+    spent: 0
+    recovery: []
+  type:
+    value: class
+    subtype: ''
+  prerequisites:
+    level: null
+    items: []
+    repeatable: false
+  properties: []
+  activities: {}
+  advancement:
+    - _id: sw5e22ic00000000
+      configuration:
+        allowDrops: true
+        choices:
+          '3':
+            count: 1
+            replacement: false
+          '10':
+            count: 1
+            replacement: false
+          '18':
+            count: 1
+            replacement: false
+        pool:
+          - uuid: Compendium.sw5e-module.character-classes.CYxQ9FGhaivegbEO
+          - uuid: Compendium.sw5e-module.character-classes.1lN9mFM3BudYI1HH
+          - uuid: Compendium.sw5e-module.character-classes.YYpw7KqqyAfb00zQ
+          - uuid: Compendium.sw5e-module.character-classes.47ZTWZ8C7lHNFw5A
+          - uuid: Compendium.sw5e-module.character-classes.jAuscmQHeQcJG8W6
+          - uuid: Compendium.sw5e-module.character-classes.b9Rdij1v4qbiT9qQ
+          - uuid: Compendium.sw5e-module.character-classes.Y7qLWJvDLKpah4CY
+        restriction:
+          level: ''
+          subtype: guardianInvocation
+          type: class
+          list: []
+        type: feat
+        spell: null
+      title: Guardian Auras
+      type: ItemChoice
+      value:
+        added: {}
+        replaced: {}
+      hint: >-
+        You gain an aura of your choice, as detailed at the end of the class
+        description, and you gain more at higher levels, as shown in the Auras
+        Known column of the guardian table. Your aura has a radius of 5 feet,
+        which increases at higher levels, as shown in the Aura Radius column of
+        the guardian table.
+  identifier: guardian-aura
+  enchant: {}
+_stats:
+  duplicateSource: null
+  exportSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1777752135936
+  modifiedTime: 1780599169685
+  lastModifiedBy: dnd5ebuilder0000
+ownership:
+  default: 0
+sort: 0
+_key: '!items!vXzXE8x75rjyq56U'
+

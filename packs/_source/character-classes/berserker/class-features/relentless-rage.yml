@@ -1,0 +1,188 @@
+_id: h1uexL9lDORqFdB4
+name: Relentless Rage
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/BSKR-Passive.webp
+effects: []
+folder: BaN92qsqR1A7h4Os
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:58.562087+00:00'
+    importer_version: 3
+    uid: Feature.name-relentless_rage.source-class.sourceName-berserker.level-11
+system:
+  description:
+    value: >-
+      <p><em><strong>Berserker:</strong> 11th level</em></p><p>Your rage can
+      keep you fighting despite grievous wounds. If you drop to 0 hit points
+      while you're raging and don't die outright, you can make a DC 10
+      Constitution saving throw. If you succeed, you drop to 1 hit point
+      instead.</p><p>Each time you use this feature after the first, the DC
+      increases by 5. When you finish a short or long rest, the DC resets to
+      10.</p><section class="secret"
+      id="secret-eAyAZJpXKp4DLiWB"><p><strong>Foundry Note</strong></p><p>This
+      feature will automatically increase the DC by 5 if you consume the
+      resource when activating it. It will also automatically reset to 10 after
+      a Short or Long Rest.</p></section>
+    chat: ''
+  requirements: Berserker 11
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2014'
+  cover: null
+  crewed: false
+  uses:
+    max: '20'
+    spent: 0
+    recovery:
+      - period: sr
+        type: recoverAll
+  type:
+    value: class
+    subtype: ''
+  prerequisites:
+    level: null
+    items: []
+    repeatable: false
+  properties: []
+  activities:
+    sw5e0save0000000:
+      _id: sw5e0save0000000
+      activation:
+        type: ''
+        override: false
+        condition: ''
+      damage:
+        parts: []
+        onSave: half
+      description:
+        chatFlavor: ''
+      duration:
+        units: inst
+        concentration: false
+        override: false
+      img: ''
+      range:
+        units: self
+        override: false
+        value: ''
+        special: ''
+      save:
+        ability:
+          - con
+        dc:
+          calculation: ''
+          formula: 10 + (@item.uses.spent * 5)
+      target:
+        template:
+          type: ''
+          units: ft
+          contiguous: false
+        affects:
+          choice: false
+          type: ''
+        override: false
+        prompt: true
+      type: save
+      sort: 0
+      consumption:
+        scaling:
+          allowed: false
+        spellSlot: true
+        targets:
+          - type: itemUses
+            value: '1'
+            target: ''
+      effects: []
+      flags: {}
+      uses:
+        spent: 0
+        recovery: []
+        max: ''
+      visibility:
+        level:
+          min: null
+          max: null
+        requireAttunement: false
+        requireIdentification: false
+        requireMagic: false
+        identifier: ''
+      name: ''
+    loJwUZ8U2XgyhVeQ:
+      type: heal
+      _id: loJwUZ8U2XgyhVeQ
+      sort: 0
+      activation:
+        type: ''
+        override: false
+        condition: ''
+      consumption:
+        scaling:
+          allowed: false
+        spellSlot: true
+        targets: []
+      description:
+        chatFlavor: ''
+      duration:
+        units: inst
+        concentration: false
+        override: false
+      effects: []
+      flags: {}
+      range:
+        units: self
+        override: false
+        special: ''
+      target:
+        template:
+          contiguous: false
+          units: ft
+          type: ''
+        affects:
+          choice: false
+          type: self
+          special: ''
+        override: false
+        prompt: false
+      uses:
+        spent: 0
+        recovery: []
+        max: ''
+      visibility:
+        level:
+          min: null
+          max: null
+        requireAttunement: false
+        requireIdentification: false
+        requireMagic: false
+        identifier: ''
+      healing:
+        types:
+          - healing
+        custom:
+          enabled: true
+          formula: '1'
+        scaling:
+          number: 1
+        number: null
+        denomination: null
+        bonus: ''
+      name: ''
+      img: ''
+  advancement: []
+  identifier: relentless-rage
+  enchant: {}
+_stats:
+  duplicateSource: null
+  exportSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1777752135936
+  modifiedTime: 1780414056823
+  lastModifiedBy: dnd5ebuilder0000
+ownership:
+  default: 0
+sort: 0
+_key: '!items!h1uexL9lDORqFdB4'
+

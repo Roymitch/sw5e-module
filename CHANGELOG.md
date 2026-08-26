@@ -1,0 +1,630 @@
+## Changelog
+
+### [1.4.0] 2026-07-14
+
+### Added
+- **Scum and Villainy Monsters pack:** New Actor compendium `snv-monsters` (**508** NPCs from complete SnV entries), listed with other Monster packs. Organized into Foundry Creature Type folders (Aberration, Beast, Construct, Custom Type, Droid, Force Entity, Humanoid, Plant, Undead).
+- **SnV Force/Tech embedding:** Force- and Tech-casting SnV monsters embed canonical powers with point pools, Activities, and consumption (Force **83** / Tech **47** source casters). Outdated SnV Tech names **Charge Power Cell** / **Scorching Ray** resolve to SW5e **Capacity Boost** / **Shocking Ray** on affected Actors.
+- **SnV artwork policy:** Avatar/Token resolution prefers exact local art, then approved likely match, then provenanced external art, else generic NPC fallback marked for replacement. Module description notes some SnV art may be unofficial fan-made original replacements (not Disney/Lucasfilm licensed or endorsed).
+- **Vesh's Galactic Holodex pack:** New Actor compendium `veshs-galactic-holodex` (**115** NPCs), listed with other Monster packs. Organized into Creature Type folders (Aberration, Beast, Custom Type, Droid, Humanoid, Plant, Undead). Visible source **Vesh's Galactic Holodex**; generation provenance in `flags.sw5e.veshsGalacticHolodex`. Force/Tech casters embed powers consistently with the SnV embedding approach. Custom per-creature artwork remains deferred (generic/canonical icons for now).
+- **Force/Tech Point Discount:** Actors can configure separate non-negative whole-number Force and Tech point discounts on the Force/Tech Points configuration dialogs (`flags.sw5e.forcePowerDiscount` / `flags.sw5e.techPowerDiscount`). Recognized Force and Tech powers apply `finalCost = max(0, rawCost − discount)` consistently to usage-dialog preview, Consumption section text and warnings, affordability, and actual point spend without mutating Item or Activity source costs. Missing flags behave as discount 0 (no migration). Duplicate Special Traits characterFlags discount entries were removed so configuration ownership stays on the Power Point dialogs.
+- **Starship Hull and Shield token resources (Bug 10):** Token and Prototype Token configuration expose Starship-only **Starship Hull** and **Starship Shields** resource choices (`sw5e.starshipHull` / `sw5e.starshipShields`) so placed tokens can show independent Hull and Shield bars. Stock Hit Points remains available. Resources are manual opt-in only (no automatic assignment or migration of existing tokens). Linked and unlinked Token HUD editing supports Foundry absolute, delta, equals, and percentage inputs, writing Hull to `hp.value` and Shields to `hp.temp` while clamping to effective maxima. Chat-card / stock Hit Points damage continues to use dnd5e shield-first handling.
+- **Starship weapon attack firing-crew proficiency:** Starship weapon/ammo attack rolls add the proficiency bonus of the qualified Pilot/Crew character firing the weapon (Deployment rank ≥ 1, finite prepared PB) via a dedicated `@sw5eCrewAttackProf` term. Reuses the skill responsible-crew resolver (`explicitActor`) and the same 0/1/2+ picker modes; fast-forward with multiple candidates forces the firing-crew picker. Public attack chat stays ship-attributed (no firer name/UUID). Unexpected nonzero stock `@prof` soft-defers inject (no silent strip, no stacked crew PB). `AttackActivity.rollAttack` is wrapped via libWrapper on `dnd5e.documents.activity.AttackActivity.prototype.rollAttack` (init-time registration with a Foundry `ready` retry if needed), with roll-scoped invocation-map correlation into `postBuildAttackRollConfig`. Starship attack roll dialogs open in a usable vertical band instead of stock `clientY - 80` near the top edge.
+- **Starship skill responsible-crew picker:** When two or more distinct qualified Pilot/Crew Actors are aboard (Deployment rank ≥ 1, finite prepared PB), the Starship skill roll dialog shows a **Responsible Crew Member** selector. One qualified Actor is used automatically; zero qualified Actors roll with no crew PB. Selection is local to that roll (no Active Crew restore, no persistence). GM/Assistant users see all qualified visible Pilot/Crew; ordinary players only their owned qualified Actors. Fast-forward with multiple candidates opens the dialog instead of silently choosing a source.
+- **Starship Core crew roster PC/NPC groups:** Core Crew & Passengers lists assigned Actors under Player Characters and NPCs headings (Other when applicable).
+- **Starship Core crew roster interactions:** collapsible crew groups (sheet-local), Actor-sheet open from portrait/name, Deployment feat subtitles, and permission-aware ContextMenu5e actions (View, Display in Chat; Remove when authorized).
+- **Starship Core crew PLAY management chrome:** visible Set Pilot / Remove controls are restricted to EDIT; authorized users may still Remove through the PLAY/EDIT context menu via `undeployStarshipCrew`.
+- **Starship Add Crew multi-select:** deploy multiple distinct Actors from the Add Crew dialog in one Crew or Passenger action (Pilot requires exactly one selection). Aggregate NPC quantity is not included.
+
+### Changed
+- **SW5E appearance model:** Application chrome follows stock Foundry/dnd5e presentation. Selectable SW5E theme modes are removed (see Removed). Core SW5E branding remains: animated Pause display, lightsaber sheet headers, and approved logos/icons. Essential Starship functional/layout CSS remains for AC, Power Dice, Ship’s Stores, System Damage, movement, vitals, and related controls.
+- **Starship Recover Power:** Explicit Recover Power opens one combined multi-pool allocation dialog. Players choose eligible pools and quantities; Current/Maximum are not duplicated in the dialog; allocations are validated against live headroom and persist in one update. Regen keeps its separate legacy allocation caller policy.
+- **Starship Ship’s Stores configuration:** EDIT mode uses one Ship’s Stores settings cog/dialog for Fuel and Food current, capacity, cost, and Per Unit / Per Restock cost modes. Modes preload and persist independently; Cancel does not write. PLAY keeps Fuel/Food bars and actions without the cog.
+- **Starship Regen Power Die and Shield recovery:** Automatic Regen Power Die recovery quietly no-ops when pools are already full (no misleading full-capacity warning), while explicit Advanced Power Recover still warns. Passive Shield regeneration uses whole-number recovery (`Math.trunc`) so chat totals match the applied integer (for example `20 × 0.667` → 13).
+- **Starship EDIT-mode movement/travel sidebar:** Space Speed, Travel Speed, and Travel Pace hide their numeric counters in EDIT mode while Space Speed keeps the existing movement configuration control (Space, Turn, and travel). Turning Speed remains visible in EDIT. PLAY mode still shows all four values. Character, NPC, and ordinary Vehicle sheets are unchanged.
+- **Starship Role movement Active Effects:** All 36 Role records publish canonical Override Active Effects on `system.attributes.movement.space` and `.turn` (Medium Courier corrected to 400/250). Role item speed fields remain metadata/validation only and are not a runtime movement fallback. Existing world Role items may need refresh from the rebuilt Role compendium to receive those effects.
+- **Starship skill crew PB attribution:** GM and starship-update users see a local named crew PB source on the starship skill sheet and skill roll dialog when a qualifying source exists. Public skill chat remains nameless (ship speaker; no crew Actor name/UUID in public flavor).
+- **Starship Core assigned roster sort:** Within each Player Characters / NPCs / Other group, assigned rows sort as Pilot, then Pilot/Crew with a Deployment assignment, then Pilot/Crew without Deployment, then passengers (Actor name tie-break). Custom Role alone does not count as a Deployment for sorting.
+- **Starship Core membership pills:** Pilot shows a compact `P` pill (existing Pilot colors) and Crew shows `C`; Passenger-only members show no membership pill. Accessible Pilot/Crew names remain on the visible pills.
+- **Starship Core assigned roster search:** Assigned-roster search matches Actor name/type, Deployment assignment labels, stored Custom Roles (even when a Deployment label is shown), and stable membership terms `pilot` / `crew` / `passenger` (`crew` includes the Pilot; passenger-only members match `passenger` only).
+- **Starship skill proficiency source:** Starship skill checks use the proficiency bonus of the qualified assigned or controlled Pilot/Crew character (Pilot or Crew membership and Deployment rank ≥ 1) instead of Active Crew or Pilot silent fallback. Passenger-only and rank-zero crew do not supply skill PB. Passive skill preview uses the assigned character only. Ability checks and attacks are unchanged by that skill path.
+- **Starship saving-throw Pilot proficiency (Bug 29C):** When an ability is save-equipped (`system.abilities.<abil>.proficient > 0`), starship saving throws add the assigned Pilot’s proficiency bonus **once** (from `deployment.pilot.value`, Deployment rank ≥ 1, finite prepared PB). Stock `rollSavingThrow` remains primary; Pilot PB is injected via per-roll `rolls` merge / `dnd5e.preRollSavingThrow` without writing Actor data or multiplying by expanded equip tiers. Bare ability checks stay mod-only. Enemy/NPC/stat-block Starships use proficiency already incorporated in their stat blocks (no separate Bug 29 crew-PB resolver path).
+- **Starship Active Crew UI removed (Bug 29D):** Activate/Deactivate controls, Active badge, Active-first roster sorting, and the Active Crew overview note are removed. Stealth/deployed-set scans use Pilot/Crew/Passenger membership only (stale `deployment.active.value` is ignored). The legacy `active.value` flag may remain persisted but is behaviorally inert; no migration.
+- **HGTTG species pack flags:** removed absolute local `pdfPath` values from HoloNet Guide to the Galaxy species source and stopped import tooling from writing those paths back into pack flags.
+- **Sabacc RollTables:** table face icons now use `modules/sw5e-module/` asset paths instead of legacy `modules/sw5e/` paths.
+- **NPC power provenance:** relinked embedded fistoscodex/monsters power `sourceId` / `compendiumSource` UUIDs to current Powers & Maneuvers document IDs where name+type matched uniquely.
+- **Mandalorian Codex packs (MVP):** normalized Codex items and NPCs toward dnd5e 5.2.5 shapes (system properties, Active Effect `name`/`img`, removed Better Rolls flags and starship-only armor pollution, placeholder images / coreVersion updates). Some armor AC modernization and final art remain deferred.
+- **Inventory sheet injectors:** Powers-tab stats inject through a single `renderActorSheetV2` path; powercasting meter templates are preloaded so hot-path inject stays synchronous when cached.
+- **Compendium browser packs:** character creation `sourcePacks` now resolve the live `sw5e-module` backgrounds, character-classes, equipment, and species packs.
+- **Customization Options UUIDs:** rewrote legacy `Compendium.sw5e.` / `sw5e-companions` references and broken self-origins to current `sw5e-module` documents where remappable; intentional `uuid: null` and orphan Active Effect provenance left alone.
+- **Companion archetypes:** companion subclass documents use unique `identifier` values (no longer collide with their parent archetypes).
+- **Background feat links:** background advancement feat UUIDs use the canonical `.Item.` form; empty `startingEquipment` lists are unchanged.
+- **Starship crew UI:** crew panel labels, badges, empty state, and “Crew & Passengers” heading use `SW5E.StarshipCrew*` locale keys.
+- **Release packaging:** release zip excludes `*.psd` icon templates.
+- **Currency (Credits-only):** character/NPC wallets and price denomination UIs again show **Galactic Credits only**. Strict `patchConfig` wipes stock dnd5e `pp`/`gp`/`ep`/`sp`/`cp` from `CONFIG.DND5E.currencies` and publishes `gc` (Era 1 behavior restored; optional Era 2 multi-denom settings UI remains removed).
+- **Repository hygiene:** HGTTG PDF art cache is gitignored and untracked; dormant legacy reload subsystem and CheckboxSelect app/template were removed.
+
+### Fixed
+- **SnV NaN skill check bonuses:** SnV Actors no longer serialize non-finite skill check bonuses (e.g. Piloting).
+- **SnV omitted weapons/traits:** Double-star Action lines no longer drop weapons/traits during population; **Unarmed Strike** is treated as natural.
+- **SnV Compendium folder taxonomy:** Source-section folders replaced with singular Creature Type folders aligned to `system.details.type`.
+- **Starship multi-unit Fuel burn (Bug 7):** Burn opens a quantity prompt (default 1). A valid amount burns that many units; requests above remaining fuel apply only the available amount and show a soft warning with both the requested and applied quantities. Cancel leaves fuel unchanged; Burn at 0 fuel is a no-op. Refuel is unchanged.
+- **Starship sidebar Armor Class / Damage Reduction presentation:** On Starship sheets in PLAY mode, the duplicate sidebar Armor Class row is hidden while the portrait Armor Class badge remains. Damage Reduction uses a left-aligned label and right-aligned value aligned with Max Fires/Round (no colon-joined display). Armor Class and Damage Reduction calculations are unchanged.
+- **Starship Max Fires/Round (Bug 8):** Starship sidebars show Max Fires/Round below Damage Reduction using `ceil(max(1, prepared Strength modifier) × SotG Size multiplier)` with verified RAW Size constants (Tiny/Small 1, Medium 1.5, Large 2.5, Huge 2, Gargantuan 3). The value is live-derived (not persisted), responds to prepared Strength Active Effects, and is informational only — it does not count, warn, or block weapon firing. Legacy Size-pack `hardpointMult` is not used for this statistic. Character, NPC, and ordinary Vehicle sheets are unchanged.
+- **Starship Space/Turn movement (Bug 11):** Starship combat Space and Turn speeds use Role Override Active Effects as the prepared baseline, then apply Power Routing once and Slowed once. Slowed no longer compounds on sheet re-derivation and does not change Travel Speed or Travel Pace. Size is not a movement-value authority. Homebrew uses underlying Actor Space/Turn after disabling or deleting the applicable movement Override effect; effect-controlled edits warn and do not save ineffective changes. Add-mode movement effects do not trigger the base-control warning. Character, NPC, and ordinary Vehicle movement are unchanged.
+- **Starship Hull/Shield dice by size and tier:** Hull and Shield die maxima now gain dice per Tier Upgrade by size band — Tiny through Large gain 1 of each per tier; Huge and Gargantuan gain 2 of each per tier. Tier 0 adds none. Unknown/homebrew sizes default to gain 1 without blocking play. Die denominations, tier-0 starting counts, and spent (`hullDiceUsed` / `shldDiceUsed`) are preserved; available remains maximum minus used. Hull Points and Shield Points are not auto-recalculated. Character, NPC, and ordinary Vehicle behavior is unchanged.
+- **Starship aggregate NPC crew quantity:** EDIT +/− on the Flight Manifest promotes an eligible NPC membership to an aggregate with quantity 2 and adjusts quantity (minimum 1). Legacy UUID memberships dual-read as quantity-1 individuals without render-time writes. Drop, Add Crew, and redeploy do not increment or reset aggregate quantity. The Flight Manifest count uses the sum of quantity for viewer-visible memberships (hidden aggregates remain GM-only). Hide/Reveal, Custom Role, Remove, and quantity controls use membership identity; crew profiles re-key to that identity while preserving hidden, custom role, and sibling fields. Bug 29 still resolves the source Actor once regardless of quantity. PCs cannot promote; no Actor clones.
+- **Starship Alt-drop hidden crew membership:** As GM, Alt+dragging a PC or NPC onto a SW5E starship sheet deploys them as hidden Crew (or hides an already-deployed member without duplication). Non-GM Alt+drop matches plain visible drop. Hidden intent goes through the storage-abstracted deploy API (same Bug 6 GM-only privacy); the drop handler does not write `crewProfiles` paths directly.
+- **Starship hidden crew membership (stowaway):** GMs can Hide/Reveal crew members on the Core Flight Manifest so non-GM viewers (including Starship Owners) do not see hidden members. Hidden rows remain visible only to GMs at reduced opacity; Hide/Reveal refreshes the open sheet immediately; the Flight Manifest count uses the viewer’s filtered roster.
+- **Starship attack firing-crew PB registration:** `AttackActivity.rollAttack` wrapping now registers through the same init-time libWrapper lifecycle as other working Activity wraps (namespace `dnd5e.documents.activity.AttackActivity.prototype.rollAttack`, with a Foundry `ready` retry if needed). A late `libWrapper.Ready` subscription never ran on libWrapper 1.13.4.0, so firing-crew prepare/picker/PB inject and dialog positioning never executed.
+- **Starship skill crew candidate lists:** Pilot/Crew UUID lists used for skill crew PB and the responsible-crew picker correctly read Foundry-stored deployment crew containers (arrays, Sets, and numeric-key object maps), so qualified crew are not under-counted.
+- **Starship Actor drop → crew:** dragging a PC or NPC onto a SW5E starship sheet deploys them into the SW5E Crew & Passengers roster as crew (via existing deployment flags), instead of doing nothing or only writing stock vehicle `system.crew` / `system.passengers`. Non-starship vehicles keep stock dnd5e drop behavior. GM Alt+drop can create or update hidden membership (see Alt-drop entry above).
+- **Maneuver Heal `@mod`:** Heal Activities on Maneuver items with blank Activity ability now resolve `@mod` from the Maneuver ability contract (`item.abilityMod` key), instead of always using `0`.
+- **Maneuver heal formulas (pack):** Powers & Maneuvers heal/temp-HP formulas that used `1d@superiority.die + max(...)` now use `1d@superiority.die + @mod`.
+- **Existing Maneuver heal formulas:** world-owned Maneuver healing and temporary-hit-point formulas that still used obsolete ability-modifier expressions are corrected to `1d@superiority.die + @mod` without overwriting homebrew formulas.
+- **Superiority Style:** Superiority Style grants one Superiority die and the character-level die denomination (`d4`→`d12`) without requiring a class superiority progression.
+- **Superiority dice maximum:** class Superiority dice pools no longer collapse to `0` when Active Effect ADD changes interact with prepared `dice.max` (explicit overrides and ADD effects still apply).
+- **Multiclass powercasting:** max power level is no longer `NaN` when combining Force and/or tech casting progressions.
+- **Power save DC / attack bonuses:** installed chassis-mod bonuses apply on the DC path; Focus Generator school Atk on the Powers tab matches per-power attack rows.
+- **Simplified forcecasting:** prepare no longer mutates global `CONFIG.DND5E` school attributes in place.
+- **NPC preparation:** NPC powercasting prepare no longer calls `updateSource` during data prep.
+- **NPC description text:** removed corrupted `\0` sequences from affected fistoscodex/monsters descriptions.
+- **Blaster reload:** reload updates apply as a single atomic embedded-item update.
+- **API permissions:** augmentation/droid `force` helpers and the character importer require a GM user.
+- **World migration safety:** migration no longer auto-deletes empty folders by English name alone; legacy world convert defaults to non-replace upserts.
+- **Config keys:** corrected `piloting` and `reference` typos in module config.
+- **Species effect icons:** world migration remaps legacy Species Active Effect image filenames (including Droid Class and related pack mismatches) to on-disk names.
+- **Macro migration:** Macro flag comparison uses Foundry `objectsEqual` instead of non-existent `deepEqual`, so remigration no longer throws on Macros.
+- **Companion trait icons:** world migration remaps legacy `icons/companions/` image paths to `icons/packs/Companions/`.
+- **Hidden PHB wallet amounts:** after Credits-only CONFIG, orphan `pp`/`gp`/`ep`/`sp`/`cp` values no longer sit invisible on actors — world migration folds them into `gc` (see Migration).
+- **Superiority Powers tab:** Maneuver list rows now show Time and Range with the same stock inventory column context as Force/Tech powers; superiority-only characters still get the full Powers column set.
+- **Maneuver Item Details:** Source Class uses identifier/label options (no `[object Object]`); activation, range, and duration selects use localized option arrays matching Power sheet shapes.
+- **Maneuver Item Effects:** Maneuver Item sheets expose the stock Effects tab (`metadata.hasEffects`), reusing the dnd5e Effects PART without custom editors or pack changes.
+- **Maneuver Description summary:** Maneuver Description tabs show a compact Activation Time / Range / Target / Duration summary from prepared Item labels (empty rows omitted; Power-only fields excluded).
+
+### Removed
+- **Selectable SW5E themes:** SW5E Light, SW5E Dark, and Underworld Alloy theme modes, the theme mode setting, theme runtime/hooks, theme-root injection, and theme-specific LESS/assets are removed to restore normal Foundry/dnd5e presentation and reduce UI overhead. No game-data migration is required; stale world `themeMode` values are ignored. Pause branding and lightsaber headers are preserved (see Changed).
+- **Starship movementOverrides / Use Derived / Clear Override:** The parallel `movementOverrides` flag layer and Movement dialog **Use Derived** / **Clear Override** controls are gone. Stale world `movementOverrides` flags may remain but are ignored. Size and Role item-speed runtime fallbacks for Space/Turn are also gone.
+
+### Migration
+- Bumped `needsMigrationVersion` to **1.3.2** (Species pack image remaps), **1.3.3** (legacy companion icon folder remap), **1.3.4** (orphan PHB currency → Galactic Credits), and **1.3.5** (obsolete embedded Maneuver heal/temphp formulas → `1d@superiority.die + @mod`).
+- **1.3.4 currency fold (GM load):** converts actor `system.currency` orphans into `gc` using stock dnd5e coin-to-gp rates (`pp`÷0.1, `gp`÷1, `ep`÷2, `sp`÷10, `cp`÷100; credit aliases 1:1), then deletes those keys. Remaps world item `system.price.denomination` from stale PHB/alias keys to `gc`. Era 2 leftover keys (`wu`/`tr`/etc.) are left alone if present.
+- **1.3.5 Maneuver formulas (GM load):** for canonical Administer Aid / Vanity / Water of Life / Inner Strength / Parry / You Call This Archaeology copies only, rewrites recognized obsolete `max(...)` and die-less `@mod` heal/temphp formulas to `1d@superiority.die + @mod`. Homebrew and unknown formulas are left unchanged.
+- **Back up the world before the first GM load** on builds that include **1.3.4** or **1.3.5** — wallet merges and formula rewrites are not reversible by reverting module code alone.
+- Pack `_source` updates in this release require `npm run build:db` with Foundry fully stopped, then a Foundry restart, before compendium browsers show new UUID/icon data.
+- Worlds below **1.3.3** remigrate matching image fields on the next GM load.
+
+### [1.3.9] 2026-07-10
+
+### Added
+- **Superiority sheet controls:** character sheets now have edit-mode Superiority cogs on the Powers tab and the sidebar tracker, with dedicated dialogs for type ability overrides and Superiority Dice resource settings.
+- **Tech powercasting configuration:** Configure Powercasting now supports tech casting ability overrides alongside Force Light/Dark/Universal, including per-item casting-ability save DC resolution and tech override effect paths.
+- **Space station variant:** optional world setting for space-station rules (fixed movement, doubled suite max, +2 hull per die, AC −2, stock modifications on create/convert); Role Specialization feats by size (Large/Huge/Gargantuan) with soft RAW size warning when flagged below Large.
+- **Starship flat Damage Reduction (SotG):** replaces armor-based ion/lightning/necrotic resistance modeling with flat DR; `starship` AC calculation mode; equipment/plating Active Effect DR; sidebar Play/Edit DR display with manual override; world setting to toggle flat DR automation; Drake's Shipyard ships migrated from `flat` AC calc.
+- **Starship crew-role groups:** Core crew UI groups assigned PCs by deployment/venture roles with per-user collapse state, crew-sourced feature resolution, and restricted context actions for external items.
+- **Starship AC badge:** portrait AC badge on starship sheets matching character-sheet UI.
+- **Galactic Credit icon:** module `assets/currency/gc.svg` with currency resolution fallbacks for GC display.
+- **Species languages:** added 14 missing species languages (Advb, Aingtii, Anomid Sign Language, Anx, Baragwinian, Caamasi, Culisetto, Ho'Din, Notho, Pantoran, Patrolian, Quermian, Ugor, Xextese).
+- **Advancement Manager theming:** full SW5E Light, Dark, and Underworld theming for the dnd5e level-up Advancement Manager wizard.
+
+### Changed
+- **Special Traits tab:** cleaned up SW5E-facing wording and localized the tab, section labels, and Original Class block without replacing the stock dnd5e sheet tab.
+- **Actor sheet tabs:** powercasting, starship, and Special Traits tab-label adjustments now share a single `_prepareTabsContext` wrapper instead of competing libWrapper registrations.
+- **Starship tier:** sheet tier prefers `actor.system.details.tier` over size-item tier, and syncs the size item when tier is updated from the sheet.
+- **Blaster migration:** extracted managed-blaster migration into `scripts/blaster-migration.mjs` for reuse and clearer world-item upgrade paths.
+- **Theme packaging:** `assets/` is included in the release zip; CI verifies parchment and logo theme files are present in `module.zip`.
+- **Theme polish:** light/dark surface gradients and opacities; Underworld header watermark and button-icon contrast; Active Effect config and checkbox token scoping; SW5E Light starship sidebar and control-icon token centralization; CSS/LESS mixin extraction for dialog shells and compendium browsers.
+- **Starship sheet cleanup:** removed orphaned SotG tab markup and unused related CSS.
+
+### Fixed
+- **Localization loading:** resolved SW5E locale namespace collisions that prevented module translation keys from loading in Foundry, restoring SW5E `Powers` / `Powerbook` wording and eliminating raw `SW5E.*` labels on actor sheets and related UI.
+- **Character sheet labels:** restored localized SW5E wording for Special Traits, custom skills (`Lore`, `Piloting`, `Technology`), and SW5E weapon proficiencies on actor sheets.
+- **Special Traits bonus labels:** added missing `SW5E.Bonus*` locale coverage for actor `system.bonuses` fields so the stock `Global Bonuses` section shows readable power bonus labels instead of raw keys like `SW5E.BonusAttack`.
+- **Startup / libWrapper:** consolidated duplicate `BaseActorSheet._prepareTabsContext` registrations from powercasting, starship, and Special Traits patches into one module-owned wrapper, removing init-time libWrapper duplicate-registration errors.
+- **Blaster reload warnings:** narrowed legacy blaster ammo warnings to stale runtime state only; modern blasters with `system.uses` no longer warn solely because compatibility metadata like `flags.sw5e.reload.types` is still present.
+- **Blaster migration:** world item migration now backfills `system.uses.max` for managed blasters instead of writing obsolete `system.ammo.value`.
+- **Theme regressions:** dark advancement dialogs are readable again, light-theme windows are less translucent, and advancement level lists have stronger contrast; parchment theme assets no longer 404 in packaged releases.
+- **Powers tab:** `powerCasting` items once again show the correct save DC in the roll column.
+- **Superiority data:** missing Fighter and Scholar superiority progression now backfills correctly, and the Scholar `Superiority Dice` feature again uses the scale-based die formula and resource path; legacy superiority scalars, stale `dice.max` zeros, and legacy superiority Active Effect keys are remapped on migration.
+- **Powercasting known max:** migration clears stale `known.max` overrides written as `0` when an actor has no active powercasting progression.
+- **Consumables / weapon normalization:** explosives again consume and destroy themselves correctly, burst/rapid blasters missing a base attack regain a normal attack activity for downstream integrations, and NPC/monster weapons no longer double-count flat ability-mod damage.
+- **Starship sidebar polish:** Initiative and Tier portrait badges now render with themed backgrounds in Light, Dark, and Underworld, and Tier is editable from the sidebar in Edit mode.
+- **Pause overlay:** restored safe SW5E custom pause rings, including Underworld Alloy, without resizing the root `#pause` container or crowding the chat/sidebar region.
+- **Species icons:** fixed icons for HoloNet Guide to the Galaxy species pack entries.
+- **Droid species images:** migrate legacy URL-encoded droid class effect image paths to hyphenated filenames.
+
+### Migration
+- Bumped `needsMigrationVersion` through `0.39` (droid image paths), `0.40` (powercasting `known.max` cleanup), and `0.41` (blaster migration module / starship tier sync).
+- Flat DR and space-station behavior apply at runtime; Drake's Shipyard AC-calc and armor DR source updates require a compendium rebuild/import to appear in packed data.
+- Older world-copied starships, blasters, and superiority actors may need migration or refresh to pick up the new data shapes.
+
+### [1.3.8] 2026-06-24
+
+### Added
+- **Underworld Alloy theme:** new theme mode with tokens, Foundry theme scoping, global dialog/app foundation styling, and themed PC/NPC actor sheets, item sheets, Starship sheets, chat/roll cards, and journal/datapad surfaces.
+- **Starship sheet layout:** primary tabs are now **Core | Inventory | Features | Effects | Description**; Inventory holds Weapons, Equipment, Modifications, and stock Loot/Cargo; Features holds Starship Actions and Systems; Modifications header shows slot and suite usage stats.
+- **Starship Core layout:** redesigned Core tab with Crew Management, Power Routing, and Fuel controls moved from the old Crew tab; collapsible Crew & Passengers, Fuel, and Power Die Allocation panels; Recharge, Refitting, and Regen repair workflows on Core.
+- **Starship movement:** registered Space Speed and Turning Speed movement modes; integrated Starships with the stock dnd5e Movement dialog; added stock-compatible **Use Derived** movement reset; fixed Starship token movement to use Space movement.
+- **Starship abilities:** ability config cog behavior, skill/ability save-tab roll behavior, and NPC/character-style ability cards on the Starship sheet.
+- **System Damage (levels 1–6):** disadvantage on Starship skill/ability checks (level 1+), slowed movement contribution (level 2+), outgoing attack/save disadvantage (level 3+), effective Hull/Shield/Regen caps (level 4+), Used latch (level 5+), and catastrophic helper state (level 6); System Damage sidebar pips and token icon sync when SD > 0.
+- **Destruction Saves:** stock dnd5e D20 roll configuration dialog; failure and natural 1 increment System Damage; natural 20 restores Hull to 1 and resets counters; three successes stabilize; sidebar tray at Hull 0.
+- **Starship conditions:** starship-only Effects condition grid with RAW tooltips; explicit Slowed level buttons (1–4); Used flag-backed control; condition-derived slowed movement stacking (Disabled/Stalled/Stunned/Tractored) with deduplication.
+- **Starship roll modifiers:** default outgoing disadvantage/advantage for Ionized, Blinded, and Invisible; incoming attack default advantage/disadvantage vs targeted Blinded/Stalled/Stunned/Invisible Starships; Stalled/Stunned STR/DEX save auto-fail (Destruction Saves unaffected).
+- **Token HUD / token icons:** starship-only status palette filtering; Used, Slowed 1–4, Cover, and System Damage display icons synced from flags/SD (display-only ActiveEffects, not source of truth).
+- **Chassis / item modifications:** compact collapsible Modification Chassis panel with slot cards, footer icon actions, and tooltips; clickable installed modification names that open the source item sheet; chassis install picker sourced from Enhanced Items → Item Modifications; drag/drop installation from compendiums and world items; installed mod effect aggregation with synthetic roll-time contribution from active hosts.
+- **Powercasting ability overrides:** generic per-school forcecasting ability override system for features such as Cunning Forcecaster; Configure Powercasting dialog from the Powers tab Edit-mode cog; Light/Dark casting ability and max force point ability overrides; Universal **Highest Effective Light/Dark** mode with **Fixed Ability** option; documented Active Effect / flag paths for overrides.
+- **Active Effects / automation:** force and tech power attack bonuses; force and tech save DC bonuses including ability-specific and save-target DC keys; melee/ranged power attack bonuses via `mpak`/`rpak`; `CONFIG.SW5E.powerBonusEffectKeys` registry; Superiority Dice max changes via `system.superiority.dice.max` with formula bonus support.
+- **Expanded proficiency / mastery:** Mastery, High Mastery, and Grand Mastery skill-tier automation (advantage, double proficiency, chat-card rerolls) with improved inline reroll UX.
+- **Item source Active Effects:** Focus Generator and Wristpad item YAML; save-target DC effects on Fadecasting, Rendcasting, and Withercasting modifications; `mpak`/`rpak` effects on Channeling, Crystalizing, and related modifications.
+- **Theming:** SW5E Light and SW5E Dark polish across item sheets, advancement/config apps, roll configuration, tooltips, dropdowns/selects, and Foundry core UI surfaces; Cybernetic Augmentations dialog theming; Short Rest, Long Rest, and dnd5e activity usage dialogs (e.g. Cast Power / Save) for SW5E Light, SW5E Dark, and Underworld Alloy.
+- **Blaster reload workflow:** supported PC and NPC blasters now use magazine-style `system.uses` tracking; reloading consumes a compatible Power Cell or Slug Cartridge from inventory and refills the weapon.
+- **Blaster ammo UX:** empty or insufficient-ammo Attack / Rapid / Burst uses now whisper owners + GMs with a private Reload chat card for supported managed blasters.
+- **Developer / internal:** migration and validation utilities for power-bonus and modification item effects; tests/utilities for `mpak`/`rpak` and installed-mod aggregation.
+
+### Changed
+- **Starship sheet:** removed the legacy Crew tab (crew now on Core); removed the experimental Starship Sheet V2 preview shell; removed sidebar Starship Systems summary card (Mod Slots/Suites); stock vehicle Features tab hidden in favor of dedicated Starship Features tab; improved Starship sheet Light/Dark theme sync and select/dropdown normalization; Patch and Regenerate Shields fall through to stock item use (custom compact recovery dialog removed).
+- **Starship repair:** Refitting optional Reduce System Damage applies before restore target calculation; Recharge and Refitting reset Destruction Saves; Regen does not reset Destruction Saves; SD level 4 caps Recharge/Refitting restore targets at effective max.
+- **Starship token status sync:** distinct embedded ActiveEffect IDs per synced status (fixes Slowed level icon swaps); fresh mutable options on embedded-document operations (fixes sync crash).
+- **Chassis install picker:** removed developer/debug metadata from normal browser rows; simplified compatibility badges and issue messaging.
+- **Equipment attunement:** restored Attunement controls on SW5E equipment item sheets for attunable items without the dnd5e magic property by deriving magic during preparation.
+- **Proficiency config:** kept dnd5e-facing `proficiencyLevels` string-shaped and moved SW5E tier metadata to `CONFIG.SW5E.proficiencyTiers`.
+- **Configure Powercasting:** removed header and per-field helper text; **Save Changes** now saves and closes the dialog; Universal default compares effective Light/Dark abilities (after overrides) instead of raw Wisdom/Charisma.
+- **Currency:** simplified currency handling and removed the custom currency settings UI.
+- **Journal AppV2:** improved theme scoping for Underworld Alloy and related surfaces.
+
+### Fixed
+- **Starship:** non-starship vehicles no longer show Space/Turn movement fields; save-tab roll markup and overlap issues on the Starship sheet.
+- **Starship token status sync:** `Cannot add property parent, object is not extensible` when toggling Used/Slowed/System Damage statuses.
+- **Starship Effects tab:** display-only sync ActiveEffects no longer appear in the generic Active Effects list.
+- **Destruction Saves:** roll formula corrected to single `1d20` (not double d20); stale three-failure destroy wording removed.
+- **Starship UI polish:** condition hover styling; destruction save dialog parity; shield meter fill; sidebar vital meter placement.
+- **Startup / compatibility:** early libWrapper registration for Starship movement; dnd5e pre-localization error for Space/Turn movement type registration; Mastery proficiency config localization startup/render errors.
+- **Cybernetics dialog:** selector compilation issue that blocked SW5E Light theming; readability of installed augmentation cards, install area, buttons, scrollbars, and metadata.
+- **Chassis UI:** installed modification name styling no longer inherits global button slab styling.
+- **Power bonuses:** save DC preparation now consumes supported bonus keys.
+- **Powercasting UI:** Forcecasting config cog hidden in sheet Play mode; visible only in Edit mode.
+- **Character sheet tabs:** restored readable SW5E Light vertical tab backing after icon-control rules regressed transparency.
+- **Mastery rerolls:** reroll values no longer incorrectly always return 20.
+- **Superiority Dice:** preparation now preserves Active Effect changes to maximum dice and applies formula bonuses.
+- **Active Effects:** dropdown/select normalization across SW5E Light, SW5E Dark, and Underworld Alloy.
+- **Theme scope:** rest and activity usage ApplicationV2 dialogs now receive `sw5e-theme-root` scoping.
+- **Blaster activities:** supported reloadable blasters now consume the correct `itemUses` shots for Attack, Rapid, and Burst activities, including alternate-fire shot costs.
+- **Blaster reload controls:** restored the character-sheet reload control and managed-blaster detection for affected existing world items, including legacy `flags.sw5e.reload.types` compatibility.
+- **Blaster reload polish:** localized reload labels/messages and aligned sheet/chat reload interactions for supported blasters, including direct reload access from weapon rows and out-of-ammo chat cards.
+
+### Weapon Activities
+- Added stock dnd5e Attack Activities to primary and secondary Starship weapons and propagated matching Activities to eligible Drake's Shipyard embedded source weapons while preserving legacy weapon data for compatibility.
+- Starship weapon rolls now use Wisdom by default when no attack ability is set, and Power Routing damage scaling applies through stock dnd5e damage rolls.
+- Added save-based Activities for Proton Torpedo and Concussion Missile; these tertiary payloads use Dexterity saves, deal half damage on a successful save, and keep launcher shells as utility/gating items without fake `0d0` Attack Activities.
+- Normal single-target weapon Activities no longer prompt for measured templates, while weapons with explicit template geometry keep measured-template placement enabled.
+- Fixed invalid weapon Activity duration data where `duration.value` incorrectly stored `inst`, and normalized measured-template prompt defaults across the migrated weapon categories.
+- Cleaned up the remaining non-Starship wrapper and natural-weapon Activity serialization so these records use valid instantaneous duration data and explicit single-target prompt defaults without changing weapon mechanics.
+- Deferred launcher selection, reload, ammo consumption, bombs/mines/cluster munitions, and migration of existing world actors until the broader Starship weapon rollout is complete.
+
+### Migration
+- Bumped `needsMigrationVersion` to `0.38` so updated worlds recognize this release.
+- No destructive actor/item migration is required for this bump.
+- New or updated compendium source Active Effects require a compendium rebuild/import to appear in packed data.
+- Updated blaster weapon Activity `itemUses` consumption requires the normal compendium rebuild/import flow to appear in packed data, and older actor-owned or world-copied weapons may still need refresh/re-import to pick up the new reload/use configuration.
+- Starship sheet, condition, System Damage, and token icon sync behavior applies at runtime on existing vehicle-backed starship actors.
+
+### Testing
+- `npm run lint` passed; `npm run build:styles` passed.
+- Release-prep QA on B-wing starship (sheet tabs, sidebar, Effects grid, Token HUD, Slowed icon swap, Used/SD icons) documented in `ai/sessions/2026-06-24-starship-release-prep-qa.md`.
+
+### [1.3.7] 2026-06-04
+### Added
+- SVG icon files for types of powercasting and maneuvers. Credit to Vizaer for producing the initial versions of these images.
+- Assigned icons to powercasting schools and maneuver types. Maneuvers do not currently show these images.
+- Added 11 languages missing languages from website species
+### Changed
+- Adjusted CSS to ensure spinning pause icon remains behind pause text.
+- Grouped common and rare languages based on sites common language designation
+### Fixed
+- Fixed maneuver type dropdown on maneuver sheet.
+
+### [1.3.6] 2026-06-01
+### Changed
+- Removed effects from backgrounds as they are not supported in DND5e and would cause issues in v14.
+- Added proper tool proficiency advancement options on all backgrounds.
+- Added distinct background features to the items granted by all backgrounds. 
+
+### Changed
+- Cybernetic Augmentations now use a more V2-style manager popup with compact installed rows, a browser-backed `Install` flow, and side effects shown below the install controls only once they become active.
+- Cybernetic Augmentations now also support a secondary `World Item...` install path plus popup and inline-sheet drag/drop installs that reuse the same validation and persistence flow as browser installs.
+- Droid Customizations now use a matching refreshed manager popup with compact installed rows, embedded install controls inside the installed section, collapsible `Motor Upgrade` and `Capacity Settings` cards, and popup/inline drag-drop install support that reuses the normal installation check workflow.
+
+### Fixed
+- Character-sheet ability score inputs in EDIT mode now keep keyboard focus moving with `Tab` and `Shift+Tab` instead of dropping back to the canvas/map.
+- The Cybernetic Augmentations compendium browser no longer crashes when eligible item packs contain legacy scalar `system.source` data.
+- The Cybernetic Augmentations browser now localizes its install hint correctly and no longer shows duplicate generic rarity/filter controls alongside the augmentation-specific filters.
+
+### Migration
+- Bumped the module migration gate so updated worlds rerun the existing cleanup/normalization pass once more during the 1.3.6 update.
+
+
+### [1.3.5] 2026-05-27
+
+### Changed
+- Parent Deployment compendium entries now include top-of-description UUID link sections for rank features, role-specific options, and ventures to support easier manual drag/drop onto actors.
+- Polished the inline Cybernetic Augmentations and Droid Customizations sections to better match the native dnd5e sheet presentation, including improved compact populated states and clearer empty/edit affordances.
+- Deployment cards now support editable rank selection, item-open parity with class-pill behavior, and module-aware rank flag handling with legacy fallback.
+- Changed spell level label in en.json for consistency.
+- Adjusted compendium flags in module.json for customization-options to include classes and subclasses from companions in the compendium browser.
+- Refined starship skill presentation with clearer tooltip/layout behavior and better parity between the core sheet and the V2 preview.
+- Renamed Field and Emergency rations for clarity, included description and consumption activity.
+- Update storage adventuring gear to have correct capacity settings.
+- Trauma kit and Emergency Battery now have uses and basic stabilize activity.
+- Antitoxkit and Repairkit now have uses.
+- Improved the chassis panel UI and related dialogs.
+- World migration now removes certain empty folders left behind from before the YAML conversion.
+- Converted all source compendium entries to the state generated by our packing process from the older system data.
+- Updated our pack process to more closely match the process used by dnd5e and commented out code from our original process. Most notably it now sorts compendiums based on folders within the compendiums themselves and extracts to the same struture. This allows for folders like force powers to be sorted easily by level.
+- Consolidated multiple related compendium entries using folders within the compendiums. The folders where multiple entries were combined are listed below. Character classses, customization options and powers-maneuvers are new.
+    - Character Classes (classes, classfeatures, archetypefeatures, archetypes, invocations)
+    - Species (speciesfeatures)	
+    - Equipment (adventuringgear, ammo, armor, blasters, consumables, gamingsets, implements, explosives, lightweapons, kits, implements, musicalinstruments, vibroweapons)
+    - enhanceditems (modifications)
+    - Customization Options (fightingmasteries, fightingstyles, lightsaberforms)
+    - powers-maneuvers (forcepowers, maneuvers, echpowers)
+    - deployments (deploymentfeatures ,ventures)
+    - hgttgspecies (hgttgspeciesfeatures)
+    - starships (starshipactions,starshiparmor,starshipequipment,starshipfeatures,starshipmodifications,starshipweapons)
+- Ordered compendium packs alphabetically in module.json
+- Converted all source files to YAML and adjusted the pack/unpack process to do the same.
+- Updated all feature references in compendiums to point to the new compendium if they had been moved. This includes proficiency references in the patch/config.mjs file.
+- Most image from icons/packs/Species/hgttg/ can be found in icons/packs/Species/ and are cleaner images in webp format. Update image references to point at that folder instead. 
+
+### Added
+- Added Deployment summary cards to the Character/NPC Features tab with stored rank display and dedicated Deployment/Venture feature grouping.
+- Added Icons for for sw5e specific actor skills.
+- Added Companions based on previous standalone module by unrealkakeman89. Special thanks to Vizaer for help in migrating the module's content.
+    - This includes Companion classes, class feautres, Natures and traits.
+    - Folders have been reorganized for our new compendium layout formatting.
+- Added icons for the companion types.
+- Added an experimental Starship Sheet V2 preview shell and normalized starship sheet context behind a setting.
+- Added Equipment Packs
+
+### Fixed
+- Starship skill rolls now use the active or pilot crew member's proficiency bonus more reliably.
+- Fixed an error preventing starship tiers from being altered.
+
+### Implementation Notes
+- Currently we do not handle the special rules for companion powers or maneuvers natively. This has been noted on the relevant powercasting features.
+- When creating a companion it is best to select your nature first and then add the first level of the follower class. The Hit Die size of the follower class will then need to be modified manually based on your chosen nature/traits. Then you can level the follower class up as needed.
+- Not all traits/features have been automated as much as might be possible. I believe more of these traits will be worth automating once we are on foundry v14 to allow for more token changes with active effects.
+
+### Still to do
+- Some hgttg species are still missing images and will need to be generated.
+- Look for other invalid image links.
+
+### [1.3.4] - 2026-04-26
+
+### Added
+- Added hue-rotate filters to the dual_color_saber background image used on encounter, group, npc, vehicle and item sheets to provide a visual distinction between the sheets.
+
+### Changed
+- Removed ".dnd5e2.sheet.actor .window-content {position: relative;}" as it was causing the tabs on the group sheet to not function and was offsetting buttons on the sheet.
+
+### Fixed
+- dual_color_saber background image now replaces the DND5e image used for encounter, group, npc, vehicle and item sheets properly where it had not before due to formatting differences between the player sheet and the others.
+- Tabs of the group sheet now render properly to the right of the sheet and function as intended.
+
+
+### [1.3.3] - 2026-04-23
+
+### Added
+
+- Starship **Core** dashboard on the **SotG** tab, with character-sheet-aligned ability and skill presentation for both **PLAY** and **EDIT** modes.
+- Dedicated starship **Weapons** subtab for mounted weapons and starship ordnance, separated from **Actions**.
+- Starship **Systems** subtab status copy for setup-vs-play behavior, including a **Usable in Play mode** badge for power routing and edit-mode hints for fuel/supporting fields.
+- Starship ability tiles now open a check-or-save prompt, matching the expected character sheet interaction.
+
+### Changed
+
+- Starship **Overview** is now labeled **Core**, and the former **Features** subtab is now labeled **Actions**.
+- Starship **SotG** no longer shows the old **Starship at a Glance** heading/description block.
+- Starship **SotG item groups and rows** now use dnd5e-style inventory/cargo presentation more closely, including primary name-strip interaction, grouped card headers, right-side icon controls, context-menu parity, and visible **Price** / **Weight** columns where the subtab stands on its own.
+- Starship **Core ability editing** now follows the expected base-vs-effective split: **PLAY** shows effective/live values, while **EDIT** presents the stored base score for direct editing.
+- Starship **Cargo** filters out items already surfaced in SotG **Actions**, **Weapons**, **Equipment**, or **Modifications**, while preserving true cargo and uncategorized items.
+- Starship sheet layout now treats **SotG + Cargo** as the main starship workflow by suppressing duplicate stock vehicle ability/features presentation and moving starship ability/skill presentation into the custom SW5E Core experience.
+
+### Fixed
+
+- Starship **SotG row actions** now behave consistently: the primary action in **PLAY** uses/posts the item, **EDIT** opens the item sheet, and the **ellipsis/context menu** and **delete** controls work reliably without overlapping hit targets.
+- Starship **Core ability** inputs no longer compete with duplicate stock vehicle controls during form submission, preventing invalid integer submits and other starship ability serialization conflicts.
+- Starship ability score editing no longer accumulates repeated drift when toggling **EDIT -> PLAY**; base values persist correctly, active effects are no longer baked back into the actor by the toggle path, and **DEX/WIS/CON** no longer step upward or downward on each mode change.
+- Starship ability checks and saving throws now roll through a starship-safe prompt path, include the correct ability modifier and bonuses, and avoid the dnd5e `mergeObject` crash seen on vehicle-backed starships.
+- Starship Cargo filtering no longer walks broad dnd5e config objects, avoiding deprecated `CONFIG.DND5E.spellPreparationModes` / `spellcastingTypes` compatibility warnings.
+
+### Migration
+
+- No new persisted schema migration is required for the 1.3.3 starship sheet work. Existing vehicle-backed starships continue through the current `legacyStarshipActor` normalization path, while new ability edits are sanitized and mirrored to the legacy starship flag during actor updates.
+
+### [1.3.2] - 2026-04-17
+
+### Added
+
+- Actor creation option to make a **Starship** as a **vehicle** actor with SW5E starship identity and seeded `legacyStarshipActor` data so new hulls open cleanly on the starship sheet workflow.
+- Chassis **Install Modification** browser: subdued **informational hint** line (template + styling) for legacy pack metadata, low-confidence inference, missing slot-role / tool–DC notes, etc., separate from the **Warning** badge.
+- **Cybernetic Augmentations:** Actor-level implant data and validation; inline section and **manager** on eligible character/NPC sheets with **install/remove**, installed list, **derived** and **effective** side effects, **GM overrides**, body-slot and capacity checks; routing via **Custom Label** `Cybernetic Augmentation` and native `flags.sw5e.augmentation`; routed items **excluded** from the chassis modification browser; **clickable** installed names when the source item resolves (with snapshot preview fallback when available).
+- **Droid Customizations:** Actor-level customization data with **motor slots** (including **upgrades** toward a maximum of 6), **parts/protocol** limits, validation, inline sheet summary, and **manager** for droid-class species; routing via **Custom Label** `Droid Customization` and native `flags.sw5e.droidCustomization`; **species-only** separation from cybernetic augmentations; routed items **excluded** from the chassis browser and from the cybernetic picker; **clickable** installed names when the source item resolves.
+
+### Changed
+
+- **Cybernetic Augmentations** and **Droid Customizations** manager windows (ApplicationV2): fixed window height with **scrollable** inner body and **dark-themed** shell consistent with the augmentations UX.
+- Starship skill **inline configure (cog)**: Save uses DialogV2’s `submit(result, dialog)` contract and reads **Ability** and **Check bonus** from the dialog form (`FormData` / `dialog.form`). **Proficiency level** was removed from the cog UI and save path so it no longer overwrites persisted skill tier (`skill.value`); existing stored tiers remain for roll math.
+- Starship **skill list / modifiers**: per-skill **ability** from saved data is preferred over `CONFIG.DND5E.starshipSkills` defaults; proficiency **multiplier** uses tier numbers **0**, **0.5**, **1–5** (dnd5e 5.2 `proficiencyLevels` are labels without `.mult`); proficiency tier **hover** text localizes CONFIG string entries; merged **vehicle proficiency** for display prefers `actor.system.attributes.prof` when present.
+- Starship **legacy skill merge** on vehicle actors: flag-backed `skills` are not clobbered by prepared or empty `actor.system.skills`.
+- Chassis **Install Modification** browser: **Valid / Warning / Blocked** row tier for **Modifications compendium** candidates is driven by **significant** validation issues only (rarity + placement policy unchanged). Informational codes such as legacy pack adaptation, low-confidence inference, and install-DC notes no longer force a **Warning** badge by themselves; **Warning** text on the row shows those significant issues only. **Strict / guided / freeform** behavior and source rules (**Modifications** pack + explicit world `flags.sw5e.chassisMod`) are unchanged.
+- Chassis install **confirm** dialog: **Confirm install** / **Install anyway** button callbacks **return `true`** after commit so DialogV2 closes reliably.
+
+### Fixed
+
+- Starship skill **rolls** apply **proficiency bonus × skill tier** using the **rolling user’s** assigned **character** when that actor is on this ship’s **deployment** roster (pilot, active station, crew, or passenger). If the roller has no assigned character or is not deployed, the proficiency term is **zero** (vehicles are not treated as carrying their own PB for this path). Roll configuration preview and `@prof` substitution in roll data use the same deployed character bonus.
+- Chassis **Install Modification** workflow: **Continue** reads the user’s choice from DialogV2’s real form (**`button.form`**, with fallbacks), uses **`RadioNodeList` / named form fields** for the pick, and maps the UUID through a stable **row map** so the selected browser row (including **effective compendium metadata** for install and snapshot) matches commit-time validation. **Empty selection**, **missing form**, and **orphan radio values** surface clear notifications instead of failing silently.
+
+### [1.3.1] - 2026-04-09
+
+### Added
+
+- **Crew management UI** on the **SotG** (Song of the Galaxy) tab for vehicle starships.
+- **SotG sidebar** readouts for **hull / shield dice**, **power routing**, and **mod slot** usage.
+- Beta testing checklist documentation and a **README** link (starship / beta coverage).
+
+### Changed
+
+- Removed dead **character-backed** starship paths in favor of the vehicle starship workflow.
+- **Power routing** summary text aligned between the **sidebar** and the **Overview** card.
+- `starship-character.mjs` cleanup and hardening from review feedback.
+
+### Fixed
+
+- Starship **vehicle movement** type no longer displays as **air** when it should be **space**.
+- **Edit mode** no longer resets the active sheet tab from **SotG** to **Cargo** after toggling.
+
+### [1.3.0] - 2026-04-03
+
+### Added
+
+- Optional Star Wars currencies with GM-managed enablement, custom exchange rates, and exchange-rate tooltips integrated into actor wallets and item price denomination selectors.
+- Baked-in Heretic's Guide to the Galaxy species compendiums, published as dedicated `HGTTG Species` and `HGTTG Species Features` packs with migrated artwork and V13 / `dnd5e` 5.2.5-compatible data.
+
+### Changed
+
+- Currency support now follows the dnd5e multi-denomination workflow more closely, including wallet normalization for existing actors and better compatibility with convert and transfer actions.
+- The SW currency configuration app now uses the module namespace correctly, appears under `SW5E` in settings, and supports a bounded scrollable layout.
+- Legacy HGTTG species are now separated from the main `Species` compendium instead of being merged into the core species roster.
+- Repository line-ending rules are now pinned with `.gitattributes` so generated compendium source files behave consistently across Windows and non-Windows development environments.
+- Vehicle-backed starships are now the authoritative SW5E runtime path, with legacy and character-backed starship data normalized into the vehicle sheet workflow during migration and pack conversion.
+- Starship sheet navigation now presents `SotG` and `SotG Features` ahead of the stock tabs, while hiding the stock `Features` tab on SW5E starship sheets so the remaining tabs can use the full width.
+
+### Fixed
+
+- Force and Tech point editing on character and NPC sheets, including current-point save behavior, post-bonus max handling, repeated save drift, and edit access from the cog-only sheet control.
+- The redundant Power Point Controls panel on actor sheets has been removed.
+- Currency fields now render correctly on the Inventory tab for enabled denominations, and tooltip text no longer shows unresolved placeholders.
+- Legacy image migration no longer replaces actor and vehicle avatars with the loot bag icon, and affected worlds are repaired during migration.
+- Stale dnd5e image references in migrated data and compendium content no longer cause repeated missing-image errors.
+- Starship compendium builds now preserve vehicle-backed system data such as `details.type`, and migrated starships retain their SW5E movement, travel, crew, and routing data more consistently.
+
+### [1.2.9] - 2026-03-13
+
+### Added
+
+- Local development and contributor documentation, including install instructions and a plain-English change request template.
+- A guided legacy world conversion tool for migrating older SW5E worlds into the module workflow.
+- Vehicle-backed starship sheets with custom `SW5E` and `Features` tabs, starship skill rolls, travel and hyperdrive displays, crew-aware summaries, and starship item quick actions.
+
+### Changed
+
+- Starship movement now uses a derived runtime for flying speed, turning speed, travel pace, hyperdrive, crew state, and power-routing effects.
+- Force and Tech point sheet support has been expanded to better match the dnd5e sheet workflow across character and NPC use cases.
+- Compendium and migration handling has been hardened for legacy SW5E data and newer dnd5e data expectations.
+
+### Fixed
+
+- Foundry V13 and dnd5e 5.2.5 compatibility issues across starship sheets, roll dialogs, migration, item activity normalization, and deprecated roll/application APIs.
+- Multiple starship sheet issues affecting warnings dialogs, tab visibility, sidebar summaries, skill rolls, and ship weapon interactions.
+- Powercasting sheet display issues, medpac syntax/runtime problems, and reload-related item workflow regressions.
+
+### [1.2.8] - 2025-12-14
+
+### Fixed
+
+- Weapon Templates on Attacks.
+- Powercasting Cards on Sheets.
+- DnD5e 5.2 Conflict/Incompatibility.
+
+### [1.2.7] - 2025-11-21
+
+### Added
+
+- Unify art style for images of conditions.
+
+### Fixed
+
+- Tool Proficiencies on Character Sheet.
+- Enhanced property on Weapons and Equipment.
+- Image rendering of icon for damage type of energy, ion, kinetic, etc.
+
+### [1.2.6] - 2025-10-31
+
+### Added
+
+- Conditions now have descriptions and images.
+
+### Fixed
+
+- Powercasting Bars on Character Sheet.
+- Classes now have additional labels within their details to specify Powercasting and Maneuver progression.
+- Equipments and Weapons now have specific configuration labels for their special Properties.
+
+### [1.2.5] - 2025-03-03
+
+### Changed
+
+- Module is now compatible with and requires dnd5e 4.3.x.
+
+### [1.2.4] - 2025-02-12
+
+### Added
+
+- Consumable type and subtypes for explosives.
+
+### Changed
+
+- Compendium updates.
+
+### [1.2.3] - 2025-02-09
+
+### Added
+
+- Backgrounds now have advancements granting their skill and language proficiencies.
+
+### Changed
+
+- Compendium Updates.
+
+### [1.2.2] - 2024-12-05
+
+### Added
+
+- Force/Tech Points will now be displayed as bars bellow hit points.
+
+### Changed
+
+- Compendium Updates.
+
+### Fixed
+
+- Dropping powers on powercasters now properly set them to 'powercasting' preparation.
+- Power 'properties' are no longer automatically added on opening their sheet.
+
+### [1.2.1] - 2024-11-27
+
+### Changed
+
+- Compendium Updates.
+
+### Fixed
+
+- The UI for editing numeric item properties should once again work.
+
+### Removed
+
+- Reload system temporarily removed.
+
+
+### [1.2.0] - 2024-11-26
+
+### Added
+
+- Compatibility with dnd5e 4.1.0.
+
+### Fixed
+
+- Superiority progression selectors will no longer show up as 'nulldnull dice' when not available.
+
+### [1.1.0] - 2024-09-13
+
+### Added
+
+- Support for Maneuvers and Superiority 'casting'.
+
+### Fixed
+
+- Compendium Powers now have their resource consumption set to use the correct amount of power points.
+- Powercasting and Superiority progression selectors will now be properly disabled on non editable class sheets (unowned or on locked compendia).
+
+### [1.0.0] - 2024-08-29
+
+### Added
+
+- Compendium Powers now have their resource consumption set to use power points.
+- Migration.
+
+### Changed
+
+- Module name changed from `sw5e-module-test` to `sw5e`.
+- Github repository ownership changed to the `sw5e-foundry` organization.
+
+### Fixed
+
+- Adde missing localization for Power and Shield dice.
+- Powerbook tab should properly populate with sections for available powercasting levels.
+
+### [0.18] - 2024-08-23
+
+### Added
+
+- Item IDs for specific proficiencies and base items.
+
+### Fixed
+
+- Compendium item advancements should now use the correct ids for tool and blaster proficiencies.
+- Compendium weapons should no longer have wrong properties due to their descriptions.
+
+### [0.17] - 2024-08-13
+
+### Added
+
+- Reload Property automation.
+- Very minor rapid/burst automation (when the item action is set to 'saving throw', the base ammo cost is set to the rapid/burst value).
+
+### Fixed
+
+- Compendium items should now have the correct ids on the advancements.
+- Compendium species should no longer have active effects that change proficiencies, senses, movement, or any other traits handled by the species item and advancements.
+- Compendium classes and archetypes should have the proper powercasting progression.
+
+### [0.16] - 2024-08-01
+
+### Fixed
+
+- Compendium Packs should now actually be included in the release.
+
+### [0.15] - 2024-07-30
+
+### Added
+
+- Compendium Packs - This is highly experimental and untested, the majority of the items are untested.
+
+### Fixed
+
+- NPC sheets and unowned powers should no longer fail to open.
+
+### [0.14] - 2024-07-29
+
+### Changed
+
+- Force/Tech Powers now use the proper ability scores and respect max power level.
+
+### [0.13] - 2024-07-24
+
+#### Added
+
+- Powercasting
+
+### [0.1] - 2024-07-22
+
+#### Added
+
+- Localization overrides (I.E: Spell -> Power, Subclass -> Archetype, Race -> Species...)
+- Skills (lore, piloting, tech)
+- Weapon types (blaster, lightweapon, vibroweapon)
+- Tool types (specialist's kits)
+- Creature types (droid, force)
+- Equipment types (wristpad, focus generator, starship armor, starship equipments)
+- Ammunition types (power cell, cartridge...)
+- Feature types (invocations, customization options, deployments...)
+- Item properties (auto, burst, keen...)
+- Galactic Credits
+- Damage types (ernegy, ion, kinetic)
+- Higher proficiency levels (only display, no automation)
+- Conditions (corroded, ignited, shocked, slowed...)
+- Languages
+- Character flags (Maneuver Critical Threshold, Force/Tech Power discount, Supreme XYZ, Encumbrance Multiplier) (only display, no automation)
+- Source Books (PHB, SnV, WH...)
+- Numeric Item Properties can have their values set correctly
+- Keen property automated

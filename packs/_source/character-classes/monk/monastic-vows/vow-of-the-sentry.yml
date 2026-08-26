@@ -1,0 +1,65 @@
+name: Vow of the Sentry
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:57.6286281+00:00'
+    importer_version: 3
+    uid: Feature.name-vow_of_the_sentry.source-classinvocation.sourceName-monk
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/MNK-Passive.webp
+system:
+  description:
+    value: >-
+      <p>You gain proficiency in light and medium armor. Additionally, you can
+      now gain the benefits of your Martial Arts and Unarmored Movement features
+      while wearing light or medium armor as long as you are not wielding a
+      shield.</p>
+    chat: ''
+  requirements: Monk
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2024'
+  type:
+    value: class
+    subtype: monkInvocation
+  uses:
+    spent: 0
+    recovery: []
+    max: ''
+  activities: {}
+  identifier: vow-of-the-sentry
+  enchant: {}
+  prerequisites:
+    level: null
+  properties: []
+  advancement:
+    - type: Trait
+      _id: roJoxta0ZosD0xX4
+      configuration:
+        allowReplacements: false
+        choices: []
+        grants:
+          - armor:lgt
+          - armor:med
+        mode: default
+      level: 0
+      title: ''
+      hint: ''
+      value: {}
+effects: []
+_id: BpPAfejZENlFucXQ
+folder: 6gWO0zJ6QJDJmB8S
+sort: 0
+ownership:
+  default: 0
+_stats:
+  duplicateSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1730433983637
+  modifiedTime: 1780686515702
+  lastModifiedBy: dnd5ebuilder0000
+  exportSource: null
+_key: '!items!BpPAfejZENlFucXQ'
+

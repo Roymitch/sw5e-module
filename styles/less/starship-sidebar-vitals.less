@@ -1,0 +1,284 @@
+/* Starship sidebar vital resource meters — upper sidebar placement + character palette */
+
+.sw5e-starship-sidebar-vitals {
+  --sw5e-starship-hull-fill-1: var(--dnd5e-color-hp-1, #2e8b4f);
+  --sw5e-starship-hull-fill-2: var(--dnd5e-color-hp-2, #3cb370);
+  --sw5e-starship-shield-fill-1: #023491;
+  --sw5e-starship-shield-fill-2: var(--dnd5e-color-blue, #1f78a8);
+  --sw5e-starship-hull-dice-fill-1: var(--dnd5e-color-hd-1, #6f1d2a);
+  --sw5e-starship-hull-dice-fill-2: var(--dnd5e-color-hd-2, #8b2436);
+  --sw5e-starship-shield-dice-fill-1: #023491;
+  --sw5e-starship-shield-dice-fill-2: var(--dnd5e-color-blue, #1f78a8);
+  --sw5e-starship-vital-track: rgba(18, 22, 28, 0.42);
+  --sw5e-starship-vital-label-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+  --sw5e-starship-vital-primary-bar-height: 1.75rem;
+  --sw5e-starship-vital-compact-bar-height: 1.35rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+  margin: 0.3rem 0 0.4rem;
+  width: 100%;
+}
+
+.sw5e-starship-sidebar-vitals-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+
+/* Recharge / Refitting / Regen — compact sidebar icon row above Hull Points */
+.sw5e-starship-sidebar-vitals .sw5e-starship-sidebar-repair-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 0.35rem;
+  width: 100%;
+  margin: 0 0 0.28rem;
+  min-width: 0;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-sidebar-repair-action {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--sw5e-line-color, #3d9fd4) 34%, transparent);
+  background: color-mix(in srgb, var(--sw5e-theme-surface-strong, #1c2430) 78%, transparent);
+  color: var(--sw5e-theme-text, inherit);
+  cursor: pointer;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-sidebar-repair-action > i {
+  font-size: 0.8125rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-sidebar-repair-action:is(:hover, :focus-visible) {
+  border-color: color-mix(in srgb, var(--sw5e-line-color, #3d9fd4) 55%, transparent);
+  background: color-mix(in srgb, var(--sw5e-line-color, #3d9fd4) 16%, transparent);
+  outline: none;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-sidebar-repair-action:focus-visible {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--sw5e-line-color, #3d9fd4) 45%, transparent);
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-sidebar-repair-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter > .label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.08rem;
+  font-size: var(--font-size-11, 0.6875rem);
+  letter-spacing: 0.04em;
+  color: var(--sw5e-theme-heading);
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter--primary > .label {
+  margin-bottom: 0.12rem;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter--compact > .label {
+  margin-bottom: 0.06rem;
+  font-size: var(--font-size-10, 0.625rem);
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter--compact > .label .config-button {
+  font-size: 0.6875rem;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .meter {
+  width: 100%;
+}
+
+/* dnd5e only grows `.meter.sectioned > .hit-points`; shield progress must span full bar width. */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .sw5e-starship-sidebar-vitals .sw5e-starship-shield-meter.meter.sectioned > .progress {
+  flex: 1 1 0% !important;
+  width: 100% !important;
+  min-width: 0;
+  display: flex !important;
+  align-items: center;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .progress,
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .meter.hit-dice.progress {
+  position: relative;
+  min-height: var(--sw5e-starship-vital-primary-bar-height);
+  border-radius: var(--sw5e-starship-radius-sm, 6px);
+  overflow: hidden;
+  background: var(--sw5e-starship-vital-track);
+  border: 1px solid color-mix(in srgb, var(--sw5e-line-color) 22%, transparent);
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter--compact .progress,
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter--compact .meter.hit-dice.progress {
+  min-height: var(--sw5e-starship-vital-compact-bar-height);
+  border-radius: 5px;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .progress > .label,
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .meter.hit-dice.progress > .label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-height: var(--sw5e-starship-vital-primary-bar-height);
+  padding: 0 0.35rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: var(--font-size-12, 0.75rem);
+  color: #fff;
+  text-shadow: var(--sw5e-starship-vital-label-shadow);
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter--compact .progress > .label,
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter--compact .meter.hit-dice.progress > .label {
+  min-height: var(--sw5e-starship-vital-compact-bar-height);
+  padding: 0 0.28rem;
+  font-size: var(--font-size-11, 0.6875rem);
+  gap: 0.12rem;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter--compact .progress > .label .die {
+  margin-left: 0.15rem;
+  font-size: 0.95em;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter .progress > .label .die {
+  margin-left: 0.25rem;
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter > .label .config-button {
+  color: var(--sw5e-theme-muted-text);
+  font-size: 0.75rem;
+  line-height: 1;
+  opacity: 0.9;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter > .label .config-button:hover {
+  color: var(--sw5e-theme-heading);
+  opacity: 1;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-play-meter--interactive {
+  cursor: var(--cursor-pointer, pointer);
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet.locked .sw5e-starship-sidebar-vitals .sw5e-starship-vital-play-meter--interactive {
+  cursor: var(--cursor-default, default);
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-inline-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  min-height: var(--sw5e-starship-vital-primary-bar-height);
+  padding: 0 0.35rem;
+  text-align: center;
+  font: inherit;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: inherit;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-vital-meter--compact .sw5e-starship-vital-inline-input {
+  min-height: var(--sw5e-starship-vital-compact-bar-height);
+  padding: 0 0.28rem;
+  font-size: var(--font-size-11, 0.6875rem);
+}
+
+/* Fill colors */
+.sw5e-starship-sidebar-vitals .sw5e-starship-hull-meter .progress.hit-points::before,
+.sw5e-starship-sidebar-vitals .sw5e-starship-hull-dice-meter::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--bar-percentage, 0%);
+  pointer-events: none;
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-hull-meter .progress.hit-points::before {
+  background: linear-gradient(to right, var(--sw5e-starship-hull-fill-1) 0%, var(--sw5e-starship-hull-fill-2) 100%);
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-shield-meter .progress.hit-points::before,
+.sw5e-starship-sidebar-vitals .sw5e-starship-shield-meter .progress.shield-points::before,
+.sw5e-starship-sidebar-vitals .sw5e-starship-shield-dice-meter::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--bar-percentage, 0%);
+  pointer-events: none;
+  background: linear-gradient(to right, var(--sw5e-starship-shield-fill-1) 0%, var(--sw5e-starship-shield-fill-2) 100%);
+}
+
+.sw5e-starship-sidebar-vitals .sw5e-starship-hull-dice-meter::before {
+  background: linear-gradient(to right, var(--sw5e-starship-hull-dice-fill-1) 0%, var(--sw5e-starship-hull-dice-fill-2) 100%);
+}
+
+/* Portrait tier badge */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-tier-badge {
+  cursor: default;
+}
+
+/* Portrait AC badge — stock dnd5e ac-badge.webp shield (NPC-parity), bottom-left. */
+.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-ac-badge {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  bottom: 0;
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  margin: 0 !important;
+  display: block;
+  text-align: center;
+  line-height: 48px;
+  font-size: var(--font-size-18, 1.125rem);
+  font-weight: 700;
+  /* Keep stock .ac-badge background-image: url("ui/ac-badge.webp") from dnd5e. */
+  place-content: unset;
+  filter: drop-shadow(0 0 6px var(--color-shadow-dark, rgba(0, 0, 0, 0.45)));
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-ac-badge > * {
+  position: relative;
+  z-index: 1;
+  line-height: inherit;
+}
+
+.dnd5e2.sheet.actor.sw5e-starship-sheet .portrait .sw5e-starship-ac-badge .config-button {
+  width: 100%;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  font-size: inherit;
+  line-height: 1;
+}
+
+.sw5e-starship-suppress-stock-quality,
+.sw5e-starship-suppress-stock-sidebar-option,
+.sw5e-starship-suppress-stock-action-pips,
+.sw5e-starship-suppress-stock-ac {
+  display: none !important;
+}

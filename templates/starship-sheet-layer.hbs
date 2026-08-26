@@ -1,0 +1,741 @@
+{{!-- Core tab: operational overview (skills, crew, fuel, routing). Weapons, Equipment, and cargo on Inventory; Actions, Modifications, Systems on Features. --}}
+{{#*inline "sw5e-sotg-item-row"}}
+{{!-- Cargo-style row: primary strip PLAY=use/post, EDIT=edit sheet; icon controls like inventory `controls.hbs`. --}}
+<li class="item sw5e-starship-item-row sw5e-starship-item-row--sotg" data-item-id="{{id}}" data-item-name="{{name}}"{{#if sourceActorUuid}} data-source-actor-uuid="{{sourceActorUuid}}"{{/if}}{{#if sotgPanel}} data-sotg-panel="{{sotgPanel}}"{{/if}}>
+  <div class="item-row sw5e-starship-item-row--sotg-inner">
+    <button
+      type="button"
+      class="item-name item-action item-tooltip unbutton sw5e-starship-item-name-cell{{#unless @root.sotgSheetEditMode}} rollable{{/unless}}"
+      aria-label="{{name}}"
+    >
+      {{#if img}}
+      <img class="item-image gold-icon sw5e-starship-item-image" src="{{img}}" alt="" draggable="false" />
+      {{else}}
+      <span class="item-image gold-icon sw5e-starship-item-icon-fallback" aria-hidden="true"><i class="fas fa-cube"></i></span>
+      {{/if}}
+      <div class="name name-stacked">
+        <span class="title sw5e-starship-item-name">{{name}}</span>
+        {{#if meta}}
+        <span class="subtitle sw5e-starship-item-meta">{{meta}}</span>
+        {{/if}}
+      </div>
+    </button>
+    {{#if ../showEconomy}}
+    <div class="sw5e-starship-item-economy" aria-hidden="true">
+      <span class="sw5e-starship-item-stat sw5e-starship-item-stat--price{{#unless priceLabel}} sw5e-starship-item-stat--empty{{/unless}}" title="Price">{{#if priceLabel}}{{priceLabel}}{{else}}&nbsp;{{/if}}</span>
+      <span class="sw5e-starship-item-stat sw5e-starship-item-stat--weight{{#unless weightLabel}} sw5e-starship-item-stat--empty{{/unless}}" title="Weight">{{#if weightLabel}}{{weightLabel}}{{else}}&nbsp;{{/if}}</span>
+    </div>
+    {{/if}}
+    <div class="item-detail item-controls always-visible sw5e-starship-item-actions">
+      {{#if ../supportsSheetNavigation}}
+      <button
+        type="button"
+        class="unbutton config-button item-control item-action always-interactive"
+        data-sw5e-action="focus-item"
+        data-item-id="{{id}}"
+        data-tab="{{defaultTab}}"
+        data-tooltip
+        aria-label="{{@root.sotgFindInSheetAria}}"
+      >
+        <i class="fa-solid fa-magnifying-glass" inert></i>
+      </button>
+      {{/if}}
+      <span class="sw5e-starship-sotg-controls-edit">
+        <button
+          type="button"
+          class="unbutton config-button item-control item-action"
+          data-sw5e-action="edit-item"
+          data-item-id="{{id}}"
+          {{#if sourceActorUuid}}data-source-actor-uuid="{{sourceActorUuid}}"{{/if}}
+          data-tooltip
+          aria-label="{{ localize "DND5E.ItemEdit" }}"
+        >
+          <i class="fa-solid fa-pen-to-square" inert></i>
+        </button>
+        {{#if allowDelete}}
+        <button
+          type="button"
+          class="unbutton config-button item-control item-action sw5e-starship-item-button-danger"
+          data-sw5e-action="delete-item"
+          data-item-id="{{id}}"
+          data-tooltip
+          aria-label="{{ localize "DND5E.ItemDelete" }}"
+        >
+          <i class="fa-solid fa-trash" inert></i>
+        </button>
+        {{/if}}
+      </span>
+      <button
+        type="button"
+        class="unbutton config-button item-control always-interactive"
+        data-context-menu
+        aria-label="{{@root.sotgContextMenuAria}}"
+      >
+        <i class="fa-solid fa-ellipsis-vertical" inert></i>
+      </button>
+    </div>
+  </div>
+</li>
+{{/inline}}
+
+{{#*inline "sw5e-starship-crew-management"}}
+<div class="sw5e-starship-crew-operations">
+  {{#if crew.roster.length}}
+    <div class="form-group sw5e-starship-crew-assigned-search-wrap">
+      <input
+        type="search"
+        class="sw5e-starship-crew-assigned-search"
+        name="sw5eAssignedCrewSearch"
+        placeholder="{{ localize "SW5E.StarshipCrewAssignedSearchPlaceholder" }}"
+        autocomplete="off"
+        aria-label="{{ localize "SW5E.StarshipCrewAssignedSearchPlaceholder" }}"
+      />
+    </div>
+    <div class="sw5e-starship-item-list sw5e-starship-crew-roster">
+      {{#each crew.rosterGroups}}
+        <div class="sw5e-starship-crew-group{{#if collapsed}} is-collapsed{{/if}}" data-crew-group="{{key}}">
+          <div class="sw5e-starship-crew-group-header">
+            <button
+              type="button"
+              class="sw5e-starship-crew-group-collapse sw5e-starship-core-collapsible-toggle"
+              data-sw5e-crew-roster-collapse="{{key}}"
+              data-expand-label="{{expandLabel}}"
+              data-collapse-label="{{collapseLabel}}"
+              aria-expanded="{{#if collapsed}}false{{else}}true{{/if}}"
+              aria-controls="{{bodyId}}"
+              title="{{#if collapsed}}{{expandLabel}}{{else}}{{collapseLabel}}{{/if}}"
+              aria-label="{{#if collapsed}}{{expandLabel}}{{else}}{{collapseLabel}}{{/if}}"
+            >
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <h3 class="sw5e-starship-crew-group-heading" id="{{bodyId}}-label">{{label}}</h3>
+          </div>
+          <div class="sw5e-starship-crew-group-body" id="{{bodyId}}" role="group" aria-labelledby="{{bodyId}}-label">
+          {{#each rows}}
+            <article
+              class="sw5e-starship-item-row sw5e-starship-crew-row{{#unless @root.sotgSheetEditMode}} sw5e-crew-row--play{{/unless}}{{#if membershipHidden}} sw5e-crew-row--membership-hidden{{/if}}"
+              data-search="{{searchText}}"
+              data-actor-uuid="{{uuid}}"
+              data-membership-id="{{membershipId}}"
+              data-membership-kind="{{kind}}"
+            >
+              <div class="sw5e-starship-item-main">
+                <img
+                  class="sw5e-starship-item-image"
+                  src="{{img}}"
+                  alt="{{name}}"
+                  data-sw5e-crew-open-actor="1"
+                />
+                <div class="sw5e-starship-item-copy">
+                  <strong class="sw5e-starship-item-name" data-sw5e-crew-open-actor="1">{{name}}</strong>
+                  <div class="sw5e-starship-crew-meta">
+                    {{#if assignmentSubtitle}}
+                      <div class="sw5e-starship-crew-assignment">{{assignmentSubtitle}}</div>
+                    {{/if}}
+                    {{#if showRolePill}}
+                    <div class="sw5e-crew-badges">
+                      {{#if isPilot}}
+                        <span
+                          class="sw5e-crew-badge sw5e-crew-badge-pilot"
+                          title="{{ localize "SW5E.StarshipCrewBadgePilot" }}"
+                          aria-label="{{ localize "SW5E.StarshipCrewBadgePilot" }}"
+                        >P</span>
+                      {{else}}
+                        {{#if isCrew}}
+                          <span
+                            class="sw5e-crew-badge"
+                            title="{{ localize "SW5E.StarshipCrewBadgeCrew" }}"
+                            aria-label="{{ localize "SW5E.StarshipCrewBadgeCrew" }}"
+                          >C</span>
+                        {{/if}}
+                      {{/if}}
+                    </div>
+                    {{/if}}
+                    {{#if showQuantity}}
+                      <span class="sw5e-starship-crew-quantity" aria-label="{{ localize "SW5E.StarshipCrewQuantity" }}">×{{quantity}}</span>
+                    {{/if}}
+                  </div>
+                </div>
+              </div>
+              <div class="sw5e-starship-item-actions sw5e-starship-crew-row-actions">
+                {{#if @root.sotgSheetEditMode}}
+                {{#if canAdjustQuantity}}
+                  <button
+                    type="button"
+                    class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
+                    data-sw5e-crew-command="quantity-dec"
+                    data-actor-uuid="{{uuid}}"
+                    data-membership-id="{{membershipId}}"
+                    title="{{ localize "SW5E.StarshipCrewQuantityDecrease" }}"
+                    aria-label="{{ localize "SW5E.StarshipCrewQuantityDecrease" }}"
+                    {{#unless canQuantityDecrement}}disabled{{/unless}}
+                  >
+                    <i class="fa-solid fa-minus" inert></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
+                    data-sw5e-crew-command="quantity-inc"
+                    data-actor-uuid="{{uuid}}"
+                    data-membership-id="{{membershipId}}"
+                    title="{{ localize "SW5E.StarshipCrewQuantityIncrease" }}"
+                    aria-label="{{ localize "SW5E.StarshipCrewQuantityIncrease" }}"
+                    {{#unless canQuantityIncrement}}disabled{{/unless}}
+                  >
+                    <i class="fa-solid fa-plus" inert></i>
+                  </button>
+                {{/if}}
+                {{#if isPilot}}
+                  <button
+                    type="button"
+                    class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
+                    data-sw5e-crew-command="undeploy-pilot"
+                    data-actor-uuid="{{uuid}}"
+                    data-membership-id="{{membershipId}}"
+                    title="{{ localize "SW5E.StarshipCrewClearPilot" }}"
+                    aria-label="{{ localize "SW5E.StarshipCrewClearPilot" }}"
+                    {{#unless canUndeployPilot}}disabled{{/unless}}
+                  >
+                    <i class="fa-solid fa-user-slash" inert></i>
+                  </button>
+                {{else}}
+                  <button
+                    type="button"
+                    class="sw5e-starship-item-button sw5e-starship-crew-icon-button"
+                    data-sw5e-crew-command="set-pilot"
+                    data-actor-uuid="{{uuid}}"
+                    data-membership-id="{{membershipId}}"
+                    title="{{ localize "SW5E.StarshipCrewSetPilot" }}"
+                    aria-label="{{ localize "SW5E.StarshipCrewSetPilot" }}"
+                    {{#unless canSetPilot}}disabled{{/unless}}
+                  >
+                    <i class="fa-solid fa-user-check" inert></i>
+                  </button>
+                {{/if}}
+                {{/if}}
+                {{#if @root.sotgSheetEditMode}}
+                <button
+                  type="button"
+                  class="sw5e-starship-item-button sw5e-starship-crew-icon-button sw5e-starship-item-button-danger"
+                  data-sw5e-crew-command="remove"
+                  data-actor-uuid="{{uuid}}"
+                  data-membership-id="{{membershipId}}"
+                  title="{{ localize "SW5E.StarshipCrewRemove" }}"
+                  aria-label="{{ localize "SW5E.StarshipCrewRemove" }}"
+                  {{#unless canRemove}}disabled{{/unless}}
+                >
+                  <i class="fa-solid fa-user-xmark" inert></i>
+                </button>
+                {{/if}}
+              </div>
+            </article>
+          {{/each}}
+          </div>
+        </div>
+      {{/each}}
+    </div>
+    <p class="sw5e-starship-crew-assigned-search-empty is-hidden" hidden>{{ localize "SW5E.StarshipCrewAssignedSearchEmpty" }}</p>
+  {{else}}
+    <p class="sw5e-crew-empty">{{ localize "SW5E.StarshipCrewEmpty" }}</p>
+  {{/if}}
+</div>
+{{/inline}}
+
+{{#*inline "sw5e-starship-crew-roles"}}
+{{#if crewRoleGroups.length}}
+<section class="sw5e-starship-crew-roles" aria-label="{{crewRolesKicker}}">
+  <header class="sw5e-starship-section-header sw5e-starship-crew-roles-header">
+    <div>
+      <span class="sw5e-starship-kicker">{{crewRolesKicker}}</span>
+    </div>
+  </header>
+  <div class="sw5e-starship-groups sw5e-starship-groups-stacked items-list">
+    {{#each crewRoleGroups}}
+      <article
+        class="sw5e-starship-group items-section card{{#if collapsed}} is-collapsed{{/if}}"
+        data-sw5e-crew-role-group="{{groupKey}}"
+      >
+        <div class="items-header header sw5e-starship-group-header sw5e-starship-crew-role-group-header">
+          <h3 class="item-name">
+            <div class="name name-stacked">
+              <span class="title">{{label}}</span>
+            </div>
+          </h3>
+          <div class="item-header sw5e-starship-sotg-group-actions always-visible">
+            <div class="sw5e-starship-group-tools">
+              <span class="sw5e-starship-group-count">{{count}}</span>
+              {{#if supportsSheetNavigation}}
+                <button
+                  type="button"
+                  class="sw5e-starship-group-link sw5e-starship-group-manage"
+                  data-sw5e-action="open-tab"
+                  data-first-item-id="{{firstItemId}}"
+                >
+                  Manage in {{manageLabel}}
+                </button>
+              {{/if}}
+              <button
+                type="button"
+                class="sw5e-starship-crew-role-collapse sw5e-starship-core-collapsible-toggle"
+                data-sw5e-crew-role-collapse="1"
+                data-expand-label="{{expandLabel}}"
+                data-collapse-label="{{collapseLabel}}"
+                aria-expanded="{{#if collapsed}}false{{else}}true{{/if}}"
+                title="{{#if collapsed}}{{expandLabel}}{{else}}{{collapseLabel}}{{/if}}"
+                aria-label="{{#if collapsed}}{{expandLabel}}{{else}}{{collapseLabel}}{{/if}}"
+              >
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="sw5e-starship-crew-role-group-body sw5e-starship-core-collapsible-body">
+          <ol class="item-list unlist sw5e-starship-item-list sw5e-starship-item-list--sotg">
+            {{#each items}}
+              {{> sw5e-sotg-item-row}}
+            {{/each}}
+          </ol>
+        </div>
+      </article>
+    {{/each}}
+  </div>
+</section>
+{{/if}}
+{{/inline}}
+
+{{#*inline "sw5e-starship-core-routing"}}
+<section
+  class="sw5e-starship-core-routing-panel sw5e-starship-system-path-scope{{#if systemsCore.coreCollapse.routing}} is-collapsed{{/if}}"
+  aria-label="{{systemsCore.labels.powerRouting}}"
+  data-sw5e-core-panel="routing"
+>
+  <header class="sw5e-starship-core-routing-header sw5e-starship-core-collapsible-header">
+    <div class="sw5e-starship-core-routing-heading sw5e-starship-core-collapsible-heading">
+      <h2 id="sw5e-core-routing-heading" class="sw5e-starship-systems-field-heading sw5e-starship-core-panel-heading">{{systemsCore.labels.powerRouting}}</h2>
+    </div>
+    <button
+      type="button"
+      class="sw5e-starship-core-routing-collapse sw5e-starship-core-collapsible-toggle"
+      data-sw5e-advanced-power-action="toggle-collapse"
+      data-sw5e-core-collapse-action="toggle"
+      data-core-panel="routing"
+      data-expand-label="{{systemsCore.coreCollapseLabels.routing.expand}}"
+      data-collapse-label="{{systemsCore.coreCollapseLabels.routing.collapse}}"
+      aria-expanded="{{#if systemsCore.coreCollapse.routing}}false{{else}}true{{/if}}"
+      title="{{#if systemsCore.coreCollapse.routing}}{{systemsCore.coreCollapseLabels.routing.expand}}{{else}}{{systemsCore.coreCollapseLabels.routing.collapse}}{{/if}}"
+      aria-label="{{#if systemsCore.coreCollapse.routing}}{{systemsCore.coreCollapseLabels.routing.expand}}{{else}}{{systemsCore.coreCollapseLabels.routing.collapse}}{{/if}}"
+    >
+      <i class="fas fa-chevron-down" aria-hidden="true"></i>
+    </button>
+  </header>
+
+  <div class="sw5e-starship-core-collapsible-body">
+    <select
+      id="sw5e-core-routing"
+      class="sw5e-starship-systems-select sw5e-starship-systems-routing-select"
+      name="system.attributes.power.routing"
+      data-dtype="String"
+      aria-labelledby="sw5e-core-routing-heading"
+      {{#unless @root.systemsRoutingEditable}}disabled{{/unless}}
+    >
+      {{#each systemsCore.routingOptions}}
+      <option value="{{value}}" title="{{tooltip}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+      {{/each}}
+    </select>
+  </div>
+</section>
+{{/inline}}
+
+{{#*inline "sw5e-starship-core-fuel"}}
+<section
+  class="sw5e-starship-core-fuel-panel sw5e-starship-system-path-scope{{#if systemsCore.coreCollapse.fuel}} is-collapsed{{/if}}"
+  aria-label="{{systemsCore.labels.shipsStores}}"
+  data-sw5e-core-panel="fuel"
+>
+  <header class="sw5e-starship-core-fuel-header sw5e-starship-core-collapsible-header">
+    <div class="sw5e-starship-core-fuel-heading sw5e-starship-core-collapsible-heading">
+      <h2 class="sw5e-starship-systems-field-heading sw5e-starship-core-panel-heading">{{systemsCore.labels.shipsStores}}</h2>
+    </div>
+    <div class="sw5e-starship-core-fuel-header-actions">
+      {{#if @root.systemsSetupEditable}}
+      <button
+        type="button"
+        class="config-button unbutton sw5e-starship-ships-stores-config"
+        data-sw5e-ships-stores-config
+        data-tooltip="{{systemsCore.labels.shipsStoresConfigure}}"
+        title="{{systemsCore.labels.shipsStoresConfigure}}"
+        aria-label="{{systemsCore.labels.shipsStoresConfigure}}"
+      >
+        <i class="fas fa-cog" inert></i>
+      </button>
+      {{/if}}
+      <button
+        type="button"
+        class="sw5e-starship-core-fuel-collapse sw5e-starship-core-collapsible-toggle"
+        data-sw5e-advanced-power-action="toggle-collapse"
+        data-sw5e-core-collapse-action="toggle"
+        data-core-panel="fuel"
+        data-expand-label="{{systemsCore.coreCollapseLabels.fuel.expand}}"
+        data-collapse-label="{{systemsCore.coreCollapseLabels.fuel.collapse}}"
+        aria-expanded="{{#if systemsCore.coreCollapse.fuel}}false{{else}}true{{/if}}"
+        title="{{#if systemsCore.coreCollapse.fuel}}{{systemsCore.coreCollapseLabels.fuel.expand}}{{else}}{{systemsCore.coreCollapseLabels.fuel.collapse}}{{/if}}"
+        aria-label="{{#if systemsCore.coreCollapse.fuel}}{{systemsCore.coreCollapseLabels.fuel.expand}}{{else}}{{systemsCore.coreCollapseLabels.fuel.collapse}}{{/if}}"
+      >
+        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="sw5e-starship-core-collapsible-body">
+  <div class="sw5e-starship-systems-field sw5e-starship-systems-field--fuel{{#unless @root.systemsSetupEditable}} sw5e-starship-systems-field--locked{{/unless}}">
+    <h3 class="sw5e-starship-systems-subheading">{{systemsCore.labels.fuel}}</h3>
+
+    <div class="sw5e-starship-fuel-capacity" aria-label="{{systemsCore.labels.fuelCapacity}}">
+      <div class="sw5e-starship-fuel-track">
+        <span class="sw5e-starship-fuel-fill" style="width: {{systemsCore.fuelPct}}%;"></span>
+        <span class="sw5e-starship-fuel-breakpoint" data-pct="20" aria-hidden="true"></span>
+        <span class="sw5e-starship-fuel-breakpoint" data-pct="40" aria-hidden="true"></span>
+        <span class="sw5e-starship-fuel-breakpoint" data-pct="60" aria-hidden="true"></span>
+        <span class="sw5e-starship-fuel-breakpoint" data-pct="80" aria-hidden="true"></span>
+      </div>
+      <span class="sw5e-starship-fuel-label">{{systemsCore.fuelBarLabel}}</span>
+    </div>
+  </div>
+
+  <div class="sw5e-starship-systems-field sw5e-starship-systems-field--fuel sw5e-starship-systems-field--food{{#unless @root.systemsSetupEditable}} sw5e-starship-systems-field--locked{{/unless}}">
+    <h3 class="sw5e-starship-systems-subheading">{{systemsCore.labels.food}}</h3>
+
+    <div class="sw5e-starship-fuel-capacity sw5e-starship-food-capacity" aria-label="{{systemsCore.labels.foodCapacity}}">
+      <div class="sw5e-starship-fuel-track sw5e-starship-food-track">
+        <span class="sw5e-starship-fuel-fill sw5e-starship-food-fill" style="width: {{systemsCore.food.pct}}%;"></span>
+        <span class="sw5e-starship-fuel-breakpoint" data-pct="20" aria-hidden="true"></span>
+        <span class="sw5e-starship-fuel-breakpoint" data-pct="40" aria-hidden="true"></span>
+        <span class="sw5e-starship-fuel-breakpoint" data-pct="60" aria-hidden="true"></span>
+        <span class="sw5e-starship-fuel-breakpoint" data-pct="80" aria-hidden="true"></span>
+      </div>
+      <span class="sw5e-starship-fuel-label">{{systemsCore.food.barLabel}}</span>
+    </div>
+  </div>
+
+  <div class="sw5e-starship-core-fuel-actions sw5e-starship-core-supplies-actions{{#unless @root.systemsRoutingEditable}} sw5e-starship-core-fuel-actions--locked{{/unless}}">
+    <button
+      type="button"
+      class="sw5e-starship-fuel-action sw5e-starship-supplies-action"
+      data-sw5e-supplies-action="consume"
+      title="{{systemsCore.labels.suppliesConsumeTooltip}}"
+      {{#unless @root.systemsRoutingEditable}}disabled{{/unless}}
+    >{{systemsCore.labels.suppliesConsume}}</button>
+    <button
+      type="button"
+      class="sw5e-starship-fuel-action sw5e-starship-supplies-action"
+      data-sw5e-supplies-action="restock"
+      title="{{systemsCore.labels.suppliesRestockTooltip}}"
+      {{#unless @root.systemsRoutingEditable}}disabled{{/unless}}
+    >{{systemsCore.labels.suppliesRestock}}</button>
+  </div>
+  </div>
+</section>
+{{/inline}}
+
+{{#*inline "sw5e-starship-core-advanced-power"}}
+<section
+  class="sw5e-starship-core-advanced-power-panel sw5e-starship-system-path-scope{{#if systemsCore.advancedPower.collapsed}} is-collapsed{{/if}}"
+  aria-label="{{systemsCore.advancedPower.panelAria}}"
+  data-sw5e-core-panel="advancedPower"
+>
+  <header class="sw5e-starship-core-advanced-power-header sw5e-starship-core-collapsible-header">
+    <div class="sw5e-starship-core-advanced-power-heading sw5e-starship-core-collapsible-heading">
+      <h2 class="sw5e-starship-systems-field-heading sw5e-starship-core-panel-heading">{{systemsCore.advancedPower.title}}</h2>
+    </div>
+    <button
+      type="button"
+      class="sw5e-starship-core-advanced-power-collapse sw5e-starship-core-collapsible-toggle"
+      data-sw5e-advanced-power-action="toggle-collapse"
+      data-sw5e-core-collapse-action="toggle"
+      data-core-panel="advancedPower"
+      data-expand-label="{{systemsCore.advancedPower.expandTooltip}}"
+      data-collapse-label="{{systemsCore.advancedPower.collapseTooltip}}"
+      aria-expanded="{{#if systemsCore.advancedPower.collapsed}}false{{else}}true{{/if}}"
+      title="{{#if systemsCore.advancedPower.collapsed}}{{systemsCore.advancedPower.expandTooltip}}{{else}}{{systemsCore.advancedPower.collapseTooltip}}{{/if}}"
+      aria-label="{{#if systemsCore.advancedPower.collapsed}}{{systemsCore.advancedPower.expandTooltip}}{{else}}{{systemsCore.advancedPower.collapseTooltip}}{{/if}}"
+    >
+      <i class="fas fa-chevron-down" aria-hidden="true"></i>
+    </button>
+  </header>
+
+  <div class="sw5e-starship-core-advanced-power-body sw5e-starship-core-collapsible-body">
+    <div class="sw5e-starship-advanced-power-die-row{{#unless @root.systemsSetupEditable}} sw5e-starship-systems-field--locked{{/unless}}">
+      <span class="sw5e-starship-advanced-power-die-label">{{systemsCore.advancedPower.dieLabel}}</span>
+      {{#if @root.systemsSetupEditable}}
+      <select
+        id="sw5e-core-power-die"
+        class="sw5e-starship-systems-select sw5e-starship-advanced-power-die-select"
+        name="system.attributes.power.die"
+        data-dtype="String"
+      >
+        {{#each systemsCore.advancedPower.dieOptions}}
+        <option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>
+        {{/each}}
+      </select>
+      {{else}}
+      <span class="sw5e-starship-advanced-power-die-value">{{systemsCore.advancedPower.dieDisplay}}</span>
+      {{/if}}
+    </div>
+
+    <div class="sw5e-starship-core-advanced-power-actions{{#unless @root.systemsRoutingEditable}} sw5e-starship-core-advanced-power-actions--locked{{/unless}}">
+      <button
+        type="button"
+        class="sw5e-starship-advanced-power-recover"
+        data-sw5e-advanced-power-action="recover"
+        data-can-recover="{{#if systemsCore.advancedPower.canRecover}}1{{else}}0{{/if}}"
+        title="{{systemsCore.advancedPower.recoverTooltip}}"
+        {{#unless @root.systemsRoutingEditable}}disabled{{/unless}}
+        {{#unless systemsCore.advancedPower.canRecover}}disabled{{/unless}}
+      >{{systemsCore.advancedPower.recoverLabel}}</button>
+    </div>
+
+    <div class="sw5e-starship-advanced-power-slots" role="list" aria-label="{{systemsCore.advancedPower.panelAria}}">
+      {{#each systemsCore.advancedPower.slots}}
+      <div class="sw5e-starship-advanced-power-slot{{#if isCentral}} is-central{{/if}}{{#if @root.systemsSetupEditable}} sw5e-starship-advanced-power-slot--edit{{/if}}" role="listitem">
+        <span class="sw5e-starship-advanced-power-slot-label">{{label}}</span>
+        {{#if @root.systemsSetupEditable}}
+        <div class="sw5e-starship-advanced-power-slot-field">
+          <label class="sw5e-starship-systems-label" for="sw5e-core-power-{{key}}-value">{{@root.systemsCore.advancedPower.currentLabel}}</label>
+          <input
+            id="sw5e-core-power-{{key}}-value"
+            class="sw5e-starship-systems-input sw5e-starship-advanced-power-input"
+            type="number"
+            name="system.attributes.power.{{key}}.value"
+            value="{{value}}"
+            min="0"
+            step="1"
+            data-dtype="Number"
+          />
+        </div>
+        <div class="sw5e-starship-advanced-power-slot-field">
+          <label class="sw5e-starship-systems-label" for="sw5e-core-power-{{key}}-max">{{@root.systemsCore.advancedPower.maxLabel}}</label>
+          <input
+            id="sw5e-core-power-{{key}}-max"
+            class="sw5e-starship-systems-input sw5e-starship-advanced-power-input"
+            type="number"
+            name="system.attributes.power.{{key}}.max"
+            value="{{storedMax}}"
+            min="0"
+            step="1"
+            data-dtype="Number"
+          />
+        </div>
+        {{#if maxDisplayDiffers}}
+        <span class="sw5e-starship-advanced-power-max-hint" role="note">{{maxDisplayHint}}</span>
+        {{/if}}
+        {{else}}
+        <div class="sw5e-starship-advanced-power-slot-meter" aria-hidden="true">
+          <div class="sw5e-starship-advanced-power-slot-track">
+            <span class="sw5e-starship-advanced-power-slot-fill" style="width: {{pct}}%;"></span>
+          </div>
+          <span class="sw5e-starship-advanced-power-slot-value">{{displayValue}} / {{displayMax}}</span>
+        </div>
+        <div class="sw5e-starship-core-advanced-power-actions sw5e-starship-core-advanced-power-actions--slot{{#unless @root.systemsRoutingEditable}} sw5e-starship-core-advanced-power-actions--locked{{/unless}}">
+          <button
+            type="button"
+            class="sw5e-starship-advanced-power-spend"
+            data-sw5e-advanced-power-action="spend"
+            data-power-slot="{{key}}"
+            title="{{@root.systemsCore.advancedPower.spendTooltip}}"
+            {{#unless canSpend}}disabled{{/unless}}
+            {{#unless @root.systemsRoutingEditable}}disabled{{/unless}}
+          >{{@root.systemsCore.advancedPower.spendLabel}}</button>
+        </div>
+        {{/if}}
+      </div>
+      {{/each}}
+    </div>
+
+  </div>
+</section>
+{{/inline}}
+
+<section class="sw5e-starship-panel" data-application-part="sw5e-starship-sotg">
+  <div class="sw5e-starship-main-body">
+    <section class="sw5e-starship-sotg-panel active" data-sw5e-sotg-panel="overview" role="tabpanel" id="sw5e-sotg-panel-overview">
+      {{#if overviewAbilities.length}}
+        <section class="sw5e-starship-overview-dashboard" aria-label="{{overviewAbilitiesAriaLabel}}">
+          <div class="sw5e-starship-overview-abilities-row">
+            <div class="middle ability-scores card flexrow sw5e-starship-ability-strip" role="list">
+              {{#each overviewAbilities}}
+              <div class="ability-score sw5e-starship-ability-tile" data-ability="{{key}}" title="{{label}}">
+                <img src="{{abilityIcon}}" alt="{{label}}">
+                <a
+                  class="label rollable ability-check"
+                  data-action="roll"
+                  data-type="ability"
+                  data-sw5e-action="roll-ability"
+                  data-ability="{{key}}"
+                  title="{{ localize "SW5E.AbilityPromptTitle" ability=label }}"
+                  aria-label="{{ localize "SW5E.AbilityPromptTitle" ability=label }}"
+                >{{abbrLower}}</a>
+                <div class="mod">
+                  {{#if @root.sotgSheetEditMode}}
+                  <button
+                    type="button"
+                    class="config-button unbutton"
+                    data-action="showConfiguration"
+                    data-config="ability"
+                    data-tooltip="{{configureLabel}}"
+                    aria-label="{{configureLabel}}"
+                  >
+                    <i class="fas fa-cog" inert></i>
+                  </button>
+                  {{else}}
+                  <span class="sign">{{modSign}}</span>{{modAbs}}
+                  {{/if}}
+                </div>
+                <div class="score">
+                  {{#if @root.sotgSheetEditMode}}
+                  <input
+                    type="text"
+                    name="{{inputName}}"
+                    value="{{sourceValue}}"
+                    placeholder="10"
+                    data-dtype="Number"
+                    class="uninput"
+                    data-sw5e-overview-edit-ability="{{key}}"
+                    data-sw5e-overview-input-name="{{inputName}}"
+                  >
+                  {{else}}
+                  {{value}}
+                  {{/if}}
+                </div>
+                <div
+                  class="save-tab saving-throw{{#unless @root.sotgSheetEditMode}} rollable{{/unless}}"
+                  {{#unless @root.sotgSheetEditMode}}
+                  data-action="roll"
+                  data-type="ability"
+                  data-sw5e-action="roll-save"
+                  data-ability="{{key}}"
+                  data-tooltip="{{saveRollTooltip}}"
+                  aria-label="{{saveRollTooltip}}"
+                  {{else}}
+                  data-tooltip="{{hover}}"
+                  {{/unless}}
+                >
+                  <proficiency-cycle
+                    type="ability"
+                    name="{{proficientName}}"
+                    data-tooltip="{{hover}}"
+                    aria-label="{{hover}}"
+                    value="{{proficient}}"
+                    {{#unless @root.sotgSheetEditMode}}disabled{{/unless}}
+                  ></proficiency-cycle>
+                  <span class="save">{{numberFormat save decimals=0 sign=true}}</span>
+                  <i class="fas fa-shield-heart" inert></i>
+                </div>
+              </div>
+              {{/each}}
+            </div>
+          </div>
+
+          <div class="sw5e-starship-overview-main">
+            {{#if skills.length}}
+            <section class="sw5e-starship-overview-skills" aria-label="{{overviewSkillsAriaLabel}}">
+              <header class="sw5e-starship-overview-skills-header">
+                    <div>
+                  <span class="sw5e-starship-kicker">{{overviewSkillsKicker}}</span>
+                </div>
+              </header>
+              {{#if skillsCrewPbAttribution}}
+              <p class="notes sw5e-starship-skills-crew-pb">{{skillsCrewPbAttribution}}</p>
+              {{/if}}
+              <ul class="sw5e-starship-skill-list sw5e-starship-skill-list--pc" role="list">
+                {{#each skills}}
+                <li class="sw5e-starship-skill-row sw5e-starship-skill-row--pc{{proficiencyClass}}" data-skill-id="{{id}}">
+                  <button
+                    type="button"
+                    class="sw5e-starship-skill-roll-area"
+                    data-sw5e-action="roll-skill"
+                    data-skill-id="{{id}}"
+                    aria-label="{{ localize "DND5E.Roll" }} {{label}}"
+                  >
+                    <span class="sw5e-starship-skill-prof" aria-hidden="true">{{#if iconFa}}<i class="{{iconFa}}"></i>{{else if iconCustom}}<span class="sw5e-starship-skill-prof-custom">{{iconCustom}}</span>{{/if}}</span>
+                    <span class="sw5e-starship-skill-ability-abbr">{{abilityAbbr}}</span>
+                    <span class="sw5e-starship-skill-label">{{label}}</span>
+                    <span class="sw5e-starship-skill-mod">{{modDisplay}}</span>
+                    <span class="sw5e-starship-skill-passive">{{#if passiveDisplay}}{{passiveDisplay}}{{else}}—{{/if}}</span>
+                  </button>
+                  {{#if ../editable}}
+                  <button
+                    type="button"
+                    class="sw5e-starship-skill-config sw5e-starship-skill-config--edit-only"
+                    data-sw5e-action="configure-skill"
+                    data-skill-id="{{id}}"
+                    title="{{../overviewSkillConfigureTitle}}"
+                    aria-label="{{../overviewSkillConfigureTitle}}: {{label}}"
+                  >
+                    <i class="fas fa-cog" aria-hidden="true"></i>
+                  </button>
+                  {{/if}}
+                </li>
+                {{/each}}
+              </ul>
+            </section>
+            {{/if}}
+
+            <div class="sw5e-starship-overview-operations">
+              {{#if crew}}
+              <section
+                class="sw5e-starship-crew-panel{{#if systemsCore.coreCollapse.crew}} is-collapsed{{/if}}"
+                aria-label="{{ localize "SW5E.StarshipCrewPanelTitle" }}"
+                data-sw5e-core-panel="crew"
+              >
+                <header class="sw5e-starship-core-crew-header sw5e-starship-core-collapsible-header">
+                  <div class="sw5e-starship-core-crew-heading sw5e-starship-core-collapsible-heading">
+                    <h2 class="sw5e-starship-systems-field-heading sw5e-starship-core-panel-heading sw5e-starship-crew-panel-heading" aria-live="polite">
+                      <span class="sw5e-starship-crew-panel-title">{{ localize "SW5E.StarshipCrewPanelTitle" }}</span>
+                      <span class="sw5e-starship-crew-panel-count">({{crew.visibleQuantitySum}})</span>
+                    </h2>
+                  </div>
+                  <div class="sw5e-starship-core-collapsible-header-actions">
+                    <button
+                      type="button"
+                      class="sw5e-starship-item-button sw5e-starship-crew-add sw5e-starship-crew-icon-button"
+                      data-sw5e-crew-command="open-add-crew"
+                      title="{{ localize "SW5E.StarshipCrewAdd" }}"
+                      aria-label="{{ localize "SW5E.StarshipCrewAdd" }}"
+                      {{#unless crewManageEditable}}disabled{{/unless}}
+                    >
+                      <i class="fa-solid fa-user-plus" inert></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="sw5e-starship-core-crew-collapse sw5e-starship-core-collapsible-toggle"
+                      data-sw5e-advanced-power-action="toggle-collapse"
+                      data-sw5e-core-collapse-action="toggle"
+                      data-core-panel="crew"
+                      data-expand-label="{{systemsCore.coreCollapseLabels.crew.expand}}"
+                      data-collapse-label="{{systemsCore.coreCollapseLabels.crew.collapse}}"
+                      aria-expanded="{{#if systemsCore.coreCollapse.crew}}false{{else}}true{{/if}}"
+                      title="{{#if systemsCore.coreCollapse.crew}}{{systemsCore.coreCollapseLabels.crew.expand}}{{else}}{{systemsCore.coreCollapseLabels.crew.collapse}}{{/if}}"
+                      aria-label="{{#if systemsCore.coreCollapse.crew}}{{systemsCore.coreCollapseLabels.crew.expand}}{{else}}{{systemsCore.coreCollapseLabels.crew.collapse}}{{/if}}"
+                    >
+                      <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </header>
+                <div class="sw5e-starship-core-collapsible-body">
+                {{> sw5e-starship-crew-management}}
+                {{> sw5e-starship-crew-roles}}
+                </div>
+              </section>
+              {{/if}}
+              {{#if showPowerRouting}}
+              {{> sw5e-starship-core-routing}}
+              {{/if}}
+              {{> sw5e-starship-core-advanced-power}}
+              {{> sw5e-starship-core-fuel}}
+            </div>
+          </div>
+        </section>
+        {{/if}}
+    </section>
+  </div>
+</section>

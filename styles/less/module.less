@@ -1,0 +1,32 @@
+/* SW5e module stylesheet entry — compile via `npm run build:styles`.
+ * Post-theme-subsystem: stock Foundry/dnd5e appearance + core branding + functional layout. */
+
+/* —— Light and Dark theme based variables —— */
+@layer variables {
+  @import "variables/light.less";
+  @import "variables/dark.less";
+}
+
+/* —— Legacy functional core (powercasting, chassis structure, neutralized lightsaber headers) —— */
+@import (inline) "../module.legacy.css";
+
+/* —— Core SW5e branding (Pause) —— */
+@import "update/components/pause-overlay.less";
+
+/* —— Starship-specific (functional / layout) —— */
+@import "starship-sidebar-vitals.less";
+@import "starship-sidebar-system-damage.less";
+@import "starship-sidebar-damage-reduction.less";
+@import "starship-sidebar-max-fires.less";
+@import "starship-fuel-replenish-cost-mode.less";
+@import "starship-food-capacity.less";
+@import "starship-effects-conditions.less";
+@import "starship-core-panels.less";
+@import "starship-core-resources.less";
+@import "starship-power-recovery-dialog.less";
+@import "update/starships/crew.less";
+@import "update/starships/destruction-tray.less";
+
+/* —— Feature misc —— */
+@import "update/chat/reload.less";
+@import "update/chat/mastery-reroll.less";

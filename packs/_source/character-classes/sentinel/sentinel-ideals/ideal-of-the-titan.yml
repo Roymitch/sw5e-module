@@ -1,0 +1,103 @@
+name: Ideal of the Titan
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:57.6296276+00:00'
+    importer_version: 3
+    uid: Feature.name-ideal_of_the_titan.source-classinvocation.sourceName-sentinel
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/SNTL-Bonus.webp
+system:
+  description:
+    value: >-
+      <p>You gain proficiency in medium armor.</p>
+
+      <p>Additionally, as a bonus action, you can manifest this ideal in a brief
+      surge of energy. For the next minute, you have advantage on ability checks
+      and attack rolls that would forcefully move another creature, and the
+      distance they would be moved increases by 5 feet.</p>
+    chat: ''
+  requirements: Sentinel
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2024'
+  type:
+    value: class
+    subtype: sentinelInvocation
+  uses:
+    spent: 0
+    recovery: []
+  activities:
+    sw5e0utility0000:
+      _id: sw5e0utility0000
+      activation:
+        type: bonus
+        condition: ''
+      description:
+        chatFlavor: ''
+      duration:
+        units: minute
+        value: '1'
+      img: ''
+      range:
+        units: ft
+        value: ''
+        special: ''
+      roll:
+        formula: ''
+        name: ''
+      target:
+        template:
+          type: ''
+          units: ''
+        affects:
+          type: ''
+      type: utility
+      consumption:
+        targets:
+          - type: itemUses
+            value: '1'
+            target: Compendium.sw5e-module.character-classes.Item.2BtuxZqgiBUJwgJj
+      name: ''
+      visibility:
+        level:
+          min: null
+          max: null
+        identifier: ''
+      uses:
+        max: ''
+  identifier: ideal-of-the-titan
+  enchant: {}
+  prerequisites:
+    level: null
+  properties: []
+  advancement:
+    - type: Trait
+      _id: v4yY7DRXULhjDkBi
+      configuration:
+        allowReplacements: false
+        choices: []
+        grants:
+          - armor:med
+        mode: default
+      level: 0
+      title: ''
+      hint: ''
+      value: {}
+effects: []
+_id: MfeT5I7A4RiOX5L1
+folder: 6SIhNLadhlLXwDO4
+sort: 0
+ownership:
+  default: 0
+_stats:
+  duplicateSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1730433983637
+  modifiedTime: 1780604455573
+  lastModifiedBy: dnd5ebuilder0000
+  exportSource: null
+_key: '!items!MfeT5I7A4RiOX5L1'
+

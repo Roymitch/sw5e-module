@@ -1,0 +1,83 @@
+_id: j0CGv1G7GU5WtLhh
+name: Knowledge Unbound
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/SCLR-Passive.webp
+effects: []
+folder: lMll0HiBGZ8eIa0n
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:58.6680254+00:00'
+    importer_version: 3
+    uid: Feature.name-knowledge_unbound.source-class.sourceName-scholar.level-20
+system:
+  description:
+    value: >-
+      <p><em><strong>Scholar:</strong> 20th level</em></p>
+
+      <p>You are the pinnacle of your pursuit. Your Intelligence score increases
+      by 4. Your maximum for that score increases by 4. Additionally, you can
+      use any maneuver you know without expending a superiority die, rolling a
+      [[/r d4]] instead.</p>
+    chat: ''
+  requirements: Scholar 20
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2014'
+  cover: null
+  crewed: false
+  uses:
+    max: ''
+    spent: 0
+    recovery: []
+  type:
+    value: class
+    subtype: ''
+  prerequisites:
+    level: null
+    items: []
+    repeatable: false
+  properties: []
+  activities: {}
+  advancement:
+    - type: AbilityScoreImprovement
+      _id: q7fQwVryKG0Ssxa1
+      configuration:
+        cap: 4
+        fixed:
+          str: 0
+          dex: 0
+          con: 0
+          int: 4
+          wis: 0
+          cha: 0
+        locked:
+          - str
+          - dex
+          - con
+          - wis
+          - cha
+        points: 0
+        recommendation: null
+        max: 24
+      value:
+        type: asi
+      level: 20
+      title: ''
+      hint: ''
+  identifier: knowledge-unbound
+  enchant: {}
+_stats:
+  duplicateSource: null
+  exportSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1777752135936
+  modifiedTime: 1780588712345
+  lastModifiedBy: dnd5ebuilder0000
+ownership:
+  default: 0
+sort: 0
+_key: '!items!j0CGv1G7GU5WtLhh'
+

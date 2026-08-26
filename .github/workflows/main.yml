@@ -77,12 +77,30 @@ jobs:
       # This step expects the tag to be one of the following formats:
       #   - "v<major>.<minor>.<patch>" (e.g., "v1.2.3")
       #   - "<major>.<minor>.<patch>"  (e.g., "1.2.3")
+      #   - optional SemVer prerelease/build suffixes (e.g., "v1.2.3-beta.1")
       #
       # The version will be used by later steps to fill in the value for the
       # "version" key required for a valid module manifest.
       - name: Extract Version From Tag
         id: get_version
-        uses: battila7/get-version-action@v2
+        env:
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${TAG_NAME}" ]]; then
+            echo "::error::Release tag_name is empty"
+            exit 1
+          fi
+          VERSION="${TAG_NAME}"
+          if [[ "${VERSION}" == v* ]]; then
+            VERSION="${VERSION#v}"
+          fi
+          if [[ ! "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Malformed release tag '${TAG_NAME}' (expected SemVer with optional leading v)"
+            exit 1
+          fi
+          echo "version-without-v=${VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "Extracted version-without-v=${VERSION}"
 
 
       # Modify "module.json" with values specific to the release.
@@ -139,6 +157,7 @@ jobs:
             module.json                          \
             README.md                            \
             LICENSE                              \
+            assets/                              \
             applications/                        \
             icons/                               \
             languages/                           \
@@ -146,9 +165,14 @@ jobs:
             scripts/                             \
             styles/                              \
             templates/                           \
-            --exclude "packs/_source/*"
+            --exclude "packs/_source/*"          \
+            --exclude "packs/_source/**"         \
+            --exclude "*.psd"
           # Don't forget to add a backslash at the end of the line for any
           # additional files or directories!
+
+      - name: Verify Module Archive Includes Required Runtime Assets
+        run: bash .github/scripts/verify-module-archive.sh ./module.zip ./module.json
 
 
       # Update the GitHub release with the manifest and module archive files.

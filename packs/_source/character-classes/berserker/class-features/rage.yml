@@ -1,0 +1,194 @@
+_id: DAk6NKEfJq4gEyhB
+name: Rage
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/BSKR-Bonus.webp
+effects:
+  - _id: joJ14rFFXKalCoSZ
+    changes:
+      - key: system.bonuses.mwak.damage
+        mode: 2
+        value: '@scale.berserker.rage-damage'
+        priority: null
+      - key: system.traits.dr.value
+        mode: 2
+        value: kinetic
+        priority: null
+      - key: system.traits.dr.value
+        mode: 2
+        value: energy
+        priority: null
+      - key: system.abilities.str.check.roll.mode
+        mode: 2
+        value: '1'
+        priority: null
+      - key: system.abilities.str.save.roll.mode
+        mode: 2
+        value: '1'
+        priority: null
+    disabled: true
+    duration:
+      rounds: 10
+      startTime: null
+      seconds: 60
+      combat: null
+      turns: null
+      startRound: null
+      startTurn: null
+    origin: Compendium.sw5e-module.character-classes.DAk6NKEfJq4gEyhB
+    tint: '#ffffff'
+    transfer: false
+    flags:
+      core:
+        statusId: ''
+      dnd5e:
+        riders:
+          statuses: []
+    name: Rage
+    description: ''
+    statuses: []
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      exportSource: null
+      coreVersion: '13.351'
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      lastModifiedBy: dnd5ebuilder0000
+      modifiedTime: 1780412660193
+    img: modules/sw5e-module/icons/packs/Class%20Features/BSKR-Bonus.webp
+    type: base
+    system: {}
+    sort: 0
+    _key: '!items.effects!DAk6NKEfJq4gEyhB.joJ14rFFXKalCoSZ'
+folder: BaN92qsqR1A7h4Os
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:58.5600877+00:00'
+    importer_version: 3
+    uid: Feature.name-rage.source-class.sourceName-berserker.level-1
+  dnd5e:
+    migratedUses: null
+system:
+  description:
+    value: >-
+      <p><em><strong>Berserker:</strong> 1st level</em></p><p>In battle, you
+      fight with primal ferocity. On your turn, you can enter a rage as a bonus
+      action if you aren't wearing heavy armor.</p><p>While raging, you gain the
+      following benefits:</p><ul><li>You have advantage on Strength checks and
+      Strength saving throws.</li><li>When you make a melee weapon attack using
+      Strength, you gain a bonus to the damage roll that increases as you gain
+      levels as a berserker, as shown in the Rage Damage column of the berserker
+      table.</li><li>You have resistance to kinetic and energy
+      damage.</li></ul><p>If you are able to cast powers, you can't cast them or
+      concentrate on them while raging.</p><p>Your rage lasts for 1 minute. It
+      ends early if you are knocked unconscious, you don heavy armor, or if your
+      turn ends and you haven't taken a hostile action or taken damage since
+      your last turn. You can also end your rage on your turn as a bonus
+      action.</p><p>You can enter a rage a number of times as shown in the Rages
+      column of the berserker table. You regain all expended uses when you
+      complete a long rest.</p><section class="secret"
+      id="secret-m5rQplLOwSdsWd7l"><p><strong>Foundry Note</strong></p><p>This
+      feature includes an Active Effect which automates the Resistance and
+      additional damage. This feature will also automatically recharge your Rage
+      uses on a Short and Long Rest.</p></section>
+    chat: ''
+  requirements: Berserker
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2014'
+  cover: null
+  crewed: false
+  uses:
+    max: '@scale.berserker.rages'
+    recovery:
+      - period: lr
+        type: recoverAll
+    spent: 0
+  type:
+    value: class
+    subtype: ''
+  prerequisites:
+    level: null
+    items: []
+    repeatable: false
+  properties: []
+  activities:
+    sw5e0utility0000:
+      _id: sw5e0utility0000
+      activation:
+        type: bonus
+        override: false
+        condition: ''
+      description:
+        chatFlavor: ''
+      duration:
+        units: minute
+        value: '1'
+        concentration: false
+        override: false
+      img: ''
+      range:
+        units: self
+        override: false
+        value: ''
+        special: ''
+      roll:
+        formula: ''
+        prompt: false
+        visible: false
+        name: ''
+      target:
+        template:
+          type: ''
+          units: ft
+          contiguous: false
+        affects:
+          choice: false
+          type: self
+          special: ''
+        override: false
+        prompt: true
+      type: utility
+      sort: 0
+      consumption:
+        scaling:
+          allowed: false
+        spellSlot: true
+        targets:
+          - type: itemUses
+            value: '1'
+            target: ''
+      effects:
+        - _id: joJ14rFFXKalCoSZ
+      flags: {}
+      uses:
+        spent: 0
+        recovery: []
+        max: ''
+      visibility:
+        level:
+          min: null
+          max: null
+        requireAttunement: false
+        requireIdentification: false
+        requireMagic: false
+        identifier: ''
+      name: ''
+  advancement: []
+  identifier: rage
+  enchant: {}
+_stats:
+  duplicateSource: null
+  exportSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1777752135936
+  modifiedTime: 1780501385912
+  lastModifiedBy: dnd5ebuilder0000
+ownership:
+  default: 0
+sort: 0
+_key: '!items!DAk6NKEfJq4gEyhB'
+

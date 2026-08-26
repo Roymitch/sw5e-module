@@ -1,0 +1,98 @@
+name: Fighter Strategies
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/FGTR-Passive.webp
+effects: []
+folder: RSEVWzIEcC9KpdJt
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:58.5670838+00:00'
+    importer_version: 3
+    uid: Feature.name-fighter_strategies.source-class.sourceName-fighter.level-3
+_id: PpwSwjWSlOARJyk6
+system:
+  description:
+    value: >-
+      <p><em><strong>Fighter:</strong> 3rd level</em></p>
+
+      <p>You've adopted a fighter strategy, as detailed at the end of the class
+      description, and you adopt more at higher levels, as shown in the
+      Strategies Known column of the fighter table.</p>
+    chat: ''
+  requirements: Fighter 3
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2014'
+  cover: null
+  crewed: false
+  uses:
+    max: ''
+    spent: 0
+    recovery: []
+  type:
+    value: class
+    subtype: ''
+  prerequisites:
+    level: null
+    items: []
+    repeatable: false
+  properties: []
+  activities: {}
+  advancement:
+    - _id: sw5e23ic00000000
+      configuration:
+        allowDrops: true
+        choices:
+          '3':
+            count: 1
+            replacement: false
+          '7':
+            count: 1
+            replacement: false
+          '13':
+            count: 1
+            replacement: false
+          '17':
+            count: 1
+            replacement: false
+        pool:
+          - uuid: Compendium.sw5e-module.character-classes.XjTMABFQ4s8CSoeP
+          - uuid: Compendium.sw5e-module.character-classes.IbfD1BvoQxb4xUb7
+          - uuid: Compendium.sw5e-module.character-classes.fQEw0CE6SdGlG8Kx
+          - uuid: Compendium.sw5e-module.character-classes.28yHWNxteJQVXUIu
+          - uuid: Compendium.sw5e-module.character-classes.uTCoA6aAKyZ50JWe
+          - uuid: Compendium.sw5e-module.character-classes.cctwVh1zcte0ss50
+          - uuid: Compendium.sw5e-module.character-classes.s97q3lgnX4dH1pGr
+          - uuid: Compendium.sw5e-module.character-classes.kIVu8iapeGO5eWzt
+        restriction:
+          level: ''
+          subtype: fighterInvocation
+          type: class
+          list: []
+        type: feat
+        spell: null
+      title: Fighter Strategies
+      type: ItemChoice
+      value:
+        added: {}
+        replaced: {}
+      hint: >-
+        You've adopted a fighter strategy, as detailed at the end of the class
+        description, and you adopt more at higher levels, as shown in the
+        Strategies Known column of the fighter table.
+  identifier: fighter-strategies
+  enchant: {}
+_stats:
+  duplicateSource: null
+  exportSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1777752135936
+  modifiedTime: 1780598809853
+  lastModifiedBy: dnd5ebuilder0000
+ownership:
+  default: 0
+sort: 0
+_key: '!items!PpwSwjWSlOARJyk6'
+

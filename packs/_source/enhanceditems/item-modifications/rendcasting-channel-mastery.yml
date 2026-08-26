@@ -1,0 +1,143 @@
+_id: rU5WLZ6fdGqEJuyW
+name: Rendcasting Channel (Mastery)
+type: loot
+img: modules/sw5e-module/icons/packs/Modifications/FocusgeneratorMod.webp
+effects:
+  - name: Rendcasting Channel (Mastery) - Save Target DC
+    origin: Compendium.sw5e-module.enhanceditems.Item.rU5WLZ6fdGqEJuyW
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    transfer: false
+    disabled: false
+    _id: a9bac24893fc6b34
+    changes:
+      - key: system.bonuses.force.save.dex.dc
+        mode: 2
+        value: '3'
+        priority: 20
+      - key: system.bonuses.force.save.int.dc
+        mode: 2
+        value: '3'
+        priority: 20
+    description: ''
+    statuses: []
+    flags: {}
+    tint: '#ffffff'
+    _stats:
+      coreVersion: '13.351'
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: dnd5ebuilder0000
+      compendiumSource: null
+      duplicateSource: null
+    img: modules/sw5e-module/icons/packs/Modifications/FocusgeneratorMod.webp
+    type: base
+    system: {}
+    sort: 0
+    _key: '!items.effects!rU5WLZ6fdGqEJuyW.a9bac24893fc6b34'
+folder: 2opSaVXOBytTPCiA
+sort: 0
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:52:05.5870133+00:00'
+    importer_version: 3
+    uid: EnhancedItem.name-rendcasting_channel_mastery.subtype-focus_generator
+system:
+  description:
+    value: |-
+      <h4>Item Modification (Focus Generator)</h4>
+       <p>While using this item as your focus, you gain a +3 bonus to the force save DC of powers that require a Dexterity or Intelligence saving throw.</p>
+    chat: ''
+  source:
+    custom: Modification
+    book: WH
+    page: Ch. 7 Pg. 74
+  quantity: 1
+  weight:
+    value: 0
+    units: lb
+  price:
+    value: 0
+    denomination: gc
+  rarity: advanced
+  identified: true
+  activation:
+    type: ''
+    cost: null
+    condition: ''
+  duration:
+    value: ''
+    units: inst
+  cover: null
+  crewed: false
+  target:
+    value: ''
+    width: null
+    units: ''
+    type: ''
+    prompt: true
+  range:
+    value: null
+    long: null
+    units: ''
+  uses:
+    value: null
+    max: ''
+    per: null
+    recovery: ''
+    prompt: true
+  consume:
+    type: ''
+    target: null
+    amount: null
+    scale: false
+  ability: null
+  actionType: other
+  chatFlavor: ''
+  critical:
+    threshold: null
+    damage: ''
+  damage:
+    parts: []
+    versatile: ''
+  formula: ''
+  save:
+    ability: ''
+    dc: null
+    scaling: spell
+  modifying:
+    id: null
+    disabled: false
+  properties: []
+  unidentified:
+    description: ''
+  type:
+    value: focusgenerator
+    subtype: slot1
+    baseItem: ''
+  attack:
+    bonus: ''
+    flat: false
+  container: null
+  enchantment: null
+  summons: null
+ownership:
+  default: 0
+_stats:
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  coreVersion: '12.331'
+  createdTime: 1674493999733
+  modifiedTime: 1720368863451
+  lastModifiedBy: dnd5ebuilder0000
+  duplicateSource: null
+_key: '!items!rU5WLZ6fdGqEJuyW'
+

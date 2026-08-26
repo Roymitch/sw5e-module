@@ -1,6 +1,46 @@
 import { getBestAbility } from "./../../utils.mjs";
+import {
+	buildManeuverActivationTypes,
+	buildManeuverDescriptionSummary,
+	buildManeuverDurationUnits,
+	buildManeuverRangeTypes,
+	buildManeuverSourceClassOptions
+} from "../../maneuver-item-sheet-context.mjs";
 
-const { ItemDataModel } = globalThis.dnd5e.dataModels;
+/**
+ * Resolve maneuver save activities for preparation without assuming dnd5e's ActivitiesCollection API.
+ *
+ * Legacy embedded `sw5e-module.maneuver` items may prepare with `system.activities` as a plain object
+ * that lacks `getByType` on dnd5e 5.2.5 world load. Calling `getByType("save")` or iterating its result
+ * then throws (`object is not iterable`). This helper is read-only: it does not mutate item data.
+ * Migration/normalization of stale embedded maneuvers may be handled separately.
+ *
+ * @param {unknown} activities  Prepared `this.activities` from ManeuverData / ActivitiesTemplate.
+ * @returns {object[]}  Activity-shaped documents entries suitable for superiority DC patching / favorites.
+ */
+function maneuverSaveActivitiesAsArray(activities) {
+	if (!activities) return [];
+
+	const getByType = activities.getByType;
+	if (typeof getByType === "function") {
+		let slice;
+		try {
+			slice = getByType.call(activities, "save");
+		} catch {
+			return [];
+		}
+		if (slice == null) return [];
+		if (typeof slice[Symbol.iterator] === "function") return [...slice];
+		return [];
+	}
+
+	if (typeof activities !== "object" || Array.isArray(activities)) return [];
+	return Object.values(activities).filter(
+		a => a && typeof a === "object" && !Array.isArray(a) && a.type === "save"
+	);
+}
+
+const { ItemDataModel } = globalThis.dnd5e.dataModels.abstract;
 const { ActivitiesTemplate, ItemDescriptionTemplate, ItemTypeTemplate, ItemTypeField } = globalThis.dnd5e.dataModels.item;
 const { ActivationField, DurationField, RangeField, TargetField } = globalThis.dnd5e.dataModels.shared;
 
@@ -29,6 +69,17 @@ export default class ManeuverData extends ItemDataModel.mixin(ItemDescriptionTem
 	static LOCALIZATION_PREFIXES = [
 		"DND5E.ACTIVATION", "DND5E.DURATION", "DND5E.RANGE", "DND5E.SOURCE", "DND5E.TARGET"
 	];
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Advertise stock Item-sheet Effects PART/tab (dnd5e `ItemSheet5e.itemHasEffects`).
+	 * Does not change Active Effect embedding, transfer rules, or pack data.
+	 * @inheritDoc
+	 */
+	static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
+		hasEffects: true
+	}, { inplace: false }));
 
 	/* -------------------------------------------- */
 
@@ -73,6 +124,8 @@ export default class ManeuverData extends ItemDataModel.mixin(ItemDescriptionTem
 		ActivitiesTemplate.migrateActivities(source);
 		ManeuverData.#migrateActivation(source);
 		ManeuverData.#migrateTarget(source);
+		ManeuverData.#migrateSourceClass(source);
+		ManeuverData.#migrateTargetPrompt(source);
 	}
 
 	/**
@@ -110,13 +163,56 @@ export default class ManeuverData extends ItemDataModel.mixin(ItemDescriptionTem
 	}
 
 	/* -------------------------------------------- */
+
+	/**
+	 * Migrate malformed source class data.
+	 * @param {object} source  The candidate source data from which the model will be constructed.
+	 */
+	static #migrateSourceClass(source) {
+		if ( !("sourceClass" in source) ) return;
+		const current = source.sourceClass;
+		if ( current === "[object Object]" ) {
+			source.sourceClass = "";
+			return;
+		}
+		if ( current && (typeof current === "object") && !Array.isArray(current) ) {
+			source.sourceClass = current.system?.identifier ?? current.identifier ?? current.value ?? "";
+			return;
+		}
+		if ( (current !== undefined) && (current !== null) && (typeof current !== "string") ) source.sourceClass = "";
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Clear stale target prompts for non-area maneuvers.
+	 * @param {object} source  The candidate source data from which the model will be constructed.
+	 */
+	static #migrateTargetPrompt(source) {
+		if ( source.target?.prompt !== true ) return;
+		const activities = Array.isArray(source.activities) ? source.activities : Object.values(source.activities ?? {});
+		const hasMeasuredTemplate = activities.some(activity => {
+			const template = activity?.target?.template;
+			if ( template === true ) return true;
+			if ( template && (typeof template === "object") && !Array.isArray(template) ) {
+				const templateType = template.type;
+				if ( typeof templateType === "string" && templateType && (templateType in CONFIG.DND5E.areaTargetTypes) ) return true;
+				const templateSize = Number(template.size ?? template.value);
+				if ( Number.isFinite(templateSize) && (templateSize > 0) ) return true;
+				const templateWidth = Number(template.width);
+				if ( Number.isFinite(templateWidth) && (templateWidth > 0) ) return true;
+			}
+			return activity?.target?.affects?.type === "area";
+		});
+		if ( !hasMeasuredTemplate ) source.target.prompt = false;
+	}
+
+	/* -------------------------------------------- */
 	/*  Data Preparation                            */
 	/* -------------------------------------------- */
 
 	/** @inheritDoc */
 	prepareDerivedData() {
-		ActivitiesTemplate._applyActivityShims.call(this);
-		this._applyManeuverShims();
 		super.prepareDerivedData();
 		this.prepareDescriptionData();
 
@@ -127,7 +223,7 @@ export default class ManeuverData extends ItemDataModel.mixin(ItemDescriptionTem
 
 		labels.properties = this.properties.reduce((acc, c) => {
 			const config = this.validProperties.has(c) ? CONFIG.DND5E.itemProperties[c] : null;
-			if ( !config ) return acc;
+			if (!config) return acc;
 			const { abbreviation: abbr, label, icon } = config;
 			acc.push({ abbr, icon, tag: config.isTag });
 			return acc;
@@ -147,15 +243,22 @@ export default class ManeuverData extends ItemDataModel.mixin(ItemDescriptionTem
 		TargetField.prepareData.call(this, rollData, labels);
 
 		const Proficiency = game.dnd5e.documents.Proficiency;
-		// This isnt done by the Item5e._prepareProficiency because `sw5e.maneuver` is not on the list of types with proficiency.
+		// This custom maneuver subtype is not handled by Item5e's built-in proficiency preparation.
 		if (!this.parent.actor?.system?.attributes?.prof) this.prof = new Proficiency(0, 0);
 		else this.prof = new Proficiency(this.parent.actor.system.attributes.prof, this.proficiencyMultiplier ?? 0);
+
+		const superiorityDc = Number(this.parent.actor?.system?.superiority?.types?.[this.type.value]?.dc);
+		if ( Number.isFinite(superiorityDc) ) {
+			for ( const activity of maneuverSaveActivitiesAsArray(this.activities) ) {
+				if ( activity.save?.dc && typeof activity.save.dc === "object" ) activity.save.dc.value = superiorityDc;
+			}
+		}
 	}
 
 	/* -------------------------------------------- */
 
 	/** @inheritDoc */
-	async getCardData(enrichmentOptions={}) {
+	async getCardData(enrichmentOptions = {}) {
 		const context = await super.getCardData(enrichmentOptions);
 		context.isManeuver = true;
 		context.subtitle = CONFIG.DND5E.superiority.types[this.type.value]?.label ?? "";
@@ -167,26 +270,37 @@ export default class ManeuverData extends ItemDataModel.mixin(ItemDescriptionTem
 
 	/** @inheritDoc */
 	async getFavoriteData() {
+		const saveActivities = maneuverSaveActivitiesAsArray(this.activities);
 		return foundry.utils.mergeObject(await super.getFavoriteData(), {
 			subtitle: [this.parent.labels.activation],
 			modifier: this.parent.labels.modifier,
 			range: this.range,
-			save: this.activities.getByType("save")[0]?.save
+			save: saveActivities[0]?.save
 		});
 	}
 
 	/** @inheritDoc */
 	async getSheetData(context) {
-		if ( this.parent.actor ) {
+		if (this.parent.actor) {
 			const ability = CONFIG.DND5E.abilities[
 				this.parent.actor.system?.superiority?.types?.[this.type.value]?.attr
 				?? CONFIG.DND5E.superiority.types[this.type.value]?.attr?.[0]
 				?? this.parent.actor.system.attributes?.spellcasting
 				?? "int"
 			]?.label?.toLowerCase();
-			if ( ability ) context.defaultAbility = game.i18n.format("DND5E.DefaultSpecific", { default: ability });
+			if (ability) context.defaultAbility = game.i18n.format("DND5E.DefaultSpecific", { default: ability });
 			else context.defaultAbility = game.i18n.localize("DND5E.Default");
+			context.spellcastingClasses = buildManeuverSourceClassOptions(this.parent.actor.spellcastingClasses);
 		}
+
+		// Casting field-partial option shapes (public CONFIG; Spell sheet contract).
+		context.activationTypes = buildManeuverActivationTypes();
+		context.durationUnits = buildManeuverDurationUnits();
+		context.rangeTypes = buildManeuverRangeTypes();
+
+		// Description-tab summary rows (prepared Item labels; read-only).
+		context.maneuverSummary = buildManeuverDescriptionSummary(this.parent);
+
 		context.subtitles = [
 			{ label: context.labels.type }
 		];
@@ -210,7 +324,7 @@ export default class ManeuverData extends ItemDataModel.mixin(ItemDescriptionTem
 
 	/** @override */
 	get availableAbilities() {
-		if ( this.ability ) return new Set([this.ability]);
+		if (this.ability) return new Set([this.ability]);
 		return new Set(CONFIG.DND5E.superiority.types[this.type.value].attr ?? []);
 	}
 
@@ -258,9 +372,9 @@ export default class ManeuverData extends ItemDataModel.mixin(ItemDescriptionTem
 
 	/** @inheritDoc */
 	_preCreate(data, options, user) {
-		if ( super._preCreate(data, options, user) === false ) return false;
+		if (super._preCreate(data, options, user) === false) return false;
 		const classes = new Set(Object.keys(this.parent.actor?.spellcastingClasses ?? {}));
-		if ( !classes.size ) return;
+		if (!classes.size) return;
 
 		// Set the source class
 		const setClass = cls => {
@@ -269,97 +383,9 @@ export default class ManeuverData extends ItemDataModel.mixin(ItemDescriptionTem
 		};
 
 		// If only a single spellcasting class is present, use that
-		if ( classes.size === 1 ) {
+		if (classes.size === 1) {
 			setClass(classes.first());
 			return;
 		}
-	}
-
-	/* -------------------------------------------- */
-	/*  Shims                                       */
-	/* -------------------------------------------- */
-
-	/**
-	 * Add additional data shims for maneuvers.
-	 */
-	_applyManeuverShims() {
-		Object.defineProperty(this.activation, "cost", {
-			get() {
-				foundry.utils.logCompatibilityWarning(
-					"The `activation.cost` property on `ManeuverData` has been renamed `activation.value`.",
-					{ since: "DnD5e 4.0", until: "DnD5e 4.4", once: true }
-				);
-				return this.value;
-			},
-			configurable: true,
-			enumerable: false
-		});
-		Object.defineProperty(this, "scaling", {
-			get() {
-				foundry.utils.logCompatibilityWarning(
-					"The `scaling` property on `ManeuverData` has been deprecated and is now handled by individual damage parts.",
-					{ since: "DnD5e 4.0", until: "DnD5e 4.4", once: true }
-				);
-				return { mode: "none", formula: null };
-			},
-			configurable: true,
-			enumerable: false
-		});
-		Object.defineProperty(this.target, "value", {
-			get() {
-				foundry.utils.logCompatibilityWarning(
-					"The `target.value` property on `ManeuverData` has been split into `target.template.size` and `target.affects.count`.",
-					{ since: "DnD5e 4.0", until: "DnD5e 4.4", once: true }
-				);
-				return this.template.size || this.affects.count;
-			},
-			configurable: true,
-			enumerable: false
-		});
-		Object.defineProperty(this.target, "width", {
-			get() {
-				foundry.utils.logCompatibilityWarning(
-					"The `target.width` property on `ManeuverData` has been moved to `target.template.width`.",
-					{ since: "DnD5e 4.0", until: "DnD5e 4.4", once: true }
-				);
-				return this.template.width;
-			},
-			configurable: true,
-			enumerable: false
-		});
-		Object.defineProperty(this.target, "units", {
-			get() {
-				foundry.utils.logCompatibilityWarning(
-					"The `target.units` property on `ManeuverData` has been moved to `target.template.units`.",
-					{ since: "DnD5e 4.0", until: "DnD5e 4.4", once: true }
-				);
-				return this.template.units;
-			},
-			configurable: true,
-			enumerable: false
-		});
-		Object.defineProperty(this.target, "type", {
-			get() {
-				foundry.utils.logCompatibilityWarning(
-					"The `target.type` property on `ManeuverData` has been split into `target.template.type` and `target.affects.type`.",
-					{ since: "DnD5e 4.0", until: "DnD5e 4.4", once: true }
-				);
-				return this.template.type || this.affects.type;
-			},
-			configurable: true,
-			enumerable: false
-		});
-		const firstActivity = this.activities.contents[0] ?? {};
-		Object.defineProperty(this.target, "prompt", {
-			get() {
-				foundry.utils.logCompatibilityWarning(
-					"The `target.prompt` property on `ManeuverData` has moved into its activity.",
-					{ since: "DnD5e 4.0", until: "DnD5e 4.4", once: true }
-				);
-				return firstActivity.target?.prompt;
-			},
-			configurable: true,
-			enumerable: false
-		});
 	}
 };

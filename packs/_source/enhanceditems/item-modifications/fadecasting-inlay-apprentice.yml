@@ -1,0 +1,143 @@
+_id: P1XnR8ntCRjKLZGV
+name: Fadecasting Inlay (Apprentice)
+type: loot
+img: modules/sw5e-module/icons/packs/Modifications/ClothingMod.webp
+effects:
+  - name: Fadecasting Inlay (Apprentice) - Save Target DC
+    origin: Compendium.sw5e-module.enhanceditems.Item.P1XnR8ntCRjKLZGV
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    transfer: false
+    disabled: false
+    _id: 616be3d47913f487
+    changes:
+      - key: system.bonuses.force.save.str.dc
+        mode: 2
+        value: '1'
+        priority: 20
+      - key: system.bonuses.force.save.con.dc
+        mode: 2
+        value: '1'
+        priority: 20
+    description: ''
+    statuses: []
+    flags: {}
+    tint: '#ffffff'
+    _stats:
+      coreVersion: '13.351'
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: dnd5ebuilder0000
+      compendiumSource: null
+      duplicateSource: null
+    img: modules/sw5e-module/icons/packs/Modifications/ClothingMod.webp
+    type: base
+    system: {}
+    sort: 0
+    _key: '!items.effects!P1XnR8ntCRjKLZGV.616be3d47913f487'
+folder: 2opSaVXOBytTPCiA
+sort: 0
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:52:05.5340437+00:00'
+    importer_version: 3
+    uid: EnhancedItem.name-fadecasting_inlay_apprentice.subtype-clothing
+system:
+  description:
+    value: |-
+      <h4>Item Modification (Clothing)</h4>
+       <p>While using this item as your focus, you gain a +1 bonus to the force save DC of powers that require a Strength or Constitution saving throw.</p>
+    chat: ''
+  source:
+    custom: Modification
+    book: WH
+    page: Ch. 7 Pg. 74
+  quantity: 1
+  weight:
+    value: 0
+    units: lb
+  price:
+    value: 0
+    denomination: gc
+  rarity: premium
+  identified: true
+  activation:
+    type: ''
+    cost: null
+    condition: ''
+  duration:
+    value: ''
+    units: inst
+  cover: null
+  crewed: false
+  target:
+    value: ''
+    width: null
+    units: ''
+    type: ''
+    prompt: true
+  range:
+    value: null
+    long: null
+    units: ''
+  uses:
+    value: null
+    max: ''
+    per: null
+    recovery: ''
+    prompt: true
+  consume:
+    type: ''
+    target: null
+    amount: null
+    scale: false
+  ability: null
+  actionType: other
+  chatFlavor: ''
+  critical:
+    threshold: null
+    damage: ''
+  damage:
+    parts: []
+    versatile: ''
+  formula: ''
+  save:
+    ability: ''
+    dc: null
+    scaling: spell
+  modifying:
+    id: null
+    disabled: false
+  properties: []
+  unidentified:
+    description: ''
+  type:
+    value: clothing
+    subtype: slot1
+    baseItem: ''
+  attack:
+    bonus: ''
+    flat: false
+  container: null
+  enchantment: null
+  summons: null
+ownership:
+  default: 0
+_stats:
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  coreVersion: '12.331'
+  createdTime: 1674493999365
+  modifiedTime: 1720368846553
+  lastModifiedBy: dnd5ebuilder0000
+  duplicateSource: null
+_key: '!items!P1XnR8ntCRjKLZGV'
+

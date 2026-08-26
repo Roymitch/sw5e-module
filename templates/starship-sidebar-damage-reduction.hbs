@@ -1,0 +1,20 @@
+{{#if sheetEditMode}}
+<div class="pills-group empty sw5e-starship-sidebar-damage-reduction sw5e-starship-sidebar-damage-reduction--edit" aria-label="{{label}}">
+  <h3 class="icon">
+    <i class="fa-solid fa-shield-halved fa-fw" inert></i>
+    <span class="roboto-upper">{{label}}</span>
+    <input type="text" class="sw5e-starship-sidebar-dr-input" data-sw5e-starship-dr-manual
+           data-dtype="Number" inputmode="numeric" pattern="^\d*"
+           value="{{inputValue}}" placeholder="{{placeholder}}"
+           aria-label="{{label}}" {{#unless editable}}disabled{{/unless}} />
+  </h3>
+</div>
+{{else if showInPlay}}
+<div class="pills-group empty sw5e-starship-sidebar-damage-reduction sw5e-starship-sidebar-damage-reduction--play" aria-label="{{ariaLabel}}">
+  <h3 class="icon">
+    <i class="fa-solid fa-shield-halved fa-fw" inert></i>
+    <span class="roboto-upper">{{label}}</span>
+    <span class="counter">{{value}}</span>
+  </h3>
+</div>
+{{/if}}

@@ -1,0 +1,143 @@
+_id: 4EO5URhxBubw0vjP
+name: Rendcasting Guard (Journeyman)
+type: loot
+img: modules/sw5e-module/icons/packs/Modifications/VibroweaponMod.webp
+effects:
+  - name: Rendcasting Guard (Journeyman) - Save Target DC
+    origin: Compendium.sw5e-module.enhanceditems.Item.4EO5URhxBubw0vjP
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    transfer: false
+    disabled: false
+    _id: ed835ca95282c262
+    changes:
+      - key: system.bonuses.force.save.dex.dc
+        mode: 2
+        value: '2'
+        priority: 20
+      - key: system.bonuses.force.save.int.dc
+        mode: 2
+        value: '2'
+        priority: 20
+    description: ''
+    statuses: []
+    flags: {}
+    tint: '#ffffff'
+    _stats:
+      coreVersion: '13.351'
+      systemId: dnd5e
+      systemVersion: 5.2.5
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: dnd5ebuilder0000
+      compendiumSource: null
+      duplicateSource: null
+    img: modules/sw5e-module/icons/packs/Modifications/VibroweaponMod.webp
+    type: base
+    system: {}
+    sort: 0
+    _key: '!items.effects!4EO5URhxBubw0vjP.ed835ca95282c262'
+folder: 2opSaVXOBytTPCiA
+sort: 0
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:52:05.5640268+00:00'
+    importer_version: 3
+    uid: EnhancedItem.name-rendcasting_guard_journeyman.subtype-vibroweapon
+system:
+  description:
+    value: |-
+      <h4>Item Modification (Vibroweapon)</h4>
+       <p>While using this item as your focus, you gain a +2 bonus to the force save DC of powers that require a Dexterity or Intelligence saving throw.</p>
+    chat: ''
+  source:
+    custom: Modification
+    book: WH
+    page: Ch. 7 Pg. 74
+  quantity: 1
+  weight:
+    value: 0
+    units: lb
+  price:
+    value: 0
+    denomination: gc
+  rarity: prototype
+  identified: true
+  activation:
+    type: ''
+    cost: null
+    condition: ''
+  duration:
+    value: ''
+    units: inst
+  cover: null
+  crewed: false
+  target:
+    value: ''
+    width: null
+    units: ''
+    type: ''
+    prompt: true
+  range:
+    value: null
+    long: null
+    units: ''
+  uses:
+    value: null
+    max: ''
+    per: null
+    recovery: ''
+    prompt: true
+  consume:
+    type: ''
+    target: null
+    amount: null
+    scale: false
+  ability: null
+  actionType: other
+  chatFlavor: ''
+  critical:
+    threshold: null
+    damage: ''
+  damage:
+    parts: []
+    versatile: ''
+  formula: ''
+  save:
+    ability: ''
+    dc: null
+    scaling: spell
+  modifying:
+    id: null
+    disabled: false
+  properties: []
+  unidentified:
+    description: ''
+  type:
+    value: vibroweapon
+    subtype: slot1
+    baseItem: ''
+  attack:
+    bonus: ''
+    flat: false
+  container: null
+  enchantment: null
+  summons: null
+ownership:
+  default: 0
+_stats:
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  coreVersion: '12.331'
+  createdTime: 1674493999106
+  modifiedTime: 1720368834652
+  lastModifiedBy: dnd5ebuilder0000
+  duplicateSource: null
+_key: '!items!4EO5URhxBubw0vjP'
+

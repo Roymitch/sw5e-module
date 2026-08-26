@@ -1,0 +1,114 @@
+name: Slow Time
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:58.6730225+00:00'
+    importer_version: 3
+    uid: Feature.name-slow_time.source-class.sourceName-sentinel.level-2
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/SNTL-Passive.webp
+effects: []
+system:
+  description:
+    value: >-
+      <p>When you move on your turn, you can roll a Kinetic Combat die to
+      increase your speed by 5 x the amount rolled until the end of your
+      turn.</p>
+    chat: ''
+  requirements: Sentinel 2
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2014'
+  cover: null
+  crewed: false
+  uses:
+    max: ''
+    spent: 0
+    recovery: []
+  type:
+    value: class
+    subtype: sentinelFES
+  prerequisites:
+    level: null
+    items: []
+    repeatable: false
+  properties: []
+  activities:
+    tajJTzn2CkyxK3TK:
+      type: utility
+      name: Slow Time
+      sort: 300000
+      activation:
+        type: special
+        override: false
+        condition: When you move on your turn.
+      consumption:
+        scaling:
+          allowed: false
+        spellSlot: true
+        targets:
+          - type: attribute
+            value: '1'
+            target: powercasting.force.points.value
+            scaling: {}
+      description:
+        chatFlavor: ''
+      duration:
+        units: turn
+        concentration: false
+        override: false
+        value: '1'
+      effects: []
+      flags: {}
+      range:
+        units: self
+        override: false
+        special: ''
+      target:
+        template:
+          contiguous: false
+          units: ft
+          type: ''
+        affects:
+          choice: false
+          type: self
+          special: ''
+        override: false
+        prompt: true
+      uses:
+        spent: 0
+        recovery: []
+        max: ''
+      visibility:
+        level:
+          min: null
+          max: null
+        requireAttunement: false
+        requireIdentification: false
+        requireMagic: false
+        identifier: ''
+      roll:
+        prompt: false
+        visible: false
+        formula: 5*@scale.sentinel.kinetic-combat
+        name: Roll Speed Increase
+      _id: tajJTzn2CkyxK3TK
+  advancement: []
+  identifier: slow-time
+  enchant: {}
+folder: NAaKbV6LnMCVZOjZ
+_stats:
+  duplicateSource: null
+  exportSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1777752135936
+  modifiedTime: 1780660612396
+  lastModifiedBy: dnd5ebuilder0000
+_id: A87ImRq8O2Ftebxa
+ownership:
+  default: 0
+sort: 0
+_key: '!items!A87ImRq8O2Ftebxa'
+

@@ -1,0 +1,153 @@
+_id: HB76MNUZTWLyMsGG
+name: Proton Torpedo
+type: consumable
+flags: {}
+img: modules/sw5e-module/icons/packs/Starship%20Weapons/starshipweapon.webp
+effects: []
+system:
+  description:
+    value: >-
+      <p>(Range 1200/4800), explosive, keen 1</p><p>65 (130) lb</p><p>2d10
+      (4d10) energy</p>
+    chat: ''
+  source:
+    custom: SotG
+  quantity: 1
+  weight:
+    value: 0
+    units: lb
+  price:
+    value: 650
+    denomination: gc
+  attunement: ''
+  equipped: false
+  rarity: ''
+  identified: true
+  activation:
+    type: none
+    cost: 1
+    condition: ''
+  duration:
+    value: ''
+    units: ''
+  cover: null
+  crewed: false
+  target:
+    value: '1'
+    width: null
+    units: ''
+    type: enemy
+    prompt: false
+  range:
+    value: 1200
+    long: 4800
+    units: ft
+  uses:
+    value: null
+    max: ''
+    per: null
+    recovery: ''
+    autoDestroy: false
+    prompt: true
+  consume:
+    type: ''
+    target: ''
+    amount: null
+    scale: false
+  ability: ''
+  actionType: rwak
+  chatFlavor: ''
+  critical:
+    threshold: null
+    damage: ''
+  damage:
+    parts:
+      - - 2d10
+        - energy
+    versatile: ''
+  formula: ''
+  save:
+    ability: dex
+    dc: null
+    scaling: wis
+  properties:
+    - exp
+    - ken
+  attuned: false
+  type:
+    value: ammo
+    subtype: sstorpedo
+  unidentified:
+    description: ''
+  attack:
+    bonus: ''
+    flat: false
+  container: null
+  enchantment: null
+  summons: null
+  magicalBonus: null
+  activities:
+    sw5e0save0000000:
+      _id: sw5e0save0000000
+      name: Save
+      activation:
+        type: action
+      damage:
+        onSave: half
+        parts:
+          - custom:
+              enabled: false
+            denomination: 10
+            number: 2
+            scaling:
+              mode: ''
+              number: 1
+            types:
+              - energy
+      description: {}
+      duration:
+        units: inst
+        value: ''
+      img: null
+      range:
+        units: ft
+        value: '1200'
+        special: ''
+      save:
+        ability:
+          - dex
+        dc:
+          calculation: wis
+          formula: ''
+      target:
+        affects:
+          count: '1'
+          type: enemy
+          choice: false
+          special: ''
+        override: false
+        prompt: false
+        template:
+          count: ''
+          contiguous: false
+          stationary: false
+          type: ''
+          size: ''
+          width: ''
+          height: ''
+          units: ft
+      type: save
+ownership:
+  default: 0
+folder: ea5tzRK0RxKJfD2W
+sort: 0
+_stats:
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  coreVersion: '12.331'
+  createdTime: 1674494019811
+  modifiedTime: 1720552917713
+  lastModifiedBy: dnd5ebuilder0000
+  duplicateSource: null
+_key: '!items!HB76MNUZTWLyMsGG'
+

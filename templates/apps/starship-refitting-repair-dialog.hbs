@@ -1,0 +1,17 @@
+<section class="flexcol">
+  <div class="note info">{{hint}}</div>
+
+  {{#if fields.length}}
+  <fieldset>
+    <legend>{{localize "DND5E.REST.Configuration"}}</legend>
+    {{> "dnd5e.fieldlist" fields }}
+  </fieldset>
+  {{/if}}
+
+  {{#if canReduceSystemDamage}}
+  <fieldset>
+    <legend>{{localize "SW5E.StarshipSheet.RefittingMaintenanceLegend"}}</legend>
+    {{ formField reduceSystemDamageField name="reduceSystemDamage" value=config.reduceSystemDamage input=inputs.createCheckboxInput rootId=partId }}
+  </fieldset>
+  {{/if}}
+</section>

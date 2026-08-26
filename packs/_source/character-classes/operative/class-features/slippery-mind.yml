@@ -1,0 +1,68 @@
+_id: agVlC70rzKNh3nnW
+name: Slippery Mind
+type: feat
+img: modules/sw5e-module/icons/packs/Class%20Features/OPRT-Passive.webp
+effects: []
+folder: bzDwsoXa1cjWOAs7
+flags:
+  sw5e-importer:
+    timestamp: '2023-03-09T01:51:58.6650276+00:00'
+    importer_version: 3
+    uid: Feature.name-slippery_mind.source-class.sourceName-operative.level-15
+system:
+  description:
+    value: >-
+      <p><em><strong>Operative:</strong> 15th level</em></p>
+
+      <p>You have acquired greater mental strength. You gain proficiency in
+      Wisdom saving throws. </p>
+    chat: ''
+  requirements: Operative 15
+  source:
+    custom: PHB
+    revision: 1
+    rules: '2014'
+  cover: null
+  crewed: false
+  uses:
+    max: ''
+    spent: 0
+    recovery: []
+  type:
+    value: class
+    subtype: ''
+  prerequisites:
+    level: null
+    items: []
+    repeatable: false
+  properties: []
+  activities: {}
+  advancement:
+    - type: Trait
+      _id: KfY2Tz24v7hVbvDM
+      configuration:
+        allowReplacements: false
+        choices: []
+        grants:
+          - saves:wis
+        mode: default
+      level: 15
+      title: ''
+      hint: ''
+      value: {}
+  identifier: slippery-mind
+  enchant: {}
+_stats:
+  duplicateSource: null
+  exportSource: null
+  coreVersion: '13.351'
+  systemId: dnd5e
+  systemVersion: 5.2.5
+  createdTime: 1777752135936
+  modifiedTime: 1780581730824
+  lastModifiedBy: dnd5ebuilder0000
+ownership:
+  default: 0
+sort: 0
+_key: '!items!agVlC70rzKNh3nnW'
+
